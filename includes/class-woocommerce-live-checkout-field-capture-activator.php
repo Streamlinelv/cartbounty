@@ -17,7 +17,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Activator {
 	 *
 	 * Long Description.
 	 *
-	 * @since    1.0.0
+	 * @since    1.3.0
 	 */
 	public static function activate() {
 		
@@ -42,6 +42,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Activator {
 			cart_total DECIMAL(10,2),
 			currency VARCHAR(10),
 			time DATETIME DEFAULT '0000-00-00 00:00:00',
+			session_id VARCHAR(60),
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 

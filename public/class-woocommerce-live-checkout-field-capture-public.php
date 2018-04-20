@@ -74,7 +74,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
 	 *
-	 * @since    1.0.0
+	 * @since    1.3.0
 	 */
 	function save_user_data() {
 		// first check if data is being sent and that it is the data we want
@@ -106,9 +106,10 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			//Starting session in order to check if we have to insert or update database row with the data from input boxes 
 			if (!session_id()) session_start();
 			
+			$session_id = session_id();
 			
-			//If we have already inserted the ID of the last inserted row in Session variable and it is larger than 0. 0 - Sometimes caused errors and created multiple rows in DB
-			if(isset($_SESSION['last_inserted_id']) && $_SESSION['last_inserted_id'] > 0 ) {
+			//If we have already inserted the Users session ID in Session variable and it is not NULL we update the abandoned cart row
+			if(isset($_SESSION['current_session_id']) && $_SESSION['current_session_id'] != NULL ) {
 
 				if(isset($_POST['wlcfc_name'])){
 					$name = $_POST['wlcfc_name'];
@@ -128,12 +129,11 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 					$phone = '';
 				}
 				
-				//Updating row in the Database
+				//Updating row in the Database where users Session id = same as prevously saved in Session
 				$wpdb->prepare('%s',
-					$wpdb->replace(
+					$wpdb->update(
 						$table_name,
 						array(
-							'id'			=>	sanitize_key($_SESSION['last_inserted_id']),
 							'name'			=>	sanitize_text_field( $name ),
 							'surname'		=>	sanitize_text_field( $surname ),
 							'email'			=>	sanitize_email( $_POST['wlcfc_email'] ),
@@ -143,18 +143,20 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 							'currency'		=>	sanitize_text_field( $cart_currencty ),
 							'time'			=>	sanitize_text_field( $current_time )
 						),
-						array('%d', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s')
+						array('session_id' => $_SESSION['current_session_id']),
+						array('%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s'),
+						array('%s')
 					)
 				);
-				
+
 			}else{
 				
 				//Inserting row into Database
 				$wpdb->query(
 					$wpdb->prepare(
 						"INSERT INTO ". $table_name ."
-						( name, surname, email, phone, cart_contents, cart_total, currency, time )
-						VALUES ( %s, %s, %s, %s, %s, %0.2f, %s, %s )",
+						( name, surname, email, phone, cart_contents, cart_total, currency, time, session_id )
+						VALUES ( %s, %s, %s, %s, %s, %0.2f, %s, %s, %s)",
 						array(
 							sanitize_text_field( $_POST['wlcfc_name'] ),
 							sanitize_text_field( $_POST['wlcfc_surname'] ),
@@ -163,13 +165,14 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 							sanitize_text_field( serialize($product_array) ),
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currencty ),
-							sanitize_text_field( $current_time )
+							sanitize_text_field( $current_time ),
+							sanitize_text_field( $session_id )
 						) 
 					)
 				);
 				
-				//Saving in session variable last inserted row ID by Wordpress
-				$_SESSION['last_inserted_id'] = $wpdb->insert_id;
+				//Saving in session variable current Session ID
+				$_SESSION['current_session_id'] = $session_id;
 			}
 			
 			die();
@@ -180,7 +183,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to delete row from table if the user completes the checkout
 	 *
-	 * @since    1.0.0
+	 * @since    1.3.0
 	 */
 	function delete_user_data() {
 		
@@ -190,20 +193,20 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 		//Starting session in order to check if we have to insert or update database row with the data from input boxes 
 		if (!session_id()) session_start();
 		
-		if(isset($_SESSION['last_inserted_id'])) {
+		if(isset($_SESSION['current_session_id'])) {
 			
 			//Deleting row from database
 			$wpdb->query(
 				$wpdb->prepare(
 					"DELETE FROM ". $table_name ."
-					 WHERE id = %d",
-					sanitize_key($_SESSION['last_inserted_id'])
+					 WHERE session_id = %s",
+					sanitize_key($_SESSION['current_session_id'])
 				)
 			);
 		}
 		
 		//Removing stored ID value from Session
-		unset($_SESSION['last_inserted_id']);
+		unset($_SESSION['current_session_id']);
 	}
 	
 }
