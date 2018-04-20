@@ -88,11 +88,12 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			$cart_currencty = get_woocommerce_currency();
 			
 			//Retrieving cart products and their quantities
-			$products = WC()->cart->cart_contents;
+			$products = WC()->cart->get_cart_contents();
 			$product_array = array();
+			
 			foreach($products as $product => $values){
-				$item = $values['data']->post;
-				$product_title = $item->post_title;
+				$item = wc_get_product( $values['data']->get_id());
+				$product_title = $item->get_title();
 				$product_quantity = $values['quantity'];
 				
 				//Inserting Product title and Quantity into array
@@ -105,18 +106,38 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			//Starting session in order to check if we have to insert or update database row with the data from input boxes 
 			if (!session_id()) session_start();
 			
-			if(isset($_SESSION['last_inserted_id'])) {
+			
+			//If we have already inserted the ID of the last inserted row in Session variable and it is larger than 0. 0 - Sometimes caused errors and created multiple rows in DB
+			if(isset($_SESSION['last_inserted_id']) && $_SESSION['last_inserted_id'] > 0 ) {
+
+				if(isset($_POST['wlcfc_name'])){
+					$name = $_POST['wlcfc_name'];
+				}else{
+					$name = '';
+				}
+
+				if(isset($_POST['wlcfc_surname'])){
+					$surname = $_POST['wlcfc_surname'];
+				}else{
+					$surname = '';
+				}
+
+				if(isset($_POST['wlcfc_phone'])){
+					$phone = $_POST['wlcfc_phone'];
+				}else{
+					$phone = '';
+				}
 				
 				//Updating row in the Database
-				$wpdb->prepare(
+				$wpdb->prepare('%s',
 					$wpdb->replace(
 						$table_name,
 						array(
 							'id'			=>	sanitize_key($_SESSION['last_inserted_id']),
-							'name'			=>	sanitize_text_field( $_POST['wlcfc_name'] ),
-							'surname'		=>	sanitize_text_field( $_POST['wlcfc_surname'] ),
+							'name'			=>	sanitize_text_field( $name ),
+							'surname'		=>	sanitize_text_field( $surname ),
 							'email'			=>	sanitize_email( $_POST['wlcfc_email'] ),
-							'phone'			=>	filter_var($_POST['wlcfc_phone'], FILTER_SANITIZE_NUMBER_INT),
+							'phone'			=>	filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
 							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currencty ),
@@ -180,6 +201,9 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 				)
 			);
 		}
+		
+		//Removing stored ID value from Session
+		unset($_SESSION['last_inserted_id']);
 	}
 	
 }

@@ -1,13 +1,11 @@
-=== WooCommerce Live Checkout Field Capture – Save Abandoned Carts ===
+=== WooCommerce Live Checkout Field Capture - Save Abandoned Carts ===
 Contributors: prowebdesign
 Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture
-Requires at least: 3.6
+Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 1.0
-Version: 1.0
+Stable tag: 1.1
+Version: 1.1
 License: GPLv2 or later
-WC requires at least: 2.2
-WC tested up to: 2.3
 
 Plugin instantly saves WooCommerce checkout field data before they are submitted.
 
@@ -40,10 +38,11 @@ Plugin dependencies:
 1. Uses Wordpress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
 1. Wordpress WooCommerce hooks
 
+
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress.
+1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory, or install the plugin through the WordPress plugins screen directly.
+1. Activate the plugin through the "Plugins" screen in WordPress.
 1. Look for the page "Checkout Field Capture" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
 
 
@@ -58,6 +57,10 @@ After installation the plugin will be available under "WooCommerce" menu. Please
 Location of the plugin after activation.
 
 == Changelog ==
+
+= 1.1 =
+* Fixed PHP and MySQL warnings and notices
+* Updated security requirements that were introduced in Woocommerce 3.0
 
 = 1.0 =
 * Birthday

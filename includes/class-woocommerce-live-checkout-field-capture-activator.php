@@ -21,6 +21,9 @@ class Woocommerce_Live_Checkout_Field_Capture_Activator {
 	 */
 	public static function activate() {
 		
+		//Deactivating Woocommerce Live Checkout Field Capture Pro plugin
+		deactivate_plugins('woo-save-abandoned-carts-pro/woo-save-abandoned-carts-pro.php');
+		
 		/**
 		* Creating table
 		*/

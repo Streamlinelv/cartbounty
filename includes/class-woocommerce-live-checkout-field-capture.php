@@ -114,7 +114,8 @@ class Woocommerce_Live_Checkout_Field_Capture {
 		$plugin_admin = new Woocommerce_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'woocommerce_live_checkout_field_capture_menu', 70); //Creates admin menu
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'woocommerce_live_checkout_field_capture_menu', 70); //Creates admin menu		
+
 	}
 
 	/**
