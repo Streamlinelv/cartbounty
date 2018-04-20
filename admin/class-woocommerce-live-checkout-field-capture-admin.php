@@ -87,6 +87,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	/**
 	 * Register the menu options for admin area.
 	 *
+	 * @since    1.0.0
 	 */
 	function woocommerce_live_checkout_field_capture_menu_options() {
 		global $wpdb;
@@ -111,7 +112,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		<div class="wrap">
 			<div id="woocommerce-live-checkout-field-capture-go-pro">
 				<div id="woocommerce-live-checkout-field-capture-go-pro-header-image">
-					<a href="" title="Get Woocommerce Live Checkout Field Capture Pro">
+					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
 						<img src="<?php echo plugins_url( 'assets/e-mail-notification.svg', __FILE__ ) ; ?>" title=""/>
 					</a>
 				</div>
@@ -125,49 +126,71 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 				</div>
 			</div>
 			<?php echo $this->draw_bubble(); ?>
-			<h1 id="woocommerce-live-checkout-field-capture-title">Woocommerce Live Checkout Field Capture</h1>
-			<?php echo $message; ?>
-			<form id="wclcfc-table" method="GET">
-				<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
-				<?php $wp_list_table->display() ?>
-			</form>
+			<h1 id="woocommerce-live-checkout-field-capture-title">Wooommerce Live Checkout Field Capture</h1>
+			<?php echo $message; 
+			if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note?>
+				<p>Well, well, well, looks like you don’t have any saved Abandoned carts yet.<br/>But don’t worry, as soon as someone will fill the <strong>Email field</strong> of your WooCommerce Checkout form and abandon the cart, it will automatically appear here.</p>
+			<?php else: ?>
+				<form id="wclcfc-table" method="GET">
+					<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
+					<?php $wp_list_table->display() ?>
+				</form>
+			<?php endif; ?>
 		</div>
 	<?php
 	}
 	
 	
-	function draw_bubble(){ ?>
-		<script>
-			//**********
-			//Show Go Pro Tooltip bubble once every 15 days
-			//**********
-			jQuery(document).ready(function($) {
-				var days = 15; // How often to show the popup
-				var now = new Date().getTime();
-				var setupTime = localStorage.getItem('setupTime');
-				var bubble = $('#woocommerce-live-checkout-field-capture-go-pro');
-				var close = $('#woocommerce-live-checkout-field-capture-close');
-				
-				if (setupTime == null || setupTime == 0) { // Shows for the first time or when expired time
-					//Function loads the bubble after a given time period in seconds	
-					setTimeout(function() {
-						bubble.css({top:"60px", right: "50px"});
-					}, 3000);
-				} else {
-					if(now-setupTime > days * 24 * 60 * 60 * 1000) { // If the time has expired, clear the cookie
-						localStorage.setItem('setupTime', 0);
+	/**
+	 * Show Go Pro Tooltip bubble once every 15 days
+	 *
+	 * @since    1.1.0
+	 */
+	function draw_bubble(){
+		if ($this->abandoned_cart_count() > 1): ?>
+			<script>
+				jQuery(document).ready(function($) {
+					var days = 15; // How often to show the popup
+					var now = new Date().getTime();
+					var setupTime = localStorage.getItem('setupTime');
+					var bubble = $('#woocommerce-live-checkout-field-capture-go-pro');
+					var close = $('#woocommerce-live-checkout-field-capture-close');
+					
+					if (setupTime == null || setupTime == 0) { // Shows for the first time or when expired time
+						//Function loads the bubble after a given time period in seconds	
+						setTimeout(function() {
+							bubble.css({top:"60px", right: "50px"});
+						}, 3000);
+					} else {
+						if(now-setupTime > days * 24 * 60 * 60 * 1000) { // If the time has expired, clear the cookie
+							localStorage.setItem('setupTime', 0);
+						}
 					}
-				}
-				
-				//Handles close button action
-				close.click(function(){
-					bubble.css({top:"-400px", right: "50px"});
-					localStorage.setItem('setupTime', now); //Hides the Bubble after click and stops showing until cookies deleted or time expires
+					
+					//Handles close button action
+					close.click(function(){
+						bubble.css({top:"-400px", right: "50px"});
+						localStorage.setItem('setupTime', now); //Hides the Bubble after click and stops showing until cookies deleted or time expires
+					});
 				});
-			});
-		</script>
-	<?php
-	 
+			</script>
+	<?php endif;
 	}
+
+
+	/**
+	 * Count abandoned carts
+	 *
+	 * @since    1.1.0
+	 */
+	function abandoned_cart_count(){
+		global $wpdb;
+        $table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
+
+        return $total_items;
+	}
+
+
 	
 }

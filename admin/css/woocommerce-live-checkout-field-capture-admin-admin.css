@@ -61,7 +61,11 @@
 }
 
 #woocommerce-live-checkout-field-capture-go-pro-header-image{
-	background: #d2b4b4;
+	background: rgb(201,176,253); /* Old browsers */
+    background: -moz-linear-gradient(-45deg, rgba(201,176,253,1) 0%, rgba(195,168,253,1) 9%, rgba(177,145,252,1) 26%, rgba(170,136,252,1) 35%, rgba(170,136,252,1) 60%, rgba(195,144,242,1) 90%, rgba(198,145,241,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, rgba(201,176,253,1) 0%,rgba(195,168,253,1) 9%,rgba(177,145,252,1) 26%,rgba(170,136,252,1) 35%,rgba(170,136,252,1) 60%,rgba(195,144,242,1) 90%,rgba(198,145,241,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, rgba(201,176,253,1) 0%,rgba(195,168,253,1) 9%,rgba(177,145,252,1) 26%,rgba(170,136,252,1) 35%,rgba(170,136,252,1) 60%,rgba(195,144,242,1) 90%,rgba(198,145,241,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9b0fd', endColorstr='#c691f1',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 	text-align: center;
 }
 
@@ -70,8 +74,13 @@
 	padding: 45px 60px 35px;
 }
 
+#woocommerce-live-checkout-field-capture-go-pro-header-image img{
+	height: 45px;
+	padding: 5px 0 0 5px;
+}
+
 #woocommerce-live-checkout-field-capture-go-pro-header-image a:hover{
-	background: #c3a1a1;
+	background: #bc8df4;
 }
 
 #woocommerce-live-checkout-field-capture-go-pro-content{
@@ -91,8 +100,8 @@
 }
 
 #woocommerce-live-checkout-field-capture-go-pro-content .button{
-	background: #ca4a1f;
-	color: #fff;
+	background: #ffde01;
+	color: #000;
 	border: 0px none;
 	margin-right: 15px;
 	padding-right: 18px;
@@ -106,7 +115,7 @@
 }
 
 #woocommerce-live-checkout-field-capture-go-pro-content .button:hover{
-	background: #d7562b;
+	background: #bc8df4;
 }
 
 #woocommerce-live-checkout-field-capture-close{
