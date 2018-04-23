@@ -4,7 +4,7 @@
  * The public-facing functionality of the plugin.
  *
  * @link       http://example.com
- * @since      1.0.0
+ * @since      1.0
  *
  * @package    Plugin_Name
  * @subpackage Plugin_Name/public
@@ -26,7 +26,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -35,7 +35,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -44,7 +44,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
@@ -61,7 +61,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to add aditional JS file to the checkout field and read data from inputs
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	function add_additional_scripts_on_checkout() {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woocommerce-live-checkout-field-capture-public.js', array( 'jquery' ), $this->version, false );
@@ -74,7 +74,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
 	 *
-	 * @since    1.3.0
+	 * @since    1.3
 	 */
 	function save_user_data() {
 		// first check if data is being sent and that it is the data we want
@@ -183,7 +183,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to delete row from table if the user completes the checkout
 	 *
-	 * @since    1.3.0
+	 * @since    1.3
 	 */
 	function delete_user_data() {
 		

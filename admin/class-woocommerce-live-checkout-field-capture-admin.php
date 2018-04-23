@@ -14,7 +14,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -23,7 +23,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -32,7 +32,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
@@ -46,7 +46,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function enqueue_styles() {
 
@@ -87,7 +87,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	/**
 	 * Register the menu options for admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    1.3
 	 */
 	function woocommerce_live_checkout_field_capture_menu_options() {
 		global $wpdb;
@@ -110,22 +110,44 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		}
 		?>
 		<div class="wrap">
-			<div id="woocommerce-live-checkout-field-capture-go-pro">
-				<div id="woocommerce-live-checkout-field-capture-go-pro-header-image">
-					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
-						<img src="<?php echo plugins_url( 'assets/e-mail-notification.svg', __FILE__ ) ; ?>" title=""/>
-					</a>
+			<div id="woocommerce-live-checkout-field-capture-bubbles">
+				<div id="woocommerce-live-checkout-field-capture-review" class="woocommerce-live-checkout-field-capture-bubble">
+					<div class="woocommerce-live-checkout-field-capture-header-image">
+						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
+							<img src="<?php echo plugins_url( 'assets/review-notification.svg', __FILE__ ) ; ?>" title=""/>
+						</a>
+					</div>
+					<div id="woocommerce-live-checkout-field-capture-review-content">
+						<form method="post" action="options.php">
+							<?php settings_fields( 'wclcfc-settings-group' ); ?>
+							<h2>Would you mind leaving us a positive review?</h2>
+							<p>Your review is the simplest way to help us continue providing a great product, improve it, and help others to make confident decisions.</p>
+							<div class="woocommerce-live-checkout-field-capture-button-row">
+								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Sure, I'd love to</a>
+								<?php submit_button('Done that'); ?>
+								<span id="woocommerce-live-checkout-field-capture-close-review" class="woocommerce-live-checkout-field-capture-close">Close</span>
+							</div>
+							<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
+						</form>
+					</div>
 				</div>
-				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
-					<h2>Would you like to receive e-mail notifications about Abandoned carts?</h2>
-					<p>Save your time by enabling e-mail notifications and work on your business instead.</p>
-					<p id="woocommerce-live-checkout-field-capture-button-row">
-						<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" class="button" target="_blank">Get Pro</a>
-						<span id="woocommerce-live-checkout-field-capture-close">Not now</span>
-					</p>
+				<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
+					<div class="woocommerce-live-checkout-field-capture-header-image">
+						<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
+							<img src="<?php echo plugins_url( 'assets/e-mail-notification.svg', __FILE__ ) ; ?>" title=""/>
+						</a>
+					</div>
+					<div id="woocommerce-live-checkout-field-capture-go-pro-content">
+						<h2>Would you like to receive e-mail notifications about Abandoned carts?</h2>
+						<p>Save your time by enabling e-mail notifications and work on your business instead.</p>
+						<p class="woocommerce-live-checkout-field-capture-button-row">
+							<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" class="button" target="_blank">Get Pro</a>
+							<span id="woocommerce-live-checkout-field-capture-close-go-pro" class="woocommerce-live-checkout-field-capture-close">Not now</span>
+						</p>
+					</div>
 				</div>
+				<?php echo $this->draw_bubble(); ?>
 			</div>
-			<?php echo $this->draw_bubble(); ?>
 			<h1 id="woocommerce-live-checkout-field-capture-title">Wooommerce Live Checkout Field Capture</h1>
 			<?php echo $message; 
 			if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note?>
@@ -142,46 +164,53 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	
 	
 	/**
-	 * Show Go Pro Tooltip bubble once every 15 days
+	 * Show bubble slide-out window
 	 *
-	 * @since    1.1.0
+	 * @since    1.3
 	 */
 	function draw_bubble(){
-		if ($this->abandoned_cart_count() > 1): ?>
+		//Checking if we should display the Review bubble or Get Pro bubble
+		if(($this->abandoned_cart_count() > 7) && woocommerce_live_checkout_field_capture_days_have_passed('wclcfc_plugin_activation_time', 30) && (!get_option('wclcfc_review_submitted'))){ //If 30 days since plugin activation have passed and we have at least 8 abandoned carts captured
+			$bubble_type = '#woocommerce-live-checkout-field-capture-review';
+			update_option('wclcfc_plugin_activation_time', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
+			$display_bubble = true; //Let us show the bubble
+		}elseif(($this->abandoned_cart_count() > 5) && (woocommerce_live_checkout_field_capture_days_have_passed('wclcfc_last_time_bubble_displayed', 18))){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
+			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
+			update_option('wclcfc_last_time_bubble_displayed', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
+			$display_bubble = true; //Let us show the bubble
+		}else{
+			$display_bubble = false; //Don't show the bubble just yet
+		}
+		
+		if($display_bubble){ //Check ff we should display the bubble ?>
 			<script>
 				jQuery(document).ready(function($) {
-					var days = 15; // How often to show the popup
-					var now = new Date().getTime();
-					var setupTime = localStorage.getItem('setupTime');
-					var bubble = $('#woocommerce-live-checkout-field-capture-go-pro');
-					var close = $('#woocommerce-live-checkout-field-capture-close');
+					var bubble = $(<?php echo "'". $bubble_type ."'"; ?>);
+					var close = $('#woocommerce-live-checkout-field-capture-close-go-pro, #woocommerce-live-checkout-field-capture-review form p.submit .button, #woocommerce-live-checkout-field-capture-close-review');
 					
-					if (setupTime == null || setupTime == 0) { // Shows for the first time or when expired time
-						//Function loads the bubble after a given time period in seconds	
-						setTimeout(function() {
-							bubble.css({top:"60px", right: "50px"});
-						}, 3000);
-					} else {
-						if(now-setupTime > days * 24 * 60 * 60 * 1000) { // If the time has expired, clear the cookie
-							localStorage.setItem('setupTime', 0);
-						}
-					}
-					
+					//Function loads the bubble after a given time period in seconds	
+					setTimeout(function() {
+						bubble.css({top:"60px", right: "50px"});
+					}, 3000);
+						
 					//Handles close button action
 					close.click(function(){
-						bubble.css({top:"-400px", right: "50px"});
-						localStorage.setItem('setupTime', now); //Hides the Bubble after click and stops showing until cookies deleted or time expires
+						bubble.css({top:"-500px", right: "50px"});
 					});
 				});
 			</script>
-	<?php endif;
+			<?php
+		}else{
+			//Do nothing
+			return;
+		}
 	}
 
 
 	/**
 	 * Count abandoned carts
 	 *
-	 * @since    1.1.0
+	 * @since    1.1
 	 */
 	function abandoned_cart_count(){
 		global $wpdb;
@@ -190,7 +219,4 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 
         return $total_items;
 	}
-
-
-	
 }

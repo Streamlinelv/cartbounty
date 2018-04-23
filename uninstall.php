@@ -20,7 +20,7 @@
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
  * @link       http://example.com
- * @since      1.0.0
+ * @since      1.0
  *
  * @package    Plugin_Name
  */
@@ -35,3 +35,8 @@ global $wpdb;
 $table_name = $wpdb->prefix . "captured_wc_fields";
 
 $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+
+//Removing Custom options created with the plugin
+delete_option( 'wclcfc_last_time_bubble_displayed' );
+delete_option( 'wclcfc_plugin_activation_time' );
+delete_option( 'wclcfc_review_submitted' );

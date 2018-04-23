@@ -4,7 +4,7 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
+ * @since      1.0
  * @package    Plugin_Name
  * @subpackage Plugin_Name/includes
  * @author     Your Name <email@example.com>
@@ -17,7 +17,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Activator {
 	 *
 	 * Long Description.
 	 *
-	 * @since    1.3.0
+	 * @since    1.3
 	 */
 	public static function activate() {
 		
@@ -54,6 +54,9 @@ class Woocommerce_Live_Checkout_Field_Capture_Activator {
 		*/
 		$sql ="ALTER TABLE $table_name AUTO_INCREMENT = 1";
 		dbDelta( $sql );
+		
+		//Register plugin activation time and date
+		update_option('wclcfc_plugin_activation_time', current_time('mysql'));
 		
 	}
 }

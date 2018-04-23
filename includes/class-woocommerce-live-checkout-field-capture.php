@@ -8,7 +8,7 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0.0
+ * @since      1.0
  * @package    Plugin_Name
  * @subpackage Plugin_Name/includes
  * @author     Your Name <email@example.com>
@@ -28,7 +28,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   protected
 	 * @var      string    $activate_woocommerce_live_checkout_field_capture    The string used to uniquely identify this plugin.
 	 */
@@ -37,7 +37,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
@@ -50,12 +50,12 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function __construct() {
 
 		$this->activate_woocommerce_live_checkout_field_capture = 'activate-woocommerce-live-checkout-field-capture';
-		$this->version = '1.0.0';
+		$this->version = '1.0';
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();
@@ -75,7 +75,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 */
 	private function load_dependencies() {
@@ -106,7 +106,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
@@ -122,7 +122,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   private
 	 */
 	private function define_public_hooks() {
@@ -137,7 +137,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function run() {
 		$this->loader->run();
@@ -147,7 +147,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
+	 * @since     1.0
 	 * @return    string    The name of the plugin.
 	 */
 	public function get_plugin_name() {
@@ -157,7 +157,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
+	 * @since     1.0
 	 * @return    Plugin_Name_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
@@ -167,7 +167,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
+	 * @since     1.0
 	 * @return    string    The version number of the plugin.
 	 */
 	public function get_version() {
