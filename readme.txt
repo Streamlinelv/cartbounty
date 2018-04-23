@@ -66,7 +66,7 @@ Location of the plugin after activation.
 == Changelog ==
 
 = 1.4 =
-* Added notification near menu abot newly abandoned carts (last 2 hours)
+* Added notification near menu about newly abandoned carts (last 2 hours)
 * Added location registration (Country and City)
 * Added links on product titles in Cart content column
 * Added additional output for product variations
