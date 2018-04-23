@@ -3,8 +3,8 @@ Contributors: prowebdesign
 Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 1.3
-Version: 1.3
+Stable tag: 1.4
+Version: 1.4
 License: GPLv2 or later
 
 Plugin instantly saves WooCommerce checkout field data before they are submitted.
@@ -16,6 +16,8 @@ Now you will be able to see who has abandoned their shopping carts and you will 
 In case if you would like to receive email notifications about abandoned carts, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
 
 If the user completes the payment and receives a "Thank you" page he is removed from the Checkout Field Capture table.
+
+Since I love to make things run smooth, in case if you will Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 
 I started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and I wanted to develop one myself that would be very simple and lightweight. I built this plugin in order to register and recover abandoned carts in a website that sells [light cube](http://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
 
@@ -62,6 +64,12 @@ This version does all the hard work of collecting the data and presenting it to 
 Location of the plugin after activation.
 
 == Changelog ==
+
+= 1.4 =
+* Added notification near menu abot newly abandoned carts (last 2 hours)
+* Added location registration (Country and City)
+* Added links on product titles in Cart content column
+* Added additional output for product variations
 
 = 1.3 =
 * Fixed issue when in some cases single abandoned cart was saved multiple times creating duplicate entries in the table

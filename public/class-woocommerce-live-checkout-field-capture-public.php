@@ -74,7 +74,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
 	 *
-	 * @since    1.3
+	 * @since    1.4
 	 */
 	function save_user_data() {
 		// first check if data is being sent and that it is the data we want
@@ -90,14 +90,23 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			//Retrieving cart products and their quantities
 			$products = WC()->cart->get_cart_contents();
 			$product_array = array();
+
+			//write_log($products);
 			
 			foreach($products as $product => $values){
 				$item = wc_get_product( $values['data']->get_id());
 				$product_title = $item->get_title();
 				$product_quantity = $values['quantity'];
+				$product_variation = $values['variation'];
+
+				if(isset($product_variation['attribute_pa_size'])){
+					$product_attribute = ": ".$product_variation['attribute_pa_size'];
+				}else{
+					$product_attribute = false;
+				}
 				
-				//Inserting Product title and Quantity into array
-				$product_array[] = $product_title." (".$product_quantity.") ";
+				//Inserting Product title, Variation and Quantity into array
+				$product_array[] = array($product_title . $product_attribute, $product_quantity, $values['product_id'] );
 			}
 			
 			//Retrieving current time
@@ -107,27 +116,41 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			if (!session_id()) session_start();
 			
 			$session_id = session_id();
+
+			if(isset($_POST['wlcfc_name'])){
+				$name = $_POST['wlcfc_name'];
+			}else{
+				$name = '';
+			}
+
+			if(isset($_POST['wlcfc_surname'])){
+				$surname = $_POST['wlcfc_surname'];
+			}else{
+				$surname = '';
+			}
+
+			if(isset($_POST['wlcfc_phone'])){
+				$phone = $_POST['wlcfc_phone'];
+			}else{
+				$phone = '';
+			}
+
+			if(isset($_POST['billing_country'])){
+				$country = $_POST['billing_country'];
+			}else{
+				$country = '';
+			}
+
+			if(isset($_POST['billing_city']) && $_POST['billing_city'] != ''){
+				$city = ", ". $_POST['billing_city'];
+			}else{
+				$city = '';
+			}
+
+			$location = $country . $city;
 			
 			//If we have already inserted the Users session ID in Session variable and it is not NULL we update the abandoned cart row
 			if(isset($_SESSION['current_session_id']) && $_SESSION['current_session_id'] != NULL ) {
-
-				if(isset($_POST['wlcfc_name'])){
-					$name = $_POST['wlcfc_name'];
-				}else{
-					$name = '';
-				}
-
-				if(isset($_POST['wlcfc_surname'])){
-					$surname = $_POST['wlcfc_surname'];
-				}else{
-					$surname = '';
-				}
-
-				if(isset($_POST['wlcfc_phone'])){
-					$phone = $_POST['wlcfc_phone'];
-				}else{
-					$phone = '';
-				}
 				
 				//Updating row in the Database where users Session id = same as prevously saved in Session
 				$wpdb->prepare('%s',
@@ -138,13 +161,14 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 							'surname'		=>	sanitize_text_field( $surname ),
 							'email'			=>	sanitize_email( $_POST['wlcfc_email'] ),
 							'phone'			=>	filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
+							'location'		=>	sanitize_text_field( $location ),
 							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currencty ),
 							'time'			=>	sanitize_text_field( $current_time )
 						),
 						array('session_id' => $_SESSION['current_session_id']),
-						array('%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s'),
+						array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s'),
 						array('%s')
 					)
 				);
@@ -155,13 +179,14 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 				$wpdb->query(
 					$wpdb->prepare(
 						"INSERT INTO ". $table_name ."
-						( name, surname, email, phone, cart_contents, cart_total, currency, time, session_id )
-						VALUES ( %s, %s, %s, %s, %s, %0.2f, %s, %s, %s)",
+						( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id )
+						VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s)",
 						array(
-							sanitize_text_field( $_POST['wlcfc_name'] ),
-							sanitize_text_field( $_POST['wlcfc_surname'] ),
+							sanitize_text_field( $name ),
+							sanitize_text_field( $surname ),
 							sanitize_email( $_POST['wlcfc_email'] ),
-							filter_var($_POST['wlcfc_phone'], FILTER_SANITIZE_NUMBER_INT),
+							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
+							sanitize_text_field( $location ),
 							sanitize_text_field( serialize($product_array) ),
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currencty ),

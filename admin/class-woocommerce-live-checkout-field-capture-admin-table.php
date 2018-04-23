@@ -44,6 +44,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 		  'nameSurname'		=>		__('Name, Surname'),
 		  'email'			=>		__('Email'),
 		  'phone'			=>		__('Phone'),
+          'location'        =>      __('Location'),
 		  'cart_contents'	=>		__('Cart contents'),
 		  'cart_total'		=>		__('Cart total'),
 		  'time'			=>		__('Time')
@@ -62,7 +63,8 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 	public function get_sortable_columns() {
 		return $sortable = array(
 			'id'				=>		array('id', true),
-			'nameSurname'		=>		array('name', true),
+            'nameSurname'       =>      array('name', true),
+			'location'	     	=>		array('location', true),
 			'cart_total'		=>		array('cart_total', true),
 			'time'				=>		array('time', true)
 		);
@@ -136,7 +138,10 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 			//Creating Cart content output in a list
 			$output = '<ul class="wlcfc-product-list">';
 			foreach($product_array as $product){
-				$output .= '<li>'. $product .'</li>';
+                $product_title = $product[0];
+                $edit_product_link = get_edit_post_link( $product[2], '&' ); //Get product link by product ID
+                $quantity = " (". $product[1] .")"; //Enclose product quantity in brackets
+				$output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
 			}
 			$output .= '</ul>';
 			

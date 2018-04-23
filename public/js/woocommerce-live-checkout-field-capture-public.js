@@ -42,18 +42,24 @@
 				var wlcfc_name = jQuery("#billing_first_name").val();
 				var wlcfc_surname = jQuery("#billing_last_name").val();
 				var wlcfc_phone = jQuery("#billing_phone").val();
+				var billing_country = jQuery("#billing_country").val();
+				var billing_city = jQuery("#billing_city").val();
 				
 				//console . log(wlcfc_email);
 				//console . log(wlcfc_name);
 				//console . log(wlcfc_surname);
 				//console . log(wlcfc_phone);
+				//console . log(billing_country);
+				//console . log(billing_city);
 				
 				var data = {
 					action:				"save_data",
 					wlcfc_email:		wlcfc_email,
 					wlcfc_name:			wlcfc_name,
 					wlcfc_surname:		wlcfc_surname,
-					wlcfc_phone:		wlcfc_phone
+					wlcfc_phone:		wlcfc_phone,
+					billing_country:	billing_country,
+					billing_city:		billing_city
 				}
 				
 				jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress

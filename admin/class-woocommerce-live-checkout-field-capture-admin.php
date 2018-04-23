@@ -81,7 +81,36 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 			add_menu_page( 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'woocommerce_live_checkout_field_capture_menu_options'), 'dashicons-archive' );
 		}
 	}
-	
+
+
+	/**
+	 * Adds newly abandoned cart count to the menu
+	 *
+	 * @since    1.4
+	 */
+	function menu_abandoned_count() {
+		global $wpdb, $submenu;
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+		
+		if ( isset( $submenu['woocommerce'] ) ) { //If Woocommerce Menu exists
+			
+			//Counting newly abandoned carts
+			$order_count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(id) FROM ". $table_name ."
+					WHERE 
+					time < (NOW() - INTERVAL %d MINUTE) AND 
+					time > (NOW() - INTERVAL %d MINUTE)"
+				, 0, 120 )
+			);
+			
+			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of Woocommerce and look for Checkout Field Capture Pro
+				if ( 0 === strpos( $menu_item[0], 'Checkout Field Capture')) {
+					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . $order_count . '">' .  $order_count .'</span>';
+				}
+			}
+		}
+	}	
 	
 	
 	/**

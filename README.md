@@ -10,6 +10,8 @@ In case if you would like to receive email notifications about abandoned carts, 
 
 If the user completes the payment and receives a "Thank you" page he is removed from the Checkout Field Capture table.
 
+Since I love to make things run smooth, in case if you will Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
+
 I started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and I wanted to develop one myself that would be very simple and lightweight. I built this plugin in order to register and recover abandoned carts in a website that sells [light cube](http://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
 
 At the time when I started working on this project I knew that there were couple of plugins already available but they were offering a lot of functionality that slowed down my project and had many features that were not necessary. Also I wasn’t sure about the security that they provided and I wanted to contribute to WordPress community by helping others with the same need to see abandoned carts and recover them.
@@ -55,6 +57,12 @@ This version does all the hard work of collecting the data and presenting it to 
 Location of the plugin after activation.
 
 == Changelog ==
+
+= 1.4 =
+* Added notification near menu abot newly abandoned carts (last 2 hours)
+* Added location registration (Country and City)
+* Added links on product titles in Cart content column
+* Added additional output for product variations
 
 = 1.3 =
 * Fixed issue when in some cases single abandoned cart was saved multiple times creating duplicate entries in the table
