@@ -17,7 +17,7 @@ In case if you would like to receive email notifications about abandoned carts, 
 
 If the user completes the payment and receives a "Thank you" page he is removed from the Checkout Field Capture table.
 
-Since I love to make things run smooth, in case if you will Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
+Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 
 I started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and I wanted to develop one myself that would be very simple and lightweight. I built this plugin in order to register and recover abandoned carts in a website that sells [light cube](http://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
 
