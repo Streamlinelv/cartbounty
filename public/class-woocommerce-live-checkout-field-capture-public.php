@@ -90,8 +90,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			//Retrieving cart products and their quantities
 			$products = WC()->cart->get_cart_contents();
 			$product_array = array();
-
-			//write_log($products);
 			
 			foreach($products as $product => $values){
 				$item = wc_get_product( $values['data']->get_id());
