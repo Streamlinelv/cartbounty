@@ -26,6 +26,8 @@ Input field ID values should be default:
 * billing_first_name 
 * billing_last_name
 * billing_phone
+* #billing_country
+* #billing_city
 
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
