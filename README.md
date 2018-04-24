@@ -52,7 +52,7 @@ After installation the plugin will be available under "WooCommerce" menu. Please
 
 = How to enable email notifications about abandoned carts? =
 
-This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
+This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications, please visit our Pro [save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "save abandoned carts") plugin version.
 
 == Screenshots ==
 
