@@ -8,10 +8,9 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
- * @author     Your Name <email@example.com>
+ * @package    Woocommerce Live Checkout Field Capture
+ * @subpackage Woocommerce Live Checkout Field Capture/includes
+ * @author     Streamline.lv
  */
 class Woocommerce_Live_Checkout_Field_Capture {
 
@@ -55,7 +54,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	public function __construct() {
 
 		$this->activate_woocommerce_live_checkout_field_capture = 'activate-woocommerce-live-checkout-field-capture';
-		$this->version = '1.0';
+		$this->version = WCLCFC_VERSION_NUMBER;
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();
@@ -112,11 +111,10 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Woocommerce_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
-
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'woocommerce_live_checkout_field_capture_menu', 70); //Creates admin menu
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count');
-
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version');
 	}
 
 	/**

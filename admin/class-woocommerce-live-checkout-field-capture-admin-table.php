@@ -4,9 +4,9 @@
  *
  * Defines how Table should be outputed
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/admin
- * @author     Your Name <email@example.com>
+ * @package    Woocommerce Live Checkout Field Capture
+ * @subpackage Woocommerce Live Checkout Field Capture/admin
+ * @author     Streamline.lv
  */
  
 if (!class_exists('WP_List_Table')) {

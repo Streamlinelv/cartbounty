@@ -4,10 +4,9 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
- * @author     Your Name <email@example.com>
+ * @package    Woocommerce Live Checkout Field Capture
+ * @subpackage Woocommerce Live Checkout Field Capture/includes
+ * @author     Streamline.lv
  */
  
 class Woocommerce_Live_Checkout_Field_Capture_Activator {

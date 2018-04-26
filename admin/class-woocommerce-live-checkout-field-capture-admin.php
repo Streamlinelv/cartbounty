@@ -2,12 +2,12 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * Defines the plugin name, version, and two examples hooks for how to
+ * Defines the plugin name, version, and hooks to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/admin
- * @author     Your Name <email@example.com>
+ * @package    Woocommerce Live Checkout Field Capture
+ * @subpackage Woocommerce Live Checkout Field Capture/admin
+ * @author     Streamline.lv
  */
 class Woocommerce_Live_Checkout_Field_Capture_Admin {
 
@@ -199,11 +199,11 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	 */
 	function draw_bubble(){
 		//Checking if we should display the Review bubble or Get Pro bubble
-		if(($this->abandoned_cart_count() > 7) && woocommerce_live_checkout_field_capture_days_have_passed('wclcfc_plugin_activation_time', 30) && (!get_option('wclcfc_review_submitted'))){ //If 30 days since plugin activation have passed and we have at least 8 abandoned carts captured
+		if(($this->abandoned_cart_count() > 7) && $this->days_have_passed('wclcfc_plugin_activation_time', 30) && (!get_option('wclcfc_review_submitted'))){ //If 30 days since plugin activation have passed and we have at least 8 abandoned carts captured
 			$bubble_type = '#woocommerce-live-checkout-field-capture-review';
 			update_option('wclcfc_plugin_activation_time', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
 			$display_bubble = true; //Let us show the bubble
-		}elseif(($this->abandoned_cart_count() > 5) && (woocommerce_live_checkout_field_capture_days_have_passed('wclcfc_last_time_bubble_displayed', 18))){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
+		}elseif(($this->abandoned_cart_count() > 5) && ($this->days_have_passed('wclcfc_last_time_bubble_displayed', 18))){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
 			update_option('wclcfc_last_time_bubble_displayed', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
 			$display_bubble = true; //Let us show the bubble
@@ -247,5 +247,50 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
         $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
 
         return $total_items;
+	}
+	
+	
+	/**
+	 * Function calculates if time has passed since the given time period (In days)
+	 *
+	 * $option	= Option from WordPress database
+	 * $days	= Number that defines days
+	 *
+	 * @since    1.3
+	 * @return Boolean
+	 */
+	 
+	function days_have_passed($option, $days){
+		$last_time = esc_attr(get_option($option)); //Get time value from the database
+		$last_time = strtotime($last_time); //Convert time from text to Unix timestamp
+		
+		$date = date_create(current_time( 'mysql', false ));
+		$current_time = strtotime(date_format($date, 'Y-m-d H:i:s'));
+		$days = $days; //Defines the time interval that should be checked against in days
+		
+		if($last_time < $current_time - $days * 24 * 60 * 60 ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Function checks the current plugin version with the one saved in database
+	 *
+	 * @since    1.4.1
+	 */
+	function check_current_plugin_version() {
+		$plugin = new Woocommerce_Live_Checkout_Field_Capture();
+		$current_version = $plugin->get_version();
+		
+		if ($current_version == get_option('wclcfc_version_number')){ //If database version is equal to plugin version. Not updating database
+			return;
+		}else{ //Versions are different and we must update the database
+			update_option('wclcfc_version_number', $current_version);
+			activate_woocommerce_live_checkout_field_capture(); //Function that updates the database
+			return;
+		}
 	}
 }

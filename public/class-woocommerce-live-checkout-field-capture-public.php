@@ -3,22 +3,12 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://example.com
- * @since      1.0
- *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public
- */
-
-/**
- * The public-facing functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
+ * Defines the plugin name, version, and two hooks to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public
- * @author     Your Name <email@example.com>
+ * @package    Woocommerce Live Checkout Field Capture
+ * @subpackage Woocommerce Live Checkout Field Capture/public
+ * @author     Streamline.lv
  */
  
 class Woocommerce_Live_Checkout_Field_Capture_Public {

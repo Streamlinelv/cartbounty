@@ -71,10 +71,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-woocommerce-live-checkout-
  * @since    1.0
  */
 function run_woocommerce_live_checkout_field_capture() {
-
 	$plugin = new Woocommerce_Live_Checkout_Field_Capture();
 	$plugin->run();
-
 }
 run_woocommerce_live_checkout_field_capture();
 
@@ -123,48 +121,3 @@ function woocommerce_live_checkout_field_capture_add_display_plugin_action_links
 	}
 	return $actions;
 }
-
-
-/**
- * Function calculates if time has passed since the given time period (In days)
- *
- * $option	= Option from WordPress database
- * $days	= Number that defines days
- *
- * @since    1.3
- * @return Boolean
- */
- 
- function woocommerce_live_checkout_field_capture_days_have_passed($option, $days){
-	$last_time = esc_attr(get_option($option)); //Get time value from the database
-	$last_time = strtotime($last_time); //Convert time from text to Unix timestamp
-	
-	$date = date_create(current_time( 'mysql', false ));
-	$current_time = strtotime(date_format($date, 'Y-m-d H:i:s'));
-	$days = $days; //Defines the time interval that should be checked against in days
-	
-	if($last_time < $current_time - $days * 24 * 60 * 60 ){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-
-/**
- * Function checks the current plugin version with the one saved in database
- *
- * @since    1.4.1
- */
- 
-function woocommerce_live_checkout_field_capture_check_version() {
-	if (WCLCFC_VERSION_NUMBER == get_option('wclcfc_version_number')){ //If database version is equal to plugin version. Not updating database
-		return;
-	}else{ //Versions are different and we must update the database
-		update_option('wclcfc_version_number', WCLCFC_VERSION_NUMBER);
-		activate_woocommerce_live_checkout_field_capture(); //Function that updates the database
-		return;
-	}
-}
-
-add_action('plugins_loaded', 'woocommerce_live_checkout_field_capture_check_version');
