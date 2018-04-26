@@ -64,7 +64,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	/**
 	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
 	 *
-	 * @since    1.4
+	 * @since    1.4.1
 	 */
 	function save_user_data() {
 		// first check if data is being sent and that it is the data we want
@@ -83,12 +83,37 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			
 			foreach($products as $product => $values){
 				$item = wc_get_product( $values['data']->get_id());
+
 				$product_title = $item->get_title();
 				$product_quantity = $values['quantity'];
-				$product_variation = $values['variation'];
 
-				if(isset($product_variation['attribute_pa_size'])){
-					$product_attribute = ": ".$product_variation['attribute_pa_size'];
+				// Handling product variations
+				$product_variations = $values['variation'];
+
+				if($product_variations){ //If we have variations
+					$total_variations = count($product_variations);
+					$increment = 0;
+					$product_attribute = '';
+
+					foreach($product_variations as $product_variation){
+						if($increment === 0 && $increment != $total_variations - 1){ //If this is first variation and we have multiple variations
+							$colon = ': ';
+							$comma = ', ';
+						}
+						elseif($increment === 0 && $increment === $total_variations - 1){ //If we have only one variation
+							$colon = ': ';
+							$comma = false;
+						}
+						elseif($increment === $total_variations - 1) { //If this is the last variation
+							$comma = '';
+							$colon = false;
+						}else{
+							$comma = ', ';
+							$colon = false;
+						}
+						$product_attribute .= $colon . $product_variation . $comma;
+						$increment++;
+					}
 				}else{
 					$product_attribute = false;
 				}
