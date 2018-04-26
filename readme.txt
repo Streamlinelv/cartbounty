@@ -67,6 +67,9 @@ Location of the plugin after activation.
 
 == Changelog ==
 
+= 1.4.1 =
+* Fixed database update issue when upgrading to 1.4
+
 = 1.4 =
 * Added notification near menu about newly abandoned carts (last 2 hours)
 * Added location registration (Country and City)

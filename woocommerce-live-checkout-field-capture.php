@@ -24,6 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 //Defining constants
+if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '1.4.1');
 if (!defined('WCLCFC_TABLE_NAME')) define( 'WCLCFC_TABLE_NAME', 'captured_wc_fields');
 if (!defined('WCLCFC_LICENSE_SERVER_URL')) define('WCLCFC_LICENSE_SERVER_URL', 'https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/');
 if (!defined('WCLCFC_REVIEW_LINK')) define('WCLCFC_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post');
@@ -148,3 +149,22 @@ function woocommerce_live_checkout_field_capture_add_display_plugin_action_links
 		return false;
 	}
 }
+
+
+/**
+ * Function checks the current plugin version with the one saved in database
+ *
+ * @since    1.4.1
+ */
+ 
+function woocommerce_live_checkout_field_capture_check_version() {
+	if (WCLCFC_VERSION_NUMBER == get_option('wclcfc_version_number')){ //If database version is equal to plugin version. Not updating database
+		return;
+	}else{ //Versions are different and we must update the database
+		update_option('wclcfc_version_number', WCLCFC_VERSION_NUMBER);
+		activate_woocommerce_live_checkout_field_capture(); //Function that updates the database
+		return;
+	}
+}
+
+add_action('plugins_loaded', 'woocommerce_live_checkout_field_capture_check_version');

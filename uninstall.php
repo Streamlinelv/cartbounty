@@ -40,3 +40,4 @@ $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
 delete_option( 'wclcfc_last_time_bubble_displayed' );
 delete_option( 'wclcfc_plugin_activation_time' );
 delete_option( 'wclcfc_review_submitted' );
+delete_option( 'wclcfc_version_number' );
