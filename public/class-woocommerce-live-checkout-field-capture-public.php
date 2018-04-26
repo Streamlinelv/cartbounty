@@ -100,10 +100,11 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 			//Retrieving current time
 			$current_time = current_time( 'mysql', false );
 			
-			//Starting session in order to check if we have to insert or update database row with the data from input boxes 
-			if (!session_id()) session_start();
-			
-			$session_id = session_id();
+			//Starting session in order to check if we have to insert or update database row with the data from input boxes
+			if ( $this->session_has_started() === false ){
+				session_start();
+				$session_id = session_id();
+			}
 
 			if(isset($_POST['wlcfc_name'])){
 				$name = $_POST['wlcfc_name'];
@@ -204,7 +205,9 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
 		
 		//Starting session in order to check if we have to insert or update database row with the data from input boxes 
-		if (!session_id()) session_start();
+		if ( $this->session_has_started() === false ){
+			session_start();
+		}
 		
 		if(isset($_SESSION['current_session_id'])) {
 			
@@ -221,5 +224,22 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 		//Removing stored ID value from Session
 		unset($_SESSION['current_session_id']);
 	}
-	
+
+
+	/**
+	 * Function that checks if the session has started
+	 *
+	 * @since    1.4.1
+	 £ Return: Boolean
+	 */
+	function session_has_started(){
+	    if ( php_sapi_name() !== 'cli' ) {
+	        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+	            return session_status() === PHP_SESSION_ACTIVE ? true : false;
+	        } else {
+	            return session_id() === '' ? false : true;
+	        }
+	    }
+	    return false;
+	}
 }
