@@ -135,7 +135,16 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		//Output table contents
 		 $message = '';
 		if ('delete' === $wp_list_table->current_action()) {
-			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Items deleted: %d', 'custom_table_example'), esc_html(count($_REQUEST['id']))) . '</p></div>';
+			if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
+				$deleted_row_count = esc_html(count($_REQUEST['id']));
+			}
+			else{ //If a single row is deleted
+				$deleted_row_count = 1;
+			}
+			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Items deleted: %d', 'custom_table_example'), $deleted_row_count ) . '</p></div>';
+			
+			$this->update_deleted_row_count($deleted_row_count);
+
 		}
 		?>
 		<div class="wrap">
@@ -199,11 +208,13 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	 */
 	function draw_bubble(){
 		//Checking if we should display the Review bubble or Get Pro bubble
-		if(($this->abandoned_cart_count() > 7) && $this->days_have_passed('wclcfc_plugin_activation_time', 30) && (!get_option('wclcfc_review_submitted'))){ //If 30 days since plugin activation have passed and we have at least 8 abandoned carts captured
+		$deleted_row_count = get_option('wclcfc_deleted_rows');
+		if(($this->abandoned_cart_count() > 7 || $deleted_row_count > 30) && $this->days_have_passed('wclcfc_plugin_activation_time', 30) && !get_option('wclcfc_review_submitted')){ //If 30 days since plugin activation have passed and we have at least 8 abandoned carts captured or the user has deleted more than 30 abandoned carts
 			$bubble_type = '#woocommerce-live-checkout-field-capture-review';
 			update_option('wclcfc_plugin_activation_time', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
+			update_option('wclcfc_deleted_rows', 0); //Reset deleted row counter
 			$display_bubble = true; //Let us show the bubble
-		}elseif(($this->abandoned_cart_count() > 5) && ($this->days_have_passed('wclcfc_last_time_bubble_displayed', 18))){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
+		}elseif(($this->abandoned_cart_count() > 5 || $deleted_row_count > 18) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
 			update_option('wclcfc_last_time_bubble_displayed', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
 			$display_bubble = true; //Let us show the bubble
@@ -290,6 +301,25 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		}else{ //Versions are different and we must update the database
 			update_option('wclcfc_version_number', $current_version);
 			activate_woocommerce_live_checkout_field_capture(); //Function that updates the database
+			return;
+		}
+	}
+
+
+	/**
+	 * Function counts total deleted abandoned cart count by user
+	 *
+	 * $deleted_row_count = Deleted rows, integer
+	 * @since    1.4.1
+	 */
+	function update_deleted_row_count($deleted_row_count){
+		if(get_option('wclcfc_deleted_rows') > 60) {
+			//Stop updating database
+			return;
+		}else{
+			$previously_deleted_row_count = get_option('wclcfc_deleted_rows');
+			$new_deleted_row_count = $previously_deleted_row_count + $deleted_row_count;
+			update_option('wclcfc_deleted_rows', $new_deleted_row_count);
 			return;
 		}
 	}

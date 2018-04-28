@@ -61,6 +61,11 @@ After installation the plugin will be available under "WooCommerce" menu. Please
 
 This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications, please visit our Pro [woocommerce save abandoned cart](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "woocommerce save abandoned cart") plugin version.
 
+= WooCommerce shows order status “Failed” but I don’t see an abandoned cart. =
+
+Once user reaches the “Thank you” page the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
+
+
 == Screenshots ==
 
 Location of the plugin after activation.
