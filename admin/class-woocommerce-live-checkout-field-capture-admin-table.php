@@ -138,10 +138,14 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 			//Creating Cart content output in a list
 			$output = '<ul class="wlcfc-product-list">';
 			foreach($product_array as $product){
-                $product_title = $product[0];
-                $edit_product_link = get_edit_post_link( $product[2], '&' ); //Get product link by product ID
-                $quantity = " (". $product[1] .")"; //Enclose product quantity in brackets
-				$output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
+                if(is_array($product)){ //After version 1.4
+                    $product_title = $product[0];
+                    $edit_product_link = get_edit_post_link( $product[2], '&' ); //Get product link by product ID
+                    $quantity = " (". $product[1] .")"; //Enclose product quantity in brackets
+                    $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
+                }else{ //Prior version 1.4
+                    $output .= '<li>'. $product .'</li>';
+                }
 			}
 			$output .= '</ul>';
 			
