@@ -18,7 +18,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 * @access   protected
 	 * @var      Plugin_Name_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
@@ -29,9 +29,9 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 *
 	 * @since    1.0
 	 * @access   protected
-	 * @var      string    $activate_woocommerce_live_checkout_field_capture    The string used to uniquely identify this plugin.
+	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
-	protected $activate_woocommerce_live_checkout_field_capture;
+	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
@@ -53,7 +53,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 */
 	public function __construct() {
 
-		$this->activate_woocommerce_live_checkout_field_capture = 'activate-woocommerce-live-checkout-field-capture';
+		$this->plugin_name = WCLCFC_PLUGIN_NAME_SLUG;
 		$this->version = WCLCFC_VERSION_NUMBER;
 
 		$this->load_dependencies();
@@ -150,7 +150,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @return    string    The name of the plugin.
 	 */
 	public function get_plugin_name() {
-		return $this->activate_woocommerce_live_checkout_field_capture;
+		return $this->plugin_name;
 	}
 
 	/**

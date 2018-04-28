@@ -59,8 +59,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	}
 	
 	
-	
-	
 	/**
 	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
 	 *
