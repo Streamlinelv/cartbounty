@@ -28,6 +28,10 @@
 	margin: 0;
 }
 
+#adminmenu li.current a .new-abandoned{
+	background: #00b9eb;
+}
+
 .woocommerce_page_wclcfc .column-cart_contents{
 	width: 350px;
 }
