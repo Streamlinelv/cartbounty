@@ -9,7 +9,7 @@
  * @author     Streamline.lv
  */
  
-class Woocommerce_Live_Checkout_Field_Capture_Activator {
+class Woocommerce_Live_Checkout_Field_Capture_Activator{
 
 	/**
 	 * Short Description. (use period)
@@ -58,6 +58,5 @@ class Woocommerce_Live_Checkout_Field_Capture_Activator {
 		
 		//Register plugin activation time and date
 		update_option('wclcfc_plugin_activation_time', current_time('mysql'));
-		
 	}
 }

@@ -10,7 +10,7 @@
  * @subpackage Woocommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture_Loader {
+class Woocommerce_Live_Checkout_Field_Capture_Loader{
 
 	/**
 	 * The array of actions registered with WordPress.
@@ -35,11 +35,10 @@ class Woocommerce_Live_Checkout_Field_Capture_Loader {
 	 *
 	 * @since    1.0
 	 */
-	public function __construct() {
+	public function __construct(){
 
 		$this->actions = array();
 		$this->filters = array();
-
 	}
 
 	/**
@@ -52,7 +51,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Loader {
 	 * @param    int                  $priority         Optional. he priority at which the function should be fired. Default is 10.
 	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
-	public function add_action( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
+	public function add_action( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ){
 		$this->actions = $this->add( $this->actions, $hook, $component, $callback, $priority, $accepted_args );
 	}
 
@@ -66,7 +65,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Loader {
 	 * @param    int                  $priority         Optional. he priority at which the function should be fired. Default is 10.
 	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1
 	 */
-	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
+	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ){
 		$this->filters = $this->add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
 	}
 
@@ -84,7 +83,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Loader {
 	 * @param    int                  $accepted_args    The number of arguments that should be passed to the $callback.
 	 * @return   array                                  The collection of actions and filters registered with WordPress.
 	 */
-	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
+	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ){
 
 		$hooks[] = array(
 			'hook'          => $hook,
@@ -103,7 +102,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Loader {
 	 *
 	 * @since    1.0
 	 */
-	public function run() {
+	public function run(){
 
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );

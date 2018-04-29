@@ -11,7 +11,7 @@
  * @author     Streamline.lv
  */
  
-class Woocommerce_Live_Checkout_Field_Capture_Public {
+class Woocommerce_Live_Checkout_Field_Capture_Public{
 	
 	/**
 	 * The ID of this plugin.
@@ -38,33 +38,29 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version ){
 		global $wpdb;
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
 	}
 	
-	
-	
-	
 	/**
 	 * Function in order to add aditional JS file to the checkout field and read data from inputs
 	 *
 	 * @since    1.0
 	 */
-	function add_additional_scripts_on_checkout() {
+	function add_additional_scripts_on_checkout(){
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woocommerce-live-checkout-field-capture-public.js', array( 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 	}
-	
 	
 	/**
 	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
 	 *
 	 * @since    1.4.1
 	 */
-	function save_user_data() {
+	function save_user_data(){
 		// first check if data is being sent and that it is the data we want
 		if ( isset( $_POST["wlcfc_email"] ) ) {
 			
@@ -216,13 +212,12 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 		}
 	}
 	
-	
 	/**
 	 * Function in order to delete row from table if the user completes the checkout
 	 *
 	 * @since    1.3
 	 */
-	function delete_user_data() {
+	function delete_user_data(){
 		
 		global $wpdb;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
@@ -247,7 +242,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Public {
 		//Removing stored ID value from Session
 		unset($_SESSION['current_session_id']);
 	}
-
 
 	/**
 	 * Function that checks if the session has started

@@ -8,7 +8,7 @@
  * @subpackage Woocommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture_Deactivator {
+class Woocommerce_Live_Checkout_Field_Capture_Deactivator{
 
 	/**
 	 * Short Description. (use period)

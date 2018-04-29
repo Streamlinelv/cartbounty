@@ -13,14 +13,13 @@ if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
  
-class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
+class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 
    /**
     * Constructor, we override the parent to pass our own arguments
     * We usually focus on three parameters: singular and plural labels, as well as whether the class supports AJAX.
     */
-    function __construct()
-    {
+    function __construct(){
         global $status, $page;
 
         parent::__construct(array(
@@ -29,7 +28,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
         ));
     }
 	
-	
 	/**
      * [REQUIRED] This method return columns to display in table
      * you can skip columns that you do not want to show
@@ -37,7 +35,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      *
      * @return array
      */
-	function get_columns() {
+	function get_columns(){
 	   return $columns= array(
 		  'cb'				=> 		'<input type="checkbox" />',
 		  'id'				=>		__('ID'),
@@ -51,8 +49,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 	   );
 	}
 	
-	
-	
 	/**
      * [OPTIONAL] This method return columns that may be used to sort table
      * all strings in array - is column names
@@ -60,7 +56,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      *
      * @return array
      */
-	public function get_sortable_columns() {
+	public function get_sortable_columns(){
 		return $sortable = array(
 			'id'				=>		array('id', true),
             'nameSurname'       =>      array('name', true),
@@ -70,7 +66,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 		);
 	}
 	
-	
 	/**
      * [REQUIRED] this is a default column renderer
      *
@@ -78,11 +73,9 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      * @param $column_name - string (key)
      * @return HTML
      */
-    function column_default($item, $column_name)
-    {
+    function column_default($item, $column_name){
         return $item[$column_name];
     }
-	
 	
 	/**
      * This is example, how to render column with actions,
@@ -91,8 +84,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_nameSurname($item)
-    {
+    function column_nameSurname($item){
         // links going to /admin.php?page=[your_plugin_page][&other_params]
         // notice how we used $_REQUEST['page'], so action will be done on curren page
         // also notice how we use $this->_args['singular'] so in this example it will
@@ -108,20 +100,17 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
         );
     }
 	
-	
 	/**
      * Rendering Email field
      *
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_email($item)
-    {
+    function column_email($item){
         return sprintf('<a href="mailto:%1$s" title="">%1$s</a>',
             esc_html($item['email'])
         );
     }
-	
 	
 	/**
      * Rendering Cart Contents field
@@ -129,8 +118,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_cart_contents($item)
-    {
+    function column_cart_contents($item){
 		//Retrieving array from database column cart_contents
 		$product_array = @unserialize($item['cart_contents']);
 		
@@ -158,15 +146,13 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
 		}
     }
 	
-	
 	/**
      * Rendering Cart Total field
      *
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_cart_total($item)
-    {
+    function column_cart_total($item){
         return sprintf('%0.2f %s',
             esc_html($item['cart_total']),
             esc_html($item['currency'])
@@ -179,8 +165,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      * @param $item - row (key, value array)
      * @return HTML
      */
-	function column_time($item)
-	{
+	function column_time($item){
 		$database_time = $item['time'];
 		$date_time = new DateTime($database_time);
 		$date = $date_time->format('d.m.Y');
@@ -199,23 +184,19 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      * @param $item - row (key, value array)
      * @return HTML
      */
-	function column_cb($item)
-	{
+	function column_cb($item){
 		return sprintf(
 			'<input type="checkbox" name="id[]" value="%s" />',
 			esc_html($item['id'])
 		);
 	}
-
-	
 	
 	/**
      * [OPTIONAL] Return array of bult actions if has any
      *
      * @return array
      */
-	 function get_bulk_actions()
-    {
+	 function get_bulk_actions(){
         $actions = array(
             'delete' => 'Delete'
         );
@@ -229,8 +210,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
      * in this example we are processing delete action
      * message about successful deletion will be shown on page in next part
      */
-    function process_bulk_action()
-    {
+    function process_bulk_action(){
         global $wpdb;
         $table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
 
@@ -243,8 +223,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table {
             }
         }
     }
-	
-	
 	
 	/**
      * [REQUIRED] This is the most important method

@@ -9,7 +9,7 @@
  * @subpackage Woocommerce Live Checkout Field Capture/admin
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture_Admin {
+class Woocommerce_Live_Checkout_Field_Capture_Admin{
 
 	/**
 	 * The ID of this plugin.
@@ -36,7 +36,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version ){
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
@@ -48,7 +48,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	 *
 	 * @since    1.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles(){
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -63,32 +63,29 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woocommerce-live-checkout-field-capture-admin-admin.css', array(), $this->version, 'all' );
-
-	}
-	
+	}	
 	
 	/**
 	 * Register the menu under Woocommerce admin menu.
 	 *
 	 */
-	function woocommerce_live_checkout_field_capture_menu() {
+	function register_menu(){
 		//Check if Woocommerce plugin is active
 		//If the plugin is active - output menu under Woocommerce
 		//Else output the menu as a Page
 		if(class_exists('WooCommerce')){
-			add_submenu_page( 'woocommerce', 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'woocommerce_live_checkout_field_capture_menu_options'));			
+			add_submenu_page( 'woocommerce', 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'));			
 		}else{
-			add_menu_page( 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'woocommerce_live_checkout_field_capture_menu_options'), 'dashicons-archive' );
+			add_menu_page( 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
 		}
 	}
-
 
 	/**
 	 * Adds newly abandoned cart count to the menu
 	 *
 	 * @since    1.4
 	 */
-	function menu_abandoned_count() {
+	function menu_abandoned_count(){
 		global $wpdb, $submenu;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
@@ -110,15 +107,14 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 				}
 			}
 		}
-	}	
-	
+	}
 	
 	/**
 	 * Register the menu options for admin area.
 	 *
 	 * @since    1.3
 	 */
-	function woocommerce_live_checkout_field_capture_menu_options() {
+	function register_menu_options(){
 		global $wpdb;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
@@ -200,7 +196,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 	<?php
 	}
 	
-	
 	/**
 	 * Show bubble slide-out window
 	 *
@@ -246,7 +241,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		}
 	}
 
-
 	/**
 	 * Count abandoned carts
 	 *
@@ -259,7 +253,49 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 
         return $total_items;
 	}
-	
+
+	/**
+	 * Adds custom action link on Plugin page under plugin name
+	 *
+	 * @since    1.2
+	 */
+	function add_plugin_action_links( $actions, $plugin_file ){
+		if ( ! is_array( $actions ) ) {
+			return $actions;
+		}
+		
+		$action_links = array();
+		$action_links['wlcfc_get_pro'] = array(
+			'label' => 'Get Pro',
+			'url'   => WCLCFC_LICENSE_SERVER_URL
+		);
+
+		return $this->add_display_plugin_action_links( $actions, $plugin_file, $action_links, 'before' );
+	}
+
+	/**
+	 * Function that merges the links on Plugin page under plugin name
+	 *
+	 * @since    1.2
+	 * @return array
+	 */
+	function add_display_plugin_action_links( $actions, $plugin_file, $action_links = array(), $position = 'after' ){
+		static $plugin;
+		if ( ! isset( $plugin ) ) {
+			$plugin = WCLCFC_BASENAME;
+		}
+		if ( $plugin === $plugin_file && ! empty( $action_links ) ) {
+			foreach ( $action_links as $key => $value ) {
+				$link = array( $key => '<a href="' . $value['url'] . '">' . $value['label'] . '</a>' );
+				if ( 'after' === $position ) {
+					$actions = array_merge( $actions, $link );
+				} else {
+					$actions = array_merge( $link, $actions );
+				}
+			}
+		}
+		return $actions;
+	}
 	
 	/**
 	 * Function calculates if time has passed since the given time period (In days)
@@ -286,13 +322,12 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 		}
 	}
 	
-	
 	/**
 	 * Function checks the current plugin version with the one saved in database
 	 *
 	 * @since    1.4.1
 	 */
-	function check_current_plugin_version() {
+	function check_current_plugin_version(){
 		$plugin = new Woocommerce_Live_Checkout_Field_Capture();
 		$current_version = $plugin->get_version();
 		
@@ -304,7 +339,6 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin {
 			return;
 		}
 	}
-
 
 	/**
 	 * Function counts total deleted abandoned cart count by user

@@ -12,7 +12,7 @@
  * @subpackage Woocommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture {
+class Woocommerce_Live_Checkout_Field_Capture{
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -51,7 +51,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 *
 	 * @since    1.0
 	 */
-	public function __construct() {
+	public function __construct(){
 
 		$this->plugin_name = WCLCFC_PLUGIN_NAME_SLUG;
 		$this->version = WCLCFC_VERSION_NUMBER;
@@ -77,7 +77,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @since    1.0
 	 * @access   private
 	 */
-	private function load_dependencies() {
+	private function load_dependencies(){
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -99,7 +99,6 @@ class Woocommerce_Live_Checkout_Field_Capture {
 		$this->loader = new Woocommerce_Live_Checkout_Field_Capture_Loader();
 
 	}
-	
 
 	/**
 	 * Register all of the hooks related to the admin area functionality
@@ -108,13 +107,14 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @since    1.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
+	private function define_admin_hooks(){
 
 		$plugin_admin = new Woocommerce_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'woocommerce_live_checkout_field_capture_menu', 70); //Creates admin menu
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_menu', 70); //Creates admin menu
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count');
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version');
+		$this->loader->add_filter( 'plugin_action_links_' . WCLCFC_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
 	}
 
 	/**
@@ -124,7 +124,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @since    1.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
+	private function define_public_hooks(){
 
 		$plugin_public = new Woocommerce_Live_Checkout_Field_Capture_Public( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'woocommerce_after_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
@@ -138,7 +138,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 *
 	 * @since    1.0
 	 */
-	public function run() {
+	public function run(){
 		$this->loader->run();
 	}
 
@@ -149,7 +149,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @since     1.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_plugin_name() {
+	public function get_plugin_name(){
 		return $this->plugin_name;
 	}
 
@@ -159,7 +159,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @since     1.0
 	 * @return    Plugin_Name_Loader    Orchestrates the hooks of the plugin.
 	 */
-	public function get_loader() {
+	public function get_loader(){
 		return $this->loader;
 	}
 
@@ -169,7 +169,7 @@ class Woocommerce_Live_Checkout_Field_Capture {
 	 * @since     1.0
 	 * @return    string    The version number of the plugin.
 	 */
-	public function get_version() {
+	public function get_version(){
 		return $this->version;
 	}
 

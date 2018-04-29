@@ -25,11 +25,11 @@ if ( ! defined( 'WPINC' ) ) {
 
 //Defining constants
 if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '1.4.1');
+if (!defined('WCLCFC_BASENAME')) define( 'WCLCFC_BASENAME', plugin_basename( __FILE__ ));
 if (!defined('WCLCFC_PLUGIN_NAME_SLUG')) define( 'WCLCFC_PLUGIN_NAME_SLUG', 'woocommerce-live-checkout-field-capture');
 if (!defined('WCLCFC_TABLE_NAME')) define( 'WCLCFC_TABLE_NAME', 'captured_wc_fields');
 if (!defined('WCLCFC_LICENSE_SERVER_URL')) define('WCLCFC_LICENSE_SERVER_URL', 'https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/');
 if (!defined('WCLCFC_REVIEW_LINK')) define('WCLCFC_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post');
-
 
 //Registering custom options
 register_setting( 'wclcfc-settings-group', 'wclcfc_review_submitted' );
@@ -37,16 +37,15 @@ register_setting( 'wclcfc-settings-group', 'wclcfc_review_submitted' );
 /**
  * The code that runs during plugin activation.
  */
-function activate_woocommerce_live_checkout_field_capture() {
+function activate_woocommerce_live_checkout_field_capture(){
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woocommerce-live-checkout-field-capture-activator.php';
 	Woocommerce_Live_Checkout_Field_Capture_Activator::activate();
 }
 
-
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_woocommerce_live_checkout_field_capture() {
+function deactivate_woocommerce_live_checkout_field_capture(){
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woocommerce-live-checkout-field-capture-deactivator.php';
 	Woocommerce_Live_Checkout_Field_Capture_Deactivator::deactivate();
 }
@@ -54,13 +53,11 @@ function deactivate_woocommerce_live_checkout_field_capture() {
 register_activation_hook( __FILE__, 'activate_woocommerce_live_checkout_field_capture' );
 register_deactivation_hook( __FILE__, 'deactivate_woocommerce_live_checkout_field_capture' );
 
-
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-woocommerce-live-checkout-field-capture.php';
-
 
 /**
  * Begins execution of the plugin.
@@ -71,54 +68,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-woocommerce-live-checkout-
  *
  * @since    1.0
  */
-function run_woocommerce_live_checkout_field_capture() {
+function run_woocommerce_live_checkout_field_capture(){
 	$plugin = new Woocommerce_Live_Checkout_Field_Capture();
 	$plugin->run();
 }
 run_woocommerce_live_checkout_field_capture();
-
-
-/**
- * Adds custom action link on Plugin page under plugin name
- *
- * @since    1.2
- */
-function woocommerce_live_checkout_field_capture_add_plugin_action_links( $actions, $plugin_file ) {
-	if ( ! is_array( $actions ) ) {
-		return $actions;
-	}
-	
-	$action_links = array();
-	$action_links['wlcfc_get_pro'] = array(
-		'label' => 'Get Pro',
-		'url'   => WCLCFC_LICENSE_SERVER_URL
-	);
-
-	return woocommerce_live_checkout_field_capture_add_display_plugin_action_links( $actions, $plugin_file, $action_links, 'before' );
-}
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'woocommerce_live_checkout_field_capture_add_plugin_action_links', 10, 2 );
-
-
-/**
- * Function that merges the links on Plugin page under plugin name
- *
- * @since    1.2
- * @return array
- */
-function woocommerce_live_checkout_field_capture_add_display_plugin_action_links( $actions, $plugin_file, $action_links = array(), $position = 'after' ) {
-	static $plugin;
-	if ( ! isset( $plugin ) ) {
-		$plugin = plugin_basename( __FILE__ );
-	}
-	if ( $plugin === $plugin_file && ! empty( $action_links ) ) {
-		foreach ( $action_links as $key => $value ) {
-			$link = array( $key => '<a href="' . $value['url'] . '">' . $value['label'] . '</a>' );
-			if ( 'after' === $position ) {
-				$actions = array_merge( $actions, $link );
-			} else {
-				$actions = array_merge( $link, $actions );
-			}
-		}
-	}
-	return $actions;
-}
