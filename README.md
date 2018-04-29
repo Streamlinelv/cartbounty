@@ -1,4 +1,4 @@
-<a href="http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro" title="Save abandoned carts" ><img src="https://ps.w.org/woo-save-abandoned-carts/assets/banner-1544x500.png" title="WooCommerce Live Checkout Field Capture Pro - save abandoned carts" alt="WooCommerce Live Checkout Field Capture Pro - save abandoned carts" /></a>
+<a href="http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro" title="Save abandoned carts" ><img src="https://ps.w.org/woo-save-abandoned-carts/assets/banner-1544x500.png" title="WooCommerce Live Checkout Field Capture - save abandoned carts" alt="WooCommerce Live Checkout Field Capture - save abandoned carts" /></a>
 
 # WooCommerce Live Checkout Field Capture - Save Abandoned Carts
 
