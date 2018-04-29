@@ -63,6 +63,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 	function save_user_data(){
 		// first check if data is being sent and that it is the data we want
 		if ( isset( $_POST["wlcfc_email"] ) ) {
+
 			
 			global $wpdb;
 			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
@@ -89,7 +90,10 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 					$increment = 0;
 					$product_attribute = '';
 
-					foreach($product_variations as $product_variation){
+					foreach($product_variations as $product_variation_key => $product_variation_name){
+
+						$product_variation_name = $this->attribute_slug_to_title($product_variation_key, $product_variation_name);
+
 						if($increment === 0 && $increment != $total_variations - 1){ //If this is first variation and we have multiple variations
 							$colon = ': ';
 							$comma = ', ';
@@ -105,7 +109,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 							$comma = ', ';
 							$colon = false;
 						}
-						$product_attribute .= $colon . $product_variation . $comma;
+						$product_attribute .= $colon . $product_variation_name . $comma;
 						$increment++;
 					}
 				}else{
@@ -247,7 +251,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 	 * Function that checks if the session has started
 	 *
 	 * @since    1.4.1
-	 £ Return: Boolean
+	 * Return: Boolean
 	 */
 	function session_has_started(){
 	    if ( php_sapi_name() !== 'cli' ) {
@@ -258,5 +262,24 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 	        }
 	    }
 	    return false;
+	}
+
+
+	/**
+	 * Function returns attributes name from slug in order to display Variations
+	 *
+	 * @since    1.4.1
+	 * Return: String
+	 */
+	function attribute_slug_to_title( $attribute ,$slug ) {
+		global $woocommerce;
+		if ( taxonomy_exists( esc_attr( str_replace( 'attribute_', '', $attribute ) ) ) ) {
+			$term = get_term_by( 'slug', $slug, esc_attr( str_replace( 'attribute_', '', $attribute ) ) );
+			if ( ! is_wp_error( $term ) && $term->name )
+				$value = $term->name;
+		} else {
+			$value = apply_filters( 'woocommerce_variation_option_name', $value );
+		}
+		return $value;
 	}
 }
