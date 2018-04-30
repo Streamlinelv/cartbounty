@@ -67,6 +67,9 @@ Location of the plugin after activation.
 
 == Changelog ==
 
+= 1.4.2 =
+* Fixed bug related to notification output
+
 = 1.4.1 =
 * Fixed database update issue when upgrading to 1.4
 
