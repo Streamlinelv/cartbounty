@@ -145,26 +145,28 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 		?>
 		<div class="wrap">
 			<div id="woocommerce-live-checkout-field-capture-bubbles">
-				<div id="woocommerce-live-checkout-field-capture-review" class="woocommerce-live-checkout-field-capture-bubble">
-					<div class="woocommerce-live-checkout-field-capture-header-image">
-						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
-							<img src="<?php echo plugins_url( 'assets/review-notification.svg', __FILE__ ) ; ?>" title=""/>
-						</a>
+				<?php if(!get_option('wclcfc_review_submitted')): //Don't output Review bubble if review has been left ?>
+					<div id="woocommerce-live-checkout-field-capture-review" class="woocommerce-live-checkout-field-capture-bubble">
+						<div class="woocommerce-live-checkout-field-capture-header-image">
+							<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
+								<img src="<?php echo plugins_url( 'assets/review-notification.svg', __FILE__ ) ; ?>" title=""/>
+							</a>
+						</div>
+						<div id="woocommerce-live-checkout-field-capture-review-content">
+							<form method="post" action="options.php">
+								<?php settings_fields( 'wclcfc-settings-group' ); ?>
+								<h2>Would you mind leaving us a positive review?</h2>
+								<p>Your review is the simplest way to help us continue providing a great product, improve it, and help others to make confident decisions.</p>
+								<div class="woocommerce-live-checkout-field-capture-button-row">
+									<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Sure, I'd love to</a>
+									<?php submit_button('Done that'); ?>
+									<span id="woocommerce-live-checkout-field-capture-close-review" class="woocommerce-live-checkout-field-capture-close">Close</span>
+								</div>
+								<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
+							</form>
+						</div>
 					</div>
-					<div id="woocommerce-live-checkout-field-capture-review-content">
-						<form method="post" action="options.php">
-							<?php settings_fields( 'wclcfc-settings-group' ); ?>
-							<h2>Would you mind leaving us a positive review?</h2>
-							<p>Your review is the simplest way to help us continue providing a great product, improve it, and help others to make confident decisions.</p>
-							<div class="woocommerce-live-checkout-field-capture-button-row">
-								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Sure, I'd love to</a>
-								<?php submit_button('Done that'); ?>
-								<span id="woocommerce-live-checkout-field-capture-close-review" class="woocommerce-live-checkout-field-capture-close">Close</span>
-							</div>
-							<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
-						</form>
-					</div>
-				</div>
+				<?php endif; ?>
 				<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
 					<div class="woocommerce-live-checkout-field-capture-header-image">
 						<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
@@ -230,7 +232,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 						
 					//Handles close button action
 					close.click(function(){
-						bubble.css({top:"-500px", right: "50px"});
+						bubble.css({top:"-600px", right: "50px"});
 					});
 				});
 			</script>
