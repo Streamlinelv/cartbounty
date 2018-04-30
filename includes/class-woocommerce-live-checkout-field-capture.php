@@ -115,6 +115,7 @@ class Woocommerce_Live_Checkout_Field_Capture{
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count');
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version');
 		$this->loader->add_filter( 'plugin_action_links_' . WCLCFC_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
+		$this->loader->add_action( 'wclcfc_after_page_title', $plugin_admin, 'output_bubble_content'); //Hooks into hook in order to output bubbles
 	}
 
 	/**
