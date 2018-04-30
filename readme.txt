@@ -65,7 +65,6 @@ This version does all the hard work of collecting the data and presenting it to 
 
 Once user reaches the “Thank you” page the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
 
-
 == Screenshots ==
 
 Location of the plugin after activation.
