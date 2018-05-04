@@ -31,10 +31,16 @@
 	 
 	 jQuery(document).ready(function(){
 		//Reading Woocommerce field values
-		jQuery("#billing_email").on("keyup keypress change",function() { //All action happens on or after changing Email field
+
+		var timer;
+
+		function getCheckoutData() {
 			var wlcfc_email = this . value;
 			var atposition = wlcfc_email.indexOf("@");
 			var dotposition = wlcfc_email.lastIndexOf(".");
+			
+			clearTimeout(timer);
+
 			if (atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= wlcfc_email.length){ //Checking if the email field is valid
 				//console.log("Not a valid e-mail address");
 			}
@@ -61,16 +67,19 @@
 					billing_country:	billing_country,
 					billing_city:		billing_city
 				}
-				
-				jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
-				function(response) {
-					//console.log(response);
-				});
-			}
 
-		});
+				timer = setTimeout(function(){
+					jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+					function(response) {
+						//console.log(response);
+					});
+					
+				}, 300);
+			}
+		}
+
+		jQuery("#billing_email").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email field
+	
 	});
-	 
-	 
 
 })( jQuery );

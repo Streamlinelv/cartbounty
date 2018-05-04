@@ -67,6 +67,9 @@ Location of the plugin after activation.
 
 == Changelog ==
 
+= 1.4.3 =
+* Fixed bug when in some cases abandoned carts not being removed from table after reaching WooCommerce "Thank you" page
+
 = 1.4.2 =
 * Fixed bug related to notification output
 
