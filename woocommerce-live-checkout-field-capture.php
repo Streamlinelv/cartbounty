@@ -4,7 +4,7 @@
  * Plugin Name: Woocommerce Live Checkout Field Capture
  * Plugin URI: 
  * Description: Plugin instantly saves Woocommerce checkout field data before they are submitted.
- * Version: 1.4.2
+ * Version: 1.4.3
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 //Defining constants
-if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '1.4.2');
+if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '1.4.3');
 if (!defined('WCLCFC_BASENAME')) define( 'WCLCFC_BASENAME', plugin_basename( __FILE__ ));
 if (!defined('WCLCFC_PLUGIN_NAME_SLUG')) define( 'WCLCFC_PLUGIN_NAME_SLUG', 'woocommerce-live-checkout-field-capture');
 if (!defined('WCLCFC_TABLE_NAME')) define( 'WCLCFC_TABLE_NAME', 'captured_wc_fields');
