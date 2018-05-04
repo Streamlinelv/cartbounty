@@ -30,11 +30,10 @@
 	 */
 	 
 	 jQuery(document).ready(function(){
-		//Reading Woocommerce field values
 
 		var timer;
 
-		function getCheckoutData() {
+		function getCheckoutData() { //Reading Woocommerce field values
 			var wlcfc_email = this . value;
 			var atposition = wlcfc_email.indexOf("@");
 			var dotposition = wlcfc_email.lastIndexOf(".");
