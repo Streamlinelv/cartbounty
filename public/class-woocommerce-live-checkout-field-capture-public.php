@@ -126,8 +126,9 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 			//Starting session in order to check if we have to insert or update database row with the data from input boxes
 			if ( $this->session_has_started() === false ){
 				session_start();
-				$session_id = session_id();
 			}
+
+			$session_id = session_id();
 
 			if(isset($_POST['wlcfc_name'])){
 				$name = $_POST['wlcfc_name'];
