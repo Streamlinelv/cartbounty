@@ -73,7 +73,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Public{
 			$cart_currencty = get_woocommerce_currency();
 			
 			//Retrieving cart products and their quantities
-			$products = WC()->cart->get_cart_contents();
+			$products = WC()->cart->get_cart();
 			$product_array = array();
 			
 			foreach($products as $product => $values){
