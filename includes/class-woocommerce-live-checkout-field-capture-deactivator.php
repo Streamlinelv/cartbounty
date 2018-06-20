@@ -4,11 +4,11 @@
  *
  * This class defines all code necessary to run during the plugin's deactivation.
  *
- * @package    Woocommerce Live Checkout Field Capture
- * @subpackage Woocommerce Live Checkout Field Capture/includes
+ * @package    WooCommerce Live Checkout Field Capture
+ * @subpackage WooCommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture_Deactivator{
+class WooCommerce_Live_Checkout_Field_Capture_Deactivator{
 
 	/**
 	 * Short Description. (use period)

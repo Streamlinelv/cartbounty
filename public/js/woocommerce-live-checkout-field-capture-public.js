@@ -33,17 +33,21 @@
 
 		var timer;
 
-		function getCheckoutData() { //Reading Woocommerce field values
-			var wlcfc_email = this . value;
+		function getCheckoutData() { //Reading WooCommerce field values
+			//var wlcfc_email = this . value;
+			var wlcfc_phone = jQuery("#billing_phone").val();
+			var wlcfc_email = jQuery("#billing_email").val();
 			var atposition = wlcfc_email.indexOf("@");
 			var dotposition = wlcfc_email.lastIndexOf(".");
+
+			if (typeof wlcfc_phone === 'undefined' || wlcfc_phone === null) { //If phone number field does not exist on the Checkout form
+			   wlcfc_phone = '';
+			}
 			
 			clearTimeout(timer);
 
-			if (atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= wlcfc_email.length){ //Checking if the email field is valid
-				//console.log("Not a valid e-mail address");
-			}
-			else{ //If Email valid
+			if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= wlcfc_email.length) || wlcfc_phone.length >= 1){ //Checking if the email field is valid or phone number is longer than 1 digit
+				//If Email or Phone valid
 				var wlcfc_name = jQuery("#billing_first_name").val();
 				var wlcfc_surname = jQuery("#billing_last_name").val();
 				var wlcfc_phone = jQuery("#billing_phone").val();
@@ -73,12 +77,14 @@
 						//console.log(response);
 					});
 					
-				}, 300);
+				}, 400);
+			}else{
+				//console.log("Not a valid e-mail or phone address");
 			}
 		}
 
-		jQuery("#billing_email").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email field
-	
+		jQuery("#billing_email, #billing_phone").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email or Phone fields
+		jQuery(window).on("load", getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 	});
 
 })( jQuery );

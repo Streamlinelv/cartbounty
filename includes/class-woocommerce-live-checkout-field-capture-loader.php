@@ -6,11 +6,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Woocommerce Live Checkout Field Capture
- * @subpackage Woocommerce Live Checkout Field Capture/includes
+ * @package    WooCommerce Live Checkout Field Capture
+ * @subpackage WooCommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture_Loader{
+class WooCommerce_Live_Checkout_Field_Capture_Loader{
 
 	/**
 	 * The array of actions registered with WordPress.

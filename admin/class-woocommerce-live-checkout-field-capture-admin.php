@@ -5,11 +5,11 @@
  * Defines the plugin name, version, and hooks to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Woocommerce Live Checkout Field Capture
- * @subpackage Woocommerce Live Checkout Field Capture/admin
+ * @package    WooCommerce Live Checkout Field Capture
+ * @subpackage WooCommerce Live Checkout Field Capture/admin
  * @author     Streamline.lv
  */
-class Woocommerce_Live_Checkout_Field_Capture_Admin{
+class WooCommerce_Live_Checkout_Field_Capture_Admin{
 
 	/**
 	 * The ID of this plugin.
@@ -66,17 +66,17 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 	}	
 	
 	/**
-	 * Register the menu under Woocommerce admin menu.
+	 * Register the menu under WooCommerce admin menu.
 	 *
 	 */
 	function register_menu(){
-		//Check if Woocommerce plugin is active
-		//If the plugin is active - output menu under Woocommerce
+		//Check if WooCommerce plugin is active
+		//If the plugin is active - output menu under WooCommerce
 		//Else output the menu as a Page
 		if(class_exists('WooCommerce')){
-			add_submenu_page( 'woocommerce', 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'));			
+			add_submenu_page( 'woocommerce', 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'));			
 		}else{
-			add_menu_page( 'Woocommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
+			add_menu_page( 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
 		}
 	}
 
@@ -89,7 +89,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 		global $wpdb, $submenu;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
-		if ( isset( $submenu['woocommerce'] ) ) { //If Woocommerce Menu exists
+		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
 			
 			//Counting newly abandoned carts
 			$order_count = $wpdb->get_var(
@@ -101,7 +101,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 				, 0, 120 )
 			);
 			
-			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of Woocommerce and look for Checkout Field Capture Pro
+			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for Checkout Field Capture Pro
 				if ( 0 === strpos( $menu_item[0], 'Checkout Field Capture')) {
 					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . $order_count . '">' .  $order_count .'</span>';
 				}
@@ -125,7 +125,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 		//Our class extends the WP_List_Table class, so we need to make sure that it's there
 		//Prepare Table of elements
 		require_once plugin_dir_path( __FILE__ ) . 'class-woocommerce-live-checkout-field-capture-admin-table.php';
-		$wp_list_table = new Woocommerce_Live_Checkout_Field_Capture_Table();
+		$wp_list_table = new WooCommerce_Live_Checkout_Field_Capture_Table();
 		$wp_list_table->prepare_items();
 		
 		//Output table contents
@@ -144,7 +144,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 		}
 		?>
 		<div class="wrap">
-			<h1 id="woocommerce-live-checkout-field-capture-title">Wooommerce Live Checkout Field Capture</h1>
+			<h1 id="woocommerce-live-checkout-field-capture-title">WooCommerce Live Checkout Field Capture</h1>
 			<?php do_action('wclcfc_after_page_title'); ?>
 			<?php echo $message;
 			if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note?>
@@ -246,7 +246,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 	 * @since    1.4.1
 	 */
 	function check_current_plugin_version(){
-		$plugin = new Woocommerce_Live_Checkout_Field_Capture();
+		$plugin = new WooCommerce_Live_Checkout_Field_Capture();
 		$current_version = $plugin->get_version();
 		
 		if ($current_version == get_option('wclcfc_version_number')){ //If database version is equal to plugin version. Not updating database
@@ -286,7 +286,7 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 			<?php if(!get_option('wclcfc_review_submitted')): //Don't output Review bubble if review has been left ?>
 				<div id="woocommerce-live-checkout-field-capture-review" class="woocommerce-live-checkout-field-capture-bubble">
 					<div class="woocommerce-live-checkout-field-capture-header-image">
-						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
+						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
 							<img src="<?php echo plugins_url( 'assets/review-notification.svg', __FILE__ ) ; ?>" title=""/>
 						</a>
 					</div>
@@ -307,13 +307,13 @@ class Woocommerce_Live_Checkout_Field_Capture_Admin{
 			<?php endif; ?>
 			<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
 				<div class="woocommerce-live-checkout-field-capture-header-image">
-					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get Woocommerce Live Checkout Field Capture Pro" target="_blank">
+					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
 						<img src="<?php echo plugins_url( 'assets/e-mail-notification.svg', __FILE__ ) ; ?>" title=""/>
 					</a>
 				</div>
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
-					<h2>Would you like to receive e-mail notifications about Abandoned carts?</h2>
-					<p>Save your time by enabling e-mail notifications and work on your business instead.</p>
+					<h2>Would you like to get notified about abandoned carts and send automated cart recovery emails?</h2>
+					<p>Save your time by enabling Pro features and focus on your business instead.</p>
 					<p class="woocommerce-live-checkout-field-capture-button-row">
 						<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" class="button" target="_blank">Get Pro</a>
 						<span id="woocommerce-live-checkout-field-capture-close-go-pro" class="woocommerce-live-checkout-field-capture-close">Not now</span>

@@ -6,12 +6,12 @@
  * Defines the plugin name, version, and two hooks to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Woocommerce Live Checkout Field Capture
- * @subpackage Woocommerce Live Checkout Field Capture/public
+ * @package    WooCommerce Live Checkout Field Capture
+ * @subpackage WooCommerce Live Checkout Field Capture/public
  * @author     Streamline.lv
  */
  
-class Woocommerce_Live_Checkout_Field_Capture_Public{
+class WooCommerce_Live_Checkout_Field_Capture_Public{
 	
 	/**
 	 * The ID of this plugin.

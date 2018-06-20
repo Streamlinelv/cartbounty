@@ -4,8 +4,8 @@
  *
  * Defines how Table should be outputed
  *
- * @package    Woocommerce Live Checkout Field Capture
- * @subpackage Woocommerce Live Checkout Field Capture/admin
+ * @package    WooCommerce Live Checkout Field Capture
+ * @subpackage WooCommerce Live Checkout Field Capture/admin
  * @author     Streamline.lv
  */
  
@@ -13,7 +13,7 @@ if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
  
-class Woocommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table{
+class WooCommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 
    /**
     * Constructor, we override the parent to pass our own arguments
