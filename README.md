@@ -4,7 +4,7 @@
 
 Plugin instantly saves WooCommerce checkout field data before they are submitted.
 
-== Description ==
+### Description
 
 WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted.
 Now you will be able to see who has abandoned their shopping carts and you will be able to manually contact them and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
@@ -37,15 +37,15 @@ Plugin dependencies:
 1. Uses WordPress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
 1. WordPress WooCommerce hooks
 
-== Installation ==
+### Installation
 
 1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the "Plugins" screen in WordPress.
 1. Look for the page "Checkout Field Capture" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 
-= When is the cart saved? =
+### When is the cart saved?
 
 Data and information about the cart is saved right after the user gets to the Checkout form and one of the following events happen:
 
@@ -55,57 +55,66 @@ Data and information about the cart is saved right after the user gets to the Ch
 
 If the user completes the checkout process and receives a "Thank you" page, the cart is removed from the Checkout Field Capture table of abandoned carts.
 
-= Where can I view WooCommerce abandoned carts? =
+### Where can I view WooCommerce abandoned carts?
 
 After installation the plugin will be available under "WooCommerce" menu. Please see 1st screenshot.
 
-= WooCommerce shows order status “Failed” but I don’t see an abandoned cart. =
+### WooCommerce shows order status “Failed” but I don’t see an abandoned cart.
 
 Once user reaches the “Thank you” page the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
 
-= How to enable email notifications about abandoned carts? =
+### How to enable email notifications about abandoned carts?
 
 This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications, please visit our Pro [WooCommerce save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce save abandoned carts") plugin version.
 
-= Can I send automated abandoned cart recovery emails? =
+### Can I send automated abandoned cart recovery emails?
 
 The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
 If you would like to [send your visitors automated abandoned cart recovery emails](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
 
-== Screenshots ==
+## Screenshots
 
 Location of the plugin after activation.
 
-== Changelog ==
+## Changelog
 
-= 1.5 =
+##### 1.5
+
 * Added ability to save abandoned carts via phone number input
 * Added function that collects and saves input field data if input fields already filled on Checkout page load
 
-= 1.4.3 =
+##### 1.4.3
+
 * Fixed bug when in some cases abandoned carts not being removed from table after reaching WooCommerce "Thank you" page
 
-= 1.4.2 =
+##### 1.4.2
+
 * Fixed bug related to notification output
 
-= 1.4.1 =
+##### 1.4.1
+
 * Fixed database update issue when upgrading to 1.4
 
-= 1.4 =
+##### 1.4
+
 * Added notification near menu about newly abandoned carts (last 2 hours)
 * Added location registration (Country and City)
 * Added links on product titles in Cart content column
 * Added additional output for product variations
 
-= 1.3 =
+##### 1.3
+
 * Fixed issue when in some cases single abandoned cart was saved multiple times creating duplicate entries in the table
 
-= 1.2 =
+##### 1.2
+
 * Fixed minor database warnings and notices
 
-= 1.1 =
+##### 1.1
+
 * Fixed PHP and MySQL warnings and notices
 * Updated security requirements that were introduced in WooCommerce 3.0
 
-= 1.0 =
+##### 1.0
+
 * Birthday
