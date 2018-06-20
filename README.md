@@ -23,12 +23,12 @@ While continuing to be working on [Mājas lapu izstrāde](http://www.majas-lapu-
 Note: If the fields are added outside of Checkout page or Checkout page input field ID values are changed, the plugin will not be able to load data.
 Input field ID values should be default:
 
-* #billing_email
-* #billing_first_name 
-* #billing_last_name
-* #billing_phone
-* #billing_country
-* #billing_city
+* \#billing_email
+* \#billing_first_name 
+* \#billing_last_name
+* \#billing_phone
+* \#billing_country
+* \#billing_city
 
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
