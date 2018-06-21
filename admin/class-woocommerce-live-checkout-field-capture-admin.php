@@ -74,9 +74,9 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		//If the plugin is active - output menu under WooCommerce
 		//Else output the menu as a Page
 		if(class_exists('WooCommerce')){
-			add_submenu_page( 'woocommerce', 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'));			
+			add_submenu_page( 'woocommerce', 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'list_users', 'wclcfc', array($this,'register_menu_options'));			
 		}else{
-			add_menu_page( 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'manage_options', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
+			add_menu_page( 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'list_users', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
 		}
 	}
 
@@ -118,7 +118,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		global $wpdb;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
-		if ( !current_user_can( 'manage_options' ) )  {
+		if ( !current_user_can( 'list_users' )){
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
 		
