@@ -3,8 +3,8 @@ Contributors: prowebdesign
 Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 1.5.1
-Version: 1.5.1
+Stable tag: 1.5.2
+Version: 1.5.2
 License: GPLv2 or later
 
 Plugin instantly saves WooCommerce checkout field data before they are submitted.
@@ -82,6 +82,9 @@ If you would like to [send your visitors automated abandoned cart recovery email
 Location of the plugin after activation.
 
 == Changelog ==
+
+= 1.5.2 =
+* Added additional hook for removing abandoned cart from the table once a corresponding WooCommerce order is created
 
 = 1.5.1 =
 * Added ability for Shop managers to access Abandoned carts

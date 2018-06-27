@@ -78,6 +78,10 @@ Location of the plugin after activation.
 
 ## Changelog
 
+##### 1.5.2
+
+* Added additional hook for removing abandoned cart from the table once a corresponding WooCommerce order is created
+
 ##### 1.5.1
 
 * Added ability for Shop managers to access Abandoned carts
