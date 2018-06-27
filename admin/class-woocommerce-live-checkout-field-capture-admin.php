@@ -148,7 +148,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<?php do_action('wclcfc_after_page_title'); ?>
 			<?php echo $message;
 			if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note?>
-				<p>Well, well, well, looks like you don’t have any saved Abandoned carts yet.<br/>But don’t worry, as soon as someone will fill the <strong>Email field</strong> of your WooCommerce Checkout form and abandon the cart, it will automatically appear here.</p>
+				<p>Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.</p>
 			<?php else: ?>
 				<form id="wclcfc-table" method="GET">
 					<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>

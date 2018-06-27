@@ -131,7 +131,8 @@ class WooCommerce_Live_Checkout_Field_Capture{
 		$this->loader->add_action( 'woocommerce_after_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
 		$this->loader->add_action( 'wp_ajax_nopriv_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Guest users
 		$this->loader->add_action( 'wp_ajax_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
-		$this->loader->add_action( 'woocommerce_thankyou', $plugin_public, 'delete_user_data' ); //Hooks into Thank you page in order to delete a row with a user who completes the checkout
+		$this->loader->add_action( 'woocommerce_new_order', $plugin_public, 'delete_user_data' ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
+		$this->loader->add_action( 'woocommerce_thankyou', $plugin_public, 'delete_user_data' ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
 	}
 
 	/**

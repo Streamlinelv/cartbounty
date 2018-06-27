@@ -64,9 +64,9 @@ If the user completes the checkout process and receives a "Thank you" page, the 
 
 After installation the plugin will be available under "WooCommerce" menu. Please see 1st screenshot.
 
-= WooCommerce shows order status “Failed” but I don’t see an abandoned cart. =
+= WooCommerce shows order status "Failed" but I don't see an abandoned cart. =
 
-Once user reaches the “Thank you” page the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
+Once user reaches the "Thank you" page the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
 
 = How to enable email notifications about abandoned carts? =
 
