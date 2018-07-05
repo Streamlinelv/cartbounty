@@ -123,47 +123,53 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 			//Retrieving current time
 			$current_time = current_time( 'mysql', false );
 			
-			//Starting session in order to check if we have to insert or update database row with the data from input boxes
-			if ( $this->session_has_started() === false ){
-				session_start();
-			}
-
-			$session_id = session_id();
-
-			if(isset($_POST['wlcfc_name'])){
-				$name = $_POST['wlcfc_name'];
-			}else{
-				$name = '';
-			}
-
-			if(isset($_POST['wlcfc_surname'])){
-				$surname = $_POST['wlcfc_surname'];
-			}else{
-				$surname = '';
-			}
-
-			if(isset($_POST['wlcfc_phone'])){
-				$phone = $_POST['wlcfc_phone'];
-			}else{
-				$phone = '';
-			}
-
-			if(isset($_POST['billing_country'])){
-				$country = $_POST['billing_country'];
-			}else{
-				$country = '';
-			}
-
-			if(isset($_POST['billing_city']) && $_POST['billing_city'] != ''){
-				$city = ", ". $_POST['billing_city'];
-			}else{
-				$city = '';
-			}
-
+			//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
+			$session_id = WC()->session->get_customer_id();
+			
+			//Checking if we have values coming from the input fields
+			(isset($_POST['wlcfc_name'])) ? $name = $_POST['wlcfc_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
+			(isset($_POST['wlcfc_surname'])) ? $surname = $_POST['wlcfc_surname'] : $surname = '';
+			(isset($_POST['wlcfc_phone'])) ? $phone = $_POST['wlcfc_phone'] : $phone = '';
+			(isset($_POST['wlcfc_country'])) ? $country = $_POST['wlcfc_country'] : $country = '';
+			(isset($_POST['wlcfc_city']) && $_POST['wlcfc_city'] != '') ? $city = ", ". $_POST['wlcfc_city'] : $city = '';
+			(isset($_POST['wlcfc_billing_company'])) ? $company = $_POST['wlcfc_billing_company'] : $company = '';
+			(isset($_POST['wlcfc_billing_address_1'])) ? $address_1 = $_POST['wlcfc_billing_address_1'] : $address_1 = '';
+			(isset($_POST['wlcfc_billing_address_2'])) ? $address_2 = $_POST['wlcfc_billing_address_2'] : $address_2 = '';
+			(isset($_POST['wlcfc_billing_state'])) ? $state = $_POST['wlcfc_billing_state'] : $state = '';
+			(isset($_POST['wlcfc_billing_postcode'])) ? $postcode = $_POST['wlcfc_billing_postcode'] : $postcode = '';
+			(isset($_POST['wlcfc_shipping_first_name'])) ? $shipping_name = $_POST['wlcfc_shipping_first_name'] : $shipping_name = '';
+			(isset($_POST['wlcfc_shipping_last_name'])) ? $shipping_surname = $_POST['wlcfc_shipping_last_name'] : $shipping_surname = '';
+			(isset($_POST['wlcfc_shipping_company'])) ? $shipping_company = $_POST['wlcfc_shipping_company'] : $shipping_company = '';
+			(isset($_POST['wlcfc_shipping_country'])) ? $shipping_country = $_POST['wlcfc_shipping_country'] : $shipping_country = '';
+			(isset($_POST['wlcfc_shipping_address_1'])) ? $shipping_address_1 = $_POST['wlcfc_shipping_address_1'] : $shipping_address_1 = '';
+			(isset($_POST['wlcfc_shipping_address_2'])) ? $shipping_address_2 = $_POST['wlcfc_shipping_address_2'] : $shipping_address_2 = '';
+			(isset($_POST['wlcfc_shipping_city'])) ? $shipping_city = $_POST['wlcfc_shipping_city'] : $shipping_city = '';
+			(isset($_POST['wlcfc_shipping_state'])) ? $shipping_state = $_POST['wlcfc_shipping_state'] : $shipping_state = '';
+			(isset($_POST['wlcfc_shipping_postcode'])) ? $shipping_postcode = $_POST['wlcfc_shipping_postcode'] : $shipping_postcode = '';
+			(isset($_POST['wlcfc_order_comments'])) ? $comments = $_POST['wlcfc_order_comments'] : $comments = '';
+			
+			$other_fields = array(
+				'wlcfc_billing_company' 	=> $company,
+				'wlcfc_billing_address_1' 	=> $address_1,
+				'wlcfc_billing_address_2' 	=> $address_2,
+				'wlcfc_billing_state' 		=> $state,
+				'wlcfc_billing_postcode' 	=> $postcode,
+				'wlcfc_shipping_first_name' => $shipping_name,
+				'wlcfc_shipping_last_name' 	=> $shipping_surname,
+				'wlcfc_shipping_company' 	=> $shipping_company,
+				'wlcfc_shipping_country' 	=> $shipping_country,
+				'wlcfc_shipping_address_1' 	=> $shipping_address_1,
+				'wlcfc_shipping_address_2' 	=> $shipping_address_2,
+				'wlcfc_shipping_city' 		=> $shipping_city,
+				'wlcfc_shipping_state' 		=> $shipping_state,
+				'wlcfc_shipping_postcode' 	=> $shipping_postcode,
+				'wlcfc_order_comments' 		=> $comments
+			);
+			
 			$location = $country . $city;
 			
 			//If we have already inserted the Users session ID in Session variable and it is not NULL we update the abandoned cart row
-			if(isset($_SESSION['current_session_id']) && $_SESSION['current_session_id'] != NULL ) {
+			if( WC()->session->get('wclcfc_session_id') !== NULL ){
 				
 				//Updating row in the Database where users Session id = same as prevously saved in Session
 				$wpdb->prepare('%s',
@@ -178,10 +184,11 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currencty ),
-							'time'			=>	sanitize_text_field( $current_time )
+							'time'			=>	sanitize_text_field( $current_time ),
+							'other_fields'	=>	sanitize_text_field( serialize($other_fields) )
 						),
-						array('session_id' => $_SESSION['current_session_id']),
-						array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s'),
+						array('session_id' => WC()->session->get('wclcfc_session_id')),
+						array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
 						array('%s')
 					)
 				);
@@ -192,8 +199,8 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 				$wpdb->query(
 					$wpdb->prepare(
 						"INSERT INTO ". $table_name ."
-						( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id )
-						VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s)",
+						( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields )
+						VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s)",
 						array(
 							sanitize_text_field( $name ),
 							sanitize_text_field( $surname ),
@@ -204,13 +211,14 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currencty ),
 							sanitize_text_field( $current_time ),
-							sanitize_text_field( $session_id )
+							sanitize_text_field( $session_id ),
+							sanitize_text_field( serialize($other_fields) )
 						) 
 					)
 				);
 				
-				//Saving in session variable current Session ID
-				$_SESSION['current_session_id'] = $session_id;
+				//Storing session_id in WooCommerce session
+				WC()->session->set('wclcfc_session_id', $session_id);
 			}
 			
 			die();
@@ -227,44 +235,22 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 		global $wpdb;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
 		
-		//Starting session in order to check if we have to insert or update database row with the data from input boxes 
-		if ( $this->session_has_started() === false ){
-			session_start();
-		}
-		
-		if(isset($_SESSION['current_session_id'])) {
+		$session_id = WC()->session->get('wclcfc_session_id');
+		if(isset($session_id)){
 			
 			//Deleting row from database
 			$wpdb->query(
 				$wpdb->prepare(
 					"DELETE FROM ". $table_name ."
 					 WHERE session_id = %s",
-					sanitize_key($_SESSION['current_session_id'])
+					sanitize_key($session_id)
 				)
 			);
 		}
 		
-		//Removing stored ID value from Session
-		unset($_SESSION['current_session_id']);
+		//Removing stored ID value from WooCommerce Session
+		WC()->session->__unset('wclcfc_session_id');
 	}
-
-	/**
-	 * Function that checks if the session has started
-	 *
-	 * @since    1.4.1
-	 * Return: Boolean
-	 */
-	function session_has_started(){
-	    if ( php_sapi_name() !== 'cli' ) {
-	        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
-	            return session_status() === PHP_SESSION_ACTIVE ? true : false;
-	        } else {
-	            return session_id() === '' ? false : true;
-	        }
-	    }
-	    return false;
-	}
-
 
 	/**
 	 * Function returns attributes name from slug in order to display Variations
@@ -282,5 +268,67 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 			$value = apply_filters( 'woocommerce_variation_option_name', $value );
 		}
 		return $value;
+	}
+	
+	/**
+	 * Function restores previous Checkout form data for users that are not registered
+	 *
+	 * @since    2.0.0
+	 * Return: Input field values
+	 */
+	public function restore_input_data( $fields = array() ) {
+		global $wpdb;
+		
+		if(!is_user_logged_in()){ //If the user is not logged in
+			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+			$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+			
+			//Retrieve a single row with current customer ID
+			$row = $wpdb->get_row($wpdb->prepare(
+				"SELECT *
+				FROM ". $table_name ."
+				WHERE session_id = %s",
+				$customer_id)
+			);
+			
+			if($row){ //If we have a user with such session ID in the database
+				$other_fields = unserialize($row->other_fields);
+				
+				$parts = explode(',', $row->location); //Splits the Location field into parts where there are commas
+				if (count($parts) > 1) {
+				   $country = $parts[0];
+				   $city = trim($parts[1]); //Trim removes white space before and after the string
+				}
+				else{
+					$country = $parts[0];
+					$city = '';
+				}
+				
+				//Filling Checkout field values back with previously entered values
+				(empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : true;
+				(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
+				(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_company'])) : '';
+				(empty( $_POST['billing_country'])) ? $_POST['billing_country'] = sprintf('%s', esc_html($country)) : '';
+				(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_1'])) : '';
+				(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_2'])) : '';
+				(empty( $_POST['billing_city'])) ? $_POST['billing_city'] = sprintf('%s', esc_html($city)) : '';
+				(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_state'])) : '';
+				(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_postcode'])) : '';
+				(empty( $_POST['billing_phone'])) ? $_POST['billing_phone'] = sprintf('%s', esc_html($row->phone)) : '';
+				(empty( $_POST['billing_email'])) ? $_POST['billing_email'] = sprintf('%s', esc_html($row->email)) : '';
+				
+				(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_first_name'])) : '';
+				(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_last_name'])) : '';
+				(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_company'])) : '';
+				(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_country'])) : '';
+				(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_1'])) : '';
+				(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_2'])) : '';
+				(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_city'])) : '';
+				(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_state'])) : '';
+				(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_postcode'])) : '';
+				(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['wlcfc_order_comments'])) : '';
+			}
+		}
+		return $fields;
 	}
 }

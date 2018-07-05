@@ -1,10 +1,10 @@
 === WooCommerce Live Checkout Field Capture - Save Abandoned Carts ===
 Contributors: prowebdesign
-Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture
+Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture, save checkout fields
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 1.5.2
-Version: 1.5.2
+Stable tag: 2.0.0
+Version: 2.0.0
 License: GPLv2 or later
 
 Plugin instantly saves WooCommerce checkout field data before they are submitted.
@@ -12,10 +12,10 @@ Plugin instantly saves WooCommerce checkout field data before they are submitted
 == Description ==
 
 WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted.
-Now you will be able to see who has abandoned their shopping carts and you will be able to manually contact them and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
+Now your customers will be able to refresh the page during checkout process or walk around the page without loosing previously entered data in the Checkout form and see who has abandoned their shopping carts. You will be able to manually contact them and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
 
-If the user completes the payment and receives a "Thank you" page he is removed from the Checkout Field Capture table.
+If the user completes the payment and receives a "Thank you" page he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
 
 Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 
@@ -28,19 +28,20 @@ While continuing to be working on [Mājas lapu izstrāde](http://www.majas-lapu-
 Note: If the fields are added outside of Checkout page or Checkout page input field ID values are changed, the plugin will not be able to load data.
 Input field ID values should be default:
 
-* #billing_email
-* #billing_first_name 
+* #billing_first_name
 * #billing_last_name
+* #billing_company
+* #billing_email
 * #billing_phone
-* #billing_country
-* #billing_city
+* etc.
 
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
 Plugin dependencies:
 
 1. Uses WordPress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
-1. WordPress WooCommerce hooks
+1. WooCommerce hooks
+1. WooCommerce session
 
 == Installation ==
 
@@ -50,7 +51,7 @@ Plugin dependencies:
 
 == Frequently Asked Questions ==
 
-= When is the cart saved? =
+= When is the cart and checkout form input field data saved? =
 
 Data and information about the cart is saved right after the user gets to the Checkout form and one of the following events happen:
 
@@ -58,7 +59,7 @@ Data and information about the cart is saved right after the user gets to the Ch
 * Phone number is entered
 * On Checkout page load if email or phone number input fields are already filled
 
-If the user completes the checkout process and receives a "Thank you" page, the cart is removed from the Checkout Field Capture table of abandoned carts.
+If the user completes the checkout process and receives a "Thank you" page, the cart is removed from the Checkout Field Capture table of abandoned carts and the Checkout form fields are cleared.
 
 = Where can I view WooCommerce abandoned carts? =
 
@@ -72,7 +73,7 @@ Once user reaches the "Thank you" page the abandoned cart is automatically remov
 
 This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications, please visit our Pro [WooCommerce save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce save abandoned carts") plugin version.
 
-= Can I send automated abandoned cart recovery emails? =
+= How to send automated abandoned cart recovery emails? =
 
 The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
 If you would like to [send your visitors automated abandoned cart recovery emails](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
@@ -82,6 +83,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 Location of the plugin after activation.
 
 == Changelog ==
+
+= 2.0.0 =
+* Added "Remember user input" function that keeps user input in Checkout form until the Session has expired or user completes the Checkout
+* PHP default sessions functionality replaced by WooCommerce sessions
 
 = 1.5.2 =
 * Added additional hook for removing abandoned cart from the table once a corresponding WooCommerce order is created

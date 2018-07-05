@@ -44,6 +44,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Activator{
 			currency VARCHAR(10),
 			time DATETIME DEFAULT '0000-00-00 00:00:00',
 			session_id VARCHAR(60),
+			other_fields LONGTEXT,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 

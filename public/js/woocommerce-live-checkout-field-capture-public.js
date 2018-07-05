@@ -51,24 +51,49 @@
 				var wlcfc_name = jQuery("#billing_first_name").val();
 				var wlcfc_surname = jQuery("#billing_last_name").val();
 				var wlcfc_phone = jQuery("#billing_phone").val();
-				var billing_country = jQuery("#billing_country").val();
-				var billing_city = jQuery("#billing_city").val();
+				var wlcfc_country = jQuery("#billing_country").val();
+				var wlcfc_city = jQuery("#billing_city").val();
 				
-				//console . log(wlcfc_email);
-				//console . log(wlcfc_name);
-				//console . log(wlcfc_surname);
-				//console . log(wlcfc_phone);
-				//console . log(billing_country);
-				//console . log(billing_city);
+				//Other fields used for "Remember user input" function
+				var wlcfc_billing_company = jQuery("#billing_company").val();
+				var wlcfc_billing_address_1 = jQuery("#billing_address_1").val();
+				var wlcfc_billing_address_2 = jQuery("#billing_address_2").val();
+				var wlcfc_billing_state = jQuery("#billing_state").val();
+				var wlcfc_billing_postcode = jQuery("#billing_postcode").val();
+				var wlcfc_shipping_first_name = jQuery("#shipping_first_name").val();
+				var wlcfc_shipping_last_name = jQuery("#shipping_last_name").val();
+				var wlcfc_shipping_company = jQuery("#shipping_company").val();
+				var wlcfc_shipping_country = jQuery("#shipping_country").val();
+				var wlcfc_shipping_address_1 = jQuery("#shipping_address_1").val();
+				var wlcfc_shipping_address_2 = jQuery("#shipping_address_2").val();
+				var wlcfc_shipping_city = jQuery("#shipping_city").val();
+				var wlcfc_shipping_state = jQuery("#shipping_state").val();
+				var wlcfc_shipping_postcode = jQuery("#shipping_postcode").val();
+				var wlcfc_order_comments = jQuery("#order_comments").val();
 				
 				var data = {
-					action:				"save_data",
-					wlcfc_email:		wlcfc_email,
-					wlcfc_name:			wlcfc_name,
-					wlcfc_surname:		wlcfc_surname,
-					wlcfc_phone:		wlcfc_phone,
-					billing_country:	billing_country,
-					billing_city:		billing_city
+					action:						"save_data",
+					wlcfc_email:				wlcfc_email,
+					wlcfc_name:					wlcfc_name,
+					wlcfc_surname:				wlcfc_surname,
+					wlcfc_phone:				wlcfc_phone,
+					wlcfc_country:				wlcfc_country,
+					wlcfc_city:					wlcfc_city,
+					wlcfc_billing_company:		wlcfc_billing_company,
+					wlcfc_billing_address_1:	wlcfc_billing_address_1,
+					wlcfc_billing_address_2: 	wlcfc_billing_address_2,
+					wlcfc_billing_state:		wlcfc_billing_state,
+					wlcfc_billing_postcode: 	wlcfc_billing_postcode,
+					wlcfc_shipping_first_name: 	wlcfc_shipping_first_name,
+					wlcfc_shipping_last_name: 	wlcfc_shipping_last_name,
+					wlcfc_shipping_company: 	wlcfc_shipping_company,
+					wlcfc_shipping_country: 	wlcfc_shipping_country,
+					wlcfc_shipping_address_1: 	wlcfc_shipping_address_1,
+					wlcfc_shipping_address_2: 	wlcfc_shipping_address_2,
+					wlcfc_shipping_city: 		wlcfc_shipping_city,
+					wlcfc_shipping_state: 		wlcfc_shipping_state,
+					wlcfc_shipping_postcode: 	wlcfc_shipping_postcode,
+					wlcfc_order_comments: 		wlcfc_order_comments
 				}
 
 				timer = setTimeout(function(){
