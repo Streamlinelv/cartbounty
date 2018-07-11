@@ -102,13 +102,13 @@
 						//console.log(response);
 					});
 					
-				}, 400);
+				}, 800);
 			}else{
 				//console.log("Not a valid e-mail or phone address");
 			}
 		}
 
-		jQuery("#billing_email, #billing_phone").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email or Phone fields
+		jQuery("#billing_email, #billing_phone, input.input-text").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email, Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
 		jQuery(window).on("load", getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 	});
 

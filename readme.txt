@@ -3,8 +3,8 @@ Contributors: prowebdesign
 Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture, save checkout fields
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 2.0.0
-Version: 2.0.0
+Stable tag: 2.0.1
+Version: 2.0.1
 License: GPLv2 or later
 
 Plugin instantly saves WooCommerce checkout field data before they are submitted.
@@ -34,6 +34,8 @@ Input field ID values should be default:
 * #billing_email
 * #billing_phone
 * etc.
+
+Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class "input-text" in order to trigger save action from all form fields.
 
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
@@ -83,6 +85,9 @@ If you would like to [send your visitors automated abandoned cart recovery email
 Location of the plugin after activation.
 
 == Changelog ==
+
+= 2.0.1 =
+* Modified "Remember user input" function. All Checkout form input fields are now triggering save data action
 
 = 2.0.0 =
 * Added "Remember user input" function that keeps user input in Checkout form until the Session has expired or user completes the Checkout

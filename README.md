@@ -30,6 +30,8 @@ Input field ID values should be default:
 * \#billing_phone
 * etc.
 
+Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class "input-text" in order to trigger save action from all form fields.
+
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
 Plugin dependencies:
@@ -78,6 +80,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 ![Location of the WooCommerce Live Checkout Field Capture - save abandoned carts plugin after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.png "Location of the WooCommerce Live Checkout Field Capture - save abandoned carts plugin after activation")
 
 ## Changelog
+
+##### 2.0.1
+
+* Modified "Remember user input" function. All Checkout form input fields are now triggering save data action
 
 ##### 2.0.0
 
