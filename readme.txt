@@ -60,6 +60,7 @@ Data and information about the cart is saved right after the user gets to the Ch
 * Correct email address is entered
 * Phone number is entered
 * On Checkout page load if email or phone number input fields are already filled
+* Any Checkout form input field with a class "input-text" is entered or changed if a valid Email or Phone number has been entered
 
 If the user completes the checkout process and receives a "Thank you" page, the cart is removed from the Checkout Field Capture table of abandoned carts and the Checkout form fields are cleared.
 
