@@ -108,7 +108,7 @@
 			}
 		}
 
-		jQuery("#billing_email, #billing_phone, input.input-text").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email, Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
+		jQuery("#billing_email, #billing_phone, input.input-text, textarea.input-text").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email, Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
 		jQuery(window).on("load", getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 	});
 
