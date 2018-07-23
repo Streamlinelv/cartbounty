@@ -185,7 +185,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		$action_links = array();
 		$action_links['wlcfc_get_pro'] = array(
 			'label' => 'Get Pro',
-			'url'   => WCLCFC_LICENSE_SERVER_URL
+			'url'   => WCLCFC_LICENSE_SERVER_URL . '?utm_source=plugin&utm_medium=get_pro&utm_campaign=wclcfc&utm_content=settings%2Blink'
 		);
 
 		return $this->add_display_plugin_action_links( $actions, $plugin_file, $action_links, 'before' );
@@ -307,17 +307,21 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<?php endif; ?>
 			<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
 				<div class="woocommerce-live-checkout-field-capture-header-image">
-					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
+					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=plugin&utm_medium=get_pro&utm_campaign=wclcfc&utm_content=bubble%2Bimage" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
 						<img src="<?php echo plugins_url( 'assets/e-mail-notification.svg', __FILE__ ) ; ?>" title=""/>
 					</a>
 				</div>
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
-					<h2>Would you like to get notified about abandoned carts and send automated cart recovery emails?</h2>
-					<p>Save your time by enabling Pro features and focus on your business instead.</p>
-					<p class="woocommerce-live-checkout-field-capture-button-row">
-						<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>" class="button" target="_blank">Get Pro</a>
-						<span id="woocommerce-live-checkout-field-capture-close-go-pro" class="woocommerce-live-checkout-field-capture-close">Not now</span>
-					</p>
+					<form method="post" action="options.php">
+						<?php settings_fields( 'wclcfc-settings-group' ); ?>
+						<h2>Would you like to get notified about abandoned carts and send automated cart recovery emails?</h2>
+						<p>Save your time by enabling Pro features and focus on your business instead.</p>
+						<p class="woocommerce-live-checkout-field-capture-button-row">
+							<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=plugin&utm_medium=get_pro&utm_campaign=wclcfc&utm_content=bubble%2Bbutton" class="button" target="_blank">Get Pro</a>
+							<?php submit_button('Not now', 'woocommerce-live-checkout-field-capture-close', false, false); ?>
+						</p>
+						<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); ?>" />
+					</form>
 				</div>
 			</div>
 			<?php echo $this->draw_bubble(); ?>
@@ -340,7 +344,6 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			$display_bubble = true; //Let us show the bubble
 		}elseif(($this->abandoned_cart_count() > 5 || $deleted_row_count > 18) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
-			update_option('wclcfc_last_time_bubble_displayed', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
 			$display_bubble = true; //Let us show the bubble
 		}else{
 			$display_bubble = false; //Don't show the bubble just yet
