@@ -82,6 +82,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 
 ## Changelog
 
+##### 2.0.3
+
+* Updated Bubble timing function
+
 ##### 2.0.2
 
 * Fixed bug with Checkout form textarea field
