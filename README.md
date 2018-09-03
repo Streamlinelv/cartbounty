@@ -82,6 +82,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 
 ## Changelog
 
+##### 2.0.4
+
+* Fixed PHP notice and a bug when working with WooCommerce orders within admin panel
+
 ##### 2.0.3
 
 * Updated Bubble timing function

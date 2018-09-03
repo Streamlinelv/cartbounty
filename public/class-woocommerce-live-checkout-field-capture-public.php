@@ -231,25 +231,29 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	 * @since    1.3
 	 */
 	function delete_user_data(){
-		
 		global $wpdb;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
-		
-		$session_id = WC()->session->get('wclcfc_session_id');
-		if(isset($session_id)){
+
+		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
+		if(isset(WC()->session)){
+
+			$session_id = WC()->session->get('wclcfc_session_id');
+
+			if(isset($session_id)){
+				
+				//Deleting row from database
+				$wpdb->query(
+					$wpdb->prepare(
+						"DELETE FROM ". $table_name ."
+						 WHERE session_id = %s",
+						sanitize_key($session_id)
+					)
+				);
+			}
 			
-			//Deleting row from database
-			$wpdb->query(
-				$wpdb->prepare(
-					"DELETE FROM ". $table_name ."
-					 WHERE session_id = %s",
-					sanitize_key($session_id)
-				)
-			);
+			//Removing stored ID value from WooCommerce Session
+			WC()->session->__unset('wclcfc_session_id');
 		}
-		
-		//Removing stored ID value from WooCommerce Session
-		WC()->session->__unset('wclcfc_session_id');
 	}
 
 	/**
@@ -258,8 +262,10 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	 * @since    1.4.1
 	 * Return: String
 	 */
-	function attribute_slug_to_title( $attribute ,$slug ) {
+	function attribute_slug_to_title( $attribute, $slug ) {
 		global $woocommerce;
+		$value = '';
+
 		if ( taxonomy_exists( esc_attr( str_replace( 'attribute_', '', $attribute ) ) ) ) {
 			$term = get_term_by( 'slug', $slug, esc_attr( str_replace( 'attribute_', '', $attribute ) ) );
 			if ( ! is_wp_error( $term ) && $term->name )
@@ -267,6 +273,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 		} else {
 			$value = apply_filters( 'woocommerce_variation_option_name', $value );
 		}
+
 		return $value;
 	}
 	
