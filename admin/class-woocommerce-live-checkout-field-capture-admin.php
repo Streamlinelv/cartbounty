@@ -292,7 +292,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 					</div>
 					<div id="woocommerce-live-checkout-field-capture-review-content">
 						<form method="post" action="options.php">
-							<?php settings_fields( 'wclcfc-settings-group' ); ?>
+							<?php settings_fields( 'wclcfc-settings-review' ); ?>
 							<h2>Would you mind leaving us a positive review?</h2>
 							<p>Your review is the simplest way to help us continue providing a great product, improve it, and help others to make confident decisions.</p>
 							<div class="woocommerce-live-checkout-field-capture-button-row">
@@ -313,7 +313,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 				</div>
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
 					<form method="post" action="options.php">
-						<?php settings_fields( 'wclcfc-settings-group' ); ?>
+						<?php settings_fields( 'wclcfc-settings-time' ); ?>
 						<h2>Would you like to get notified about abandoned carts and send automated cart recovery emails?</h2>
 						<p>Save your time by enabling Pro features and focus on your business instead.</p>
 						<p class="woocommerce-live-checkout-field-capture-button-row">

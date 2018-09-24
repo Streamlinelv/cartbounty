@@ -32,8 +32,8 @@ if (!defined('WCLCFC_LICENSE_SERVER_URL')) define('WCLCFC_LICENSE_SERVER_URL', '
 if (!defined('WCLCFC_REVIEW_LINK')) define('WCLCFC_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post');
 
 //Registering custom options
-register_setting( 'wclcfc-settings-group', 'wclcfc_review_submitted' );
-register_setting( 'wclcfc-settings-group', 'wclcfc_last_time_bubble_displayed' );
+register_setting( 'wclcfc-settings-review', 'wclcfc_review_submitted' );
+register_setting( 'wclcfc-settings-time', 'wclcfc_last_time_bubble_displayed' );
 
 /**
  * The code that runs during plugin activation.
