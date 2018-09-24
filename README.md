@@ -2,7 +2,7 @@
 
 # WooCommerce Live Checkout Field Capture - Save Abandoned Carts
 
-Plugin instantly saves WooCommerce checkout field data before they are submitted.
+Save Abandoned Carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout field data before submission.
 
 ### Description
 
@@ -81,6 +81,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 ![Location of the WooCommerce Live Checkout Field Capture - save abandoned carts plugin after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.png "Location of the WooCommerce Live Checkout Field Capture - save abandoned carts plugin after activation")
 
 ## Changelog
+
+##### 2.0.5
+
+* Improved bubble display timing function
 
 ##### 2.0.4
 

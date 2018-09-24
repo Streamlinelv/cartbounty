@@ -335,14 +335,14 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	 * @since    1.3
 	 */
 	function draw_bubble(){
+
 		//Checking if we should display the Review bubble or Get Pro bubble
 		$deleted_row_count = get_option('wclcfc_deleted_rows');
-		if(($this->abandoned_cart_count() > 7 || $deleted_row_count > 30) && $this->days_have_passed('wclcfc_plugin_activation_time', 30) && !get_option('wclcfc_review_submitted')){ //If 30 days since plugin activation have passed and we have at least 8 abandoned carts captured or the user has deleted more than 30 abandoned carts
+		if(($this->abandoned_cart_count() > 7 || $deleted_row_count > 15 || $this->days_have_passed('wclcfc_plugin_activation_time', 28)) && !get_option('wclcfc_review_submitted')){ //If 28 days since plugin activation have passed or we have more than 7 abandoned carts captured or the user has deleted more than 15 abandoned carts and the user hasn't already left the feedback
 			$bubble_type = '#woocommerce-live-checkout-field-capture-review';
-			update_option('wclcfc_plugin_activation_time', current_time('mysql')); // Reset time when we last displayed the bubble (sets current time)
-			update_option('wclcfc_deleted_rows', 0); //Reset deleted row counter
+			update_option('wclcfc_plugin_activation_time', current_time('mysql')); //Reset time when we last displayed the bubble (sets current time)
 			$display_bubble = true; //Let us show the bubble
-		}elseif(($this->abandoned_cart_count() > 5 || $deleted_row_count > 18) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts and the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
+		}elseif(($this->abandoned_cart_count() > 5 || $deleted_row_count > 10) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
 			$display_bubble = true; //Let us show the bubble
 		}else{
