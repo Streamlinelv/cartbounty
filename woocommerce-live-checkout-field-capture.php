@@ -33,6 +33,7 @@ if (!defined('WCLCFC_REVIEW_LINK')) define('WCLCFC_REVIEW_LINK', 'https://wordpr
 
 //Registering custom options
 register_setting( 'wclcfc-settings-review', 'wclcfc_review_submitted' );
+register_setting( 'wclcfc-settings-review', 'wclcfc_last_time_bubble_displayed' );
 register_setting( 'wclcfc-settings-time', 'wclcfc_last_time_bubble_displayed' );
 
 /**

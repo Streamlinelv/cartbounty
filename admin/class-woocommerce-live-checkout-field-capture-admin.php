@@ -291,17 +291,22 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 						</a>
 					</div>
 					<div id="woocommerce-live-checkout-field-capture-review-content">
-						<form method="post" action="options.php">
-							<?php settings_fields( 'wclcfc-settings-review' ); ?>
-							<h2>Would you mind leaving us a positive review?</h2>
-							<p>Your review is the simplest way to help us continue providing a great product, improve it, and help others to make confident decisions.</p>
-							<div class="woocommerce-live-checkout-field-capture-button-row">
+						<h2>Would you mind leaving us a positive review?</h2>
+						<p>Your review is the simplest way to help us continue providing a great product, improve it, and help others to make confident decisions.</p>
+						<div class="woocommerce-live-checkout-field-capture-button-row">
+							<form method="post" action="options.php" class="wclcfc_inline">
+								<?php settings_fields( 'wclcfc-settings-review' ); ?>
 								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Sure, I'd love to</a>
-								<?php submit_button('Done that'); ?>
-								<span id="woocommerce-live-checkout-field-capture-close-review" class="woocommerce-live-checkout-field-capture-close">Close</span>
-							</div>
-							<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
-						</form>
+								<?php submit_button('Done that', 'woocommerce-live-checkout-field-capture-review-submitted', false, false); ?>
+								<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
+								<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
+							</form>
+							<form method="post" action="options.php" class="wclcfc_inline">
+								<?php settings_fields( 'wclcfc-settings-time' ); ?>
+								<?php submit_button('Close', 'woocommerce-live-checkout-field-capture-close', false, false); ?>
+								<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
+							</form>
+						</div>
 					</div>
 				</div>
 			<?php endif; ?>
@@ -320,7 +325,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 							<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" class="button" target="_blank">Get Pro</a>
 							<?php submit_button('Not now', 'woocommerce-live-checkout-field-capture-close', false, false); ?>
 						</p>
-						<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); ?>" />
+						<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
 					</form>
 				</div>
 			</div>
@@ -338,13 +343,12 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 
 		//Checking if we should display the Review bubble or Get Pro bubble
 		$deleted_row_count = get_option('wclcfc_deleted_rows');
-		if(($this->abandoned_cart_count() > 7 || $deleted_row_count > 15 || $this->days_have_passed('wclcfc_plugin_activation_time', 28)) && !get_option('wclcfc_review_submitted')){ //If 28 days since plugin activation have passed or we have more than 7 abandoned carts captured or the user has deleted more than 15 abandoned carts and the user hasn't already left the feedback
+		if(($this->abandoned_cart_count() > 8 || $deleted_row_count > 15) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 ) && !get_option('wclcfc_review_submitted')){ //If Review not submited and 18 days since plugin activation have passed and we have more than 8 abandoned carts captured or the user has deleted more than 15 abandoned carts
 			$bubble_type = '#woocommerce-live-checkout-field-capture-review';
-			update_option('wclcfc_plugin_activation_time', current_time('mysql')); //Reset time when we last displayed the bubble (sets current time)
-			$display_bubble = true; //Let us show the bubble
+			$display_bubble = true; //Show the bubble
 		}elseif(($this->abandoned_cart_count() > 5 || $deleted_row_count > 10) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
-			$display_bubble = true; //Let us show the bubble
+			$display_bubble = true; //Show the bubble
 		}else{
 			$display_bubble = false; //Don't show the bubble just yet
 		}
@@ -353,12 +357,12 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<script>
 				jQuery(document).ready(function($) {
 					var bubble = $(<?php echo "'". $bubble_type ."'"; ?>);
-					var close = $('#woocommerce-live-checkout-field-capture-close-go-pro, #woocommerce-live-checkout-field-capture-review form p.submit .button, #woocommerce-live-checkout-field-capture-close-review');
+					var close = $('.woocommerce-live-checkout-field-capture-close, .woocommerce-live-checkout-field-capture-review-submitted');
 					
 					//Function loads the bubble after a given time period in seconds	
 					setTimeout(function() {
 						bubble.css({top:"60px", right: "50px"});
-					}, 3000);
+					}, 2500);
 						
 					//Handles close button action
 					close.click(function(){

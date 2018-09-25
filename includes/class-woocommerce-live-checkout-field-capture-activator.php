@@ -57,7 +57,5 @@ class WooCommerce_Live_Checkout_Field_Capture_Activator{
 		$sql ="ALTER TABLE $table_name AUTO_INCREMENT = 1";
 		dbDelta( $sql );
 		
-		//Register plugin activation time and date
-		update_option('wclcfc_plugin_activation_time', current_time('mysql'));
 	}
 }

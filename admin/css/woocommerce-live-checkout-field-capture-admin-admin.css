@@ -132,7 +132,7 @@
 	padding: 0;
 	margin: 0;
 }
-#woocommerce-live-checkout-field-capture-review form p.submit .button{
+#woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-review-submitted{
 	text-shadow: none;
 }
 
@@ -164,12 +164,12 @@
 	margin: 0;
 }
 
-#woocommerce-live-checkout-field-capture-review form p.submit .button{
+#woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-review-submitted{
 	background: #cbcbcb;
 }
 
 #woocommerce-live-checkout-field-capture-bubbles .button:hover,
-#woocommerce-live-checkout-field-capture-review form p.submit .button:hover{
+#woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-review-submitted:hover{
 	background: #bc8df4;
 }
 
@@ -181,6 +181,10 @@
 #woocommerce-live-checkout-field-capture-bubbles .button.woocommerce-live-checkout-field-capture-close:hover{
 	color: #d2b4b4;
 	background: none;
+}
+
+.wclcfc_inline{
+	display: inline;
 }
 
 @media screen and (max-width: 1200px) {
