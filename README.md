@@ -82,6 +82,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 
 ## Changelog
 
+##### 2.0.6
+
+* Improved review bubble
+
 ##### 2.0.5
 
 * Improved bubble display timing function
