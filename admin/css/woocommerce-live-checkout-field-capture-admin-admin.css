@@ -89,27 +89,19 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd601', endColorstr='#ffe851',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
-#woocommerce-live-checkout-field-capture-review a{
-	padding: 0;
-}
-
 .woocommerce-live-checkout-field-capture-header-image a{
 	display: block;
-	padding: 45px 60px 35px;
+	padding: 0;
 	line-height: 0;
 }
 
 .woocommerce-live-checkout-field-capture-header-image img{
-	height: 45px;
-	padding: 5px 0 0 5px;
-}
-#woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-header-image img{
-	height: 135px;
+	height: 130px;
 	padding: 0;
 }
 
 #woocommerce-live-checkout-field-capture-go-pro .woocommerce-live-checkout-field-capture-header-image a:hover{
-	background: #bc8df4;
+	background: #aa88fc;
 }
 
 #woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-header-image a:hover{

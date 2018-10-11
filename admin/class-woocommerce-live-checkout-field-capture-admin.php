@@ -313,7 +313,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
 				<div class="woocommerce-live-checkout-field-capture-header-image">
 					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
-						<img src="<?php echo plugins_url( 'assets/e-mail-notification.svg', __FILE__ ) ; ?>" title=""/>
+						<img src="<?php echo plugins_url( 'assets/notification-email.gif', __FILE__ ) ; ?>" title=""/>
 					</a>
 				</div>
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
