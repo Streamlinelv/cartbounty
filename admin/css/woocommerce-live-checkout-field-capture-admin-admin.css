@@ -183,14 +183,14 @@
 }
 
 @media screen and (max-width: 1200px) {
-	.woocommerce_page_wclcfc .column-cart_contents{
-		width: 280px;
-	}
-}
-
-@media screen and (max-width: 1000px) {
 	.woocommerce_page_wclcfc .column-time,
 	.woocommerce_page_wclcfc .column-cart_contents{
 		width: auto;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	#wclcfc-table .column-id{
+		width: 100%;
 	}
 }

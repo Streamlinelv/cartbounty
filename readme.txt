@@ -11,11 +11,15 @@ Save Abandoned Carts and increase your sales by recovering them. Plugin instantl
 
 == Description ==
 
-WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted.
-Now your customers will be able to refresh the page during checkout process or walk around the page without loosing previously entered data in the Checkout form and see who has abandoned their shopping carts. You will be able to manually contact them and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
+WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them.
+
+You will be able to manually contact your visitors and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
+
 If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
 
-If the user completes the payment and receives a "Thank you" page he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
+The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form.
+
+If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
 
 Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 

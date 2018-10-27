@@ -286,12 +286,12 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<?php if(!get_option('wclcfc_review_submitted')): //Don't output Review bubble if review has been left ?>
 				<div id="woocommerce-live-checkout-field-capture-review" class="woocommerce-live-checkout-field-capture-bubble">
 					<div class="woocommerce-live-checkout-field-capture-header-image">
-						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
-							<img src="<?php echo plugins_url( 'assets/review-notification.gif', __FILE__ ) ; ?>" title=""/>
+						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Leave WooCommerce Live Checkout Field Capture Pro a 5-star rating" target="_blank">
+							<img src="<?php echo plugins_url( 'assets/review-notification.gif', __FILE__ ) ; ?>" alt="" title=""/>
 						</a>
 					</div>
 					<div id="woocommerce-live-checkout-field-capture-review-content">
-						<h2>Would you mind leaving a beautiful 5-star review?</h2>
+						<h2>If you like WooCommerce Live Checkout Field Capture Pro please leave us a 5-star rating.</h2>
 						<p>It is the fastest way to help us grow and keep improving this plugin even further.</p>
 						<div class="woocommerce-live-checkout-field-capture-button-row">
 							<form method="post" action="options.php" class="wclcfc_inline">
@@ -313,7 +313,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
 				<div class="woocommerce-live-checkout-field-capture-header-image">
 					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
-						<img src="<?php echo plugins_url( 'assets/notification-email.gif', __FILE__ ) ; ?>" title=""/>
+						<img src="<?php echo plugins_url( 'assets/notification-email.gif', __FILE__ ) ; ?>" alt="" title=""/>
 					</a>
 				</div>
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
