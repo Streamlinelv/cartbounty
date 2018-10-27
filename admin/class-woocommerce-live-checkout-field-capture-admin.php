@@ -291,12 +291,12 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 						</a>
 					</div>
 					<div id="woocommerce-live-checkout-field-capture-review-content">
-						<h2>If you like WooCommerce Live Checkout Field Capture Pro please leave us a 5-star rating.</h2>
+						<h2>If you like WooCommerce Live Checkout Field Capture, please leave us a 5-star rating.</h2>
 						<p>It is the fastest way to help us grow and keep improving this plugin even further.</p>
 						<div class="woocommerce-live-checkout-field-capture-button-row">
 							<form method="post" action="options.php" class="wclcfc_inline">
 								<?php settings_fields( 'wclcfc-settings-review' ); ?>
-								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Sure, I'd love to</a>
+								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Let's do this</a>
 								<?php submit_button('Done that', 'woocommerce-live-checkout-field-capture-review-submitted', false, false); ?>
 								<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
 								<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
