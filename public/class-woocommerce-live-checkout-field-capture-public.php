@@ -56,7 +56,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	}
 	
 	/**
-	 * Function in order to receive data from Checkout input fields, sanitize it and save to Database
+	 * Function to receive data from Checkout input fields, sanitize it and save to Database
 	 *
 	 * @since    1.4.1
 	 */
@@ -219,6 +219,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 				
 				//Storing session_id in WooCommerce session
 				WC()->session->set('wclcfc_session_id', $session_id);
+				$this->update_captured_abandoned_cart_count(); //Updating total count of captured abandoned carts
 			}
 			
 			die();
@@ -338,4 +339,15 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 		}
 		return $fields;
 	}
+
+	/**
+	 * Function saves and updates total count of captured abandoned carts
+	 *
+	 * @since    2.1
+	 */
+	function update_captured_abandoned_cart_count(){
+		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
+		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count + 1); //Updating the count by one abandoned cart
+	}
+
 }

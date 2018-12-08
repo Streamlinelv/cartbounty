@@ -38,14 +38,14 @@ class WooCommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	function get_columns(){
 	   return $columns= array(
 		  'cb'				=> 		'<input type="checkbox" />',
-		  'id'				=>		__('ID'),
-		  'nameSurname'		=>		__('Name, Surname'),
-		  'email'			=>		__('Email'),
-		  'phone'			=>		__('Phone'),
-          'location'        =>      __('Location'),
-		  'cart_contents'	=>		__('Cart contents'),
-		  'cart_total'		=>		__('Cart total'),
-		  'time'			=>		__('Time')
+		  'id'				=>		__('ID', WCLCFC_TEXT_DOMAIN),
+		  'nameSurname'		=>		__('Name, Surname', WCLCFC_TEXT_DOMAIN),
+		  'email'			=>		__('Email', WCLCFC_TEXT_DOMAIN),
+		  'phone'			=>		__('Phone', WCLCFC_TEXT_DOMAIN),
+          'location'        =>      __('Location', WCLCFC_TEXT_DOMAIN),
+		  'cart_contents'	=>		__('Cart contents', WCLCFC_TEXT_DOMAIN),
+		  'cart_total'		=>		__('Cart total', WCLCFC_TEXT_DOMAIN),
+		  'time'			=>		__('Time', WCLCFC_TEXT_DOMAIN)
 	   );
 	}
 	
@@ -198,7 +198,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      */
 	 function get_bulk_actions(){
         $actions = array(
-            'delete' => 'Delete'
+            'delete' => __('Delete', WCLCFC_TEXT_DOMAIN)
         );
         return $actions;
     }

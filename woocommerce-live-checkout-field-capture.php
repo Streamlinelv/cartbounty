@@ -2,9 +2,9 @@
 
 /**
  * Plugin Name: WooCommerce Live Checkout Field Capture
- * Plugin URI: 
+ * Plugin URI: https://wordpress.org/plugins/woo-save-abandoned-carts/
  * Description: Plugin instantly saves WooCommerce checkout field data before they are submitted.
- * Version: 2.0.6
+ * Version: 2.1
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
@@ -24,16 +24,17 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 //Defining constants
-if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '2.0.6');
+if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '2.1');
 if (!defined('WCLCFC_BASENAME')) define( 'WCLCFC_BASENAME', plugin_basename( __FILE__ ));
 if (!defined('WCLCFC_PLUGIN_NAME_SLUG')) define( 'WCLCFC_PLUGIN_NAME_SLUG', 'woocommerce-live-checkout-field-capture');
 if (!defined('WCLCFC_TABLE_NAME')) define( 'WCLCFC_TABLE_NAME', 'captured_wc_fields');
 if (!defined('WCLCFC_LICENSE_SERVER_URL')) define('WCLCFC_LICENSE_SERVER_URL', 'https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/');
 if (!defined('WCLCFC_REVIEW_LINK')) define('WCLCFC_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post');
+if (!defined('WCLCFC_TEXT_DOMAIN')) define( 'WCLCFC_TEXT_DOMAIN', 'wclcfc');
 
 //Registering custom options
 register_setting( 'wclcfc-settings-review', 'wclcfc_review_submitted' );
-register_setting( 'wclcfc-settings-review', 'wclcfc_last_time_bubble_displayed' );
+register_setting( 'wclcfc-settings-declined', 'wclcfc_times_review_declined' );
 register_setting( 'wclcfc-settings-time', 'wclcfc_last_time_bubble_displayed' );
 
 /**

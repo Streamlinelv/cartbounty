@@ -1,0 +1,547 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: woo-save-abandoned-carts\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-08 21:45+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Nauris <naurisex@inbox.lv>\n"
+"Language-Team: Streamline.lv <info@streamline.lv>\n"
+"Language: en_LV\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:41
+msgid "ID"
+msgstr "ID"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:42
+msgid "Name, Surname"
+msgstr "Vārds, Uzvārds"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:43
+msgid "Email"
+msgstr "E-pasts"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:44
+msgid "Phone"
+msgstr "Telefons"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:45
+msgid "Location"
+msgstr "Vieta"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:46
+msgid "Cart contents"
+msgstr "Groza saturs"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:47
+msgid "Cart total"
+msgstr "Groza summa"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:48
+msgid "Time"
+msgstr "Laiks"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:93
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:201
+msgid "Delete"
+msgstr "Dzēst"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:77
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:79
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:145
+msgid "WooCommerce Live Checkout Field Capture"
+msgstr "WooCommerce tiešsaistes apmaksas formā saglabātie lauki"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:77
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:79
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:105
+msgid "Checkout Field Capture"
+msgstr "Apmaksas formas saglabātie lauki"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:122
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Jums nav tiesību skatīt šo lapu."
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:140
+#, php-format
+msgid "Items deleted: %d"
+msgstr "Ieraksti dzēsti: %d"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:150
+msgid ""
+"Looks like you do not have any saved Abandoned carts yet.<br/>But do not "
+"worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone "
+"number</strong> fields of your WooCommerce Checkout form and abandons the "
+"cart, it will automatically appear here."
+msgstr ""
+"Izskatās, ka vēl neviens novārta atstāts pirkumu grozs nav saglabāts.<br/"
+">Taču neraizējieties, tiklīdz kāds aizpildīs <strong>e-pasta</strong> vai "
+"<strong>telefona</strong> laukus un pametīs WooCommerce iepirkšanās procesu, "
+"viņa novārtā pamestais pirkumu grozs būs šeit redzams."
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:187
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:323
+msgid "Get Pro"
+msgstr "Apskatīt"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:271
+msgid "Leave WooCommerce Live Checkout Field Capture a 5-star rating"
+msgstr ""
+"Atstājiet WooCommerce tiešsaistes apmaksas formā saglabātie lauki spraudnim "
+"5-zvaigžņu vērtējumu"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:279
+msgid "Congrats!"
+msgstr "Opiņā!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:281
+msgid "Awesome!"
+msgstr "Burvīgi!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:283
+msgid "Amazing!"
+msgstr "Satriecoši!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:285
+msgid "Incredible!"
+msgstr "Neticami!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:287
+msgid "Crazy!"
+msgstr "Wow!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:290
+msgid "Fantastic!"
+msgstr "Fantastiski!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:293
+#, php-format
+msgid "%s You have already captured %d abandoned carts!"
+msgstr "%s - jau %d. novārtā atstātais pirkumu grozs notverts!"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:294
+msgid ""
+"If you like our plugin, please leave us a 5-star rating. It is the fastest "
+"way to help us grow and keep improving it further."
+msgstr "Ja Tev patīk mūsu produkts, lūdzu atstāj mums 5-zvaigžņu vērtējumu."
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:298
+msgid "Let's do this"
+msgstr "Pievienot vērtējumu"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:299
+msgid "Done that"
+msgstr "Darīts"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:304
+msgid "Close"
+msgstr "Aizvērt"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:313
+msgid "Get WooCommerce Live Checkout Field Capture Pro"
+msgstr ""
+"Apskatīt WooCommerce tiešsaistes apmaksas formā saglabāto lauku Pro versiju"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:320
+msgid ""
+"Would you like to get notified about abandoned carts and send automated cart "
+"recovery emails?"
+msgstr ""
+"Vēlies e-pastus par saglabātajiem pirkumu groziem un sūtīt automātiskus "
+"atgādinājumus šiem lietotājiem?"
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:321
+msgid ""
+"Save your time by enabling Pro features and focus on your business instead."
+msgstr ""
+"Taupi savu laiku, aktivizē Pro iespējas un fokusē savu laiku biznesa "
+"attīstībai."
+
+#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:324
+msgid "Not now"
+msgstr "Ne tagad"
+
+#~ msgid "Wow!"
+#~ msgstr "Opiņā"
+
+#~ msgid ""
+#~ "If you like WooCommerce Live Checkout Field Capture, please leave us a 5-"
+#~ "star rating."
+#~ msgstr ""
+#~ "Ja jums patīk šis produkts, lūdzu atstājiet mums 5-zvaigžņu vērtējumu."
+
+#~ msgid "Status"
+#~ msgstr "Statuss"
+
+#~ msgid "Shopping"
+#~ msgstr "Iepērkas"
+
+#~ msgid "New"
+#~ msgstr "Jauns"
+
+#~ msgid "Carts per page"
+#~ msgstr "Pirkumu grozi lapā"
+
+#~ msgid "Need help or support?"
+#~ msgstr "Vajadzīga palīdzība?"
+
+#~ msgid ""
+#~ "%s plugin saves all activity in the WooCommerce checkout form before it "
+#~ "is submitted. The plugin allows to see who abandons your shopping carts "
+#~ "and get in touch with them.<br/>\n"
+#~ "\t\t\t\tYou will receive regular email notifications about newly "
+#~ "abandoned shopping carts and will be able to remind about these carts "
+#~ "either manually or using MailChimp sending automated abandoned cart "
+#~ "recovery emails. Please see %sthis video tutorial on how to setup "
+#~ "MailChimp%s."
+#~ msgstr ""
+#~ "%s spraudnis saglabā visu WooCommerce izrakstīšanās formas laukus pirms "
+#~ "nospiesta piršanas poga. Spraudnis ļauj apskatīt novārtā atstātos pirkumu "
+#~ "grozus un sazināties ar to īpašniekiem.<br/>\n"
+#~ "\t\t\t\tJūs saņemsiet regulārus e-pastu paziņojumus par jauniem novārtā "
+#~ "atstātiem pirkumu groziem un varēsiet atgādināt lietotājiem par tiem vai "
+#~ "nu sūtot katram individuālu e-pastu, vai izmantojot MailChimp, lai "
+#~ "izsūtītu automatizētus novārtā atstāto pirkumu grozu atgādinājumu e-"
+#~ "pastus. Lūdzu apskatiet %sšo video pamācību kā savienot spraudni ar "
+#~ "MailChimp%s."
+
+#~ msgid ""
+#~ "The \"Remember checkout fields\" function allows your customers to "
+#~ "refresh the checkout page after entering their information and walk "
+#~ "around the page without losing previously entered data in the checkout "
+#~ "form.<br/>\n"
+#~ "\t\t\t\tIf the user completes the payment and receives a \"Thank you\" "
+#~ "page, he is removed from the Checkout Field Capture table and the "
+#~ "Checkout form fields will be cleared."
+#~ msgstr ""
+#~ "Funkcija “Atcerēties izrakstīšanās formas laukus” jūsu apmeklētājiem ļaus "
+#~ "atjaunināt izrakstīšanās lapu, kā arī doties uz citām veikala lapām "
+#~ "nezaudējot iepriekš ievadīto informāciju izrakstīšanās lapas ievadlaukos."
+#~ "<br/>\n"
+#~ "\t\t\t\tJa lietotājs pabeidz pirkumu un saņem “Paldies par pirkumu” "
+#~ "paziņojumu, viņš tiek automātiski dzēsts no novārtā atstāto pirkumu grozu "
+#~ "saraksta, kā arī tiks dzēsti izrakstīšanās formas ievadlauki."
+
+#~ msgid ""
+#~ "If you have additional questions, please see the readme file or take a "
+#~ "look at %sfrequently asked questions%s."
+#~ msgstr ""
+#~ "Ja jums ir papildus jautājumi, lūdzu apskatiet %sbiežāk uzdotos jautājumus"
+#~ "%s."
+
+#~ msgid "View FAQ"
+#~ msgstr "Parādīt BUJ"
+
+#~ msgid "Get Support"
+#~ msgstr "Saņemt atbalstu"
+
+#~ msgid "Need help?"
+#~ msgstr "Vajadzīga palīdzība?"
+
+#~ msgid "Found a bug?"
+#~ msgstr "Atradi kļūdu?"
+
+#~ msgid ""
+#~ "If you come across a bug or experience issues with the %s plugin, please "
+#~ "create a ticket %shere%s or use the Report button below. <br/>"
+#~ msgstr ""
+#~ "Ja esat atradis kļūdu vai pamanāt kādas nepilnības %s spraudņa darbībā, "
+#~ "lūdzu pievienojiet kļūdas pieteikumu %sšeit%s. <br/>"
+
+#~ msgid ""
+#~ "The export buttons are intended to help the debugging process of "
+#~ "abandoned cart synchronization issues."
+#~ msgstr ""
+#~ "Eksporta pogas ir paredzētas, lai palīdzētu ar novārtā atstāto pirkumu "
+#~ "grozu sinhronizācijas problēmām."
+
+#~ msgid "Export carts"
+#~ msgstr "Eksportēt grozus"
+
+#~ msgid "Export products"
+#~ msgstr "Eksportēt produktus"
+
+#~ msgid "Export last MailChimp sync status"
+#~ msgstr "Eksportēt pēdējo MailChimp sinhronizācijas atskaiti"
+
+#~ msgid "Report a bug"
+#~ msgstr "Pieteikt kļūdu"
+
+#~ msgid "Have a new feature in mind? That's awesome!"
+#~ msgstr "Vai Jums padomā jauna funkcionalitāte? Lieliski!"
+
+#~ msgid ""
+#~ "We would love to use your suggestions and ideas to improve %s plugin. We "
+#~ "always welcome suggestions from our users and will evaluate each new "
+#~ "idea. We might not always have time to get back to you, but your feedback "
+#~ "and suggestions are very important to us."
+#~ msgstr ""
+#~ "Mēs ļoti labprāt uzklausītu Jūsu ieteikumus un idejas %s spraudņa "
+#~ "uzlabošanai. Mēs augsti vērtējam ieteikumus no mūsu lietotājiem un "
+#~ "izvērtējam visas idejas. Iespējams ne vienmēr varam atrast laiku, lai "
+#~ "atbildētu uz ikvienu ziņu, taču katrs ierosinājums mums ir ļoti būtisks."
+
+#~ msgid "Request a feature"
+#~ msgstr "Vēlos papildus funkcionalitāti"
+
+#~ msgid "Settings"
+#~ msgstr "Iestatījumi"
+
+#~ msgid "License key:"
+#~ msgstr "License:"
+
+#~ msgid "Plugin will not function unless a valid license key is provided."
+#~ msgstr "Spraudnis nefunkcionēs bez derīgas licenses ievadīšanas."
+
+#~ msgid "Send notifications about abandoned carts to this email:"
+#~ msgstr ""
+#~ "Sūtīt paziņojumus par novārtā atstātiem pirkumu groziem uz šo e-pasta "
+#~ "adresi:"
+
+#~ msgid ""
+#~ "By default, notifications will be sent to WordPress admin email - %s."
+#~ msgstr ""
+#~ "Pēc noklusējuma paziņojumi par novārtā atstātiem pirkumu groziem tiks "
+#~ "sūtīti uz WordPress administratora e-pastu - %s."
+
+#~ msgid "How often to check and send emails about newly abandoned carts?"
+#~ msgstr ""
+#~ "Cik bieži pārbaudīt un izsūtīt paziņojumus par jauniem novārtā atstātiem "
+#~ "pirkumu groziem?"
+
+#~ msgid "Every 10 minutes"
+#~ msgstr "Katras 10 minūtes"
+
+#~ msgid "Every 20 minutes"
+#~ msgstr "Katras 20 minūtes"
+
+#~ msgid "Every 30 minutes"
+#~ msgstr "Katras 30 minūtes"
+
+#~ msgid "Every hour"
+#~ msgstr "Katru stundu"
+
+#~ msgid "Every 2 hours"
+#~ msgstr "Reizi 2 stundās"
+
+#~ msgid "Every 3 hours"
+#~ msgstr "Reizi 3 stundās"
+
+#~ msgid "Every 4 hours"
+#~ msgstr "Reizi 4 stundās"
+
+#~ msgid "Every 5 hours"
+#~ msgstr "Reizi 5 stundās"
+
+#~ msgid "Every 6 hours"
+#~ msgstr "Reizi 6 stundās"
+
+#~ msgid "Twice a day"
+#~ msgstr "Divreiz dienā"
+
+#~ msgid "Once a day"
+#~ msgstr "Vienreiz dienā"
+
+#~ msgid "Once every 2 days"
+#~ msgstr "Vienreiz 2 dienās"
+
+#~ msgid "Disable notifications"
+#~ msgstr "Atslēgt paziņojumus"
+
+#~ msgid "Save settings"
+#~ msgstr "Saglabāt iestatījumus"
+
+#~ msgid "MailChimp"
+#~ msgstr "MailChimp"
+
+#~ msgid ""
+#~ "Auch, it seems like you have forgotten to enable WooCommerce. "
+#~ "Unfortunately, we can provide MailChimp functionality only if it is "
+#~ "enabled, sorry for this :)"
+#~ msgstr ""
+#~ "Izskatās, ka esat aizmirsis ieslēgt WooCommerce spraudni. Diemžēl "
+#~ "MailChimp funkcionalitāti varam nodrošināt tikai, ja tas ir ieslēgts, "
+#~ "ļoti atvainojamies par šo :)"
+
+#~ msgid ""
+#~ "If you would like to integrate with MailChimp and send out automated "
+#~ "abandoned cart recovery emails to customers, please enter MailChimp API "
+#~ "key below. Please see <a href=\"%s\" target=\"_blank\">this video "
+#~ "tutorial</a> for additional information."
+#~ msgstr ""
+#~ "Ja vēlaties savienoties ar MailChimp un apmeklētājiem sūtīt automātiskus "
+#~ "atgādinājuma e-pastus par novārtā atstātiem pirkumiem, lūdzu zemāk "
+#~ "ievadiet MailChimp API atslēgu. Noskatieties <a href=“%s” "
+#~ "target=“_blank”>šo īso video pamācību</a> papildus informācijai."
+
+#~ msgid "MailChimp API key:"
+#~ msgstr "MailChimp API atslēga:"
+
+#~ msgid ""
+#~ "To get your MailChimp API key, sign in to your account and open Account > "
+#~ "Extras > API keys."
+#~ msgstr ""
+#~ "Lai iegūtu MailChimp API atslēgu, autorizējieties savā kontā un atveriet "
+#~ "Account > Extras > API keys."
+
+#~ msgid "Choose your MailChimp list to sync with:"
+#~ msgstr "Izvēlieties MailChimp sarakstu ar kuru sinhronizēt informāciju:"
+
+#~ msgid "Force sync"
+#~ msgstr "Veikt sinhronizāciju"
+
+#~ msgid "Abandoned carts"
+#~ msgstr "Novārtā atstātie pirkumu grozi"
+
+#~ msgid ""
+#~ "Something went wrong. The license server might be down. Please try again."
+#~ msgstr ""
+#~ "Kaut kas nogājis greizi. Neizdevās savienoties ar licencēšanas serveri. "
+#~ "Lūdzu mēģiniet vēlreiz."
+
+#~ msgid "Activated"
+#~ msgstr "Aktivizēta"
+
+#~ msgid ""
+#~ "License however has expired. Please do not worry, the plugin will "
+#~ "continue to collect data and save abandoned carts. But in case if you "
+#~ "would like to receive new updates, assistance and support us in further "
+#~ "plugin development, please <a href=\"%s\" target=\"_blank\">renew your "
+#~ "license here</a>."
+#~ msgstr ""
+#~ "Licensei diemžēl beidzies termiņš. Taču neraizējieties, spraudnis "
+#~ "joprojām turpinās darbību, kā arī uzkrāt datus par novārtā pamestajiem "
+#~ "pirkumu groziem. Bet, ja vēlaties arī turpmāk saņemt spraudņa "
+#~ "atjauninājumus, palīdzību, kā arī atbalstīt mūs spraudņa tālākā "
+#~ "uzturēšanā un attīstībā, tad lūdzu <a href=\"%s\" target=\"_blank"
+#~ "\">atjauniniet savu licenci šeit</a>."
+
+#~ msgid ""
+#~ "License however has expired. Please do not worry, the plugin will "
+#~ "continue to collect data and save abandoned carts. But in case if you "
+#~ "would like to receive further updates, assistance and support us in "
+#~ "further plugin development, please <a href=\"%s\" target=\"_blank\">renew "
+#~ "your license here</a>."
+#~ msgstr ""
+#~ "Licensei diemžēl beidzies termiņš. Taču neraizējieties, spraudnis "
+#~ "joprojām turpinās darbību, kā arī uzkrāt datus par novārtā pamestajiem "
+#~ "pirkumu groziem. Bet, ja vēlaties arī turpmāk saņemt spraudņa "
+#~ "atjauninājumus, palīdzību, kā arī atbalstīt mūs spraudņa tālākā "
+#~ "uzturēšanā un attīstībā, tad lūdzu <a href=\"%s\" target=\"_blank"
+#~ "\">atjauniniet savu licenci šeit</a>."
+
+#~ msgid "Invalid license key"
+#~ msgstr "Nederīga license"
+
+#~ msgid "Error deactivating license."
+#~ msgstr "Kļūda licenses deaktivizēšanā."
+
+#~ msgid "License successfully deactivated."
+#~ msgstr "License veiksmīgi deaktivizēta."
+
+#~ msgid ""
+#~ "Hey there, thanks for activating the %s plugin. Now just go to the <a "
+#~ "href=\"%s\">Settings</a> page, enter your license key, sit back and enjoy "
+#~ "the show :)"
+#~ msgstr ""
+#~ "Paldies par %s spraudņa aktivizēšanu. Tagad tikai atliek doties uz <a "
+#~ "href=\"%s\">Iestatījumiem</a>, aktivizēt license un baudīt procesu :)"
+
+#~ msgid "Check for updates"
+#~ msgstr "Pārbaudīt atjauninājumus"
+
+#~ msgid "View details"
+#~ msgstr "Vairāk"
+
+#~ msgid "More information about %s"
+#~ msgstr "Plašāka informācija par %s"
+
+#~ msgid "Unknown update checker status \"%s\""
+#~ msgstr "Nenosakāms atjauninājumu stāvoklis “%s”"
+
+#~ msgid "There is no changelog available."
+#~ msgstr "Nav pieejams izmaiņu saraksts."
+
+#~ msgid "Error"
+#~ msgstr "Kļūda"
+
+#~ msgid "Unknown error validating API key"
+#~ msgstr "Kļūda veicot API atslēgas pārbaudi"
+
+#~ msgid "Choose a list"
+#~ msgstr "Izvēlieties sarakstu"
+
+#~ msgid "Connected"
+#~ msgstr "Savienots"
+
+#~ msgid "n/a"
+#~ msgstr "n/a"
+
+#~ msgid ""
+#~ "Awesome, you are almost done. Now get back to MailChimp and setup your <a "
+#~ "href=\"https://admin.mailchimp.com/campaigns/#/create-campaign/explore/"
+#~ "abandonedCart\" target=\"_blank\" title=\"Abandoned cart recovery "
+#~ "automation workflow on MailChimp\">Abandoned cart recovery automation "
+#~ "workflow</a> and turn your visitors into customers :)"
+#~ msgstr ""
+#~ "Lieliski, viss gandrīz pabeigts. Atgriezieties MailChimp un <a "
+#~ "href=“https://admin.mailchimp.com/campaigns/#/create-campaign/explore/"
+#~ "abandonedCart” target=“_blank” title=“ Iestatīt MailChimp automātisko e-"
+#~ "pastu izsūtīšanu”>iestatiet tajā automātisko e-pastu izsūtīšanu</a>, lai "
+#~ "pārvērstu apmeklētājus savos klientos."
+
+#~ msgid "Done"
+#~ msgstr "Darīts"
+
+#~ msgid "Character set: %s"
+#~ msgstr "Rakstzīmju kopa: %s"
+
+#~ msgid "New abandoned carts saved"
+#~ msgstr "Saglabāti jauni novārtā atstāti pirkumu grozi"
+
+#~ msgid ""
+#~ "You have %d new abandoned carts. <br/>View them here: <a href=\"%s\">%s</"
+#~ "a>"
+#~ msgstr ""
+#~ "Jums ir %d novārtā atstāti pirkumu grozi. <br/>Apskatiet tos šeit: <a "
+#~ "href=\"%s\">%s</a>"
+
+#~ msgid "New abandoned cart saved"
+#~ msgstr "Saglabāts jauns novārtā atstāts pirkumu grozs"
+
+#~ msgid ""
+#~ "You have %d new abandoned cart. <br/>View it here: <a href=\"%s\">%s</a>"
+#~ msgstr ""
+#~ "Jums ir %d novārtā atstāts pirkumu grozs. <br/>Apskatiet to šeit: <a href="
+#~ "\"%s\">%s</a>"
+
+#~ msgid "Sure, I'd love to"
+#~ msgstr "Jā, labprāt"
+
+#~ msgid "Would you mind leaving a beautiful 5-star review?"
+#~ msgstr "Vai Jūs neiebilstu atstāt mums skaistu 5 zvaigžņu atsauksmi?"
+
+#~ msgid ""
+#~ "Once you have installed %s plugin, you will be able to see who has "
+#~ "abandoned their WooCommerce shopping carts. You will be able to manually "
+#~ "contact them and remind about the abandoned cart. If you have additional "
+#~ "questions, please see the readme file or visit %splugin page%s."
+#~ msgstr ""
+#~ "Kad būsiet uzstādījis %s spraudni, varēsiet redzēt visus, kas būs "
+#~ "pametuši savus WooCommerce pirkumu grozus novārtā. Jums būs iespēja ar "
+#~ "tiem individuāli sazināties un atgādināt par novārtā pamesto pirkuma "
+#~ "grozu. Ja Jums rodas papildus jautājumi, lūdzu apskatiet Readme dokumentu "
+#~ "vai apmeklējiet %spraudņa lapu%s."
+
+#~ msgid "No"
+#~ msgstr "Nē"
+
+#~ msgid "Yes"
+#~ msgstr "Jā"

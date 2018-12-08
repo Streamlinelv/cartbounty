@@ -74,9 +74,9 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		//If the plugin is active - output menu under WooCommerce
 		//Else output the menu as a Page
 		if(class_exists('WooCommerce')){
-			add_submenu_page( 'woocommerce', 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'list_users', 'wclcfc', array($this,'register_menu_options'));			
+			add_submenu_page( 'woocommerce', __('WooCommerce Live Checkout Field Capture', WCLCFC_TEXT_DOMAIN), __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN), 'list_users', 'wclcfc', array($this,'register_menu_options'));			
 		}else{
-			add_menu_page( 'WooCommerce Live Checkout Field Capture', 'Checkout Field Capture', 'list_users', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
+			add_menu_page( __('WooCommerce Live Checkout Field Capture', WCLCFC_TEXT_DOMAIN), __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN), 'list_users', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
 		}
 	}
 
@@ -102,7 +102,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			);
 			
 			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for Checkout Field Capture Pro
-				if ( 0 === strpos( $menu_item[0], 'Checkout Field Capture')) {
+				if ( 0 === strpos( $menu_item[0], __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN))) {
 					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . $order_count . '">' .  $order_count .'</span>';
 				}
 			}
@@ -119,7 +119,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
 		if ( !current_user_can( 'list_users' )){
-			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+			wp_die( __( 'You do not have sufficient permissions to access this page.', WCLCFC_TEXT_DOMAIN ) );
 		}
 		
 		//Our class extends the WP_List_Table class, so we need to make sure that it's there
@@ -137,18 +137,18 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			else{ //If a single row is deleted
 				$deleted_row_count = 1;
 			}
-			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Items deleted: %d', 'custom_table_example'), $deleted_row_count ) . '</p></div>';
-			
-			$this->update_deleted_row_count($deleted_row_count);
+			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Items deleted: %d', WCLCFC_TEXT_DOMAIN ), $deleted_row_count ) . '</p></div>';
 
 		}
 		?>
 		<div class="wrap">
-			<h1 id="woocommerce-live-checkout-field-capture-title">WooCommerce Live Checkout Field Capture</h1>
+			<h1 id="woocommerce-live-checkout-field-capture-title"><?php echo __('WooCommerce Live Checkout Field Capture', WCLCFC_TEXT_DOMAIN); ?></h1>
 			<?php do_action('wclcfc_after_page_title'); ?>
 			<?php echo $message;
 			if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note?>
-				<p>Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.</p>
+				<p>
+					<?php echo __( 'Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.', WCLCFC_TEXT_DOMAIN); ?>
+				</p>
 			<?php else: ?>
 				<form id="wclcfc-table" method="GET">
 					<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
@@ -184,7 +184,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		
 		$action_links = array();
 		$action_links['wlcfc_get_pro'] = array(
-			'label' => 'Get Pro',
+			'label' => __('Get Pro', WCLCFC_TEXT_DOMAIN),
 			'url'   => WCLCFC_LICENSE_SERVER_URL . '?utm_source=' . urlencode(get_bloginfo('url')) . '&utm_medium=plugin_link&utm_campaign=wclcfc'
 		);
 
@@ -259,24 +259,6 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	}
 
 	/**
-	 * Function counts total deleted abandoned cart count by user
-	 *
-	 * $deleted_row_count = Deleted rows, integer
-	 * @since    1.4.1
-	 */
-	function update_deleted_row_count($deleted_row_count){
-		if(get_option('wclcfc_deleted_rows') > 60) {
-			//Stop updating database
-			return;
-		}else{
-			$previously_deleted_row_count = get_option('wclcfc_deleted_rows');
-			$new_deleted_row_count = $previously_deleted_row_count + $deleted_row_count;
-			update_option('wclcfc_deleted_rows', $new_deleted_row_count);
-			return;
-		}
-	}
-
-	/**
 	 * Function outputs bubble content
 	 *
 	 * @since    1.4.2
@@ -286,25 +268,41 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<?php if(!get_option('wclcfc_review_submitted')): //Don't output Review bubble if review has been left ?>
 				<div id="woocommerce-live-checkout-field-capture-review" class="woocommerce-live-checkout-field-capture-bubble">
 					<div class="woocommerce-live-checkout-field-capture-header-image">
-						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="Leave WooCommerce Live Checkout Field Capture Pro a 5-star rating" target="_blank">
+						<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" title="<?php echo __('Leave WooCommerce Live Checkout Field Capture a 5-star rating', WCLCFC_TEXT_DOMAIN ); ?>" target="_blank">
 							<img src="<?php echo plugins_url( 'assets/review-notification.gif', __FILE__ ) ; ?>" alt="" title=""/>
 						</a>
 					</div>
 					<div id="woocommerce-live-checkout-field-capture-review-content">
-						<h2>If you like WooCommerce Live Checkout Field Capture, please leave us a 5-star rating.</h2>
-						<p>It is the fastest way to help us grow and keep improving this plugin even further.</p>
+						<?php
+							//Outputing different expressions depending on the amount of captured carts
+							if($this->total_captured_abandoned_cart_count() <= 10){
+								$expression = __('Congrats!', WCLCFC_TEXT_DOMAIN);
+							}elseif($this->total_captured_abandoned_cart_count() <= 30){
+								$expression = __('Awesome!', WCLCFC_TEXT_DOMAIN);
+							}elseif($this->total_captured_abandoned_cart_count() <= 100){
+								$expression = __('Amazing!', WCLCFC_TEXT_DOMAIN);
+							}elseif($this->total_captured_abandoned_cart_count() <= 300){
+								$expression = __('Incredible!', WCLCFC_TEXT_DOMAIN);
+							}elseif($this->total_captured_abandoned_cart_count() <= 500){
+								$expression = __('Crazy!', WCLCFC_TEXT_DOMAIN);
+							}
+							else{
+								$expression = __('Fantastic!', WCLCFC_TEXT_DOMAIN);
+							}
+						?>
+						<h2><?php echo sprintf(__('%s You have already captured %d abandoned carts!', WCLCFC_TEXT_DOMAIN ), $expression, $this->total_captured_abandoned_cart_count()); ?></h2>
+						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the fastest way to help us grow and keep improving it further.', WCLCFC_TEXT_DOMAIN ); ?></p>
 						<div class="woocommerce-live-checkout-field-capture-button-row">
 							<form method="post" action="options.php" class="wclcfc_inline">
 								<?php settings_fields( 'wclcfc-settings-review' ); ?>
-								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank">Let's do this</a>
-								<?php submit_button('Done that', 'woocommerce-live-checkout-field-capture-review-submitted', false, false); ?>
+								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank"><?php echo __("Let's do this", WCLCFC_TEXT_DOMAIN ); ?></a>
+								<?php submit_button(__('Done that', WCLCFC_TEXT_DOMAIN), 'woocommerce-live-checkout-field-capture-review-submitted', false, false); ?>
 								<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
-								<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
 							</form>
 							<form method="post" action="options.php" class="wclcfc_inline">
-								<?php settings_fields( 'wclcfc-settings-time' ); ?>
-								<?php submit_button('Close', 'woocommerce-live-checkout-field-capture-close', false, false); ?>
-								<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
+								<?php settings_fields( 'wclcfc-settings-declined' ); ?>
+								<?php submit_button(__('Close', WCLCFC_TEXT_DOMAIN), 'woocommerce-live-checkout-field-capture-close', false, false); ?>
+								<input id="wclcfc_times_review_declined" type="hidden" name="wclcfc_times_review_declined" value="<?php echo get_option('wclcfc_times_review_declined') + 1; // Retrieving how many times review has been declined and updates the count in database by one ?>" />
 							</form>
 						</div>
 					</div>
@@ -312,18 +310,18 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			<?php endif; ?>
 			<div id="woocommerce-live-checkout-field-capture-go-pro" class="woocommerce-live-checkout-field-capture-bubble">
 				<div class="woocommerce-live-checkout-field-capture-header-image">
-					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" title="Get WooCommerce Live Checkout Field Capture Pro" target="_blank">
+					<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" title="<?php __('Get WooCommerce Live Checkout Field Capture Pro', WCLCFC_TEXT_DOMAIN); ?>" target="_blank">
 						<img src="<?php echo plugins_url( 'assets/notification-email.gif', __FILE__ ) ; ?>" alt="" title=""/>
 					</a>
 				</div>
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
 					<form method="post" action="options.php">
 						<?php settings_fields( 'wclcfc-settings-time' ); ?>
-						<h2>Would you like to get notified about abandoned carts and send automated cart recovery emails?</h2>
-						<p>Save your time by enabling Pro features and focus on your business instead.</p>
+						<h2><?php echo __('Would you like to get notified about abandoned carts and send automated cart recovery emails?', WCLCFC_TEXT_DOMAIN ); ?></h2>
+						<p><?php echo __('Save your time by enabling Pro features and focus on your business instead.', WCLCFC_TEXT_DOMAIN ); ?></p>
 						<p class="woocommerce-live-checkout-field-capture-button-row">
-							<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" class="button" target="_blank">Get Pro</a>
-							<?php submit_button('Not now', 'woocommerce-live-checkout-field-capture-close', false, false); ?>
+							<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" class="button" target="_blank"><?php echo __('Get Pro', WCLCFC_TEXT_DOMAIN); ?></a>
+							<?php submit_button(__('Not now', WCLCFC_TEXT_DOMAIN), 'woocommerce-live-checkout-field-capture-close', false, false); ?>
 						</p>
 						<input id="wclcfc_last_time_bubble_displayed" type="hidden" name="wclcfc_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
 					</form>
@@ -337,16 +335,23 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	/**
 	 * Show bubble slide-out window
 	 *
-	 * @since    1.3
+	 * @since 	1.3
 	 */
 	function draw_bubble(){
 
 		//Checking if we should display the Review bubble or Get Pro bubble
-		$deleted_row_count = get_option('wclcfc_deleted_rows');
-		if(($this->abandoned_cart_count() > 8 || $deleted_row_count > 15) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 ) && !get_option('wclcfc_review_submitted')){ //If Review not submited and 18 days since plugin activation have passed and we have more than 8 abandoned carts captured or the user has deleted more than 15 abandoned carts
+		//Displaying review bubble after 10, 30, 100, 300, 500 and 1000 abandoned carts have been captured and if the review has not been submitted
+		if(
+			($this->total_captured_abandoned_cart_count() > 9 && get_option('wclcfc_times_review_declined') < 1 && !get_option('wclcfc_review_submitted')) ||
+			($this->total_captured_abandoned_cart_count() > 29 && get_option('wclcfc_times_review_declined') < 2 && !get_option('wclcfc_review_submitted')) ||
+			($this->total_captured_abandoned_cart_count() > 99 && get_option('wclcfc_times_review_declined') < 3 && !get_option('wclcfc_review_submitted')) ||
+			($this->total_captured_abandoned_cart_count() > 299 && get_option('wclcfc_times_review_declined') < 4 && !get_option('wclcfc_review_submitted')) ||
+			($this->total_captured_abandoned_cart_count() > 499 && get_option('wclcfc_times_review_declined') < 5 && !get_option('wclcfc_review_submitted')) ||
+			($this->total_captured_abandoned_cart_count() > 999 && get_option('wclcfc_times_review_declined') < 6 && !get_option('wclcfc_review_submitted'))
+		){
 			$bubble_type = '#woocommerce-live-checkout-field-capture-review';
 			$display_bubble = true; //Show the bubble
-		}elseif(($this->abandoned_cart_count() > 5 || $deleted_row_count > 10) && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
+		}elseif($this->total_captured_abandoned_cart_count() > 5 && $this->days_have_passed('wclcfc_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#woocommerce-live-checkout-field-capture-go-pro';
 			$display_bubble = true; //Show the bubble
 		}else{
@@ -376,4 +381,29 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 			return;
 		}
 	}
+
+	/**
+	 * Returns count of total captired abandoned carts
+	 *
+	 * @since 	2.1
+	 * @return 	number
+	 */
+	function total_captured_abandoned_cart_count(){
+		if ( false === ( $captured_abandoned_cart_count = get_transient( 'wclcfc_captured_abandoned_cart_count' ))){ //If value is not cached or has expired
+			$captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
+			set_transient( 'wclcfc_captured_abandoned_cart_count', $captured_abandoned_cart_count, 60 * 10 ); //Temporary cache will expire in 10 minutes
+		}
+		
+		return $captured_abandoned_cart_count;
+	}
+
+	/**
+	 * Sets the path to language folder for internationalization
+	 *
+	 * @since 	2.1
+	 */
+	function wclcfc_text_domain(){
+		return load_plugin_textdomain( WCLCFC_TEXT_DOMAIN, false, basename( plugin_dir_path( __DIR__ ) ) . '/languages' );
+	}
+
 }
