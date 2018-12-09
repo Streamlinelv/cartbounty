@@ -115,7 +115,7 @@ If you would like to [send your visitors automated abandoned cart recovery email
 = 2.0.1 =
 * Modified "Remember user input" function. All Checkout form input fields are now triggering save data action
 
-= 2.0.0 =
+= 2.0 =
 * Added "Remember user input" function that keeps user input in Checkout form until the Session has expired or user completes the Checkout
 * PHP default sessions functionality replaced by WooCommerce sessions
 
