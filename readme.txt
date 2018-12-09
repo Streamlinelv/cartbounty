@@ -1,7 +1,7 @@
 === Save Abandoned Carts - WooCommerce Live Checkout Field Capture ===
 Donate link: https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/
 Contributors: streamlinestar, nauriskolats
-Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, remember checkout fields, checkout form, checkout field capture, live capture, live field capture, instant capture, save checkout fields
+Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.0

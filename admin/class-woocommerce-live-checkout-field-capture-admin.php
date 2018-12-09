@@ -383,7 +383,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	}
 
 	/**
-	 * Returns count of total captired abandoned carts
+	 * Returns the count of total captured abandoned carts
 	 *
 	 * @since 	2.1
 	 * @return 	number

@@ -46,7 +46,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	}
 	
 	/**
-	 * Function in order to add aditional JS file to the checkout field and read data from inputs
+	 * Function to add aditional JS file to the checkout field and read data from inputs
 	 *
 	 * @since    1.0
 	 */
