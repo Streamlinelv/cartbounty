@@ -63,68 +63,22 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	function save_user_data(){
 		// first check if data is being sent and that it is the data we want
 		if ( isset( $_POST["wlcfc_email"] ) ) {
-
-			
 			global $wpdb;
 			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
-			
-			//Retrieving cart total value and currency
-			$cart_total = WC()->cart->total;
-			$cart_currencty = get_woocommerce_currency();
-			
-			//Retrieving cart products and their quantities
-			$products = WC()->cart->get_cart();
-			$product_array = array();
-			
-			foreach($products as $product => $values){
-				$item = wc_get_product( $values['data']->get_id());
 
-				$product_title = $item->get_title();
-				$product_quantity = $values['quantity'];
+			//Retrieving cart array consisting of currency, cart toal, time, session id and products and their quantities
+			$cart_data = $this->read_cart();
+			$cart_total = $cart_data['cart_total'];
+			$cart_currency = $cart_data['cart_currency'];
+			$current_time = $cart_data['current_time'];
+			$session_id = $cart_data['session_id'];
+			$product_array = $cart_data['product_array'];
 
-				// Handling product variations
-				$product_variations = $values['variation'];
-
-				if($product_variations){ //If we have variations
-					$total_variations = count($product_variations);
-					$increment = 0;
-					$product_attribute = '';
-
-					foreach($product_variations as $product_variation_key => $product_variation_name){
-
-						$product_variation_name = $this->attribute_slug_to_title($product_variation_key, $product_variation_name);
-
-						if($increment === 0 && $increment != $total_variations - 1){ //If this is first variation and we have multiple variations
-							$colon = ': ';
-							$comma = ', ';
-						}
-						elseif($increment === 0 && $increment === $total_variations - 1){ //If we have only one variation
-							$colon = ': ';
-							$comma = false;
-						}
-						elseif($increment === $total_variations - 1) { //If this is the last variation
-							$comma = '';
-							$colon = false;
-						}else{
-							$comma = ', ';
-							$colon = false;
-						}
-						$product_attribute .= $colon . $product_variation_name . $comma;
-						$increment++;
-					}
-				}else{
-					$product_attribute = false;
-				}
-				
-				//Inserting Product title, Variation and Quantity into array
-				$product_array[] = array($product_title . $product_attribute, $product_quantity, $values['product_id'] );
+			//In case if the cart has no items in it, we need to delete the abandoned cart
+			if(empty($product_array)){
+				$this->delete_user_data();
+				return;
 			}
-			
-			//Retrieving current time
-			$current_time = current_time( 'mysql', false );
-			
-			//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
-			$session_id = WC()->session->get_customer_id();
 			
 			//Checking if we have values coming from the input fields
 			(isset($_POST['wlcfc_name'])) ? $name = $_POST['wlcfc_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
@@ -183,7 +137,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 							'location'		=>	sanitize_text_field( $location ),
 							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
-							'currency'		=>	sanitize_text_field( $cart_currencty ),
+							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time ),
 							'other_fields'	=>	sanitize_text_field( serialize($other_fields) )
 						),
@@ -209,7 +163,7 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 							sanitize_text_field( $location ),
 							sanitize_text_field( serialize($product_array) ),
 							sanitize_text_field( $cart_total ),
-							sanitize_text_field( $cart_currencty ),
+							sanitize_text_field( $cart_currency ),
 							sanitize_text_field( $current_time ),
 							sanitize_text_field( $session_id ),
 							sanitize_text_field( serialize($other_fields) )
@@ -219,10 +173,143 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 				
 				//Storing session_id in WooCommerce session
 				WC()->session->set('wclcfc_session_id', $session_id);
-				$this->update_captured_abandoned_cart_count(); //Updating total count of captured abandoned carts
+				$this->increase_captured_abandoned_cart_count(); //Updating total count of captured abandoned carts
 			}
 			
 			die();
+		}
+	}
+
+	/**
+	 * Function automatically saves a cart if a logged in user adds something to his shopping cart, removes something or updates his cart
+	 * If we are updating the cart, we do not change users data, but just the Cart data since user can only change his data in the Checkout form
+	 *
+	 * @since    3.0
+	 */
+	function save_looged_in_user_data(){
+		if(is_user_logged_in()){ //If a user is logged in
+			global $wpdb;
+			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+
+			//Retrieving cart array consisting of currency, cart toal, time, session id and products and their quantities
+			$cart_data = $this->read_cart();
+			$cart_total = $cart_data['cart_total'];
+			$cart_currency = $cart_data['cart_currency'];
+			$current_time = $cart_data['current_time'];
+			$session_id = $cart_data['session_id'];
+			$product_array = $cart_data['product_array'];
+
+			//In case if the user updates the cart and takes out all items, we need to delete the abandoned cart
+			if(empty($product_array)){
+				$this->delete_user_data();
+				return;
+			}
+			
+			//Looking if a user has previously made an order
+			//If not, using default WordPress assigned data
+			//Handling users name
+			$current_user = wp_get_current_user(); //Retrieving users data
+			if($current_user->billing_first_name){
+				$name = $current_user->billing_first_name; 
+			}else{
+				$name = $current_user->user_firstname; //Users name
+			}
+
+			//Handling users surname
+			if($current_user->billing_last_name){
+				$surname = $current_user->billing_last_name;
+			}else{
+				$surname = $current_user->user_lastname;
+			}
+			
+			//Handling users email address
+			if($current_user->billing_email){
+				$email = $current_user->billing_email;
+			}else{
+				$email = $current_user->user_email;
+			}
+
+			//Handling users phone
+			$phone = $current_user->billing_phone;
+
+			//Handling users address
+			if($current_user->billing_country){
+				$country = $current_user->billing_country;
+				if($current_user->billing_state){ //checking if the state was entered
+					$city = ", ". $current_user->billing_state;
+				}
+				$location = $country . $city; 
+			}else{
+				$location = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
+				$location = $location['country'];
+			}
+
+			$abandoned_cart = '';
+
+			//If we haven't set wclcfc_session_id, then need to check in the database if the current user has got an abandoned cart already
+			if( WC()->session->get('wclcfc_session_id') === NULL ){
+				$main_table = $wpdb->prefix . WCLCFC_TABLE_NAME;
+				$abandoned_cart = $wpdb->get_row($wpdb->prepare(
+					"SELECT session_id FROM ". $main_table ."
+					WHERE session_id = %d", get_current_user_id())
+				);
+			}
+
+			//If the current user has got an abandoned cart already or if we have already inserted the Users session ID in Session variable and it is not NULL we update the abandoned cart row
+			if( !empty($abandoned_cart) || WC()->session->get('wclcfc_session_id') !== NULL ){
+				//If the user has got an abandoned cart previously, we set session ID back
+				if(!empty($abandoned_cart)){
+					$session_id = $abandoned_cart->session_id;
+					//Storing session_id in WooCommerce session
+					WC()->session->set('wclcfc_session_id', $session_id);
+
+				}else{
+					$session_id = WC()->session->get('wclcfc_session_id');
+				}
+				
+				//Updating row in the Database where users Session id = same as prevously saved in Session
+				//Updating only Cart related data since the user can change his data only in the Checkout form
+				$wpdb->prepare('%s',
+					$wpdb->update(
+						$table_name,
+						array(
+							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
+							'cart_total'	=>	sanitize_text_field( $cart_total ),
+							'currency'		=>	sanitize_text_field( $cart_currency ),
+							'time'			=>	sanitize_text_field( $current_time )
+						),
+						array('session_id' => $session_id),
+						array('%s', '%0.2f', '%s', '%s'),
+						array('%s')
+					)
+				);
+				
+			}else{
+				//Inserting row into Database
+				$wpdb->query(
+					$wpdb->prepare(
+						"INSERT INTO ". $table_name ."
+						( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id)
+						VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s)",
+						array(
+							sanitize_text_field( $name ),
+							sanitize_text_field( $surname ),
+							sanitize_email( $email ),
+							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
+							sanitize_text_field( $location ),
+							sanitize_text_field( serialize($product_array) ),
+							sanitize_text_field( $cart_total ),
+							sanitize_text_field( $cart_currency ),
+							sanitize_text_field( $current_time ),
+							sanitize_text_field( $session_id )
+						) 
+					)
+				);
+				//Storing session_id in WooCommerce session
+				WC()->session->set('wclcfc_session_id', $session_id);
+
+				$this->increase_captured_abandoned_cart_count(); //Increasing total count of captured abandoned carts
+			}
 		}
 	}
 	
@@ -250,94 +337,214 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 						sanitize_key($session_id)
 					)
 				);
+				$this->decrease_captured_abandoned_cart_count(); //Decreasing total count of captured abandoned carts
 			}
 			
-			//Removing stored ID value from WooCommerce Session
-			WC()->session->__unset('wclcfc_session_id');
+			$this->unset_wclcfc_session_id();
 		}
 	}
 
 	/**
-	 * Function returns attributes name from slug in order to display Variations
+	 * Function builds and returns an array of cart products and their quantities, car total value, currency, time, session id
+	 *
+	 * @since    3.0
+	 * @return   Array
+	 */
+	function read_cart(){
+
+		//Retrieving cart total value and currency
+		$cart_total = WC()->cart->total;
+		$cart_currency = get_woocommerce_currency();
+		$current_time = current_time( 'mysql', false ); //Retrieving current time
+
+		//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
+		$session_id = WC()->session->get_customer_id();
+
+		//Retrieving cart
+		$products = WC()->cart->get_cart();
+		$product_array = array();
+				
+		foreach($products as $product => $values){
+			$item = wc_get_product( $values['data']->get_id());
+
+			$product_title = $item->get_title();
+			$product_quantity = $values['quantity'];
+			$product_variation_price = $values['line_total'];
+			
+			// Handling product variations
+			if($values['variation_id']){ //If user has chosen a variation
+				$single_variation = new WC_Product_Variation($values['variation_id']);
+		
+				//Handling variable product title output with attributes
+				$product_attributes = $this->attribute_slug_to_title($single_variation->get_variation_attributes());
+				$product_variation_id = $values['variation_id'];
+			}else{
+				$product_attributes = false;
+				$product_variation_id = '';
+			}
+
+			//Inserting Product title, Variation and Quantity into array
+			$product_array[] = array(
+				'product_title' => $product_title . $product_attributes,
+				'quantity' => $product_quantity,
+				'product_id' => $values['product_id'],
+				'product_variation_id' => $product_variation_id,
+				'product_variation_price' => $product_variation_price
+			);
+		}
+
+		return $results_array = array('cart_total' => $cart_total, 'cart_currency' => $cart_currency, 'current_time' => $current_time, 'session_id' => $session_id, 'product_array' => $product_array);
+	}
+
+	/**
+	 * Function returns product attributes
 	 *
 	 * @since    1.4.1
 	 * Return: String
 	 */
-	function attribute_slug_to_title( $attribute, $slug ) {
+	public function attribute_slug_to_title( $product_variations ) {
 		global $woocommerce;
-		$value = '';
+		$attribute_array = array();
+		
+		if($product_variations){
 
-		if ( taxonomy_exists( esc_attr( str_replace( 'attribute_', '', $attribute ) ) ) ) {
-			$term = get_term_by( 'slug', $slug, esc_attr( str_replace( 'attribute_', '', $attribute ) ) );
-			if ( ! is_wp_error( $term ) && $term->name )
-				$value = $term->name;
-		} else {
-			$value = apply_filters( 'woocommerce_variation_option_name', $value );
+			foreach($product_variations as $product_variation_key => $product_variation_name){
+
+				$value = '';
+				if ( taxonomy_exists( esc_attr( str_replace( 'attribute_', '', $product_variation_key )))){
+					$term = get_term_by( 'slug', $product_variation_name, esc_attr( str_replace( 'attribute_', '', $product_variation_key )));
+					if (!is_wp_error($term) && !empty($term->name)){
+						$value = $term->name;
+						if(!empty($value)){
+							$attribute_array[] = $value;
+						}
+					}
+				}else{
+					$value = apply_filters( 'woocommerce_variation_option_name', $product_variation_name );
+					if(!empty($value)){
+						$attribute_array[] = $value;
+					}
+				}
+			}
+			
+			//Generating attribute output			
+			$total_variations = count($attribute_array);
+			$increment = 0;
+			$product_attribute = '';
+			foreach($attribute_array as $attribute){
+				if($increment === 0 && $increment != $total_variations - 1){ //If this is first variation and we have multiple variations
+					$colon = ': ';
+					$comma = ', ';
+				}
+				elseif($increment === 0 && $increment === $total_variations - 1){ //If we have only one variation
+					$colon = ': ';
+					$comma = false;
+				}
+				elseif($increment === $total_variations - 1) { //If this is the last variation
+					$comma = '';
+					$colon = false;
+				}else{
+					$comma = ', ';
+					$colon = false;
+				}
+				$product_attribute .= $colon . $attribute . $comma;
+				$increment++;
+			}
+			return $product_attribute;
 		}
-
-		return $value;
+		else{
+			return;
+		}
 	}
 	
 	/**
 	 * Function restores previous Checkout form data for users that are not registered
 	 *
-	 * @since    2.0.0
+	 * @since    2.0
 	 * Return: Input field values
 	 */
 	public function restore_input_data( $fields = array() ) {
 		global $wpdb;
 		
-		if(!is_user_logged_in()){ //If the user is not logged in
-			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
-			$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+		$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+		
+		//Retrieve a single row with current customer ID
+		$row = $wpdb->get_row($wpdb->prepare(
+			"SELECT *
+			FROM ". $table_name ."
+			WHERE session_id = %s",
+			$customer_id)
+		);
+		
+		if($row){ //If we have a user with such session ID in the database
+
+			$other_fields = unserialize($row->other_fields);
 			
-			//Retrieve a single row with current customer ID
-			$row = $wpdb->get_row($wpdb->prepare(
-				"SELECT *
-				FROM ". $table_name ."
-				WHERE session_id = %s",
-				$customer_id)
-			);
-			
-			if($row){ //If we have a user with such session ID in the database
-				$other_fields = unserialize($row->other_fields);
-				
-				$parts = explode(',', $row->location); //Splits the Location field into parts where there are commas
-				if (count($parts) > 1) {
-				   $country = $parts[0];
-				   $city = trim($parts[1]); //Trim removes white space before and after the string
-				}
-				else{
-					$country = $parts[0];
-					$city = '';
-				}
-				
-				//Filling Checkout field values back with previously entered values
-				(empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : true;
-				(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
-				(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_company'])) : '';
-				(empty( $_POST['billing_country'])) ? $_POST['billing_country'] = sprintf('%s', esc_html($country)) : '';
-				(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_1'])) : '';
-				(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_2'])) : '';
-				(empty( $_POST['billing_city'])) ? $_POST['billing_city'] = sprintf('%s', esc_html($city)) : '';
-				(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_state'])) : '';
-				(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_postcode'])) : '';
-				(empty( $_POST['billing_phone'])) ? $_POST['billing_phone'] = sprintf('%s', esc_html($row->phone)) : '';
-				(empty( $_POST['billing_email'])) ? $_POST['billing_email'] = sprintf('%s', esc_html($row->email)) : '';
-				
-				(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_first_name'])) : '';
-				(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_last_name'])) : '';
-				(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_company'])) : '';
-				(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_country'])) : '';
-				(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_1'])) : '';
-				(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_2'])) : '';
-				(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_city'])) : '';
-				(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_state'])) : '';
-				(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_postcode'])) : '';
-				(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['wlcfc_order_comments'])) : '';
+			$parts = explode(',', $row->location); //Splits the Location field into parts where there are commas
+			if (count($parts) > 1) {
+			   $country = $parts[0];
+			   $city = trim($parts[1]); //Trim removes white space before and after the string
 			}
+			else{
+				$country = $parts[0];
+				$city = '';
+			}
+
+			//Filling Checkout field values back with previously entered values
+			if(is_user_logged_in()){ //If the user is logged in, we want to only automatically fill his first name and last name previously saved abandoned cart during "Add to Cart" action.
+			//Restoring Just Name and surname since the rest of the fields are restored automatically by WooCommerce if the user has previously purchased anything
+
+				//Looking if a user has previously made an order
+				//If not, using previously captured Abandoned cart data
+				//Handling users name
+				$current_user = wp_get_current_user(); //Retrieving users data
+				if($current_user->billing_first_name){
+					$row->name = $current_user->billing_first_name; 
+				}
+
+				//Handling users surname
+				if($current_user->billing_last_name){
+					$row->surname = $current_user->billing_last_name;
+				}
+			}
+			
+			//Filling Checkout field values back with previously entered values
+			(empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : true;
+			(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
+			(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_company'])) : '';
+			(empty( $_POST['billing_country'])) ? $_POST['billing_country'] = sprintf('%s', esc_html($country)) : '';
+			(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_1'])) : '';
+			(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_2'])) : '';
+			(empty( $_POST['billing_city'])) ? $_POST['billing_city'] = sprintf('%s', esc_html($city)) : '';
+			(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_state'])) : '';
+			(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_postcode'])) : '';
+			(empty( $_POST['billing_phone'])) ? $_POST['billing_phone'] = sprintf('%s', esc_html($row->phone)) : '';
+			(empty( $_POST['billing_email'])) ? $_POST['billing_email'] = sprintf('%s', esc_html($row->email)) : '';
+			
+			(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_first_name'])) : '';
+			(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_last_name'])) : '';
+			(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_company'])) : '';
+			(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_country'])) : '';
+			(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_1'])) : '';
+			(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_2'])) : '';
+			(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_city'])) : '';
+			(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_state'])) : '';
+			(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_postcode'])) : '';
+			(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['wlcfc_order_comments'])) : '';
 		}
+		
 		return $fields;
+	}
+
+	/**
+	 * Function unsets session variable
+	 *
+	 * @since    3.0
+	 */
+	function unset_wclcfc_session_id(){
+		//Removing stored ID value from WooCommerce Session
+		WC()->session->__unset('wclcfc_session_id');
 	}
 
 	/**
@@ -345,9 +552,19 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	 *
 	 * @since    2.1
 	 */
-	function update_captured_abandoned_cart_count(){
+	function increase_captured_abandoned_cart_count(){
 		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
 		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count + 1); //Updating the count by one abandoned cart
+	}
+
+	/**
+	 * Function decreases the total count of captured abandoned carts
+	 *
+	 * @since    3.0
+	 */
+	function decrease_captured_abandoned_cart_count(){
+		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
+		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - 1); //Decreasing the count by one abandoned cart
 	}
 
 }

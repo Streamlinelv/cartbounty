@@ -14,6 +14,8 @@ If you would like to receive email notifications about abandoned carts and send 
 
 The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form.
 
+If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
+
 If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
 
 Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.

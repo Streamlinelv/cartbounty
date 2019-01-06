@@ -4,7 +4,7 @@
  * Plugin Name: WooCommerce Live Checkout Field Capture
  * Plugin URI: https://wordpress.org/plugins/woo-save-abandoned-carts/
  * Description: Plugin instantly saves WooCommerce checkout field data before they are submitted.
- * Version: 2.1
+ * Version: 3.0
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 //Defining constants
-if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '2.1');
+if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '3.0');
 if (!defined('WCLCFC_BASENAME')) define( 'WCLCFC_BASENAME', plugin_basename( __FILE__ ));
 if (!defined('WCLCFC_PLUGIN_NAME_SLUG')) define( 'WCLCFC_PLUGIN_NAME_SLUG', 'woocommerce-live-checkout-field-capture');
 if (!defined('WCLCFC_TABLE_NAME')) define( 'WCLCFC_TABLE_NAME', 'captured_wc_fields');
