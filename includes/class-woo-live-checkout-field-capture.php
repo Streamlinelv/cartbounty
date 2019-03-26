@@ -12,7 +12,7 @@
  * @subpackage WooCommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class WooCommerce_Live_Checkout_Field_Capture{
+class Woo_Live_Checkout_Field_Capture{
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -83,20 +83,20 @@ class WooCommerce_Live_Checkout_Field_Capture{
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woocommerce-live-checkout-field-capture-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woo-live-checkout-field-capture-loader.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woocommerce-live-checkout-field-capture-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-live-checkout-field-capture-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-woocommerce-live-checkout-field-capture-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-woo-live-checkout-field-capture-public.php';
 
-		$this->loader = new WooCommerce_Live_Checkout_Field_Capture_Loader();
+		$this->loader = new Woo_Live_Checkout_Field_Capture_Loader();
 
 	}
 
@@ -109,9 +109,9 @@ class WooCommerce_Live_Checkout_Field_Capture{
 	 */
 	private function define_admin_hooks(){
 
-		$plugin_admin = new WooCommerce_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_menu', 70); //Creates admin menu
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wclcfc_menu', 70); //Creates admin menu
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count');
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version');
 		$this->loader->add_filter( 'plugin_action_links_' . WCLCFC_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
@@ -128,9 +128,12 @@ class WooCommerce_Live_Checkout_Field_Capture{
 	 */
 	private function define_public_hooks(){
 
-		$plugin_public = new WooCommerce_Live_Checkout_Field_Capture_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Woo_Live_Checkout_Field_Capture_Public( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'woocommerce_after_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
-		$this->loader->add_action( 'wp_ajax_nopriv_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Guest users
+		$this->loader->add_action( 'wp_ajax_nopriv_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail or Phone field in Checkout form
 		$this->loader->add_action( 'wp_ajax_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
 		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
 		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
@@ -138,6 +141,9 @@ class WooCommerce_Live_Checkout_Field_Capture{
 		$this->loader->add_action( 'woocommerce_new_order', $plugin_public, 'delete_user_data' ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
 		$this->loader->add_action( 'woocommerce_thankyou', $plugin_public, 'delete_user_data' ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public, 'restore_input_data', 1); //Restoring previous user input in Checkout form
+		$this->loader->add_action( 'wp_footer', $plugin_public, 'display_exit_intent_form'); //Outputing the exit intent form in the footer of the page
+		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $plugin_public, 'display_exit_intent_form'); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in
+		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $plugin_public, 'remove_exit_intent_form'); //Checking if we have an empty cart in case of Ajax action
 	}
 
 	/**

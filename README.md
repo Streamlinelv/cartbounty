@@ -88,6 +88,11 @@ If you would like to [send your visitors automated abandoned cart recovery email
 
 ## Changelog
 
+##### 3.0
+
+* Added Instant shopping cart capture for logged in users
+* Fixed total captured abandoned cart counter
+
 ##### 2.1
 
 * Added language support

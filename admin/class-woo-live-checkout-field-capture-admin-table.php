@@ -13,7 +13,7 @@ if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
  
-class WooCommerce_Live_Checkout_Field_Capture_Table extends WP_List_Table{
+class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 
    /**
     * Constructor, we override the parent to pass our own arguments

@@ -10,7 +10,7 @@
  * @subpackage WooCommerce Live Checkout Field Capture/includes
  * @author     Streamline.lv
  */
-class WooCommerce_Live_Checkout_Field_Capture_Loader{
+class Woo_Live_Checkout_Field_Capture_Loader{
 
 	/**
 	 * The array of actions registered with WordPress.

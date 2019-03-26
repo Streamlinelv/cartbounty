@@ -17,65 +17,65 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:41
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:41
 msgid "ID"
 msgstr "ID"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:42
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:42
 msgid "Name, Surname"
 msgstr "Vārds, Uzvārds"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:43
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:43
 msgid "Email"
 msgstr "E-pasts"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:44
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:44
 msgid "Phone"
 msgstr "Telefons"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:45
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:45
 msgid "Location"
 msgstr "Vieta"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:46
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:46
 msgid "Cart contents"
 msgstr "Groza saturs"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:47
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:47
 msgid "Cart total"
 msgstr "Groza summa"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:48
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:48
 msgid "Time"
 msgstr "Laiks"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:93
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin-table.php:201
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:93
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:201
 msgid "Delete"
 msgstr "Dzēst"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:77
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:79
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:145
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:77
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:79
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:145
 msgid "WooCommerce Live Checkout Field Capture"
 msgstr "WooCommerce tiešsaistes apmaksas formā saglabātie lauki"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:77
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:79
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:105
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:77
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:79
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:105
 msgid "Checkout Field Capture"
 msgstr "Apmaksas formas saglabātie lauki"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:122
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:122
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Jums nav tiesību skatīt šo lapu."
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:140
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:140
 #, php-format
 msgid "Items deleted: %d"
 msgstr "Ieraksti dzēsti: %d"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:150
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:150
 msgid ""
 "Looks like you do not have any saved Abandoned carts yet.<br/>But do not "
 "worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone "
@@ -87,70 +87,70 @@ msgstr ""
 "<strong>telefona</strong> laukus un pametīs WooCommerce iepirkšanās procesu, "
 "viņa novārtā pamestais pirkumu grozs būs šeit redzams."
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:187
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:323
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:187
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:323
 msgid "Get Pro"
 msgstr "Apskatīt"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:271
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:271
 msgid "Leave WooCommerce Live Checkout Field Capture a 5-star rating"
 msgstr ""
 "Atstājiet WooCommerce tiešsaistes apmaksas formā saglabātie lauki spraudnim "
 "5-zvaigžņu vērtējumu"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:279
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:279
 msgid "Congrats!"
 msgstr "Opiņā!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:281
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:281
 msgid "Awesome!"
 msgstr "Burvīgi!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:283
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:283
 msgid "Amazing!"
 msgstr "Satriecoši!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:285
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:285
 msgid "Incredible!"
 msgstr "Neticami!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:287
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:287
 msgid "Crazy!"
 msgstr "Wow!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:290
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:290
 msgid "Fantastic!"
 msgstr "Fantastiski!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:293
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:293
 #, php-format
 msgid "%s You have already captured %d abandoned carts!"
 msgstr "%s Jau %d. novārtā atstātais pirkumu grozs notverts!"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:294
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:294
 msgid ""
 "If you like our plugin, please leave us a 5-star rating. It is the fastest "
 "way to help us grow and keep improving it further."
 msgstr "Ja Tev patīk mūsu produkts, lūdzu atstāj mums 5-zvaigžņu vērtējumu."
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:298
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:298
 msgid "Let's do this"
 msgstr "Pievienot vērtējumu"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:299
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:299
 msgid "Done that"
 msgstr "Darīts"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:304
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:304
 msgid "Close"
 msgstr "Aizvērt"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:313
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:313
 msgid "Get WooCommerce Live Checkout Field Capture Pro"
 msgstr ""
 "Apskatīt WooCommerce tiešsaistes apmaksas formā saglabāto lauku Pro versiju"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:320
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:320
 msgid ""
 "Would you like to get notified about abandoned carts and send automated cart "
 "recovery emails?"
@@ -158,14 +158,14 @@ msgstr ""
 "Vēlies e-pastus par saglabātajiem pirkumu groziem un sūtīt automātiskus "
 "atgādinājumus šiem lietotājiem?"
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:321
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:321
 msgid ""
 "Save your time by enabling Pro features and focus on your business instead."
 msgstr ""
 "Taupi savu laiku, aktivizē Pro iespējas un fokusē savu laiku biznesa "
 "attīstībai."
 
-#: ../admin/class-woocommerce-live-checkout-field-capture-admin.php:324
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:324
 msgid "Not now"
 msgstr "Ne tagad"
 

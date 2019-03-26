@@ -11,7 +11,7 @@
  * @author     Streamline.lv
  */
  
-class WooCommerce_Live_Checkout_Field_Capture_Public{
+class Woo_Live_Checkout_Field_Capture_Public{
 	
 	/**
 	 * The ID of this plugin.
@@ -44,6 +44,28 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 		$this->version = $version;
 
 	}
+
+	/**
+	 * Register the stylesheets for the public area.
+	 *
+	 * @since    3.0
+	 */
+	public function enqueue_styles(){
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-public.css', array(), $this->version, 'all' );
+	}
+
+	/**
+	 * Register the javascripts for the public area.
+	 *
+	 * @since    3.0
+	 */
+	public function enqueue_scripts(){
+		if(get_option('wclcfc_exit_intent_status') || get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent Enabled or Test mode is on
+			//Adding Exit intent functionality
+			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public-exit-intent.js', array( 'jquery' ), $this->version, false );
+			wp_localize_script( $this->plugin_name . 'exit_intent', 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
+		}
+	}
 	
 	/**
 	 * Function to add aditional JS file to the checkout field and read data from inputs
@@ -51,17 +73,17 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	 * @since    1.0
 	 */
 	function add_additional_scripts_on_checkout(){
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woocommerce-live-checkout-field-capture-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public.js', array( 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 	}
 	
 	/**
-	 * Function to receive data from Checkout input fields, sanitize it and save to Database
+	 * Function to receive data from Checkout input fields or Exit Intent form, sanitize it and save to Database
 	 *
 	 * @since    1.4.1
 	 */
 	function save_user_data(){
-		// first check if data is being sent and that it is the data we want
+		//First check if data is being sent and that it is the data we want
 		if ( isset( $_POST["wlcfc_email"] ) ) {
 			global $wpdb;
 			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
@@ -565,6 +587,112 @@ class WooCommerce_Live_Checkout_Field_Capture_Public{
 	function decrease_captured_abandoned_cart_count(){
 		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
 		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - 1); //Decreasing the count by one abandoned cart
+	}
+
+	/**
+	 * Outputing email form if a user who is not logged in wants to leave with a full shopping cart
+	 *
+	 * @since    3.0
+	 */
+	function display_exit_intent_form(){
+		global $wpdb;
+		if(!get_option('wclcfc_exit_intent_status') || get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent has been disabled and Test mode is off
+			return;
+		}
+		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
+		
+		if(!is_user_logged_in()){ //If a user is not logged in
+			if( WC()->cart->get_cart_contents_count() > 0 ){ //If the cart is not empty
+				$main_color = '#e3e3e3';
+				$inverse_color = $this->invert_color($main_color);
+				$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+				$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+
+				//Retrieve a single row with current customer ID
+				$row = $wpdb->get_row($wpdb->prepare(
+					"SELECT *
+					FROM ". $table_name ."
+					WHERE session_id = %s",
+					$customer_id)
+				);
+				
+				if($row){ //If we have a user with such session ID in the database already captured then we sgould not output exit intent
+					return;
+				}
+
+				//Creating Exit Intent output
+				$output = '<div id="wclcfc-exit-intent-form" class="wclcfc-ei-center">
+								<div id="wclcfc-exit-intent-form-container" style="background-color:'. $main_color .'">
+									<div id="wclcfc-exit-intent-close">
+										<svg>
+											<line x1="1" y1="11" x2="11" y2="1" stroke="'. $inverse_color .'" stroke-width="2"/>
+											<line x1="1" y1="1" x2="11" y2="11" stroke="'. $inverse_color .'" stroke-width="2"/>
+										</svg>
+									</div>
+									<div id="wclcfc-exit-intent-form-content">
+										<div id="wclcfc-exit-intent-form-content-l">
+											<img src="'. plugins_url( 'assets/abandoned-shopping-cart.gif', __FILE__ ) .'" alt="" title=""/>
+										</div>
+										<div id="wclcfc-exit-intent-form-content-r">
+											<h2 style="color:'. $inverse_color .'" >You were not leaving your cart just like that, right?</h2>
+											<p style="color:'. $inverse_color .'">Go ahead and fill the email below. We will reach out to you and might even give you a discount.</p>
+											<form>
+												<label for="wclcfc-exit-intent-email" style="color:'. $inverse_color .'">Your email:</label>
+												<input type="email" id="wclcfc-exit-intent-email" size="30" required >
+												<button type="submit" name="wclcfc-exit-intent-submit" id="wclcfc-exit-intent-submit" value="Submit" style="background-color:'. $inverse_color .'; color:'. $main_color .'">Save cart</button>
+											</form>
+										</div>
+									</div>
+								</div>
+								<div id="wclcfc-exit-intent-form-backdrop" style="background-color:'. $inverse_color .'; opacity: 0;"></div>
+							</div>';
+
+				if (isset( $_POST["wlcfc_insert"])) { //In case function triggered using Ajax Add to Cart
+					return wp_send_json_success($output); //Sending Output to Javascript function
+				}
+				else{ //Outputing in case of page reload
+					echo $output; 
+				}
+			}
+		}
+		
+	}
+
+	/**
+	 * Checking if cart is empty and sending result to Ajax function
+	 *
+	 * @since    3.0
+	 * @return   boolean
+	 */
+	function remove_exit_intent_form(){
+
+		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
+		
+		if(!is_user_logged_in()){ //If a user is not logged in
+			if( WC()->cart->get_cart_contents_count() == 0 ){ //If the cart is empty
+				return wp_send_json_success('true'); //Sending successful output to Javascript function
+			}else{
+				return wp_send_json_success('false');
+			}
+		}
+	}
+
+	/**
+	 * Getting inverse color from the given one
+	 *
+	 * @since    3.0
+	 * @return   String
+	 */
+	function invert_color($color){
+	    $color = str_replace('#', '', $color);
+	    if (strlen($color) != 6){ return '000000'; }
+	    $rgb = '';
+	    for ($x=0;$x<3;$x++){
+	        $c = 255 - hexdec(substr($color,(2*$x),2));
+	        $c = ($c < 0) ? 0 : dechex($c);
+	        $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
+	    }
+	    return '#'.$rgb;
 	}
 
 }

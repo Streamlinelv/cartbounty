@@ -9,7 +9,7 @@
  * @subpackage WooCommerce Live Checkout Field Capture/admin
  * @author     Streamline.lv
  */
-class WooCommerce_Live_Checkout_Field_Capture_Admin{
+class Woo_Live_Checkout_Field_Capture_Admin{
 
 	/**
 	 * The ID of this plugin.
@@ -62,21 +62,28 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woocommerce-live-checkout-field-capture-admin-admin.css', array(), $this->version, 'all' );
-	}	
+		global $wclcfc_admin_menu_page;
+		$screen = get_current_screen();
+		
+		//Do not continue if we are not on WCLCFC plugin page
+		if(!is_object($screen) || $screen->id != $wclcfc_admin_menu_page){
+			return;
+		}
+
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-admin.css', array(), $this->version, 'all' );
+	}
 	
 	/**
 	 * Register the menu under WooCommerce admin menu.
 	 *
+	 * @since 	1.0
 	 */
-	function register_menu(){
-		//Check if WooCommerce plugin is active
-		//If the plugin is active - output menu under WooCommerce
-		//Else output the menu as a Page
+	function wclcfc_menu(){
+		global $wclcfc_admin_menu_page;
 		if(class_exists('WooCommerce')){
-			add_submenu_page( 'woocommerce', __('WooCommerce Live Checkout Field Capture', WCLCFC_TEXT_DOMAIN), __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN), 'list_users', 'wclcfc', array($this,'register_menu_options'));			
+			$wclcfc_admin_menu_page = add_submenu_page( 'woocommerce', WCLCFC_PLUGIN_NAME, __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN), 'list_users', WCLCFC_TEXT_DOMAIN, array($this,'display_page'));
 		}else{
-			add_menu_page( __('WooCommerce Live Checkout Field Capture', WCLCFC_TEXT_DOMAIN), __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN), 'list_users', 'wclcfc', array($this,'register_menu_options'), 'dashicons-archive' );
+			$wclcfc_admin_menu_page = add_menu_page( WCLCFC_PLUGIN_NAME, __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN), 'list_users', WCLCFC_TEXT_DOMAIN, array($this,'display_page'), 'dashicons-archive' );
 		}
 	}
 
@@ -98,10 +105,10 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 					WHERE 
 					time < (NOW() - INTERVAL %d MINUTE) AND 
 					time > (NOW() - INTERVAL %d MINUTE)"
-				, 0, 120 )
+				, WCLCFC_STILL_SHOPPING, WCLCFC_NEW_NOTICE )
 			);
 			
-			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for Checkout Field Capture Pro
+			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for Checkout Field Capture
 				if ( 0 === strpos( $menu_item[0], __('Checkout Field Capture', WCLCFC_TEXT_DOMAIN))) {
 					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . $order_count . '">' .  $order_count .'</span>';
 				}
@@ -110,12 +117,12 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	}
 	
 	/**
-	 * Register the menu options for admin area.
+	 * Display the abandoned carts and settings under admin page
 	 *
 	 * @since    1.3
 	 */
-	function register_menu_options(){
-		global $wpdb;
+	function display_page(){
+		global $wpdb, $pagenow;
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
 		if ( !current_user_can( 'list_users' )){
@@ -124,8 +131,8 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 		
 		//Our class extends the WP_List_Table class, so we need to make sure that it's there
 		//Prepare Table of elements
-		require_once plugin_dir_path( __FILE__ ) . 'class-woocommerce-live-checkout-field-capture-admin-table.php';
-		$wp_list_table = new WooCommerce_Live_Checkout_Field_Capture_Table();
+		require_once plugin_dir_path( __FILE__ ) . 'class-woo-live-checkout-field-capture-admin-table.php';
+		$wp_list_table = new Woo_Live_Checkout_Field_Capture_Table();
 		$wp_list_table->prepare_items();
 		
 		//Output table contents
@@ -138,25 +145,152 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 				$deleted_row_count = 1;
 			}
 			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Items deleted: %d', WCLCFC_TEXT_DOMAIN ), $deleted_row_count ) . '</p></div>';
-
 		}
 		?>
-		<div class="wrap">
-			<h1 id="woocommerce-live-checkout-field-capture-title"><?php echo __('WooCommerce Live Checkout Field Capture', WCLCFC_TEXT_DOMAIN); ?></h1>
-			<?php do_action('wclcfc_after_page_title'); ?>
-			<?php echo $message;
-			if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note?>
-				<p>
-					<?php echo __( 'Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.', WCLCFC_TEXT_DOMAIN); ?>
-				</p>
-			<?php else: ?>
-				<form id="wclcfc-table" method="GET">
-					<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
-					<?php $wp_list_table->display() ?>
-				</form>
-			<?php endif; ?>
+
+		<div id="wclcfc-page-wrapper" class="wrap">
+
+			<?php if ( isset ( $_GET['tab'] ) ){
+				$this->create_admin_tabs($_GET['tab']);
+			}else{
+				$this->create_admin_tabs('carts');
+			}
+
+			if ( $pagenow == 'admin.php' && $_GET['page'] == WCLCFC_TEXT_DOMAIN ){
+				if (isset($_GET['tab'])){
+					$tab = $_GET['tab'];
+				}else{
+					$tab = 'carts';
+				}
+
+				if($tab == 'exit_intent'): //Exit intent output ?>
+					<h1><?php echo WCLCFC_PLUGIN_NAME; ?> <?php echo __('Exit Intent', WCLCFC_TEXT_DOMAIN); ?></h1>
+					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill in order to save his shopping cart or to receive an additional coupon code.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<form method="post" action="options.php">
+						<?php
+							settings_fields( 'wclcfc-settings-exit-intent' );
+							do_settings_sections( 'wclcfc-settings-exit-intent' );
+							$exit_intent_on = esc_attr( get_option('wclcfc_exit_intent_status'));
+							$exit_intent_test_mode_on = esc_attr( get_option('wclcfc_exit_intent_test_mode'));
+							$exit_intent_type = esc_attr( get_option('wclcfc_exit_intent_type'));
+						?>
+						
+						<table id="wclcfc-exit-intent-table" class="form-table">
+							<tr>
+								<th scope="row">
+									<label for="wclcfc-exit-intent-status"><?php echo __('Enable Exit Intent:', WCLCFC_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<input id="wclcfc-exit-intent-status" class="wclcfc-checkbox" type="checkbox" name="wclcfc_exit_intent_status" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $exit_intent_on, false ); ?> />
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<label for="wclcfc-exit-intent-test-mode"><?php echo __('Enable Test Mode:', WCLCFC_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<input id="wclcfc-exit-intent-test-mode" class="wclcfc-checkbox" type="checkbox" name="wclcfc_exit_intent_test_mode" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $exit_intent_test_mode_on, false ); ?> />
+									<p><small>
+										<?php if($exit_intent_test_mode_on){
+										echo __('Now go to your store and add a product to your shopping cart.<br/>Please note that only you will see the Exit Intent and this removes many limitations - <br/>you will see it each time you try to leave your shop.', WCLCFC_TEXT_DOMAIN);}
+										else{
+											echo __('Enable to test the appearance of Exit Intent.', WCLCFC_TEXT_DOMAIN);
+										}?>
+										</small>
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<?php echo __('Choose type:', WCLCFC_TEXT_DOMAIN); ?>
+								</th>
+								<td>
+									<div id="wclcfc-exit-intent-center" class="wclcfc-exit-intent-type <?php if($exit_intent_type == 1){ echo "wclcfc-radio-active";} ?>">
+										<label class="wclcfc-exit-intent-image" for="wclcfc-radiobutton-center">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+											</em>
+											<input id="wclcfc-radiobutton-center" class="wclcfc-radiobutton" type="radio" name="wclcfc_exit_intent_type" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $exit_intent_type, false ); ?> />
+											<?php echo __('Appear In Center', WCLCFC_TEXT_DOMAIN); ?>
+										</label>
+									</div>
+									<div id="wclcfc-exit-intent-left" class="wclcfc-exit-intent-type">
+										<label class="wclcfc-exit-intent-image" for="wclcfc-radiobutton-left">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+											</em>
+											<input id="wclcfc-radiobutton-left" class="wclcfc-radiobutton" type="radio" name="wclcfc_exit_intent_type" value="1" <?php echo $this->disableField(array('forced' => true )); ?> />
+											<?php echo __('Slide In From Left', WCLCFC_TEXT_DOMAIN); ?>
+										</label>
+									</div>
+									<div id="wclcfc-exit-intent-fullscreen" class="wclcfc-exit-intent-type">
+										<label class="wclcfc-exit-intent-image" for="wclcfc-radiobutton-fullscreen">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+											</em>
+											<input id="wclcfc-radiobutton-fullscreen" class="wclcfc-radiobutton" type="radio" name="wclcfc_exit_intent_type" value="1" <?php echo $this->disableField(array('forced' => true )); ?> />
+											<?php echo __('Fullscreen', WCLCFC_TEXT_DOMAIN); ?>
+										</label>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<?php
+						if(current_user_can( 'manage_options' )){
+							submit_button(__('Save settings', WCLCFC_TEXT_DOMAIN));
+						}?>
+					</form>
+
+				<?php else: //Table output ?>
+					<h1><?php echo WCLCFC_PLUGIN_NAME; ?></h1>
+					<?php do_action('wclcfc_after_page_title'); ?>
+					<?php echo $message; 
+					if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note ?>
+						<p>
+							<?php echo __( 'Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.', WCLCFC_TEXT_DOMAIN); ?>
+						</p>
+					<?php else: ?>
+						<form id="wclcfc-table" method="GET">
+							<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
+							<?php $wp_list_table->display() ?>
+						</form>
+					<?php endif; ?>
+				<?php endif;
+			}?>
 		</div>
 	<?php
+	}
+
+	/**
+	 * Function creates tabs on plugin page
+	 *
+	 * @since    3.0
+	 */
+	function create_admin_tabs( $current = 'carts' ){
+		$tabs = array( 'carts' => __('Abandoned carts', WCLCFC_TEXT_DOMAIN), 'exit_intent' => __('Exit Intent', WCLCFC_TEXT_DOMAIN));
+		echo '<h2 class="nav-tab-wrapper">';
+		$icon_image = NULL;
+		
+		foreach( $tabs as $tab => $name ){
+			if($name == 'Exit Intent'){
+				//$icon_image = '';
+				$icon_class = 'wclcfc-exit-intent-icon';
+				$icon_image = "<img src='data:image/svg+xml;base64," . $this->exit_intent_svg_icon() . "' alt=''  />";
+			}
+			else{
+				$icon_class = 'dashicons-cart';
+			}
+			
+			$class = ( $tab == $current ) ? ' nav-tab-active' : ''; //if the tab is open, an additional class, nav-tab-active, is added
+			echo "<a class='nav-tab$class' href='?page=". WCLCFC_TEXT_DOMAIN ."&tab=$tab'><span class='wclcfc-tab-icon dashicons $icon_class' >$icon_image</span><span class='wclcfc-tab-name'>$name</span></a>";
+		}
+		echo '</h2>';
 	}
 
 	/**
@@ -246,15 +380,31 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	 * @since    1.4.1
 	 */
 	function check_current_plugin_version(){
-		$plugin = new WooCommerce_Live_Checkout_Field_Capture();
+		$plugin = new Woo_Live_Checkout_Field_Capture();
 		$current_version = $plugin->get_version();
 		
 		if ($current_version == get_option('wclcfc_version_number')){ //If database version is equal to plugin version. Not updating database
 			return;
 		}else{ //Versions are different and we must update the database
 			update_option('wclcfc_version_number', $current_version);
-			activate_woocommerce_live_checkout_field_capture(); //Function that updates the database
+			activate_woo_save_abandoned_carts(); //Function that updates the database
 			return;
+		}
+	}
+
+	/**
+	 * Checks if we have to disable input field or not because of the users access right to save data
+	 *
+	 * @since     3.0
+	 */
+	function disableField($options = array()){
+		if($options){
+			if($options['forced'] == true){
+				return 'disabled=""';
+			}
+		}
+		elseif(!current_user_can( 'manage_options' )){
+			return 'disabled=""';
 		}
 	}
 
@@ -405,5 +555,17 @@ class WooCommerce_Live_Checkout_Field_Capture_Admin{
 	function wclcfc_text_domain(){
 		return load_plugin_textdomain( WCLCFC_TEXT_DOMAIN, false, basename( plugin_dir_path( __DIR__ ) ) . '/languages' );
 	}
+
+	/**
+	 * Function returns Exit Intent icon as SVG code
+	 *
+	 * @since    3.0
+	 * return: 	 String
+	 */
+	public function exit_intent_svg_icon(){
+		return base64_encode('<?xml version="1.0" encoding="UTF-8"?>
+			<svg height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61.75 63.11"><defs><style>.cls-1{fill:#1B1A19;}</style></defs><title>Untitled-2</title><path class="cls-1" d="M26.32,6.24A6.24,6.24,0,1,1,20.07,0a6.24,6.24,0,0,1,6.24,6.24h0Z"/><path class="cls-1" d="M55.43,39.26C48.88,43.09,45,37.47,42,32.07c-0.13-.52-5.27-10.44-7.77-14.79,4.89-1.56,9.35-.13,12.86,4.79,2.85,4,9.53.16,6.64-3.88C46.94,8.67,36.8,6.3,26.66,12.32c-0.42.25-2.33,1.3-2.76,1.56-6.31,3.75-12.17,3-16.54-3.1-2.86-4-9.54-.16-6.65,3.89,5.59,7.82,13.43,10.8,21.67,8.27,2.59,4.45,5,9,7.41,13.54-3.49,1.79-10,5.39-11.71,8.71C16,49.32,14,53.53,12,57.7c-2.17,4.48,4.8,7.73,7,3.27,1.92-4,6.28-12.22,6.53-12.43,3.48-3,12.25-7.18,12.44-7.28,5.35,6.79,12.81,10.52,21.75,5.3,4.71-2.75.45-10.07-4.27-7.31h0Z"/></svg>
+		');
+    }
 
 }

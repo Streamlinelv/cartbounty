@@ -1,0 +1,176 @@
+/**
+ * All of the CSS for your public-specific functionality should be
+ * included in this file.
+ */
+
+#wclcfc-exit-intent-form{
+	z-index: -1;
+	opacity: 0;
+	visibility: hidden;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+
+#wclcfc-exit-intent-form-backdrop{
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: #000;
+	opacity: 0;
+	z-index: 0;
+	display: block;
+	visibility: hidden;
+	cursor: pointer;
+	-webkit-transition: 	all .6s cubic-bezier(.38,1.09,.5,.98);
+	-webkit-transition: 	all .6s cubic-bezier(.38,1.09,.5,.98);
+	-moz-transition: 		all .6s cubic-bezier(.38,1.09,.5,.98);
+	-o-transition: 			all .6s cubic-bezier(.38,1.09,.5,.98);
+	transition: 			all .6s cubic-bezier(.38,1.09,.5,.98);
+}
+
+#wclcfc-exit-intent-form.wclcfc-visible,
+#wclcfc-exit-intent-form-backdrop.wclcfc-visible,
+.wclcfc-visible #wclcfc-exit-intent-form-container{
+	z-index: 99999999;
+	opacity: 1;
+	visibility: visible;
+}
+
+#wclcfc-exit-intent-form-backdrop.wclcfc-visible{
+	z-index: 99999998;
+	opacity: .5;
+}
+
+#wclcfc-exit-intent-close{
+	height: 42px;
+	width: 42px;
+	top: 20px;
+	right: 20px;
+	position: absolute;
+	cursor: pointer;
+	padding: 15px;
+	opacity: .6;
+	z-index: 2;
+	overflow: hidden;
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
+	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+}
+
+#wclcfc-exit-intent-close:hover{
+	opacity: 1;
+}
+
+#wclcfc-exit-intent-form-container{
+	position: relative;
+	padding: 20px 60px 30px;
+	opacity: 0;
+	overflow-x: hidden;
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
+	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+}
+
+#wclcfc-exit-intent-form label{
+	cursor: pointer;
+}
+
+#wclcfc-exit-intent-form label,
+#wclcfc-exit-intent-form input{
+	margin: 0 10px 10px 0;
+}
+
+#wclcfc-exit-intent-form-content-l{
+	text-align: center;
+}
+
+#wclcfc-exit-intent-form-content img{
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	max-height: 280px;
+	height: 35vh;
+	width: auto;
+}
+
+#wclcfc-exit-intent-submit{
+	opacity: .9;
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
+	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+}
+
+#wclcfc-exit-intent-submit:hover{
+	opacity: 1;
+}
+
+#wclcfc-exit-intent-email{
+	width: 230px;
+}
+
+#wclcfc-exit-intent-form h2{
+	font-size: 34px;
+	line-height: 42px;
+}
+
+#wclcfc-exit-intent-form p{
+	font-size: 15px;
+	line-height: 20px;
+}
+
+/* Exit Intent Template
+ * Appear In Center
+ */
+ .wclcfc-ei-center#wclcfc-exit-intent-form{
+ 	overflow-y: auto;
+ }
+
+.wclcfc-ei-center #wclcfc-exit-intent-form-container{
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	height: auto;
+	width: 100%;
+	max-width: 600px;
+	border-radius: 4px 4px 4px 4px;
+	-moz-border-radius: 4px 4px 4px 4px;
+	-webkit-border-radius: 4px 4px 4px 4px;
+}
+
+@media screen and (max-width: 768px) {
+	.wclcfc-ei-center #wclcfc-exit-intent-form-container{
+		width: 90%;
+	}
+}
+
+@media screen and (max-width: 576px) {
+	.wclcfc-ei-center #wclcfc-exit-intent-form-container{
+		width: 94%;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	#wclcfc-exit-intent-email{
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 576px) {
+	#wclcfc-exit-intent-form-container{
+		padding: 20px 30px 10px;
+	}
+}

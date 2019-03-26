@@ -100,11 +100,20 @@
 					jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 					function(response) {
 						//console.log(response);
+						//If we have successfully captured abandoned cart, we do not have to display Exit intent form anymore
+						removeExitIntentForm();
 					});
 					
 				}, 800);
 			}else{
 				//console.log("Not a valid e-mail or phone address");
+			}
+		}
+
+		function removeExitIntentForm(){//Removing Exit Intent form
+			if($('#wclcfc-exit-intent-form').length > 0){ //If Exit intent HTML exists on page
+				$('#wclcfc-exit-intent-form').remove();
+				$('#wclcfc-exit-intent-form-backdrop').remove();
 			}
 		}
 

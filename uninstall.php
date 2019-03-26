@@ -25,3 +25,6 @@ delete_option( 'wclcfc_version_number' );
 delete_option( 'wclcfc_deleted_rows' ); //Not used since 2.1 and will be removed in future releases
 delete_option( 'wclcfc_captured_abandoned_cart_count' );
 delete_option( 'wclcfc_times_review_declined' );
+delete_option( 'wclcfc_exit_intent_status' );
+delete_option( 'wclcfc_exit_intent_test_mode' );
+delete_option( 'wclcfc_exit_intent_type' );

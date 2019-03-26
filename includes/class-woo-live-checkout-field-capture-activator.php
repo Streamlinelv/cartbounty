@@ -9,7 +9,7 @@
  * @author     Streamline.lv
  */
  
-class WooCommerce_Live_Checkout_Field_Capture_Activator{
+class Woo_Live_Checkout_Field_Capture_Activator{
 
 	/**
 	 * Short Description. (use period)
@@ -56,6 +56,9 @@ class WooCommerce_Live_Checkout_Field_Capture_Activator{
 		*/
 		$sql ="ALTER TABLE $table_name AUTO_INCREMENT = 1";
 		dbDelta( $sql );
+
+		//Setting default Exit Intent type if it has not been previously set
+		add_option('wclcfc_exit_intent_type', 1);
 		
 	}
 }
