@@ -7,7 +7,7 @@
 
 	 	function showExitIntentForm(event){
 	 		var currentTime = new Date().getTime();
-			var timePeriod = public.hours; //Past 24 hours
+			var timePeriod = public_data.hours; //Past 24 hours
 			var last_time_displayed = localStorage.getItem('wclcfc_ei_last_time');
 
 			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field

@@ -13,7 +13,8 @@
 
 #woocommerce-live-checkout-field-capture-bubbles .button,
 .woocommerce-live-checkout-field-capture-close,
-#woocommerce-live-checkout-field-capture-go-pro-header-image a{
+#woocommerce-live-checkout-field-capture-go-pro-header-image a,
+#wclcfc-page-wrapper .submit:after{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
@@ -280,8 +281,23 @@
 }
 
 .wclcfc-radio-active em,
-.wclcfc-exit-intent-type:hover em{
+.wclcfc-exit-intent-type:hover em,
+#wclcfc-page-wrapper .wclcfc-loading.submit:after{
 	opacity: 1;
+}
+
+#wclcfc-page-wrapper .submit:after{
+	background: url('../assets/spinner-2x.gif') no-repeat;
+	background-size: 16px 16px;
+	display: inline-block;
+	opacity: 0;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	content: '';
+	top: 6px;
+	left: 10px;
+	vertical-align: top;
 }
 
 @media screen and (max-width: 1200px) {

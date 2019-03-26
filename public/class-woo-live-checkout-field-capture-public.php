@@ -71,7 +71,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 				);
 			}
 			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public-exit-intent.js', array( 'jquery' ), $this->version, false );
-			wp_localize_script($this->plugin_name . 'exit_intent', 'public', $data); //Sending variable over to JS file
+			wp_localize_script($this->plugin_name . 'exit_intent', 'public_data', $data); //Sending variable over to JS file
 			wp_localize_script( $this->plugin_name . 'exit_intent', 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 		}
 	}

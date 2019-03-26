@@ -66,11 +66,30 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 		$screen = get_current_screen();
 		
 		//Do not continue if we are not on WCLCFC plugin page
+		if(!is_object($screen)){
+			return;
+		}
+
+		if($screen->id == $wclcfc_admin_menu_page || $screen->id == 'plugins'){
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-admin.css', array(), $this->version, 'all' );
+		}
+	}
+
+	/**
+	 * Register the javascripts for the admin area.
+	 *
+	 * @since    3.0
+	 */
+	public function enqueue_scripts(){
+		global $wclcfc_admin_menu_page;
+		$screen = get_current_screen();
+		
+		//Do not continue if we are not on WCLCFC plugin page
 		if(!is_object($screen) || $screen->id != $wclcfc_admin_menu_page){
 			return;
 		}
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-admin.js', array( 'jquery' ), $this->version, false );
 	}
 	
 	/**
