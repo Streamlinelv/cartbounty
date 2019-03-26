@@ -60,9 +60,18 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @since    3.0
 	 */
 	public function enqueue_scripts(){
-		if(get_option('wclcfc_exit_intent_status') || get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent Enabled or Test mode is on
-			//Adding Exit intent functionality
+		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
+			if(get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent Test mode is on
+				$data = array(
+				    'hours' => 0 //For Exit Intent Testing purposes
+				);
+			}else{
+				$data = array(
+				    'hours' => 1
+				);
+			}
 			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public-exit-intent.js', array( 'jquery' ), $this->version, false );
+			wp_localize_script($this->plugin_name . 'exit_intent', 'public', $data); //Sending variable over to JS file
 			wp_localize_script( $this->plugin_name . 'exit_intent', 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 		}
 	}
@@ -595,67 +604,75 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @since    3.0
 	 */
 	function display_exit_intent_form(){
-		global $wpdb;
-		if(!get_option('wclcfc_exit_intent_status') || get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent has been disabled and Test mode is off
+		if(!$this->exit_intent_enabled()){ //If Exit Intent disabled
 			return;
 		}
-		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
 		
-		if(!is_user_logged_in()){ //If a user is not logged in
-			if( WC()->cart->get_cart_contents_count() > 0 ){ //If the cart is not empty
-				$main_color = '#e3e3e3';
-				$inverse_color = $this->invert_color($main_color);
-				$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
-				$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
-
-				//Retrieve a single row with current customer ID
-				$row = $wpdb->get_row($wpdb->prepare(
-					"SELECT *
-					FROM ". $table_name ."
-					WHERE session_id = %s",
-					$customer_id)
-				);
-				
-				if($row){ //If we have a user with such session ID in the database already captured then we sgould not output exit intent
-					return;
-				}
-
-				//Creating Exit Intent output
-				$output = '<div id="wclcfc-exit-intent-form" class="wclcfc-ei-center">
-								<div id="wclcfc-exit-intent-form-container" style="background-color:'. $main_color .'">
-									<div id="wclcfc-exit-intent-close">
-										<svg>
-											<line x1="1" y1="11" x2="11" y2="1" stroke="'. $inverse_color .'" stroke-width="2"/>
-											<line x1="1" y1="1" x2="11" y2="11" stroke="'. $inverse_color .'" stroke-width="2"/>
-										</svg>
-									</div>
-									<div id="wclcfc-exit-intent-form-content">
-										<div id="wclcfc-exit-intent-form-content-l">
-											<img src="'. plugins_url( 'assets/abandoned-shopping-cart.gif', __FILE__ ) .'" alt="" title=""/>
-										</div>
-										<div id="wclcfc-exit-intent-form-content-r">
-											<h2 style="color:'. $inverse_color .'" >You were not leaving your cart just like that, right?</h2>
-											<p style="color:'. $inverse_color .'">Go ahead and fill the email below. We will reach out to you and might even give you a discount.</p>
-											<form>
-												<label for="wclcfc-exit-intent-email" style="color:'. $inverse_color .'">Your email:</label>
-												<input type="email" id="wclcfc-exit-intent-email" size="30" required >
-												<button type="submit" name="wclcfc-exit-intent-submit" id="wclcfc-exit-intent-submit" value="Submit" style="background-color:'. $inverse_color .'; color:'. $main_color .'">Save cart</button>
-											</form>
-										</div>
-									</div>
-								</div>
-								<div id="wclcfc-exit-intent-form-backdrop" style="background-color:'. $inverse_color .'; opacity: 0;"></div>
-							</div>';
-
-				if (isset( $_POST["wlcfc_insert"])) { //In case function triggered using Ajax Add to Cart
-					return wp_send_json_success($output); //Sending Output to Javascript function
-				}
-				else{ //Outputing in case of page reload
-					echo $output; 
-				}
+		if( WC()->cart->get_cart_contents_count() > 0 ){ //If the cart is not empty
+			$current_user_is_admin = current_user_can( 'manage_options' );
+			$output = $this->build_exit_intent_output($current_user_is_admin); //Creating the Exit Intent output
+			if (isset( $_POST["wlcfc_insert"])) { //In case function triggered using Ajax Add to Cart
+				return wp_send_json_success($output); //Sending Output to Javascript function
+			}
+			else{ //Outputing in case of page reload
+				echo $output;
 			}
 		}
-		
+	}
+
+	/**
+	 * Building the Exit Intent output
+	 *
+	 * @since    3.0
+	 * @return   string
+	 */
+	function build_exit_intent_output($current_user_is_admin){
+		global $wpdb;
+		$main_color = '#e3e3e3';
+		$inverse_color = $this->invert_color($main_color);
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+		$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+
+		//Retrieve a single row with current customer ID
+		$row = $wpdb->get_row($wpdb->prepare(
+			"SELECT *
+			FROM ". $table_name ."
+			WHERE session_id = %s",
+			$customer_id)
+		);
+
+		if($row && !$current_user_is_admin){ //Exit if Abandoned Cart already saved and the current user is not admin
+			return;
+		}
+
+		//Creating Exit Intent output
+		$output = 
+			'<div id="wclcfc-exit-intent-form" class="wclcfc-ei-center">
+				<div id="wclcfc-exit-intent-form-container" style="background-color:'. $main_color .'">
+					<div id="wclcfc-exit-intent-close">
+						<svg>
+							<line x1="1" y1="11" x2="11" y2="1" stroke="'. $inverse_color .'" stroke-width="2"/>
+							<line x1="1" y1="1" x2="11" y2="11" stroke="'. $inverse_color .'" stroke-width="2"/>
+						</svg>
+					</div>
+					<div id="wclcfc-exit-intent-form-content">
+						<div id="wclcfc-exit-intent-form-content-l">
+							<img src="'. plugins_url( 'assets/abandoned-shopping-cart.gif', __FILE__ ) .'" alt="" title=""/>
+						</div>
+						<div id="wclcfc-exit-intent-form-content-r">
+							<h2 style="color:'. $inverse_color .'" >You were not leaving your cart just like that, right?</h2>
+							<p style="color:'. $inverse_color .'">Go ahead and fill the email below. We will reach out to you and might even give you a discount.</p>
+							<form>
+								<label for="wclcfc-exit-intent-email" style="color:'. $inverse_color .'">Your email:</label>
+								<input type="email" id="wclcfc-exit-intent-email" size="30" required >
+								<button type="submit" name="wclcfc-exit-intent-submit" id="wclcfc-exit-intent-submit" value="Submit" style="background-color:'. $inverse_color .'; color:'. $main_color .'">Save cart</button>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div id="wclcfc-exit-intent-form-backdrop" style="background-color:'. $inverse_color .'; opacity: 0;"></div>
+			</div>';
+		return $output;
 	}
 
 	/**
@@ -665,16 +682,35 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @return   boolean
 	 */
 	function remove_exit_intent_form(){
-
-		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
-		
-		if(!is_user_logged_in()){ //If a user is not logged in
-			if( WC()->cart->get_cart_contents_count() == 0 ){ //If the cart is empty
-				return wp_send_json_success('true'); //Sending successful output to Javascript function
-			}else{
-				return wp_send_json_success('false');
-			}
+		if( WC()->cart->get_cart_contents_count() == 0 ){ //If the cart is empty
+			return wp_send_json_success('true'); //Sending successful output to Javascript function
+		}else{
+			return wp_send_json_success('false');
 		}
+	}
+
+	/**
+	 * Checking if we Exit Intent is enabled
+	 *
+	 * @since    3.0
+	 * @return   boolean
+	 */
+	function exit_intent_enabled(){
+		$exit_intent_on = get_option('wclcfc_exit_intent_status');
+		$test_mode_on = get_option('wclcfc_exit_intent_test_mode');
+		$current_user_is_admin = current_user_can( 'manage_options' );
+
+		if($test_mode_on && $current_user_is_admin){
+			//Outputing Exit Intent for Testing purposes for Administrators
+			return true;
+		}elseif($exit_intent_on && !$test_mode_on && !is_user_logged_in()){
+			//Outputing Exit Intent for all users who are not logged in
+			return true;
+		}else{
+			//Do not Output Exit Intent
+			return false;
+		}
+		
 	}
 
 	/**

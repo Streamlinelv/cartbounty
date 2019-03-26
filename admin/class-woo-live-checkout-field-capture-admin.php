@@ -165,13 +165,14 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 
 				if($tab == 'exit_intent'): //Exit intent output ?>
 					<h1><?php echo WCLCFC_PLUGIN_NAME; ?> <?php echo __('Exit Intent', WCLCFC_TEXT_DOMAIN); ?></h1>
-					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill in order to save his shopping cart or to receive an additional coupon code.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill in order to save his shopping cart. You can even offer to send a discount code.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<p class="wclcfc-description"><?php echo __('Please note that Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart.', WCLCFC_TEXT_DOMAIN); ?></p>
 					<form method="post" action="options.php">
 						<?php
 							settings_fields( 'wclcfc-settings-exit-intent' );
 							do_settings_sections( 'wclcfc-settings-exit-intent' );
 							$exit_intent_on = esc_attr( get_option('wclcfc_exit_intent_status'));
-							$exit_intent_test_mode_on = esc_attr( get_option('wclcfc_exit_intent_test_mode'));
+							$test_mode_on = esc_attr( get_option('wclcfc_exit_intent_test_mode'));
 							$exit_intent_type = esc_attr( get_option('wclcfc_exit_intent_type'));
 						?>
 						
@@ -189,12 +190,10 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 									<label for="wclcfc-exit-intent-test-mode"><?php echo __('Enable Test Mode:', WCLCFC_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="wclcfc-exit-intent-test-mode" class="wclcfc-checkbox" type="checkbox" name="wclcfc_exit_intent_test_mode" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $exit_intent_test_mode_on, false ); ?> />
+									<input id="wclcfc-exit-intent-test-mode" class="wclcfc-checkbox" type="checkbox" name="wclcfc_exit_intent_test_mode" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $test_mode_on, false ); ?> />
 									<p><small>
-										<?php if($exit_intent_test_mode_on){
-										echo __('Now go to your store and add a product to your shopping cart.<br/>Please note that only you will see the Exit Intent and this removes many limitations - <br/>you will see it each time you try to leave your shop.', WCLCFC_TEXT_DOMAIN);}
-										else{
-											echo __('Enable to test the appearance of Exit Intent.', WCLCFC_TEXT_DOMAIN);
+										<?php if($test_mode_on){
+										echo __('Now go to your store and add a product to your shopping cart. Please note that only <br/>users with Admin rights will be able to see the Exit Intent and appearance limits <br/>have been removed - it will be shown each time you try to leave your shop.', WCLCFC_TEXT_DOMAIN);
 										}?>
 										</small>
 									</p>

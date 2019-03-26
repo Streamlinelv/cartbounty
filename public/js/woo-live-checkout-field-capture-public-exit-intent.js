@@ -6,18 +6,22 @@
 	 	var timer;
 
 	 	function showExitIntentForm(event){
-	 		var currentTime = Math.round(new Date().getTime() / 1000);
-			var timePeriod = currentTime - (0 * 1 * 1); //Past 24 hours
-			var window_displayed = localStorage.getItem('wclcfc-exit-intent-form-displayed');
-			var last_time_window_displayed = localStorage.getItem('wclcfc-exit-intent-form-time-last-displayed');
+	 		var currentTime = new Date().getTime();
+			var timePeriod = public.hours; //Past 24 hours
+			var last_time_displayed = localStorage.getItem('wclcfc_ei_last_time');
 
 			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field
-		        if (window_displayed != 1 || last_time_window_displayed < timePeriod) { //If time period has passed or we haven't displayed the exit intent form previously
+		        if (last_time_displayed == null || timePeriod == 0) { //If time period has passed or we Exit Intent test mode is enabled
 		            $('#wclcfc-exit-intent-form').addClass('wclcfc-visible'); //Display form
 		        	$('#wclcfc-exit-intent-form-backdrop').css('opacity', '').addClass('wclcfc-visible'); //Show backdrop
+		        	if(timePeriod != 0){
+		        		localStorage.setItem('wclcfc_ei_last_time', currentTime);
+		        	}
+		        }else{
+		        	if(currentTime - last_time_displayed > timePeriod * 60 * 60 * 1000){ // If the time has expired, clear the cookie
+						localStorage.removeItem('wclcfc_ei_last_time');
+					}
 		        }
-		        localStorage.setItem('wclcfc-exit-intent-form-displayed', '1');
-		        localStorage.setItem('wclcfc-exit-intent-form-time-last-displayed', currentTime);
 		    }
 	 	}
 
