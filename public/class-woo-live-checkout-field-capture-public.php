@@ -63,16 +63,19 @@ class Woo_Live_Checkout_Field_Capture_Public{
 		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
 			if(get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent Test mode is on
 				$data = array(
-				    'hours' => 0 //For Exit Intent Testing purposes
+				    'hours' => 0, //For Exit Intent Testing purposes
+				    'product_count' => WC()->cart->get_cart_contents_count(),
+				    'ajaxurl' => admin_url( 'admin-ajax.php' )
 				);
 			}else{
 				$data = array(
-				    'hours' => 1
+				    'hours' => 1,
+				    'product_count' => WC()->cart->get_cart_contents_count(),
+				    'ajaxurl' => admin_url( 'admin-ajax.php' )
 				);
 			}
 			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public-exit-intent.js', array( 'jquery' ), $this->version, false );
-			wp_localize_script($this->plugin_name . 'exit_intent', 'public_data', $data); //Sending variable over to JS file
-			wp_localize_script( $this->plugin_name . 'exit_intent', 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
+			wp_localize_script( $this->plugin_name . 'exit_intent', 'public_data', $data); //Sending variable over to JS file
 		}
 	}
 	
@@ -104,10 +107,11 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			$current_time = $cart_data['current_time'];
 			$session_id = $cart_data['session_id'];
 			$product_array = $cart_data['product_array'];
+			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
 
 			//In case if the cart has no items in it, we need to delete the abandoned cart
 			if(empty($product_array)){
-				$this->delete_user_data();
+				$this->clear_cart_data();
 				return;
 			}
 			
@@ -152,10 +156,11 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			);
 			
 			$location = $country . $city;
-			
-			//If we have already inserted the Users session ID in Session variable and it is not NULL we update the abandoned cart row
-			if( WC()->session->get('wclcfc_session_id') !== NULL ){
-				
+
+			$current_session_exist_in_db = $this->current_session_exist_in_db($wclcfc_session_id);
+			//If we have already inserted the Users session ID in Session variable and it is not NULL and Current session ID exists in Database we update the abandoned cart row
+			if( $current_session_exist_in_db && $wclcfc_session_id !== NULL ){
+
 				//Updating row in the Database where users Session id = same as prevously saved in Session
 				$wpdb->prepare('%s',
 					$wpdb->update(
@@ -172,7 +177,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 							'time'			=>	sanitize_text_field( $current_time ),
 							'other_fields'	=>	sanitize_text_field( serialize($other_fields) )
 						),
-						array('session_id' => WC()->session->get('wclcfc_session_id')),
+						array('session_id' => $wclcfc_session_id),
 						array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
 						array('%s')
 					)
@@ -229,56 +234,18 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			$current_time = $cart_data['current_time'];
 			$session_id = $cart_data['session_id'];
 			$product_array = $cart_data['product_array'];
+			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
 
-			//In case if the user updates the cart and takes out all items, we need to delete the abandoned cart
+			//In case if the user updates the cart and takes out all items from the cart
 			if(empty($product_array)){
-				$this->delete_user_data();
+				$this->clear_cart_data();
 				return;
-			}
-			
-			//Looking if a user has previously made an order
-			//If not, using default WordPress assigned data
-			//Handling users name
-			$current_user = wp_get_current_user(); //Retrieving users data
-			if($current_user->billing_first_name){
-				$name = $current_user->billing_first_name; 
-			}else{
-				$name = $current_user->user_firstname; //Users name
-			}
-
-			//Handling users surname
-			if($current_user->billing_last_name){
-				$surname = $current_user->billing_last_name;
-			}else{
-				$surname = $current_user->user_lastname;
-			}
-			
-			//Handling users email address
-			if($current_user->billing_email){
-				$email = $current_user->billing_email;
-			}else{
-				$email = $current_user->user_email;
-			}
-
-			//Handling users phone
-			$phone = $current_user->billing_phone;
-
-			//Handling users address
-			if($current_user->billing_country){
-				$country = $current_user->billing_country;
-				if($current_user->billing_state){ //checking if the state was entered
-					$city = ", ". $current_user->billing_state;
-				}
-				$location = $country . $city; 
-			}else{
-				$location = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
-				$location = $location['country'];
 			}
 
 			$abandoned_cart = '';
 
 			//If we haven't set wclcfc_session_id, then need to check in the database if the current user has got an abandoned cart already
-			if( WC()->session->get('wclcfc_session_id') === NULL ){
+			if( $wclcfc_session_id === NULL ){
 				$main_table = $wpdb->prefix . WCLCFC_TABLE_NAME;
 				$abandoned_cart = $wpdb->get_row($wpdb->prepare(
 					"SELECT session_id FROM ". $main_table ."
@@ -286,8 +253,10 @@ class Woo_Live_Checkout_Field_Capture_Public{
 				);
 			}
 
-			//If the current user has got an abandoned cart already or if we have already inserted the Users session ID in Session variable and it is not NULL we update the abandoned cart row
-			if( !empty($abandoned_cart) || WC()->session->get('wclcfc_session_id') !== NULL ){
+			$current_session_exist_in_db = $this->current_session_exist_in_db($wclcfc_session_id);
+			//If the current user has got an abandoned cart already or if we have already inserted the Users session ID in Session variable and it is not NULL and already inserted the Users session ID in Session variable we update the abandoned cart row
+			if( $current_session_exist_in_db && (!empty($abandoned_cart) || $wclcfc_session_id !== NULL )){
+
 				//If the user has got an abandoned cart previously, we set session ID back
 				if(!empty($abandoned_cart)){
 					$session_id = $abandoned_cart->session_id;
@@ -295,7 +264,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 					WC()->session->set('wclcfc_session_id', $session_id);
 
 				}else{
-					$session_id = WC()->session->get('wclcfc_session_id');
+					$session_id = $wclcfc_session_id;
 				}
 				
 				//Updating row in the Database where users Session id = same as prevously saved in Session
@@ -316,6 +285,46 @@ class Woo_Live_Checkout_Field_Capture_Public{
 				);
 				
 			}else{
+
+				//Looking if a user has previously made an order
+				//If not, using default WordPress assigned data
+				//Handling users name
+				$current_user = wp_get_current_user(); //Retrieving users data
+				if($current_user->billing_first_name){
+					$name = $current_user->billing_first_name; 
+				}else{
+					$name = $current_user->user_firstname; //Users name
+				}
+
+				//Handling users surname
+				if($current_user->billing_last_name){
+					$surname = $current_user->billing_last_name;
+				}else{
+					$surname = $current_user->user_lastname;
+				}
+				
+				//Handling users email address
+				if($current_user->billing_email){
+					$email = $current_user->billing_email;
+				}else{
+					$email = $current_user->user_email;
+				}
+
+				//Handling users phone
+				$phone = $current_user->billing_phone;
+
+				//Handling users address
+				if($current_user->billing_country){
+					$country = $current_user->billing_country;
+					if($current_user->billing_state){ //checking if the state was entered
+						$city = ", ". $current_user->billing_state;
+					}
+					$location = $country . $city; 
+				}else{
+					$location = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
+					$location = $location['country'];
+				}
+
 				//Inserting row into Database
 				$wpdb->query(
 					$wpdb->prepare(
@@ -343,6 +352,114 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			}
 		}
 	}
+
+	/**
+	 * Function updates cart data for users who are not signed in
+	 *
+	 * @since    3.0
+	 */
+	function update_cart_data(){
+		if(!is_user_logged_in()){ //If a user is not logged in
+
+			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
+			if( $wclcfc_session_id !== NULL ){
+				
+				global $wpdb;
+				$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+				$cart_data = $this->read_cart();
+				$product_array = $cart_data['product_array'];
+				$cart_total = $cart_data['cart_total'];
+				$cart_currency = $cart_data['cart_currency'];
+				$current_time = $cart_data['current_time'];
+
+				//In case if the cart has no items in it, we need to delete the abandoned cart
+				if(empty($product_array)){
+					$this->clear_cart_data();
+					return;
+				}
+
+				//Updating row in the Database where users Session id = same as prevously saved in Session
+				$wpdb->prepare('%s',
+					$wpdb->update(
+						$table_name,
+						array(
+							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
+							'cart_total'	=>	sanitize_text_field( $cart_total ),
+							'currency'		=>	sanitize_text_field( $cart_currency ),
+							'time'			=>	sanitize_text_field( $current_time )
+						),
+						array('session_id' => $wclcfc_session_id),
+						array('%s', '%0.2f', '%s', '%s'),
+						array('%s')
+					)
+				);
+			}
+		}
+	}
+
+	/**
+	 * Function checks if current user session ID also exists in the database
+	 *
+	 * @since    3.0
+	 * @return  boolean
+	 */
+	function current_session_exist_in_db($wclcfc_session_id){
+		//If we have saved the abandoned cart in session variable
+		if( $wclcfc_session_id !== NULL ){
+			global $wpdb;
+			$main_table = $wpdb->prefix . WCLCFC_TABLE_NAME;
+
+			//Checking if we have this abandoned cart in our database already
+			return $result = $wpdb->get_var($wpdb->prepare(
+				"SELECT session_id
+				FROM ". $main_table ."
+				WHERE session_id = %s",
+				$wclcfc_session_id
+			));
+
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * Function to clear cart data from row
+	 *
+	 * @since    3.0
+	 */
+	function clear_cart_data(){
+		
+		global $wpdb;
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+		
+		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
+		if(isset(WC()->session)){
+
+			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
+			if(isset($wclcfc_session_id)){
+
+				$cart_data = $this->read_cart();
+				$cart_currency = $cart_data['cart_currency'];
+				$current_time = $cart_data['current_time'];
+				
+				//Cleaning Cart data
+				$wpdb->prepare('%s',
+					$wpdb->update(
+						$table_name,
+						array(
+							'cart_contents'	=>	'',
+							'cart_total'	=>	0,
+							'currency'		=>	sanitize_text_field( $cart_currency ),
+							'time'			=>	sanitize_text_field( $current_time )
+						),
+						array('session_id' => $wclcfc_session_id),
+						array('%s', '%s'),
+						array('%s')
+					)
+				);
+			}
+		}
+	}
 	
 	/**
 	 * Function in order to delete row from table if the user completes the checkout
@@ -356,19 +473,18 @@ class Woo_Live_Checkout_Field_Capture_Public{
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
 
-			$session_id = WC()->session->get('wclcfc_session_id');
-
-			if(isset($session_id)){
+			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
+			if(isset($wclcfc_session_id)){
 				
 				//Deleting row from database
 				$wpdb->query(
 					$wpdb->prepare(
 						"DELETE FROM ". $table_name ."
 						 WHERE session_id = %s",
-						sanitize_key($session_id)
+						sanitize_key($wclcfc_session_id)
 					)
 				);
-				$this->decrease_captured_abandoned_cart_count(); //Decreasing total count of captured abandoned carts
+				$this->decrease_captured_abandoned_cart_count( $count = false ); //Decreasing total count of captured abandoned carts
 			}
 			
 			$this->unset_wclcfc_session_id();
@@ -382,6 +498,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @return   Array
 	 */
 	function read_cart(){
+		global $woocommerce;
 
 		//Retrieving cart total value and currency
 		$cart_total = WC()->cart->total;
@@ -392,7 +509,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 		$session_id = WC()->session->get_customer_id();
 
 		//Retrieving cart
-		$products = WC()->cart->get_cart();
+		$products = $woocommerce->cart->cart_contents;
 		$product_array = array();
 				
 		foreach($products as $product => $values){
@@ -498,14 +615,14 @@ class Woo_Live_Checkout_Field_Capture_Public{
 		global $wpdb;
 		
 		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
-		$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+		$wclcfc_session_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
 		
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT *
 			FROM ". $table_name ."
 			WHERE session_id = %s",
-			$customer_id)
+			$wclcfc_session_id)
 		);
 		
 		if($row){ //If we have a user with such session ID in the database
@@ -593,9 +710,12 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 *
 	 * @since    3.0
 	 */
-	function decrease_captured_abandoned_cart_count(){
+	function decrease_captured_abandoned_cart_count($count){
+		if(!$count){
+			$count = 1;
+		}
 		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
-		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - 1); //Decreasing the count by one abandoned cart
+		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - $count); //Decreasing the count by one abandoned cart
 	}
 
 	/**
@@ -621,61 +741,6 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	}
 
 	/**
-	 * Building the Exit Intent output
-	 *
-	 * @since    3.0
-	 * @return   string
-	 */
-	function build_exit_intent_output($current_user_is_admin){
-		global $wpdb;
-		$main_color = '#e3e3e3';
-		$inverse_color = $this->invert_color($main_color);
-		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
-		$customer_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
-
-		//Retrieve a single row with current customer ID
-		$row = $wpdb->get_row($wpdb->prepare(
-			"SELECT *
-			FROM ". $table_name ."
-			WHERE session_id = %s",
-			$customer_id)
-		);
-
-		if($row && !$current_user_is_admin){ //Exit if Abandoned Cart already saved and the current user is not admin
-			return;
-		}
-
-		//Creating Exit Intent output
-		$output = 
-			'<div id="wclcfc-exit-intent-form" class="wclcfc-ei-center">
-				<div id="wclcfc-exit-intent-form-container" style="background-color:'. $main_color .'">
-					<div id="wclcfc-exit-intent-close">
-						<svg>
-							<line x1="1" y1="11" x2="11" y2="1" stroke="'. $inverse_color .'" stroke-width="2"/>
-							<line x1="1" y1="1" x2="11" y2="11" stroke="'. $inverse_color .'" stroke-width="2"/>
-						</svg>
-					</div>
-					<div id="wclcfc-exit-intent-form-content">
-						<div id="wclcfc-exit-intent-form-content-l">
-							<img src="'. plugins_url( 'assets/abandoned-shopping-cart.gif', __FILE__ ) .'" alt="" title=""/>
-						</div>
-						<div id="wclcfc-exit-intent-form-content-r">
-							<h2 style="color:'. $inverse_color .'" >You were not leaving your cart just like that, right?</h2>
-							<p style="color:'. $inverse_color .'">Go ahead and fill the email below. We will reach out to you and might even give you a discount.</p>
-							<form>
-								<label for="wclcfc-exit-intent-email" style="color:'. $inverse_color .'">Your email:</label>
-								<input type="email" id="wclcfc-exit-intent-email" size="30" required >
-								<button type="submit" name="wclcfc-exit-intent-submit" id="wclcfc-exit-intent-submit" value="Submit" style="background-color:'. $inverse_color .'; color:'. $main_color .'">Save cart</button>
-							</form>
-						</div>
-					</div>
-				</div>
-				<div id="wclcfc-exit-intent-form-backdrop" style="background-color:'. $inverse_color .'; opacity: 0;"></div>
-			</div>';
-		return $output;
-	}
-
-	/**
 	 * Checking if cart is empty and sending result to Ajax function
 	 *
 	 * @since    3.0
@@ -686,6 +751,47 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			return wp_send_json_success('true'); //Sending successful output to Javascript function
 		}else{
 			return wp_send_json_success('false');
+		}
+	}
+
+	/**
+	 * Building the Exit Intent output
+	 *
+	 * @since    3.0
+	 * @return   string
+	 */
+	function build_exit_intent_output($current_user_is_admin){
+		global $wpdb;
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+		$wclcfc_session_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+		$main_color = esc_attr( get_option('wclcfc_exit_intent_main_color'));
+		$inverse_color = esc_attr( get_option('wclcfc_exit_intent_inverse_color'));
+		if(!$main_color){
+			$main_color = '#e3e3e3';
+		}
+		if(!$inverse_color){
+			$inverse_color = $this->invert_color($main_color);
+		}
+
+		//Retrieve a single row with current customer ID
+		$row = $wpdb->get_row($wpdb->prepare(
+			"SELECT *
+			FROM ". $table_name ."
+			WHERE session_id = %s",
+			$wclcfc_session_id)
+		);
+
+		if($row && !$current_user_is_admin){ //Exit if Abandoned Cart already saved and the current user is not admin
+			return;
+		}
+
+		//In case the function is called via Ajax Add to Cart button
+		//We must add wp_die() or otherwise the function does not return anything
+		if (isset( $_POST["wlcfc_insert"])){ 
+			$output = $this->get_template( 'wclcfc-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
+			die();
+		}else{
+			return $this->get_template( 'wclcfc-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
 		}
 	}
 
@@ -717,7 +823,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * Getting inverse color from the given one
 	 *
 	 * @since    3.0
-	 * @return   String
+	 * @return   string
 	 */
 	function invert_color($color){
 	    $color = str_replace('#', '', $color);
@@ -729,6 +835,77 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	        $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
 	    }
 	    return '#'.$rgb;
+	}
+
+	/**
+	 * Get the plugin url.
+	 *
+	 * @since    3.0
+	 * @return   string
+	 */
+	public function get_plugin_url() {
+		return plugins_url( '/', dirname(__FILE__) );
+	}
+
+	/**
+	 * Locating Exit Intent template file.
+	 * Function returns the path to the template
+	 *
+	 * Search Order:
+	 * 1. /themes/theme/wclcfc-templates/$template_name
+	 * 2. /themes/theme/$template_name
+	 * 3. /plugins/woocommerce-plugin-templates/templates/$template_name.
+	 *
+	 * @since    3.0
+	 * @return   string
+	 * @param 	 string     $template_name - template to load.
+	 * @param 	 string     $string $template_path - path to templates.
+	 * @param    string     $default_path - default path to template files.
+	 */
+	function get_exit_intent_template_path($template_name, $template_path = '', $default_path = ''){
+		// Set variable to search in woocommerce-plugin-templates folder of theme.
+		if ( ! $template_path ) :
+			$template_path = 'templates/';
+		endif;
+
+		// Set default plugin templates path.
+		if ( ! $default_path ) :
+			$default_path = plugin_dir_path( __FILE__ ) . '../templates/'; // Path to the template folder
+		endif;
+
+		// Search template file in theme folder.
+		$template = locate_template( array(
+			$template_path . $template_name,
+			$template_name
+		));
+
+		// Get plugins template file.
+		if ( ! $template ) :
+			$template = $default_path . $template_name;
+		endif;
+		return apply_filters( 'get_exit_intent_template_path', $template, $template_name, $template_path, $default_path );
+	}
+
+	/**
+	 * Get the template.
+	 *
+	 * @since 3.0
+	 *
+	 * @param string 	$template_name - template to load.
+	 * @param array 	$args - args passed for the template file.
+	 * @param string 	$string $template_path - path to templates.
+	 * @param string	$default_path - default path to template files.
+	 */
+	function get_template($template_name, $args = array(), $tempate_path = '', $default_path = '') {
+		if ( is_array( $args ) && isset( $args ) ){
+			extract( $args );
+		}
+		$template_file = $this->get_exit_intent_template_path($template_name, $tempate_path, $default_path);
+		if ( ! file_exists( $template_file ) ){ //Handling error output in case template file does not exist
+			_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $template_file ), '3.0' );
+			return;
+		}
+		include $template_file;
 	}
 
 }

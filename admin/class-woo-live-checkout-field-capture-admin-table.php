@@ -270,6 +270,6 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 		
 		// [REQUIRED] define $items array
         // notice that last argument is ARRAY_A, so we will retrieve array
-        $this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $paged * $per_page), ARRAY_A);
+        $this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE cart_contents != '' ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $paged * $per_page), ARRAY_A);
     }
 }

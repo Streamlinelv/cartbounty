@@ -19,5 +19,8 @@ class Woo_Live_Checkout_Field_Capture_Deactivator{
 	 */
 	public static function deactivate() {
 
+		//Deactivating Wordpress cron job functions and stop sending out e-mails
+		wp_clear_scheduled_hook( 'wclcfc_remove_empty_carts_hook' );
+
 	}
 }

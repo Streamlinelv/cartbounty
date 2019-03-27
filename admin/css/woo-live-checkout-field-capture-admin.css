@@ -280,6 +280,29 @@
 	width: 58px;
 }
 
+.wclcfc-exit-intent-colors{
+	width: 180px;
+	float: left;
+	margin-right: 3%;
+	margin-bottom: 5px;
+}
+
+.wclcfc-exit-intent-colors label{
+	margin-right: 10px;
+}
+
+#wclcfc-page-wrapper .form-table .wclcfc-exit-intent-colors .wclcfc-exit-intent-color-picker{
+	width: 70px;
+}
+
+#wclcfc-page-wrapper .form-table .wclcfc-exit-intent-colors input{
+	width: auto;
+}
+
+.wclcfc-exit-intent-colors .wp-picker-container{
+	display: inline;
+}
+
 .wclcfc-radio-active em,
 .wclcfc-exit-intent-type:hover em,
 #wclcfc-page-wrapper .wclcfc-loading.submit:after{

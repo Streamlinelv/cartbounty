@@ -1,10 +1,10 @@
 === Save Abandoned Carts - WooCommerce Live Checkout Field Capture ===
 Donate link: https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/
 Contributors: streamlinestar, nauriskolats
-Tags: woocommerce, abandoned carts, cart abandonment, recover abandoned cart, checkout fields
+Tags: woocommerce, abandoned carts, cart abandonment, exit popup, checkout fields
 Requires at least: 4.6
 Requires PHP: 5.2.4
-Tested up to: 5.0
+Tested up to: 5.1
 Stable tag: 3.0
 Version: 3.0
 License: GPLv2 or later
@@ -24,6 +24,10 @@ The "Remember checkout fields" function will allow your customers to refresh the
 If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
 If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
+
+You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later since version 3.0. With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.
+The Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart.
+Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
 
 Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 
@@ -58,6 +62,7 @@ Plugin dependencies:
 1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the "Plugins" screen in WordPress.
 1. Look for the page "Checkout Field Capture" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
+1. Optionally setup the Exit Intent notice that will be displayed to unregistered users once per hour in case the user has added items to his shopping cart and tries to leave your shop.
 
 == Frequently Asked Questions ==
 
@@ -89,6 +94,67 @@ This version does all the hard work of collecting the data and presenting it to 
 The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
 If you would like to [send your visitors automated abandoned cart recovery emails](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
 
+= How does the Exit Intent work? =
+
+If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his e-mail address. Once it is entered (no need to submit the form), user's cart will be automatically captured.
+
+Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in the Exit Intent form or in the Checkout form - Exit Intent will no longer be displayed upon leaving your shop.
+
+If you would like to test the visual appearance of the Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see the Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
+
+= How to change the content and image of Exit Intent? =
+
+If you would like to make adjustments to the default content of the Exit Intent, you can modify the translation file, use the action hooks and filters (please see FAQ on available action hooks and filters) we have provided and use in our Exit Intent template file.
+
+You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/wclcfc-exit-intent.php". This template file contains the markup to display the Exit Intent and to capture the Abandoned carts prior users leave your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
+
+You can copy this template file to either one of these locations:
+* yourtheme/templates/wclcfc-exit-intent.php
+* yourtheme/wclcfc-exit-intent.php
+
+When modifying our template, please do not change the ID #wclcfc-exit-intent-email of the email input field. If changed, the plugin will not be able to capture abandoned carts using the Exit Intent form.
+
+= What action hooks and filters are available for additional customization? =
+
+Our Exit Intent template contains different action hooks and filters to create new, edit, replace or remove existing content including the main image.
+
+Available action hooks:
+* add_extra_html_on_start
+* add_extra_html_after_title
+* add_extra_html_before_form_fields
+* add_extra_html_after_form_fields
+* add_extra_html_end
+
+Available filters:
+* wclcfc_exit_intent_close_html
+* wclcfc_exit_intent_image_html
+* wclcfc_exit_intent_title_html
+* wclcfc_exit_intent_description_html
+* wclcfc_exit_intent_email_label_html
+* wclcfc_exit_intent_email_field_html
+* wclcfc_exit_intent_button_html
+
+Here is an example on how to use a hook to add additional subtitle after the main title. Please add it to your theme's functions.php file:
+
+	function add_extra_html_after_title() {
+    	echo "<p>Additional subtitle here...</p>";
+	}
+	add_action('wclcfc_exit_intent_after_title', 'add_extra_html_after_title' );
+
+Example on how to use a filter to change the main image:
+
+	function modify_image( $html ){
+		return '<img src="http://www.link-to-your-custom-image-here..."/>';
+	}
+	add_filter( 'wclcfc_exit_intent_image_html', 'modify_image' );
+
+Example on how to use a filter to change the main title:
+
+	function modify_title( $html ) {
+		return '<div class="additional-class">Your text here... ' . $html . '</div>';
+	}
+	add_filter( 'wclcfc_exit_intent_title_html', 'modify_title' );
+
 == Screenshots ==
 
 1. Location of the Save Abandoned Carts - WooCommerce Live Checkout Field Capture plugin after activation.
@@ -96,6 +162,7 @@ If you would like to [send your visitors automated abandoned cart recovery email
 == Changelog ==
 
 = 3.0 =
+* Added Exit Intent popup
 * Added Instant shopping cart capture for logged in users
 * Fixed total captured abandoned cart counter
 

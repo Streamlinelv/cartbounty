@@ -31,6 +31,8 @@
 	 
 	 jQuery(document).ready(function(){
 
+	 	$('.wclcfc-exit-intent-color-picker').wpColorPicker(); //Activating color picker
+
 		function addLoadingIndicator(){ //Adding loading indicator once Submit button pressed
 			$(this).parent().addClass('wclcfc-loading');
 		}

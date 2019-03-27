@@ -42,6 +42,8 @@ register_setting( 'wclcfc-settings-time', 'wclcfc_last_time_bubble_displayed' );
 register_setting( 'wclcfc-settings-exit-intent', 'wclcfc_exit_intent_status' );
 register_setting( 'wclcfc-settings-exit-intent', 'wclcfc_exit_intent_test_mode' );
 register_setting( 'wclcfc-settings-exit-intent', 'wclcfc_exit_intent_type' );
+register_setting( 'wclcfc-settings-exit-intent', 'wclcfc_exit_intent_main_color' );
+register_setting( 'wclcfc-settings-exit-intent', 'wclcfc_exit_intent_inverse_color' );
 
 /**
  * The code that runs during plugin activation.

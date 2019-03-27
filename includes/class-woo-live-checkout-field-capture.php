@@ -118,6 +118,7 @@ class Woo_Live_Checkout_Field_Capture{
 		$this->loader->add_filter( 'plugin_action_links_' . WCLCFC_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
 		$this->loader->add_action( 'wclcfc_after_page_title', $plugin_admin, 'output_bubble_content'); //Hooks into hook in order to output bubbles
 		$this->loader->add_action( 'init', $plugin_admin, 'wclcfc_text_domain'); //Adding language support
+		$this->loader->add_filter( 'wclcfc_remove_empty_carts_hook', $plugin_admin, 'delete_empty_carts');
 	}
 
 	/**
@@ -139,8 +140,11 @@ class Woo_Live_Checkout_Field_Capture{
 		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
 		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
 		$this->loader->add_action( 'woocommerce_cart_item_removed', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_new_order', $plugin_public, 'delete_user_data' ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
-		$this->loader->add_action( 'woocommerce_thankyou', $plugin_public, 'delete_user_data' ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
+		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'update_cart_data', 210 );
+		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'update_cart_data', 210 );
+		$this->loader->add_action( 'woocommerce_cart_item_removed', $plugin_public, 'update_cart_data', 210 );
+		$this->loader->add_action( 'woocommerce_new_order', $plugin_public, 'delete_user_data', 30 ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
+		$this->loader->add_action( 'woocommerce_thankyou', $plugin_public, 'delete_user_data', 30 ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public, 'restore_input_data', 1); //Restoring previous user input in Checkout form
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'display_exit_intent_form'); //Outputing the exit intent form in the footer of the page
 		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $plugin_public, 'display_exit_intent_form'); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in

@@ -71,7 +71,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 		}
 
 		if($screen->id == $wclcfc_admin_menu_page || $screen->id == 'plugins'){
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-admin.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-admin.css', array('wp-color-picker'), $this->version, 'all' );
 		}
 	}
 
@@ -89,7 +89,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 			return;
 		}
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-admin.js', array( 'wp-color-picker', 'jquery' ), $this->version, false );
 	}
 	
 	/**
@@ -184,8 +184,8 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 
 				if($tab == 'exit_intent'): //Exit intent output ?>
 					<h1><?php echo WCLCFC_PLUGIN_NAME; ?> <?php echo __('Exit Intent', WCLCFC_TEXT_DOMAIN); ?></h1>
-					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill in order to save his shopping cart. You can even offer to send a discount code.', WCLCFC_TEXT_DOMAIN); ?></p>
-					<p class="wclcfc-description"><?php echo __('Please note that Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<p class="wclcfc-description"><?php echo __('Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart.', WCLCFC_TEXT_DOMAIN); ?></p>
 					<form method="post" action="options.php">
 						<?php
 							settings_fields( 'wclcfc-settings-exit-intent' );
@@ -193,6 +193,8 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 							$exit_intent_on = esc_attr( get_option('wclcfc_exit_intent_status'));
 							$test_mode_on = esc_attr( get_option('wclcfc_exit_intent_test_mode'));
 							$exit_intent_type = esc_attr( get_option('wclcfc_exit_intent_type'));
+							$main_color = esc_attr( get_option('wclcfc_exit_intent_main_color'));
+							$inverse_color = esc_attr( get_option('wclcfc_exit_intent_inverse_color'));
 						?>
 						
 						<table id="wclcfc-exit-intent-table" class="form-table">
@@ -258,6 +260,26 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 									</div>
 								</td>
 							</tr>
+							<tr>
+								<th scope="row">
+									<?php echo __('Exit Intent colors:', WCLCFC_TEXT_DOMAIN); ?>
+								</th>
+								<td>
+									<div class="wclcfc-exit-intent-colors">
+										<label for="wclcfc-exit-intent-main-color"><?php echo __('Main:', WCLCFC_TEXT_DOMAIN); ?></label>
+										<input id="wclcfc-exit-intent-main-color" type="text" name="wclcfc_exit_intent_main_color" class="wclcfc-exit-intent-color-picker" value="<?php echo $main_color; ?>" <?php echo $this->disableField(); ?> />
+									</div>
+									<div class="wclcfc-exit-intent-colors">
+										<label for="wclcfc-exit-intent-inverse-color"><?php echo __('Inverse:', WCLCFC_TEXT_DOMAIN); ?></label>
+										<input id="wclcfc-exit-intent-inverse-color" type="text" name="wclcfc_exit_intent_inverse_color" class="wclcfc-exit-intent-color-picker" value="<?php echo $inverse_color; ?>" <?php echo $this->disableField(); ?> />
+									</div>
+									<p class="clear"><small>
+										<?php echo __('If you leave the Inverse color empty, it will automatically use the inverse color of <br/>the main color you have picked. Clear both colors to use the default colors.', WCLCFC_TEXT_DOMAIN);
+										?>
+										</small>
+									</p>
+								</td>
+							</tr>
 						</table>
 						<?php
 						if(current_user_can( 'manage_options' )){
@@ -276,7 +298,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 					<?php else: ?>
 						<form id="wclcfc-table" method="GET">
 							<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
-							<?php $wp_list_table->display() ?>
+							<?php $wp_list_table->display(); ?>
 						</form>
 					<?php endif; ?>
 				<?php endif;
@@ -309,6 +331,19 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 			echo "<a class='nav-tab$class' href='?page=". WCLCFC_TEXT_DOMAIN ."&tab=$tab'><span class='wclcfc-tab-icon dashicons $icon_class' >$icon_image</span><span class='wclcfc-tab-name'>$name</span></a>";
 		}
 		echo '</h2>';
+	}
+
+	/**
+	 * Function adds additional intervals to default Wordpress cron intervals (hourly, twicedaily, daily). Interval provided in minutes
+	 *
+	 * @since    3.0
+	 */
+	function additional_cron_intervals(){
+		$interval['wclcfc_remove_empty_carts_interval'] = array( //Defining cron Interval for removing abandoned carts that do not have products
+			'interval' => 12 * 60 * 60,
+			'display' => 'Twice a day'
+		);
+		return $interval;
 	}
 
 	/**
@@ -572,6 +607,30 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 	 */
 	function wclcfc_text_domain(){
 		return load_plugin_textdomain( WCLCFC_TEXT_DOMAIN, false, basename( plugin_dir_path( __DIR__ ) ) . '/languages' );
+	}
+
+	/**
+	 * Function removes empty abandoned carts that do not have any products and are older than 1 day
+	 *
+	 * @since    4.0
+	 */
+	function delete_empty_carts(){
+		
+		global $wpdb;
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+
+		//Deleting row from database
+		$count = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM ". $table_name ."
+				WHERE cart_contents = '' AND
+				time < (NOW() - INTERVAL %d DAY)",
+				1
+			)
+		);
+
+		$public = new Woo_Live_Checkout_Field_Capture_Public(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
+		$public->decrease_captured_abandoned_cart_count( $count );
 	}
 
 	/**

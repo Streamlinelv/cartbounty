@@ -28,3 +28,5 @@ delete_option( 'wclcfc_times_review_declined' );
 delete_option( 'wclcfc_exit_intent_status' );
 delete_option( 'wclcfc_exit_intent_test_mode' );
 delete_option( 'wclcfc_exit_intent_type' );
+delete_option( 'wclcfc_exit_intent_main_color' );
+delete_option( 'wclcfc_exit_intent_inverse_color' );

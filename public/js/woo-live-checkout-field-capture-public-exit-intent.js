@@ -7,11 +7,15 @@
 
 	 	function showExitIntentForm(event){
 	 		var currentTime = new Date().getTime();
-			var timePeriod = public_data.hours; //Past 24 hours
+			var timePeriod = public_data.hours; //Time period in hours
 			var last_time_displayed = localStorage.getItem('wclcfc_ei_last_time');
+			var productCount = public_data.product_count; //Products in the shopping cart
 
 			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field
-		        if (last_time_displayed == null || timePeriod == 0) { //If time period has passed or we Exit Intent test mode is enabled
+		        if(productCount == 0){
+
+		        }
+		        else if(last_time_displayed == null || timePeriod == 0) { //If time period has passed or we Exit Intent test mode is enabled
 		            $('#wclcfc-exit-intent-form').addClass('wclcfc-visible'); //Display form
 		        	$('#wclcfc-exit-intent-form-backdrop').css('opacity', '').addClass('wclcfc-visible'); //Show backdrop
 		        	if(timePeriod != 0){
@@ -39,7 +43,7 @@
 				}
 
 				timer = setTimeout(function(){
-					jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+					jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 					function(response) {
 						//console.log(response);
 					});
@@ -55,16 +59,20 @@
 				action: 		"insert_exit_intent",
 				wlcfc_insert: 	true
 			}
+			
 			if($('#wclcfc-exit-intent-form').length <= 0){ //If Exit intent HTML does not exist on page
-				jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+				jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 				function(response){ //Response consists of HTML
-					var output = response.data;
+					var output = response;
 					$("body").append(output); //Adding Exit Intent form to the footer
 					//Binding these functions once again since HTML added by Ajax is new
 					jQuery("#wclcfc-exit-intent-email").on("keyup keypress change", getExitIntentEmail ); //All action happens on or after changing Email field. Data saved to Database only after Email fields have been entered.
 					jQuery("#wclcfc-exit-intent-close, #wclcfc-exit-intent-form-backdrop").on("click", closeExitIntentForm ); //Close Exit intent window
 				});
 			}
+
+			public_data.product_count = parseInt(public_data.product_count) + 1; //Updating product count in cart data variable once Add to Cart button is pressed
+		
 		}
 
 		function removeExitIntentFormIfEmptyCart(){//Removing Exit Intent form in case if cart emptied using Ajax
@@ -73,7 +81,7 @@
 				wlcfc_remove: 	true
 			}
 			if($('#wclcfc-exit-intent-form').length > 0){ //If Exit intent HTML exists on page
-				jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+				jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 				function(response){
 					if(response.data == 'true'){ //If the cart is empty - removing exit intent HTML
 						$('#wclcfc-exit-intent-form').remove();

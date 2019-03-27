@@ -97,8 +97,7 @@
 	display: block;
 	margin: 0 auto;
 	margin-bottom: 20px;
-	max-height: 280px;
-	height: 35vh;
+	max-height: 30vh;
 	width: auto;
 }
 
@@ -134,21 +133,23 @@
  */
  .wclcfc-ei-center#wclcfc-exit-intent-form{
  	overflow-y: auto;
+ 	display: -webkit-box; 
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex; 
+	display: flex;
  }
 
 .wclcfc-ei-center #wclcfc-exit-intent-form-container{
 	margin: 0;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+	position: relative;
 	height: auto;
 	width: 100%;
 	max-width: 600px;
 	border-radius: 4px 4px 4px 4px;
 	-moz-border-radius: 4px 4px 4px 4px;
 	-webkit-border-radius: 4px 4px 4px 4px;
+	margin: auto;
 }
 
 @media screen and (max-width: 768px) {

@@ -59,6 +59,10 @@ class Woo_Live_Checkout_Field_Capture_Activator{
 
 		//Setting default Exit Intent type if it has not been previously set
 		add_option('wclcfc_exit_intent_type', 1);
+
+		if (! wp_next_scheduled ( 'wclcfc_remove_empty_carts_hook' )) {
+			wp_schedule_event(time(), 'wclcfc_remove_empty_carts_interval', 'wclcfc_remove_empty_carts_hook');
+		}
 		
 	}
 }
