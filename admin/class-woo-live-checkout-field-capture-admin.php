@@ -122,7 +122,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 				$wpdb->prepare(
 					"SELECT COUNT(id) FROM ". $table_name ."
 					WHERE 
-					time < (NOW() - INTERVAL %d MINUTE) AND 
+					cart_contents != '' AND time < (NOW() - INTERVAL %d MINUTE) AND 
 					time > (NOW() - INTERVAL %d MINUTE)"
 				, WCLCFC_STILL_SHOPPING, WCLCFC_NEW_NOTICE )
 			);
@@ -185,7 +185,8 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 				if($tab == 'exit_intent'): //Exit intent output ?>
 					<h1><?php echo WCLCFC_PLUGIN_NAME; ?> <?php echo __('Exit Intent', WCLCFC_TEXT_DOMAIN); ?></h1>
 					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.', WCLCFC_TEXT_DOMAIN); ?></p>
-					<p class="wclcfc-description"><?php echo __('Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<p class="wclcfc-description"><?php echo __('Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart and try to leave your shop.', WCLCFC_TEXT_DOMAIN); ?></p>
+					<p class="wclcfc-description"><?php echo sprintf(__('If you would like to customize the content of your Exit Intent, please see <a href="%s" target="_blank">How to change the content and image of the Exit Intent</a>.', WCLCFC_TEXT_DOMAIN), 'https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/#modify-exit-intent-content'); ?></p>
 					<form method="post" action="options.php">
 						<?php
 							settings_fields( 'wclcfc-settings-exit-intent' );
@@ -222,7 +223,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 							</tr>
 							<tr>
 								<th scope="row">
-									<?php echo __('Choose type:', WCLCFC_TEXT_DOMAIN); ?>
+									<?php echo __('Choose style:', WCLCFC_TEXT_DOMAIN); ?>
 								</th>
 								<td>
 									<div id="wclcfc-exit-intent-center" class="wclcfc-exit-intent-type <?php if($exit_intent_type == 1){ echo "wclcfc-radio-active";} ?>">
@@ -242,6 +243,9 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 												<i>
 													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
 												</i>
+												<span class="wclcfc-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', WCLCFC_TEXT_DOMAIN); ?>
+													<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=wclcfc" class="button" target="_blank"><?php echo __('Get Pro', WCLCFC_TEXT_DOMAIN); ?></a>
+												</span>
 											</em>
 											<input id="wclcfc-radiobutton-left" class="wclcfc-radiobutton" type="radio" name="wclcfc_exit_intent_type" value="1" <?php echo $this->disableField(array('forced' => true )); ?> />
 											<?php echo __('Slide In From Left', WCLCFC_TEXT_DOMAIN); ?>
@@ -253,6 +257,9 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 												<i>
 													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
 												</i>
+												<span class="wclcfc-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', WCLCFC_TEXT_DOMAIN); ?>
+													<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=wclcfc" class="button" target="_blank"><?php echo __('Get Pro', WCLCFC_TEXT_DOMAIN); ?></a>
+												</span>
 											</em>
 											<input id="wclcfc-radiobutton-fullscreen" class="wclcfc-radiobutton" type="radio" name="wclcfc_exit_intent_type" value="1" <?php echo $this->disableField(array('forced' => true )); ?> />
 											<?php echo __('Fullscreen', WCLCFC_TEXT_DOMAIN); ?>
@@ -629,8 +636,11 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 			)
 		);
 
-		$public = new Woo_Live_Checkout_Field_Capture_Public(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
-		$public->decrease_captured_abandoned_cart_count( $count );
+		if($count){
+			$public = new Woo_Live_Checkout_Field_Capture_Public(WCLCFC_PLUGIN_NAME_SLUG, WCLCFC_VERSION_NUMBER);
+			$public->decrease_captured_abandoned_cart_count( $count );
+		}
+		
 	}
 
 	/**

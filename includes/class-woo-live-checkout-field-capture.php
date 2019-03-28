@@ -119,6 +119,7 @@ class Woo_Live_Checkout_Field_Capture{
 		$this->loader->add_action( 'wclcfc_after_page_title', $plugin_admin, 'output_bubble_content'); //Hooks into hook in order to output bubbles
 		$this->loader->add_action( 'init', $plugin_admin, 'wclcfc_text_domain'); //Adding language support
 		$this->loader->add_filter( 'wclcfc_remove_empty_carts_hook', $plugin_admin, 'delete_empty_carts');
+		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'additional_cron_intervals'); //Ads a filter to set new interval for Wordpress cron function
 	}
 
 	/**

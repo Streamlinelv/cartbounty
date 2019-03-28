@@ -19,23 +19,33 @@ You will be able to manually contact your visitors and remind about the abandone
 
 If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
 
-The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form.
+### Plugin basics and features:
 
-If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
+* The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form.
 
-If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
+* If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
-You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later since version 3.0. With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.
+* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
 The Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart.
 Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
 
-Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
+* If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
+
+* Since I love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
+
+### How the idea was born:
 
 I started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and I wanted to develop one myself that would be very simple and lightweight. I built this plugin in order to register and recover abandoned carts in a website that sells [light cube](http://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
 
 At the time when I started working on this project I knew that there were couple of plugins already available but they were offering a lot of functionality that slowed down my project and had many features that were not necessary. Also I wasn’t sure about the security that they provided and I wanted to contribute to WordPress community by helping others with the same need to see abandoned carts and recover them.
 
 While continuing to be working on [Mājas lapu izstrāde](http://www.majas-lapu-izstrade.lv "Mājas lapu izstrāde") (website design and development) I will be managing this plugin in order to keep up with the WooCommerce and WordPress updates.
+
+### Plugin dependencies:
+
+1. Uses WordPress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
+1. WooCommerce hooks
+1. WooCommerce session
 
 Note: If the fields are added outside of Checkout page or Checkout page input field ID values are changed, the plugin will not be able to load data.
 Input field ID values should be default:
@@ -47,15 +57,9 @@ Input field ID values should be default:
 * #billing_phone
 * etc.
 
-Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class "input-text" in order to trigger save action from all form fields.
-
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
-Plugin dependencies:
-
-1. Uses WordPress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
-1. WooCommerce hooks
-1. WooCommerce session
+Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class "input-text" in order to trigger save action from all form fields.
 
 == Installation ==
 
@@ -96,19 +100,20 @@ If you would like to [send your visitors automated abandoned cart recovery email
 
 = How does the Exit Intent work? =
 
-If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his e-mail address. Once it is entered (no need to submit the form), user's cart will be automatically captured.
+If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his email address. Once it is entered (no need to submit the form), user's cart will be automatically captured.
 
 Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in the Exit Intent form or in the Checkout form - Exit Intent will no longer be displayed upon leaving your shop.
 
 If you would like to test the visual appearance of the Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see the Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
 
-= How to change the content and image of Exit Intent? =
+= How to change the content and image of the Exit Intent? =
 
-If you would like to make adjustments to the default content of the Exit Intent, you can modify the translation file, use the action hooks and filters (please see FAQ on available action hooks and filters) we have provided and use in our Exit Intent template file.
+If you would like to make adjustments to the default content of the Exit Intent, you can use either [action hooks and filters](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
 
-You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/wclcfc-exit-intent.php". This template file contains the markup to display the Exit Intent and to capture the Abandoned carts prior users leave your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
+You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/wclcfc-exit-intent.php". This template file contains the markup to display the Exit Intent and to capture the Abandoned cart prior the user leaves your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
 
 You can copy this template file to either one of these locations:
+
 * yourtheme/templates/wclcfc-exit-intent.php
 * yourtheme/wclcfc-exit-intent.php
 
@@ -116,16 +121,17 @@ When modifying our template, please do not change the ID #wclcfc-exit-intent-ema
 
 = What action hooks and filters are available for additional customization? =
 
-Our Exit Intent template contains different action hooks and filters to create new, edit, replace or remove existing content including the main image.
+Our Exit Intent template contains different action hooks and filters that allow you to create new, edit, replace or remove existing content including the main image in the Exit Intent window.
 
 Available action hooks:
-* add_extra_html_on_start
-* add_extra_html_after_title
-* add_extra_html_before_form_fields
-* add_extra_html_after_form_fields
-* add_extra_html_end
+
+* wclcfc_exit_intent_start
+* wclcfc_exit_intent_after_title
+* wclcfc_exit_intent_before_form_fields
+* wclcfc_exit_intent_end
 
 Available filters:
+
 * wclcfc_exit_intent_close_html
 * wclcfc_exit_intent_image_html
 * wclcfc_exit_intent_title_html
@@ -134,24 +140,25 @@ Available filters:
 * wclcfc_exit_intent_email_field_html
 * wclcfc_exit_intent_button_html
 
-Here is an example on how to use a hook to add additional subtitle after the main title. Please add it to your theme's functions.php file:
+Here is an example how to add additional subtitle after the main title using our "wclcfc_exit_intent_after_title" action hook. Please add it to your theme's functions.php file:
 
 	function add_extra_html_after_title() {
     	echo "<p>Additional subtitle here...</p>";
 	}
 	add_action('wclcfc_exit_intent_after_title', 'add_extra_html_after_title' );
 
-Example on how to use a filter to change the main image:
+Example how to change the main image using a filter:
 
 	function modify_image( $html ){
 		return '<img src="http://www.link-to-your-custom-image-here..."/>';
 	}
 	add_filter( 'wclcfc_exit_intent_image_html', 'modify_image' );
 
-Example on how to use a filter to change the main title:
+Example how to change the main title using a filter:
 
 	function modify_title( $html ) {
-		return '<div class="additional-class">Your text here... ' . $html . '</div>';
+		$custom_title = 'Your text here...';
+		return preg_replace('#(<h2[^>]*>).*?(</h2>)#', "$1 $custom_title $2", $html);
 	}
 	add_filter( 'wclcfc_exit_intent_title_html', 'modify_title' );
 

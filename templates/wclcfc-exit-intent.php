@@ -42,8 +42,7 @@ $public = new Woo_Live_Checkout_Field_Capture_Public(WCLCFC_PLUGIN_NAME_SLUG, WC
 					<?php do_action('wclcfc_exit_intent_before_form_fields'); ?>
 					<?php echo wp_kses_post( apply_filters( 'wclcfc_exit_intent_email_label_html', sprintf('<label for="wclcfc-exit-intent-email" style="color: %s">%s</label>', $args['inverse_color'], __('Your email:', WCLCFC_TEXT_DOMAIN) ) ) ); ?>
 					<?php echo apply_filters( 'wclcfc_exit_intent_email_field_html', '<input type="email" id="wclcfc-exit-intent-email" size="30" required >' ) ; ?>
-					<?php echo wp_kses_post( apply_filters( 'wclcfc_exit_intent_button_html', sprintf('<button type="submit" name="wclcfc-exit-intent-submit" id="wclcfc-exit-intent-submit" value="submit" style="background-color: %s; color: %s">%s</button>', $args['inverse_color'], $args['main_color'], __('Save cart', WCLCFC_TEXT_DOMAIN) ) ) ); ?>
-					<?php do_action('wclcfc_exit_intent_after_form_fields'); ?>
+					<?php echo wp_kses_post( apply_filters( 'wclcfc_exit_intent_button_html', sprintf('<button type="submit" name="wclcfc-exit-intent-submit" id="wclcfc-exit-intent-submit" class="button" value="submit" style="background-color: %s; color: %s">%s</button>', $args['inverse_color'], $args['main_color'], __('Save cart', WCLCFC_TEXT_DOMAIN) ) ) ); ?>
 				</form>
 			</div>
 			<?php do_action('wclcfc_exit_intent_end'); ?>

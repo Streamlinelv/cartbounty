@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: woo-save-abandoned-carts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-10 00:27+0200\n"
+"POT-Creation-Date: 2019-03-27 22:43+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nauris Kolats <nauris@streamline.lv>\n"
 "Language-Team: Streamline.lv <info@streamline.lv>\n"
@@ -50,32 +50,126 @@ msgid "Time"
 msgstr "Laiks"
 
 #: ../admin/class-woo-live-checkout-field-capture-admin-table.php:93
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:201
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:209
 msgid "Delete"
 msgstr "Dzēst"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:77
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:79
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:145
-msgid "WooCommerce Live Checkout Field Capture"
-msgstr "WooCommerce tiešsaistes apmaksas formā saglabātie lauki"
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:77
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:79
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:103
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:105
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:131
 msgid "Checkout Field Capture"
 msgstr "Apmaksas formas saglabātie lauki"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:122
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:148
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Jums nav tiesību skatīt šo lapu."
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:140
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:166
 #, php-format
 msgid "Items deleted: %d"
 msgstr "Ieraksti dzēsti: %d"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:150
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:186
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:317
+msgid "Exit Intent"
+msgstr "Mēģinājums iziet"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:187
+msgid ""
+"With the help of Exit Intent you can capture even more abandoned carts by "
+"displaying a message including an e-mail field that the customer can fill to "
+"save his shopping cart. You can even offer to send a discount code."
+msgstr ""
+"Ar Iziešanas mēģinājuma funkcionalitāti Jūs varēsiet saglabāt vēl vairāk "
+"novārtā atstātus pirkumu grozus attēlojot lietotājam, kurš cenšas pamest "
+"Jūsu veikalu, papildus logu ar e-pasta ievadlauku. Jūs pat varēsiet piedāvāt "
+"lietotājam kuponu kodu, ja viņš piekrīt atstāt šeit savu e-pasta adresi."
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:188
+msgid ""
+"Please note that the Exit Intent will only be showed to unregistered users "
+"once per hour after they have added an item to their cart and try to leave "
+"your shop."
+msgstr ""
+"Lūdzu ņemiet vērā to, ka Iziešanas mēģinājums tiks attēlots tikai "
+"nereģistrētiem lietotājiem vienu reizi stundā pēc tam, kad pirkumu grozā būs "
+"ievietots kāds produkts."
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:189
+#, php-format
+msgid ""
+"If you would like to customize the content of your Exit Intent, please see "
+"<a href=\"%s\" target=\"_blank\">How to change the content and image of the "
+"Exit Intent</a>."
+msgstr ""
+"Ja vēlaties veikt izmaiņas Iziešanas mēģinājuma loga saturā, lūdzu apskatiet "
+"<a href=“%s” target=“_blank”>Kā mainīt Iziešanas mēģinājuma loga saturu un "
+"attēlu</a>."
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:204
+msgid "Enable Exit Intent:"
+msgstr "Ieslēgt Iziešanas mēģinājuma funkcionalitāti:"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:212
+msgid "Enable Test Mode:"
+msgstr "Ieslēgt testēšanas režīmu:"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:218
+msgid ""
+"Now go to your store and add a product to your shopping cart. Please note "
+"that only <br/>users with Admin rights will be able to see the Exit Intent "
+"and appearance limits <br/>have been removed - it will be shown each time "
+"you try to leave your shop."
+msgstr ""
+"Tagad variet doties uz savu veikalu un pievienot savā pirkumu grozā kādu "
+"produktu. <br/>Lūdzu ņemiet vērā to, ka tikai lietotāji ar Administratora "
+"tiesībām tagad redzēs Iziešanas <br/>mēģinājuma logu, kā arī visi "
+"ierobežojumi attiecībā uz parādīšanas skaitu ir noņemti - logs tiks <br/"
+">attēlots ikreiz, kad mēģināsiet atstāt savu veikalu."
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:226
+msgid "Choose style:"
+msgstr "Izvēlieties veidu:"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:237
+msgid "Appear In Center"
+msgstr "Centrā"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:248
+msgid "Slide In From Left"
+msgstr "No kreisās puses"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:259
+msgid "Fullscreen"
+msgstr "Pilnekrāna"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:266
+msgid "Exit Intent colors:"
+msgstr "Iziešanas mēģinājuma krāsas:"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:270
+msgid "Main:"
+msgstr "Galvenā:"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:274
+msgid "Inverse:"
+msgstr "Inversā:"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:278
+msgid ""
+"If you leave the Inverse color empty, it will automatically use the inverse "
+"color of <br/>the main color you have picked. Clear both colors to use the "
+"default colors."
+msgstr ""
+"Ja atstāsiet inverso krāsu tukšu, tad tā tiks automātiski noteikta no "
+"galvenās izvēlētās krāsas. <br/>. Nodzēsiet abas krāsas, lai izmantotu "
+"noklusētās krāsas."
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:287
+msgid "Save settings"
+msgstr "Saglabāt iestatījumus"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:297
 msgid ""
 "Looks like you do not have any saved Abandoned carts yet.<br/>But do not "
 "worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone "
@@ -87,87 +181,122 @@ msgstr ""
 "<strong>telefona</strong> laukus un pametīs WooCommerce iepirkšanās procesu, "
 "viņa novārtā pamestais pirkumu grozs būs šeit redzams."
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:187
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:323
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:317
+msgid "Abandoned carts"
+msgstr "Novārtā atstātie pirkumu grozi"
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:375
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:527
 msgid "Get Pro"
 msgstr "Apskatīt"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:271
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:475
 msgid "Leave WooCommerce Live Checkout Field Capture a 5-star rating"
 msgstr ""
 "Atstājiet WooCommerce tiešsaistes apmaksas formā saglabātie lauki spraudnim "
 "5-zvaigžņu vērtējumu"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:279
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:483
 msgid "Congrats!"
 msgstr "Opiņā!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:281
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:485
 msgid "Awesome!"
 msgstr "Burvīgi!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:283
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:487
 msgid "Amazing!"
 msgstr "Satriecoši!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:285
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:489
 msgid "Incredible!"
 msgstr "Neticami!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:287
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:491
 msgid "Crazy!"
 msgstr "Wow!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:290
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:494
 msgid "Fantastic!"
 msgstr "Fantastiski!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:293
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:497
 #, php-format
 msgid "%s You have already captured %d abandoned carts!"
 msgstr "%s Jau %d. novārtā atstātais pirkumu grozs notverts!"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:294
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:498
 msgid ""
 "If you like our plugin, please leave us a 5-star rating. It is the fastest "
 "way to help us grow and keep improving it further."
-msgstr "Ja Tev patīk mūsu produkts, lūdzu atstāj mums 5-zvaigžņu vērtējumu."
+msgstr "Ja Jums patīk šis produkts, lūdzu atstāj mums 5-zvaigžņu vērtējumu."
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:298
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:502
 msgid "Let's do this"
 msgstr "Pievienot vērtējumu"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:299
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:503
 msgid "Done that"
 msgstr "Darīts"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:304
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:508
 msgid "Close"
 msgstr "Aizvērt"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:313
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:517
 msgid "Get WooCommerce Live Checkout Field Capture Pro"
 msgstr ""
 "Apskatīt WooCommerce tiešsaistes apmaksas formā saglabāto lauku Pro versiju"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:320
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:524
 msgid ""
 "Would you like to get notified about abandoned carts and send automated cart "
 "recovery emails?"
 msgstr ""
-"Vēlies e-pastus par saglabātajiem pirkumu groziem un sūtīt automātiskus "
-"atgādinājumus šiem lietotājiem?"
+"Vēlaties saņemt e-pastus par saglabātajiem pirkumu groziem un sūtīt "
+"automātiskus atgādinājumus šiem lietotājiem?"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:321
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:525
 msgid ""
 "Save your time by enabling Pro features and focus on your business instead."
 msgstr ""
-"Taupi savu laiku, aktivizē Pro iespējas un fokusē savu laiku biznesa "
-"attīstībai."
+"Taupiet savu laiku aktivizējot Pro iespējas un koncentrējiet savu laiku "
+"biznesa attīstībai."
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:324
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:528
 msgid "Not now"
 msgstr "Ne tagad"
+
+#: ../templates/wclcfc-exit-intent.php:38
+#, php-format
+msgid ""
+"<h2 style=\"color: %s\" >You were not leaving your cart just like that, "
+"right?</h2>"
+msgstr ""
+"<h2 style=“color: %s” >Tu taču nebiji plānojis atstāt novārtā savu pirkumu "
+"grozu?</h2>"
+
+#: ../templates/wclcfc-exit-intent.php:40
+#, php-format
+msgid ""
+"<p style=\"color: %s\" >Just enter your email below to save your shopping "
+"cart for later. And, who knows, maybe we will even send you a sweet discount "
+"code :)</p>"
+msgstr ""
+"<p style=“color: %s” >Vienkārši ievadi savu e-pasta adresi, lai saglabātu "
+"savu pirkumu grozu vēlākam. Un, kas zina, iespējams, ka mēs Tev nosūtīsim "
+"arī kādu garšīgu atlaides kodu :)</p>"
+
+#: ../templates/wclcfc-exit-intent.php:43
+msgid "Your email:"
+msgstr "Tavs e-pasts:"
+
+#: ../templates/wclcfc-exit-intent.php:45
+msgid "Save cart"
+msgstr "Saglabāt grozu"
+
+#~ msgid "WooCommerce Live Checkout Field Capture"
+#~ msgstr "WooCommerce tiešsaistes apmaksas formā saglabātie lauki"
 
 #~ msgid "Wow!"
 #~ msgstr "Opiņā"
@@ -356,9 +485,6 @@ msgstr "Ne tagad"
 #~ msgid "Disable notifications"
 #~ msgstr "Atslēgt paziņojumus"
 
-#~ msgid "Save settings"
-#~ msgstr "Saglabāt iestatījumus"
-
 #~ msgid "MailChimp"
 #~ msgstr "MailChimp"
 
@@ -397,9 +523,6 @@ msgstr "Ne tagad"
 
 #~ msgid "Force sync"
 #~ msgstr "Veikt sinhronizāciju"
-
-#~ msgid "Abandoned carts"
-#~ msgstr "Novārtā atstātie pirkumu grozi"
 
 #~ msgid ""
 #~ "Something went wrong. The license server might be down. Please try again."
@@ -475,9 +598,6 @@ msgstr "Ne tagad"
 
 #~ msgid "Unknown error validating API key"
 #~ msgstr "Kļūda veicot API atslēgas pārbaudi"
-
-#~ msgid "Choose a list"
-#~ msgstr "Izvēlieties sarakstu"
 
 #~ msgid "Connected"
 #~ msgstr "Savienots"

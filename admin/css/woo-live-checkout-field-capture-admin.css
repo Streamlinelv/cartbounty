@@ -14,12 +14,30 @@
 #woocommerce-live-checkout-field-capture-bubbles .button,
 .woocommerce-live-checkout-field-capture-close,
 #woocommerce-live-checkout-field-capture-go-pro-header-image a,
-#wclcfc-page-wrapper .submit:after{
+#wclcfc-page-wrapper .submit:after,
+.wclcfc-exit-intent-type .button{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
 	-o-transition: 			all 0.2s ease-in-out;
 	transition: 			all 0.2s ease-in-out;
+}
+
+#wclcfc-exit-intent-left i,
+#wclcfc-exit-intent-fullscreen i{
+	-webkit-transition: 	all 0.4s ease-in-out;
+	-webkit-transition: 	all 0.4s ease-in-out;
+	-moz-transition: 		all 0.4s ease-in-out;
+	-o-transition: 			all 0.4s ease-in-out;
+	transition: 			all 0.4s ease-in-out;
+}
+
+.wclcfc-exit-intent-additional-style{
+	-webkit-transition: 	all 0.4s ease-in-out;
+	-webkit-transition: 	all 0.4s ease-in-out;
+	-moz-transition: 		all 0.4s ease-in-out;
+	-o-transition: 			all 0.4s ease-in-out;
+	transition: 			all 0.4s ease-in-out;
 }
 
 #wclcfc-page-wrapper h1{
@@ -156,7 +174,8 @@
 	margin-bottom: 8px;
 }
 
-#woocommerce-live-checkout-field-capture-bubbles .button{
+#woocommerce-live-checkout-field-capture-bubbles .button,
+.wclcfc-exit-intent-type .button{
 	background: #ffde01;
 	color: #000;
 	border: 0px none;
@@ -184,7 +203,8 @@
 }
 
 #woocommerce-live-checkout-field-capture-bubbles .button:hover,
-#woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-review-submitted:hover{
+#woocommerce-live-checkout-field-capture-review .woocommerce-live-checkout-field-capture-review-submitted:hover,
+.wclcfc-exit-intent-type .button:hover{
 	background: #bc8df4;
 }
 
@@ -233,6 +253,7 @@
 	-moz-transition: 		all .2s cubic-bezier(.38,1.09,.5,.98);
 	-o-transition: 			all .2s cubic-bezier(.38,1.09,.5,.98);
 	transition: 			all .2s cubic-bezier(.38,1.09,.5,.98);
+	overflow: hidden;
 }
 
 .wclcfc-exit-intent-image i{
@@ -248,6 +269,7 @@
 	border-radius: 3px 3px 3px 3px;
 	-moz-border-radius: 3px 3px 3px 3px;
 	-webkit-border-radius: 3px 3px 3px 3px;
+	z-index: 2;
 }
 
 #wclcfc-exit-intent-left .wclcfc-exit-intent-image i{
@@ -262,12 +284,20 @@
 	-webkit-border-radius: 3px 0px 0px 0px;
 }
 
+#wclcfc-exit-intent-left.wclcfc-get-pro-active .wclcfc-exit-intent-image i{
+	left: -100%;
+}
+
 #wclcfc-exit-intent-fullscreen .wclcfc-exit-intent-image i{
 	width: 100%;
 	height: 100%;
 	border-radius: 3px 3px 0px 0px;
 	-moz-border-radius: 3px 3px 0px 0px;
 	-webkit-border-radius: 3px 3px 0px 0px;
+}
+
+#wclcfc-exit-intent-fullscreen.wclcfc-get-pro-active .wclcfc-exit-intent-image i{
+	top: -50%;
 }
 
 .wclcfc-exit-intent-image img{
@@ -305,7 +335,8 @@
 
 .wclcfc-radio-active em,
 .wclcfc-exit-intent-type:hover em,
-#wclcfc-page-wrapper .wclcfc-loading.submit:after{
+#wclcfc-page-wrapper .wclcfc-loading.submit:after,
+.wclcfc-get-pro-active .wclcfc-exit-intent-image em{
 	opacity: 1;
 }
 
@@ -321,6 +352,27 @@
 	top: 6px;
 	left: 10px;
 	vertical-align: top;
+}
+
+.wclcfc-exit-intent-additional-style{
+	display: block;
+	padding: 14px 18px;
+	font-style: normal;
+	bottom: -100%;
+	position: relative;
+	z-index: 1;
+	height: 100%;
+	background: #ffde01;
+}
+
+.wclcfc-get-pro-active .wclcfc-exit-intent-additional-style{
+	bottom: 0;
+}
+
+.wclcfc-exit-intent-type .button{
+	margin: 8px 0 0;
+	background: #23282d;
+	color: #fff;
 }
 
 @media screen and (max-width: 1200px) {
