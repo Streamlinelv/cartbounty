@@ -95,7 +95,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 	/**
 	 * Register the menu under WooCommerce admin menu.
 	 *
-	 * @since 	1.0
+	 * @since    1.0
 	 */
 	function wclcfc_menu(){
 		global $wclcfc_admin_menu_page;

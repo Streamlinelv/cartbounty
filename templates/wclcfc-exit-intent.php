@@ -14,7 +14,7 @@
  * 
  * @package    WooCommerce Live Checkout Field Capture/Templates
  * @author     Streamline.lv
- * @version    4.0
+ * @version    3.0
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access

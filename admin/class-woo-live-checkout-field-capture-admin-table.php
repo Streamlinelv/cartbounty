@@ -18,6 +18,8 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
    /**
     * Constructor, we override the parent to pass our own arguments
     * We usually focus on three parameters: singular and plural labels, as well as whether the class supports AJAX.
+    *
+    * @since    1.0
     */
     function __construct(){
         global $status, $page;
@@ -33,6 +35,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      * you can skip columns that you do not want to show
      * like content, or description
      *
+     * @since    1.0
      * @return array
      */
 	function get_columns(){
@@ -54,6 +57,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      * all strings in array - is column names
      * notice that true on name column means that its default sort
      *
+     * @since    1.0
      * @return array
      */
 	public function get_sortable_columns(){
@@ -69,6 +73,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	/**
      * [REQUIRED] this is a default column renderer
      *
+     * @since    1.0
      * @param $item - row (key, value array)
      * @param $column_name - string (key)
      * @return HTML
@@ -81,6 +86,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      * This is example, how to render column with actions,
      * when you hover row "Edit | Delete" links showed
      *
+     * @since    1.0
      * @param $item - row (key, value array)
      * @return HTML
      */
@@ -103,6 +109,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	/**
      * Rendering Email field
      *
+     * @since    1.0
      * @param $item - row (key, value array)
      * @return HTML
      */
@@ -115,6 +122,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	/**
      * Rendering Cart Contents field
      *
+     * @since    1.0
      * @param $item - row (key, value array)
      * @return HTML
      */
@@ -170,6 +178,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	/**
      * Render date column 
      *
+     * @since    1.0
      * @param $item - row (key, value array)
      * @return HTML
      */
@@ -189,6 +198,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	/**
      * [REQUIRED] this is how checkbox column renders
      *
+     * @since    1.0
      * @param $item - row (key, value array)
      * @return HTML
      */
@@ -202,6 +212,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	/**
      * [OPTIONAL] Return array of bult actions if has any
      *
+     * @since    1.0
      * @return array
      */
 	 function get_bulk_actions(){
@@ -217,6 +228,8 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      * it can not use wp_redirect cause there is output already
      * in this example we are processing delete action
      * message about successful deletion will be shown on page in next part
+     *
+     * @since    1.0
      */
     function process_bulk_action(){
         global $wpdb;
@@ -236,6 +249,8 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      * [REQUIRED] This is the most important method
      *
      * It will get rows from database and prepare them to be showed in table
+     *
+     * @since    1.0
      */
 	function prepare_items(){
         global $wpdb;

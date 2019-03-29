@@ -47,6 +47,8 @@ register_setting( 'wclcfc-settings-exit-intent', 'wclcfc_exit_intent_inverse_col
 
 /**
  * The code that runs during plugin activation.
+ *
+ * @since    1.0
  */
 function activate_woo_save_abandoned_carts(){
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-live-checkout-field-capture-activator.php';
@@ -55,6 +57,8 @@ function activate_woo_save_abandoned_carts(){
 
 /**
  * The code that runs during plugin deactivation.
+ *
+ * @since    1.0
  */
 function deactivate_woo_save_abandoned_carts(){
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-live-checkout-field-capture-deactivator.php';
@@ -67,6 +71,8 @@ register_deactivation_hook( __FILE__, 'deactivate_woo_save_abandoned_carts' );
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
+ *
+ * @since    1.0
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-woo-live-checkout-field-capture.php';
 
