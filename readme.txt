@@ -164,7 +164,9 @@ Example how to change the main title using a filter:
 
 == Screenshots ==
 
-1. Location of the Save Abandoned Carts - WooCommerce Live Checkout Field Capture plugin after activation.
+1. Location of the Save Abandoned Carts - WooCommerce Live Checkout Field Capture plugin after activation
+2. The Exit Intent popup settings tab
+3. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
 

@@ -157,9 +157,9 @@ Example how to change the main title using a filter:
 
 ## Screenshots
 
-![Location of the WooCommerce Live Checkout Field Capture - save abandoned carts plugin after activation](https://ps.w.org/woo-save-abandoned-carts/assets/save-abandoned-carts-plugin.png "Location of the Save Abandoned Carts - WooCommerce Live Checkout Field Capture plugin after activation")
-![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/save-abandoned-carts-exit-intent-popup.png "Exit Intent popup settings tab")
-![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/save-abandoned-carts-exit-intent-popup-example.png "How the Exit Intent popup looks like once the user tries to leave the shop")
+![Location of the WooCommerce Live Checkout Field Capture - save abandoned carts plugin after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.png "Location of the Save Abandoned Carts - WooCommerce Live Checkout Field Capture plugin after activation")
+![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.png "Exit Intent popup settings tab")
+![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.png "How the Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
 
