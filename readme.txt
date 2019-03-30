@@ -21,7 +21,9 @@ If you would like to receive email notifications about abandoned carts and send 
 
 ### Plugin basics and features:
 
-* The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form.
+* Instantly capture WooCommerce checkout field data before submission to save abandoned carts.
+
+* The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form. Please note that this feature is enabled only for users who haven't logged in - WooCommerce takes care of this for authorized users.
 
 * If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
