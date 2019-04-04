@@ -73,6 +73,20 @@
 					var wlcfc_shipping_state = jQuery("#shipping_state").val();
 					var wlcfc_shipping_postcode = jQuery("#shipping_postcode").val();
 					var wlcfc_order_comments = jQuery("#order_comments").val();
+					var wlcfc_create_account = jQuery("#createaccount");
+					var wlcfc_ship_elsewhere = jQuery("#ship-to-different-address-checkbox");
+
+					if(wlcfc_create_account.is(':checked')){
+						wlcfc_create_account = 1;
+					}else{
+						wlcfc_create_account = 0;
+					}
+
+					if(wlcfc_ship_elsewhere.is(':checked')){
+						wlcfc_ship_elsewhere = 1;
+					}else{
+						wlcfc_ship_elsewhere = 0;
+					}
 					
 					var data = {
 						action:						"save_data",
@@ -96,7 +110,9 @@
 						wlcfc_shipping_city: 		wlcfc_shipping_city,
 						wlcfc_shipping_state: 		wlcfc_shipping_state,
 						wlcfc_shipping_postcode: 	wlcfc_shipping_postcode,
-						wlcfc_order_comments: 		wlcfc_order_comments
+						wlcfc_order_comments: 		wlcfc_order_comments,
+						wlcfc_create_account: 		wlcfc_create_account,
+						wlcfc_ship_elsewhere: 		wlcfc_ship_elsewhere
 					}
 
 					timer = setTimeout(function(){
@@ -121,7 +137,7 @@
 			}
 		}
 
-		jQuery("#billing_email, #billing_phone, input.input-text, textarea.input-text").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email or Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
+		jQuery("#billing_email, #billing_phone, input.input-text, input.input-checkbox, textarea.input-text").on("keyup keypress change", getCheckoutData ); //All action happens on or after changing Email or Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
 		jQuery(window).on("load", getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 		
 	});

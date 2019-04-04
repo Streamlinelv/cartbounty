@@ -136,6 +136,8 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			(isset($_POST['wlcfc_shipping_state'])) ? $shipping_state = $_POST['wlcfc_shipping_state'] : $shipping_state = '';
 			(isset($_POST['wlcfc_shipping_postcode'])) ? $shipping_postcode = $_POST['wlcfc_shipping_postcode'] : $shipping_postcode = '';
 			(isset($_POST['wlcfc_order_comments'])) ? $comments = $_POST['wlcfc_order_comments'] : $comments = '';
+			(isset($_POST['wlcfc_create_account'])) ? $create_account = $_POST['wlcfc_create_account'] : $create_account = '';
+			(isset($_POST['wlcfc_ship_elsewhere'])) ? $ship_elsewhere = $_POST['wlcfc_ship_elsewhere'] : $ship_elsewhere = '';
 			
 			$other_fields = array(
 				'wlcfc_billing_company' 	=> $company,
@@ -152,7 +154,9 @@ class Woo_Live_Checkout_Field_Capture_Public{
 				'wlcfc_shipping_city' 		=> $shipping_city,
 				'wlcfc_shipping_state' 		=> $shipping_state,
 				'wlcfc_shipping_postcode' 	=> $shipping_postcode,
-				'wlcfc_order_comments' 		=> $comments
+				'wlcfc_order_comments' 		=> $comments,
+				'wlcfc_create_account' 		=> $create_account,
+				'wlcfc_ship_elsewhere' 		=> $ship_elsewhere
 			);
 			
 			$location = $country . $city;
@@ -680,6 +684,16 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_state'])) : '';
 			(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_postcode'])) : '';
 			(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['wlcfc_order_comments'])) : '';
+			
+			//Checking if Create account should be checked or not
+			if($other_fields['wlcfc_create_account']){
+				add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
+			}
+
+			//Checking if Ship to a different location must be checked or not
+			if($other_fields['wlcfc_ship_elsewhere']){
+				add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
+			}
 		}
 		
 		return $fields;

@@ -165,6 +165,10 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 3.1
+
+* Added support for Checkout form checkboxes
+
 ##### 3.0
 
 * Added Exit Intent popup
