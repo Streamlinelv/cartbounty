@@ -688,13 +688,17 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['wlcfc_order_comments'])) : '';
 			
 			//Checking if Create account should be checked or not
-			if($other_fields['wlcfc_create_account']){
-				add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
+			if(isset($other_fields['wlcfc_create_account'])){
+				if($other_fields['wlcfc_create_account']){
+					add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
+				}
 			}
 
 			//Checking if Ship to a different location must be checked or not
-			if($other_fields['wlcfc_ship_elsewhere']){
-				add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
+			if(isset($other_fields['wlcfc_ship_elsewhere'])){
+				if($other_fields['wlcfc_ship_elsewhere']){
+					add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
+				}
 			}
 		}
 		

@@ -168,6 +168,7 @@ Example how to change the main title using a filter:
 ##### 3.2
 
 * Fixed issue with saving City data for logged in users
+* Fixed PHP notices if checkboxes were not defined
 
 ##### 3.1
 
