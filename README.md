@@ -165,6 +165,10 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 3.2
+
+* Fixed issue with saving City data for logged in users
+
 ##### 3.1
 
 * Added support for Checkout form checkboxes

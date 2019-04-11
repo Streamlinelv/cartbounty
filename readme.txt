@@ -5,8 +5,8 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, checkout field
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.1
-Stable tag: 3.1
-Version: 3.1
+Stable tag: 3.2
+Version: 3.2
 License: GPLv2 or later
 
 Save Abandoned Carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout field data before submission.
@@ -171,6 +171,9 @@ Example how to change the main title using a filter:
 3. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 3.2 =
+* Fixed issue with saving City data for logged in users
 
 = 3.1 =
 * Added support for Checkout form checkboxes
