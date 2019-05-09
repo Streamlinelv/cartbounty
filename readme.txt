@@ -4,7 +4,7 @@ Contributors: streamlinestar, nauriskolats
 Tags: woocommerce, abandoned carts, cart abandonment, exit popup, checkout fields
 Requires at least: 4.6
 Requires PHP: 5.2.4
-Tested up to: 5.1
+Tested up to: 5.2
 Stable tag: 3.2
 Version: 3.2
 License: GPLv2 or later
