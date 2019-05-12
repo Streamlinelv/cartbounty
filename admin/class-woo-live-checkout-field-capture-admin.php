@@ -483,24 +483,8 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 						</a>
 					</div>
 					<div id="woocommerce-live-checkout-field-capture-review-content">
-						<?php
-							//Outputing different expressions depending on the amount of captured carts
-							if($this->total_captured_abandoned_cart_count() <= 10){
-								$expression = __('Congrats!', WCLCFC_TEXT_DOMAIN);
-							}elseif($this->total_captured_abandoned_cart_count() <= 30){
-								$expression = __('Awesome!', WCLCFC_TEXT_DOMAIN);
-							}elseif($this->total_captured_abandoned_cart_count() <= 100){
-								$expression = __('Amazing!', WCLCFC_TEXT_DOMAIN);
-							}elseif($this->total_captured_abandoned_cart_count() <= 300){
-								$expression = __('Incredible!', WCLCFC_TEXT_DOMAIN);
-							}elseif($this->total_captured_abandoned_cart_count() <= 500){
-								$expression = __('Crazy!', WCLCFC_TEXT_DOMAIN);
-							}
-							else{
-								$expression = __('Fantastic!', WCLCFC_TEXT_DOMAIN);
-							}
-						?>
-						<h2><?php echo sprintf(__('%s You have already captured %d abandoned carts!', WCLCFC_TEXT_DOMAIN ), $expression, $this->total_captured_abandoned_cart_count()); ?></h2>
+						<?php $expression = $this->get_expressions(); ?>
+						<h2><?php echo sprintf(__('%s You have already captured %d abandoned carts!', WCLCFC_TEXT_DOMAIN ), $expression['exclamation'], $this->total_captured_abandoned_cart_count()); ?></h2>
 						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the fastest way to help us grow and keep improving it further.', WCLCFC_TEXT_DOMAIN ); ?></p>
 						<div class="woocommerce-live-checkout-field-capture-button-row">
 							<form method="post" action="options.php" class="wclcfc_inline">
@@ -619,7 +603,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 	/**
 	 * Function removes empty abandoned carts that do not have any products and are older than 1 day
 	 *
-	 * @since    4.0
+	 * @since    3.0
 	 */
 	function delete_empty_carts(){
 		
@@ -641,6 +625,47 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 			$public->decrease_captured_abandoned_cart_count( $count );
 		}
 		
+	}
+
+	/**
+	 * Function returns different expressions depending on the amount of captured carts
+	 *
+	 * @since    3.2.1
+	 * return: 	 String
+	 */
+	function get_expressions(){
+
+		if($this->total_captured_abandoned_cart_count() <= 10){
+			$expressions = array(
+				'exclamation' => __('Congrats!', WCLCFC_TEXT_DOMAIN)
+			);
+		}elseif($this->total_captured_abandoned_cart_count() <= 30){
+			$expressions = array(
+				'exclamation' => __('Awesome!', WCLCFC_TEXT_DOMAIN)
+			);
+		}elseif($this->total_captured_abandoned_cart_count() <= 100){
+			$expressions = array(
+				'exclamation' => __('Amazing!', WCLCFC_TEXT_DOMAIN)
+			);
+		}elseif($this->total_captured_abandoned_cart_count() <= 300){
+			$expressions = array(
+				'exclamation' => __('Incredible!', WCLCFC_TEXT_DOMAIN)
+			);
+		}elseif($this->total_captured_abandoned_cart_count() <= 500){
+			$expressions = array(
+				'exclamation' => __('Crazy!', WCLCFC_TEXT_DOMAIN)
+			);
+		}elseif($this->total_captured_abandoned_cart_count() <= 1000){
+			$expressions = array(
+				'exclamation' => __('Fantastic!', WCLCFC_TEXT_DOMAIN)
+			);
+		}else{
+			$expressions = array(
+				'exclamation' => __('Insane!', WCLCFC_TEXT_DOMAIN)
+			);
+		}
+
+		return $expressions;
 	}
 
 	/**

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: woo-save-abandoned-carts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-27 22:42+0200\n"
+"POT-Creation-Date: 2019-05-12 14:13+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nauris Kolats <nauris@streamline.lv>\n"
 "Language-Team: Streamline.lv <info@streamline.lv>\n"
@@ -17,40 +17,40 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:41
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:44
 msgid "ID"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:42
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:45
 msgid "Name, Surname"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:43
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:46
 msgid "Email"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:44
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:47
 msgid "Phone"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:45
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:48
 msgid "Location"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:46
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:49
 msgid "Cart contents"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:47
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:50
 msgid "Cart total"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:48
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:51
 msgid "Time"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:93
-#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:209
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:99
+#: ../admin/class-woo-live-checkout-field-capture-admin-table.php:220
 msgid "Delete"
 msgstr ""
 
@@ -70,7 +70,7 @@ msgid "Items deleted: %d"
 msgstr ""
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:186
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:317
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:323
 msgid "Exit Intent"
 msgstr ""
 
@@ -120,38 +120,50 @@ msgstr ""
 msgid "Appear In Center"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:248
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:246
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:260
+msgid "Upgrade to enable this style"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:247
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:261
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:381
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:517
+msgid "Get Pro"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:251
 msgid "Slide In From Left"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:259
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:265
 msgid "Fullscreen"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:266
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:272
 msgid "Exit Intent colors:"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:270
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:276
 msgid "Main:"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:274
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:280
 msgid "Inverse:"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:278
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:284
 msgid ""
 "If you leave the Inverse color empty, it will automatically use the inverse "
 "color of <br/>the main color you have picked. Clear both colors to use the "
 "default colors."
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:287
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:293
 msgid "Save settings"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:297
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:303
 msgid ""
 "Looks like you do not have any saved Abandoned carts yet.<br/>But do not "
 "worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone "
@@ -159,83 +171,82 @@ msgid ""
 "cart, it will automatically appear here."
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:317
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:323
 msgid "Abandoned carts"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:375
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:527
-msgid "Get Pro"
-msgstr ""
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:475
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:481
 msgid "Leave WooCommerce Live Checkout Field Capture a 5-star rating"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:483
-msgid "Congrats!"
-msgstr ""
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:485
-msgid "Awesome!"
-msgstr ""
-
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:487
-msgid "Amazing!"
-msgstr ""
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:489
-msgid "Incredible!"
-msgstr ""
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:491
-msgid "Crazy!"
-msgstr ""
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:494
-msgid "Fantastic!"
-msgstr ""
-
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:497
 #, php-format
 msgid "%s You have already captured %d abandoned carts!"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:498
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:488
 msgid ""
 "If you like our plugin, please leave us a 5-star rating. It is the fastest "
 "way to help us grow and keep improving it further."
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:502
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:492
 msgid "Let's do this"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:503
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:493
 msgid "Done that"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:508
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:498
 msgid "Close"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:517
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:507
 msgid "Get WooCommerce Live Checkout Field Capture Pro"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:524
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:514
 msgid ""
 "Would you like to get notified about abandoned carts and send automated cart "
 "recovery emails?"
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:525
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:515
 msgid ""
 "Save your time by enabling Pro features and focus on your business instead."
 msgstr ""
 
-#: ../admin/class-woo-live-checkout-field-capture-admin.php:528
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:518
 msgid "Not now"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:640
+msgid "Congrats!"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:644
+msgid "Awesome!"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:648
+msgid "Amazing!"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:652
+msgid "Incredible!"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:656
+msgid "Crazy!"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:660
+msgid "Fantastic!"
+msgstr ""
+
+#: ../admin/class-woo-live-checkout-field-capture-admin.php:664
+msgid "Insane!"
 msgstr ""
 
 #: ../templates/wclcfc-exit-intent.php:38

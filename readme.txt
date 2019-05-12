@@ -5,15 +5,15 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, checkout field
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.2
-Stable tag: 3.2
-Version: 3.2
+Stable tag: 3.2.1
+Version: 3.2.1
 License: GPLv2 or later
 
-Save Abandoned Carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout field data before submission.
+Save Abandoned Carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
 
 == Description ==
 
-WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them.
+WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them. You can also make use of the new Exit Intent popup technology to capture users email and later remind him about his shopping cart.
 
 You will be able to manually contact your visitors and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 
@@ -171,6 +171,9 @@ Example how to change the main title using a filter:
 3. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 3.2.1 =
+* Minor content updates
 
 = 3.2 =
 * Fixed issue with saving City data for logged in users

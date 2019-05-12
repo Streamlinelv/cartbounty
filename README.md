@@ -6,7 +6,7 @@ Save Abandoned Carts and increase your sales by recovering them. Plugin instantl
 
 ### Description
 
-WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them.
+WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them. You can also make use of the new Exit Intent popup technology to capture users email and later remind him about his shopping cart.
 
 You will be able to manually contact your visitors and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 
@@ -164,6 +164,10 @@ Example how to change the main title using a filter:
 ![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.png "How the Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
+
+##### 3.2.1
+
+* Minor content updates
 
 ##### 3.2
 
