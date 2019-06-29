@@ -27,8 +27,8 @@ If you would like to receive email notifications about abandoned carts and send 
 
 * If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
-* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
-The Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart.
+* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With help of the Exit Intent Technology you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
+The Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
 Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
 
 * If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
@@ -100,13 +100,15 @@ This version does all the hard work of collecting the data and presenting it to 
 The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
 If you would like to [send your visitors automated abandoned cart recovery emails](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
 
-= How does the Exit Intent work? =
+= How does the Exit Intent Technology work? =
 
 If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his email address. Once it is entered (no need to submit the form), user's cart will be automatically captured.
 
 Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in the Exit Intent form or in the Checkout form - Exit Intent will no longer be displayed upon leaving your shop.
 
 If you would like to test the visual appearance of the Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see the Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
+
+In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [WooCommerce Live Checkout Field Capture Pro](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
 
 = How to change the content and image of the Exit Intent? =
 
