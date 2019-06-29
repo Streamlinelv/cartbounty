@@ -209,7 +209,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 							</tr>
 							<tr>
 								<th scope="row">
-									<label for="wclcfc-exit-intent-test-mode"><?php echo __('Enable Test Mode:', WCLCFC_TEXT_DOMAIN); ?></label>
+									<label for="wclcfc-exit-intent-test-mode"><?php echo __('Enable test mode:', WCLCFC_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
 									<input id="wclcfc-exit-intent-test-mode" class="wclcfc-checkbox" type="checkbox" name="wclcfc_exit_intent_test_mode" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $test_mode_on, false ); ?> />
@@ -489,7 +489,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 						<div class="woocommerce-live-checkout-field-capture-button-row">
 							<form method="post" action="options.php" class="wclcfc_inline">
 								<?php settings_fields( 'wclcfc-settings-review' ); ?>
-								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank"><?php echo __("Let's do this", WCLCFC_TEXT_DOMAIN ); ?></a>
+								<a href="<?php echo WCLCFC_REVIEW_LINK; ?>" class="button" target="_blank"><?php echo __("Leave a 5-star rating", WCLCFC_TEXT_DOMAIN ); ?></a>
 								<?php submit_button(__('Done that', WCLCFC_TEXT_DOMAIN), 'woocommerce-live-checkout-field-capture-review-submitted', false, false); ?>
 								<input id="wclcfc_review_submitted" type="hidden" name="wclcfc_review_submitted" value="1" />
 							</form>
@@ -511,8 +511,8 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 				<div id="woocommerce-live-checkout-field-capture-go-pro-content">
 					<form method="post" action="options.php">
 						<?php settings_fields( 'wclcfc-settings-time' ); ?>
-						<h2><?php echo __('Would you like to get notified about abandoned carts and send automated cart recovery emails?', WCLCFC_TEXT_DOMAIN ); ?></h2>
-						<p><?php echo __('Save your time by enabling Pro features and focus on your business instead.', WCLCFC_TEXT_DOMAIN ); ?></p>
+						<h2><?php echo __('Automate your abandoned cart recovery workflow and get back to those lovely cat videos (:', WCLCFC_TEXT_DOMAIN ); ?></h2>
+						<p><?php echo __('Use your time wisely by enabling Pro features and increase your sales.', WCLCFC_TEXT_DOMAIN ); ?></p>
 						<p class="woocommerce-live-checkout-field-capture-button-row">
 							<a href="<?php echo WCLCFC_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=wclcfc" class="button" target="_blank"><?php echo __('Get Pro', WCLCFC_TEXT_DOMAIN); ?></a>
 							<?php submit_button(__('Not now', WCLCFC_TEXT_DOMAIN), 'woocommerce-live-checkout-field-capture-close', false, false); ?>

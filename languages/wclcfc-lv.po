@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: woo-save-abandoned-carts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-12 14:13+0300\n"
+"POT-Creation-Date: 2019-06-29 12:30+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nauris Kolats <nauris@streamline.lv>\n"
 "Language-Team: Streamline.lv <info@streamline.lv>\n"
@@ -111,7 +111,7 @@ msgid "Enable Exit Intent:"
 msgstr "Ieslēgt Iziešanas mēģinājuma funkcionalitāti:"
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:212
-msgid "Enable Test Mode:"
+msgid "Enable test mode:"
 msgstr "Ieslēgt testēšanas režīmu:"
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:218
@@ -215,8 +215,8 @@ msgid ""
 msgstr "Ja Jums patīk šis produkts, lūdzu atstāj mums 5-zvaigžņu vērtējumu."
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:492
-msgid "Let's do this"
-msgstr "Pievienot vērtējumu"
+msgid "Leave a 5-star rating"
+msgstr "Piešķirt 5 zvaigznes"
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:493
 msgid "Done that"
@@ -233,18 +233,17 @@ msgstr ""
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:514
 msgid ""
-"Would you like to get notified about abandoned carts and send automated cart "
-"recovery emails?"
+"Automate your abandoned cart recovery workflow and get back to those lovely "
+"cat videos (:"
 msgstr ""
-"Vēlaties saņemt e-pastus par saglabātajiem pirkumu groziem un sūtīt "
-"automātiskus atgādinājumus šiem lietotājiem?"
+"Automatizējiet savu novārtā atstāto pirkumu grozu atgūšanu un atgriezieties "
+"pie tiem foršajiem kaķu video (:"
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:515
-msgid ""
-"Save your time by enabling Pro features and focus on your business instead."
+msgid "Use your time wisely by enabling Pro features and increase your sales."
 msgstr ""
-"Taupiet savu laiku aktivizējot Pro iespējas un koncentrējiet savu laiku "
-"biznesa attīstībai."
+"Izmantojiet savu laiku gudri aktivizējoet Pro iespējas un palieliniet "
+"pārdošanas rādītājus."
 
 #: ../admin/class-woo-live-checkout-field-capture-admin.php:518
 msgid "Not now"
@@ -305,6 +304,16 @@ msgstr "Tavs e-pasts:"
 #: ../templates/wclcfc-exit-intent.php:45
 msgid "Save cart"
 msgstr "Saglabāt grozu"
+
+#~ msgid "Let's do this"
+#~ msgstr "Pievienot vērtējumu"
+
+#~ msgid ""
+#~ "Would you like to get notified about abandoned carts and send automated "
+#~ "cart recovery emails?"
+#~ msgstr ""
+#~ "Vēlaties saņemt e-pastus par saglabātajiem pirkumu groziem un sūtīt "
+#~ "automātiskus atgādinājumus šiem lietotājiem?"
 
 #~ msgid "WooCommerce Live Checkout Field Capture"
 #~ msgstr "WooCommerce tiešsaistes apmaksas formā saglabātie lauki"
