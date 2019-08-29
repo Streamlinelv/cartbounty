@@ -4,7 +4,7 @@
  * Plugin Name: WooCommerce Live Checkout Field Capture
  * Plugin URI: https://wordpress.org/plugins/woo-save-abandoned-carts/
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 3.2.1
+ * Version: 3.3
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 //Defining constants
-if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '3.2.1');
+if (!defined('WCLCFC_VERSION_NUMBER')) define( 'WCLCFC_VERSION_NUMBER', '3.3');
 if (!defined('WCLCFC_BASENAME')) define( 'WCLCFC_BASENAME', plugin_basename( __FILE__ ));
 if (!defined('WCLCFC_PLUGIN_NAME')) define( 'WCLCFC_PLUGIN_NAME', 'WooCommerce Live Checkout Field Capture');
 if (!defined('WCLCFC_PLUGIN_NAME_SLUG')) define( 'WCLCFC_PLUGIN_NAME_SLUG', 'woo-live-checkout-field-capture');
@@ -32,6 +32,7 @@ if (!defined('WCLCFC_TABLE_NAME')) define( 'WCLCFC_TABLE_NAME', 'captured_wc_fie
 if (!defined('WCLCFC_LICENSE_SERVER_URL')) define('WCLCFC_LICENSE_SERVER_URL', 'https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/');
 if (!defined('WCLCFC_REVIEW_LINK')) define('WCLCFC_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post');
 if (!defined('WCLCFC_TEXT_DOMAIN')) define( 'WCLCFC_TEXT_DOMAIN', 'wclcfc');
+if (!defined('WCLCFC_ABREVIATION')) define( 'WCLCFC_ABREVIATION', 'WCLCFC');
 if (!defined('WCLCFC_STILL_SHOPPING')) define( 'WCLCFC_STILL_SHOPPING', 60); //In minutes. Defines the time period after which an e-mail notice will be sent to admin and the cart is presumed abandoned
 if (!defined('WCLCFC_NEW_NOTICE')) define( 'WCLCFC_NEW_NOTICE', 240); //Defining time in minutes how long New status is shown in the table
 

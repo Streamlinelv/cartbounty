@@ -237,10 +237,28 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 
         if ('delete' === $this->current_action()) {
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-            if (is_array($ids)) $ids = implode(',', $ids);
 
-            if (!empty($ids)) {
-                $wpdb->query("DELETE FROM $table_name WHERE id IN($ids)");
+            if (!empty($ids)){
+                if(is_array($ids)){ //Bulk abandoned cart deletion
+                    foreach ($ids as $key => $id){
+                        $wpdb->query(
+                            $wpdb->prepare(
+                                "DELETE FROM $table_name
+                                WHERE id = %d",
+                                intval($id)
+                            )
+                        );
+                    }
+                }else{ //Single abandoned cart deletion
+                    $id = $ids;
+                    $wpdb->query(
+                        $wpdb->prepare(
+                            "DELETE FROM $table_name
+                            WHERE id = %d",
+                            intval($id)
+                        )
+                    );
+                }
             }
         }
     }
@@ -269,7 +287,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
         $this->process_bulk_action();
 
         // will be used in pagination settings
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM {$table_name}");
 
         // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;

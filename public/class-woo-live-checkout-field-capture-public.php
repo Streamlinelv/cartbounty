@@ -51,7 +51,9 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @since    3.0
 	 */
 	public function enqueue_styles(){
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-public.css', array(), $this->version, 'all' );
+		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-public.css', array(), $this->version, 'all' );
+		}
 	}
 
 	/**

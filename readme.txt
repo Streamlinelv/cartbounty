@@ -1,12 +1,12 @@
 === Save Abandoned Carts - WooCommerce Live Checkout Field Capture ===
 Donate link: https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/
 Contributors: streamlinestar, nauriskolats
-Tags: woocommerce, abandoned carts, cart abandonment, exit popup, checkout fields
+Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.2
-Stable tag: 3.2.1
-Version: 3.2.1
+Stable tag: 3.3
+Version: 3.3
 License: GPLv2 or later
 
 Save Abandoned Carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -17,7 +17,7 @@ WooCommerce Live Checkout Field Capture plugin saves all activity in the [WooCom
 
 You will be able to manually contact your visitors and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 
-If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
+If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, please visit our [WooCommerce Live Checkout Field Capture Pro - save abandoned carts](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro - save abandoned carts") plugin version.
 
 ### Plugin basics and features:
 
@@ -37,11 +37,11 @@ Please note that the Exit Intent will only be showed to unregistered users once 
 
 ### How the idea was born:
 
-I started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and I wanted to develop one myself that would be very simple and lightweight. I built this plugin in order to register and recover abandoned carts in a website that sells [light cube](http://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
+I started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and I wanted to develop one myself that would be very simple and lightweight. I built this plugin in order to register and recover abandoned carts in a website that sells [light cube](https://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
 
 At the time when I started working on this project I knew that there were couple of plugins already available but they were offering a lot of functionality that slowed down my project and had many features that were not necessary. Also I wasn’t sure about the security that they provided and I wanted to contribute to WordPress community by helping others with the same need to see abandoned carts and recover them.
 
-While continuing to be working on [Mājas lapu izstrāde](http://www.majas-lapu-izstrade.lv "Mājas lapu izstrāde") (website design and development) I will be managing this plugin in order to keep up with the WooCommerce and WordPress updates.
+While continuing our work on [Mājas lapu izstrāde](https://www.majas-lapu-izstrade.lv "Mājas lapu izstrāde") (website design and development) we will be managing this plugin in order to keep up with the WooCommerce and WordPress updates.
 
 ### Plugin dependencies:
 
@@ -62,6 +62,8 @@ Input field ID values should be default:
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
 Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class "input-text" in order to trigger save action from all form fields.
+
+*Please note that this link to ActiveCampaign has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign customer.
 
 == Installation ==
 
@@ -93,12 +95,15 @@ Once user reaches the "Thank you" page the abandoned cart is automatically remov
 
 = How to enable email notifications about abandoned carts? =
 
-This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications, please visit our Pro [WooCommerce save abandoned carts](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce save abandoned carts") plugin version.
+This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications and automate abandoned cart recovery using MailChimp or ActiveCampaign, please visit our Pro [WooCommerce save abandoned carts](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce save abandoned carts") plugin version.
 
 = How to send automated abandoned cart recovery emails? =
 
 The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
-If you would like to [send your visitors automated abandoned cart recovery emails](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
+If you would like to [send your visitors automated abandoned cart recovery emails via MailChimp or ActiveCampaign](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
+
+[MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
+And [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
 
 = How does the Exit Intent Technology work? =
 
@@ -108,7 +113,7 @@ Exit Intent form will be displayed only to unregistered users once per hour. If 
 
 If you would like to test the visual appearance of the Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see the Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
 
-In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [WooCommerce Live Checkout Field Capture Pro](http://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
+In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [WooCommerce Live Checkout Field Capture Pro](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce Live Checkout Field Capture Pro") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
 
 = How to change the content and image of the Exit Intent? =
 
@@ -173,6 +178,11 @@ Example how to change the main title using a filter:
 3. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 3.3 =
+* Improved database query security
+* Optimized plugin load time
+* Minor content updates
 
 = 3.2.1 =
 * Minor content updates

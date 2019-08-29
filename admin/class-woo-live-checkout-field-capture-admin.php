@@ -113,14 +113,14 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 	 */
 	function menu_abandoned_count(){
 		global $wpdb, $submenu;
-		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+		//$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
 		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
 			
 			//Counting newly abandoned carts
 			$order_count = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(id) FROM ". $table_name ."
+					"SELECT COUNT(id) FROM ". $wpdb->prefix . WCLCFC_TABLE_NAME ."
 					WHERE 
 					cart_contents != '' AND time < (NOW() - INTERVAL %d MINUTE) AND 
 					time > (NOW() - INTERVAL %d MINUTE)"
@@ -183,7 +183,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 				}
 
 				if($tab == 'exit_intent'): //Exit intent output ?>
-					<h1><?php echo WCLCFC_PLUGIN_NAME; ?> <?php echo __('Exit Intent', WCLCFC_TEXT_DOMAIN); ?></h1>
+					<h1><?php echo WCLCFC_ABREVIATION; ?> <?php echo __('Exit Intent', WCLCFC_TEXT_DOMAIN); ?></h1>
 					<p class="wclcfc-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.', WCLCFC_TEXT_DOMAIN); ?></p>
 					<p class="wclcfc-description"><?php echo __('Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart and try to leave your shop.', WCLCFC_TEXT_DOMAIN); ?></p>
 					<p class="wclcfc-description"><?php echo sprintf(__('If you would like to customize the content of your Exit Intent, please see <a href="%s" target="_blank">How to change the content and image of the Exit Intent</a>.', WCLCFC_TEXT_DOMAIN), 'https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/#modify-exit-intent-content'); ?></p>
@@ -295,7 +295,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 					</form>
 
 				<?php else: //Table output ?>
-					<h1><?php echo WCLCFC_PLUGIN_NAME; ?></h1>
+					<h1><?php echo WCLCFC_ABREVIATION; ?> <?php echo __('Abandoned carts', WCLCFC_TEXT_DOMAIN); ?></h1>
 					<?php do_action('wclcfc_after_page_title'); ?>
 					<?php echo $message; 
 					if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note ?>
@@ -485,7 +485,7 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 					<div id="woocommerce-live-checkout-field-capture-review-content">
 						<?php $expression = $this->get_expressions(); ?>
 						<h2><?php echo sprintf(__('%s You have already captured %d abandoned carts!', WCLCFC_TEXT_DOMAIN ), $expression['exclamation'], $this->total_captured_abandoned_cart_count()); ?></h2>
-						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the fastest way to help us grow and keep improving it further.', WCLCFC_TEXT_DOMAIN ); ?></p>
+						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', WCLCFC_TEXT_DOMAIN ); ?></p>
 						<div class="woocommerce-live-checkout-field-capture-button-row">
 							<form method="post" action="options.php" class="wclcfc_inline">
 								<?php settings_fields( 'wclcfc-settings-review' ); ?>

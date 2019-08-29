@@ -112,7 +112,7 @@ class Woo_Live_Checkout_Field_Capture{
 		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wclcfc_menu', 70); //Creates admin menu
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wclcfc_menu', 35); //Creates admin menu
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count');
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version');
 		$this->loader->add_filter( 'plugin_action_links_' . WCLCFC_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
