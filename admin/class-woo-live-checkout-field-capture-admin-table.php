@@ -287,7 +287,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
         $this->process_bulk_action();
 
         // will be used in pagination settings
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM {$table_name}");
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
 
         // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;

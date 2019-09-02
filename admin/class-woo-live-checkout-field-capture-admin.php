@@ -113,15 +113,15 @@ class Woo_Live_Checkout_Field_Capture_Admin{
 	 */
 	function menu_abandoned_count(){
 		global $wpdb, $submenu;
-		//$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
 		
 		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
 			
 			//Counting newly abandoned carts
 			$order_count = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(id) FROM ". $wpdb->prefix . WCLCFC_TABLE_NAME ."
-					WHERE 
+					"SELECT COUNT(id) FROM $table_name
+					WHERE
 					cart_contents != '' AND time < (NOW() - INTERVAL %d MINUTE) AND 
 					time > (NOW() - INTERVAL %d MINUTE)"
 				, WCLCFC_STILL_SHOPPING, WCLCFC_NEW_NOTICE )
