@@ -12,6 +12,8 @@ You will be able to manually contact your visitors and remind about the abandone
 
 If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
 
+[youtube https://www.youtube.com/watch?v=Sb4DpkDilw0]
+
 #### Plugin basics and features:
 
 * Instantly capture WooCommerce checkout field data before submission to save abandoned carts.
