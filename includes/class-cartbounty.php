@@ -8,11 +8,11 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @package    WooCommerce Live Checkout Field Capture
- * @subpackage WooCommerce Live Checkout Field Capture/includes
+ * @package    CartBounty - Save and recover abandoned carts for WooCommerce
+ * @subpackage CartBounty - Save and recover abandoned carts for WooCommerce/includes
  * @author     Streamline.lv
  */
-class Woo_Live_Checkout_Field_Capture{
+class CartBounty{
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -53,8 +53,8 @@ class Woo_Live_Checkout_Field_Capture{
 	 */
 	public function __construct(){
 
-		$this->plugin_name = WCLCFC_PLUGIN_NAME_SLUG;
-		$this->version = WCLCFC_VERSION_NUMBER;
+		$this->plugin_name = CARTBOUNTY_PLUGIN_NAME_SLUG;
+		$this->version = CARTBOUNTY_VERSION_NUMBER;
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();
@@ -83,20 +83,20 @@ class Woo_Live_Checkout_Field_Capture{
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woo-live-checkout-field-capture-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-loader.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-live-checkout-field-capture-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cartbounty-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-woo-live-checkout-field-capture-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cartbounty-public.php';
 
-		$this->loader = new Woo_Live_Checkout_Field_Capture_Loader();
+		$this->loader = new CartBounty_Loader();
 
 	}
 
@@ -109,16 +109,16 @@ class Woo_Live_Checkout_Field_Capture{
 	 */
 	private function define_admin_hooks(){
 
-		$plugin_admin = new Woo_Live_Checkout_Field_Capture_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new CartBounty_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wclcfc_menu', 35); //Creates admin menu
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'cartbounty_menu', 35); //Creates admin menu
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count');
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version');
-		$this->loader->add_filter( 'plugin_action_links_' . WCLCFC_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
-		$this->loader->add_action( 'wclcfc_after_page_title', $plugin_admin, 'output_bubble_content'); //Hooks into hook in order to output bubbles
-		$this->loader->add_action( 'init', $plugin_admin, 'wclcfc_text_domain'); //Adding language support
-		$this->loader->add_filter( 'wclcfc_remove_empty_carts_hook', $plugin_admin, 'delete_empty_carts');
+		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2); //Adds additional links on Plugin page
+		$this->loader->add_action( 'cartbounty_after_page_title', $plugin_admin, 'output_bubble_content'); //Hooks into hook in order to output bubbles
+		$this->loader->add_action( 'init', $plugin_admin, 'cartbounty_text_domain'); //Adding language support
+		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $plugin_admin, 'delete_empty_carts');
 		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'additional_cron_intervals'); //Ads a filter to set new interval for Wordpress cron function
 	}
 
@@ -131,7 +131,7 @@ class Woo_Live_Checkout_Field_Capture{
 	 */
 	private function define_public_hooks(){
 
-		$plugin_public = new Woo_Live_Checkout_Field_Capture_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new CartBounty_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );

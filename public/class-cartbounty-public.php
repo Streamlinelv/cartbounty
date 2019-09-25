@@ -6,12 +6,12 @@
  * Defines the plugin name, version, and two hooks to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    WooCommerce Live Checkout Field Capture
- * @subpackage WooCommerce Live Checkout Field Capture/public
+ * @package    CartBounty - Save and recover abandoned carts for WooCommerce
+ * @subpackage CartBounty - Save and recover abandoned carts for WooCommerce/public
  * @author     Streamline.lv
  */
  
-class Woo_Live_Checkout_Field_Capture_Public{
+class CartBounty_Public{
 	
 	/**
 	 * The ID of this plugin.
@@ -52,7 +52,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 */
 	public function enqueue_styles(){
 		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-live-checkout-field-capture-public.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cartbounty-public.css', array(), $this->version, 'all' );
 		}
 	}
 
@@ -63,7 +63,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 */
 	public function enqueue_scripts(){
 		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
-			if(get_option('wclcfc_exit_intent_test_mode')){ //If Exit Intent Test mode is on
+			if(get_option('cartbounty_exit_intent_test_mode')){ //If Exit Intent Test mode is on
 				$data = array(
 				    'hours' => 0, //For Exit Intent Testing purposes
 				    'product_count' => WC()->cart->get_cart_contents_count(),
@@ -76,7 +76,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 				    'ajaxurl' => admin_url( 'admin-ajax.php' )
 				);
 			}
-			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public-exit-intent.js', array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
 			wp_localize_script( $this->plugin_name . 'exit_intent', 'public_data', $data); //Sending variable over to JS file
 		}
 	}
@@ -87,7 +87,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @since    1.0
 	 */
 	function add_additional_scripts_on_checkout(){
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-live-checkout-field-capture-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-public.js', array( 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 	}
 	
@@ -98,9 +98,9 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 */
 	function save_user_data(){
 		//First check if data is being sent and that it is the data we want
-		if ( isset( $_POST["wlcfc_email"] ) ) {
+		if ( isset( $_POST["cartbounty_email"] ) ) {
 			global $wpdb;
-			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+			$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
 			//Retrieving cart array consisting of currency, cart toal, time, session id and products and their quantities
 			$cart_data = $this->read_cart();
@@ -109,7 +109,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			$current_time = $cart_data['current_time'];
 			$session_id = $cart_data['session_id'];
 			$product_array = $cart_data['product_array'];
-			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
 
 			//In case if the cart has no items in it, we need to delete the abandoned cart
 			if(empty($product_array)){
@@ -118,54 +118,54 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			}
 			
 			//Checking if we have values coming from the input fields
-			(isset($_POST['wlcfc_name'])) ? $name = $_POST['wlcfc_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
-			(isset($_POST['wlcfc_surname'])) ? $surname = $_POST['wlcfc_surname'] : $surname = '';
-			(isset($_POST['wlcfc_phone'])) ? $phone = $_POST['wlcfc_phone'] : $phone = '';
-			(isset($_POST['wlcfc_country'])) ? $country = $_POST['wlcfc_country'] : $country = '';
-			(isset($_POST['wlcfc_city']) && $_POST['wlcfc_city'] != '') ? $city = ", ". $_POST['wlcfc_city'] : $city = '';
-			(isset($_POST['wlcfc_billing_company'])) ? $company = $_POST['wlcfc_billing_company'] : $company = '';
-			(isset($_POST['wlcfc_billing_address_1'])) ? $address_1 = $_POST['wlcfc_billing_address_1'] : $address_1 = '';
-			(isset($_POST['wlcfc_billing_address_2'])) ? $address_2 = $_POST['wlcfc_billing_address_2'] : $address_2 = '';
-			(isset($_POST['wlcfc_billing_state'])) ? $state = $_POST['wlcfc_billing_state'] : $state = '';
-			(isset($_POST['wlcfc_billing_postcode'])) ? $postcode = $_POST['wlcfc_billing_postcode'] : $postcode = '';
-			(isset($_POST['wlcfc_shipping_first_name'])) ? $shipping_name = $_POST['wlcfc_shipping_first_name'] : $shipping_name = '';
-			(isset($_POST['wlcfc_shipping_last_name'])) ? $shipping_surname = $_POST['wlcfc_shipping_last_name'] : $shipping_surname = '';
-			(isset($_POST['wlcfc_shipping_company'])) ? $shipping_company = $_POST['wlcfc_shipping_company'] : $shipping_company = '';
-			(isset($_POST['wlcfc_shipping_country'])) ? $shipping_country = $_POST['wlcfc_shipping_country'] : $shipping_country = '';
-			(isset($_POST['wlcfc_shipping_address_1'])) ? $shipping_address_1 = $_POST['wlcfc_shipping_address_1'] : $shipping_address_1 = '';
-			(isset($_POST['wlcfc_shipping_address_2'])) ? $shipping_address_2 = $_POST['wlcfc_shipping_address_2'] : $shipping_address_2 = '';
-			(isset($_POST['wlcfc_shipping_city'])) ? $shipping_city = $_POST['wlcfc_shipping_city'] : $shipping_city = '';
-			(isset($_POST['wlcfc_shipping_state'])) ? $shipping_state = $_POST['wlcfc_shipping_state'] : $shipping_state = '';
-			(isset($_POST['wlcfc_shipping_postcode'])) ? $shipping_postcode = $_POST['wlcfc_shipping_postcode'] : $shipping_postcode = '';
-			(isset($_POST['wlcfc_order_comments'])) ? $comments = $_POST['wlcfc_order_comments'] : $comments = '';
-			(isset($_POST['wlcfc_create_account'])) ? $create_account = $_POST['wlcfc_create_account'] : $create_account = '';
-			(isset($_POST['wlcfc_ship_elsewhere'])) ? $ship_elsewhere = $_POST['wlcfc_ship_elsewhere'] : $ship_elsewhere = '';
+			(isset($_POST['cartbounty_name'])) ? $name = $_POST['cartbounty_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
+			(isset($_POST['cartbounty_surname'])) ? $surname = $_POST['cartbounty_surname'] : $surname = '';
+			(isset($_POST['cartbounty_phone'])) ? $phone = $_POST['cartbounty_phone'] : $phone = '';
+			(isset($_POST['cartbounty_country'])) ? $country = $_POST['cartbounty_country'] : $country = '';
+			(isset($_POST['cartbounty_city']) && $_POST['cartbounty_city'] != '') ? $city = ", ". $_POST['cartbounty_city'] : $city = '';
+			(isset($_POST['cartbounty_billing_company'])) ? $company = $_POST['cartbounty_billing_company'] : $company = '';
+			(isset($_POST['cartbounty_billing_address_1'])) ? $address_1 = $_POST['cartbounty_billing_address_1'] : $address_1 = '';
+			(isset($_POST['cartbounty_billing_address_2'])) ? $address_2 = $_POST['cartbounty_billing_address_2'] : $address_2 = '';
+			(isset($_POST['cartbounty_billing_state'])) ? $state = $_POST['cartbounty_billing_state'] : $state = '';
+			(isset($_POST['cartbounty_billing_postcode'])) ? $postcode = $_POST['cartbounty_billing_postcode'] : $postcode = '';
+			(isset($_POST['cartbounty_shipping_first_name'])) ? $shipping_name = $_POST['cartbounty_shipping_first_name'] : $shipping_name = '';
+			(isset($_POST['cartbounty_shipping_last_name'])) ? $shipping_surname = $_POST['cartbounty_shipping_last_name'] : $shipping_surname = '';
+			(isset($_POST['cartbounty_shipping_company'])) ? $shipping_company = $_POST['cartbounty_shipping_company'] : $shipping_company = '';
+			(isset($_POST['cartbounty_shipping_country'])) ? $shipping_country = $_POST['cartbounty_shipping_country'] : $shipping_country = '';
+			(isset($_POST['cartbounty_shipping_address_1'])) ? $shipping_address_1 = $_POST['cartbounty_shipping_address_1'] : $shipping_address_1 = '';
+			(isset($_POST['cartbounty_shipping_address_2'])) ? $shipping_address_2 = $_POST['cartbounty_shipping_address_2'] : $shipping_address_2 = '';
+			(isset($_POST['cartbounty_shipping_city'])) ? $shipping_city = $_POST['cartbounty_shipping_city'] : $shipping_city = '';
+			(isset($_POST['cartbounty_shipping_state'])) ? $shipping_state = $_POST['cartbounty_shipping_state'] : $shipping_state = '';
+			(isset($_POST['cartbounty_shipping_postcode'])) ? $shipping_postcode = $_POST['cartbounty_shipping_postcode'] : $shipping_postcode = '';
+			(isset($_POST['cartbounty_order_comments'])) ? $comments = $_POST['cartbounty_order_comments'] : $comments = '';
+			(isset($_POST['cartbounty_create_account'])) ? $create_account = $_POST['cartbounty_create_account'] : $create_account = '';
+			(isset($_POST['cartbounty_ship_elsewhere'])) ? $ship_elsewhere = $_POST['cartbounty_ship_elsewhere'] : $ship_elsewhere = '';
 			
 			$other_fields = array(
-				'wlcfc_billing_company' 	=> $company,
-				'wlcfc_billing_address_1' 	=> $address_1,
-				'wlcfc_billing_address_2' 	=> $address_2,
-				'wlcfc_billing_state' 		=> $state,
-				'wlcfc_billing_postcode' 	=> $postcode,
-				'wlcfc_shipping_first_name' => $shipping_name,
-				'wlcfc_shipping_last_name' 	=> $shipping_surname,
-				'wlcfc_shipping_company' 	=> $shipping_company,
-				'wlcfc_shipping_country' 	=> $shipping_country,
-				'wlcfc_shipping_address_1' 	=> $shipping_address_1,
-				'wlcfc_shipping_address_2' 	=> $shipping_address_2,
-				'wlcfc_shipping_city' 		=> $shipping_city,
-				'wlcfc_shipping_state' 		=> $shipping_state,
-				'wlcfc_shipping_postcode' 	=> $shipping_postcode,
-				'wlcfc_order_comments' 		=> $comments,
-				'wlcfc_create_account' 		=> $create_account,
-				'wlcfc_ship_elsewhere' 		=> $ship_elsewhere
+				'cartbounty_billing_company' 		=> $company,
+				'cartbounty_billing_address_1' 		=> $address_1,
+				'cartbounty_billing_address_2' 		=> $address_2,
+				'cartbounty_billing_state' 			=> $state,
+				'cartbounty_billing_postcode' 		=> $postcode,
+				'cartbounty_shipping_first_name' 	=> $shipping_name,
+				'cartbounty_shipping_last_name' 	=> $shipping_surname,
+				'cartbounty_shipping_company' 		=> $shipping_company,
+				'cartbounty_shipping_country' 		=> $shipping_country,
+				'cartbounty_shipping_address_1' 	=> $shipping_address_1,
+				'cartbounty_shipping_address_2' 	=> $shipping_address_2,
+				'cartbounty_shipping_city' 			=> $shipping_city,
+				'cartbounty_shipping_state' 		=> $shipping_state,
+				'cartbounty_shipping_postcode' 		=> $shipping_postcode,
+				'cartbounty_order_comments' 		=> $comments,
+				'cartbounty_create_account' 		=> $create_account,
+				'cartbounty_ship_elsewhere' 		=> $ship_elsewhere
 			);
 			
 			$location = $country . $city;
 
-			$current_session_exist_in_db = $this->current_session_exist_in_db($wclcfc_session_id);
+			$current_session_exist_in_db = $this->current_session_exist_in_db($cartbounty_session_id);
 			//If we have already inserted the Users session ID in Session variable and it is not NULL and Current session ID exists in Database we update the abandoned cart row
-			if( $current_session_exist_in_db && $wclcfc_session_id !== NULL ){
+			if( $current_session_exist_in_db && $cartbounty_session_id !== NULL ){
 
 				//Updating row in the Database where users Session id = same as prevously saved in Session
 				$wpdb->prepare('%s',
@@ -174,7 +174,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 						array(
 							'name'			=>	sanitize_text_field( $name ),
 							'surname'		=>	sanitize_text_field( $surname ),
-							'email'			=>	sanitize_email( $_POST['wlcfc_email'] ),
+							'email'			=>	sanitize_email( $_POST['cartbounty_email'] ),
 							'phone'			=>	filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
 							'location'		=>	sanitize_text_field( $location ),
 							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
@@ -183,7 +183,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 							'time'			=>	sanitize_text_field( $current_time ),
 							'other_fields'	=>	sanitize_text_field( serialize($other_fields) )
 						),
-						array('session_id' => $wclcfc_session_id),
+						array('session_id' => $cartbounty_session_id),
 						array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
 						array('%s')
 					)
@@ -200,7 +200,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 						array(
 							sanitize_text_field( $name ),
 							sanitize_text_field( $surname ),
-							sanitize_email( $_POST['wlcfc_email'] ),
+							sanitize_email( $_POST['cartbounty_email'] ),
 							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
 							sanitize_text_field( $location ),
 							sanitize_text_field( serialize($product_array) ),
@@ -214,7 +214,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 				);
 				
 				//Storing session_id in WooCommerce session
-				WC()->session->set('wclcfc_session_id', $session_id);
+				WC()->session->set('cartbounty_session_id', $session_id);
 				$this->increase_captured_abandoned_cart_count(); //Updating total count of captured abandoned carts
 			}
 			
@@ -231,7 +231,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	function save_looged_in_user_data(){
 		if(is_user_logged_in()){ //If a user is logged in
 			global $wpdb;
-			$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+			$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
 			//Retrieving cart array consisting of currency, cart toal, time, session id and products and their quantities
 			$cart_data = $this->read_cart();
@@ -240,7 +240,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			$current_time = $cart_data['current_time'];
 			$session_id = $cart_data['session_id'];
 			$product_array = $cart_data['product_array'];
-			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
 
 			//In case if the user updates the cart and takes out all items from the cart
 			if(empty($product_array)){
@@ -250,27 +250,27 @@ class Woo_Live_Checkout_Field_Capture_Public{
 
 			$abandoned_cart = '';
 
-			//If we haven't set wclcfc_session_id, then need to check in the database if the current user has got an abandoned cart already
-			if( $wclcfc_session_id === NULL ){
-				$main_table = $wpdb->prefix . WCLCFC_TABLE_NAME;
+			//If we haven't set cartbounty_session_id, then need to check in the database if the current user has got an abandoned cart already
+			if( $cartbounty_session_id === NULL ){
+				$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 				$abandoned_cart = $wpdb->get_row($wpdb->prepare(
 					"SELECT session_id FROM ". $main_table ."
 					WHERE session_id = %d", get_current_user_id())
 				);
 			}
 
-			$current_session_exist_in_db = $this->current_session_exist_in_db($wclcfc_session_id);
+			$current_session_exist_in_db = $this->current_session_exist_in_db($cartbounty_session_id);
 			//If the current user has got an abandoned cart already or if we have already inserted the Users session ID in Session variable and it is not NULL and already inserted the Users session ID in Session variable we update the abandoned cart row
-			if( $current_session_exist_in_db && (!empty($abandoned_cart) || $wclcfc_session_id !== NULL )){
+			if( $current_session_exist_in_db && (!empty($abandoned_cart) || $cartbounty_session_id !== NULL )){
 
 				//If the user has got an abandoned cart previously, we set session ID back
 				if(!empty($abandoned_cart)){
 					$session_id = $abandoned_cart->session_id;
 					//Storing session_id in WooCommerce session
-					WC()->session->set('wclcfc_session_id', $session_id);
+					WC()->session->set('cartbounty_session_id', $session_id);
 
 				}else{
-					$session_id = $wclcfc_session_id;
+					$session_id = $cartbounty_session_id;
 				}
 				
 				//Updating row in the Database where users Session id = same as prevously saved in Session
@@ -354,7 +354,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 					)
 				);
 				//Storing session_id in WooCommerce session
-				WC()->session->set('wclcfc_session_id', $session_id);
+				WC()->session->set('cartbounty_session_id', $session_id);
 
 				$this->increase_captured_abandoned_cart_count(); //Increasing total count of captured abandoned carts
 			}
@@ -369,11 +369,11 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	function update_cart_data(){
 		if(!is_user_logged_in()){ //If a user is not logged in
 
-			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
-			if( $wclcfc_session_id !== NULL ){
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			if( $cartbounty_session_id !== NULL ){
 				
 				global $wpdb;
-				$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
+				$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 				$cart_data = $this->read_cart();
 				$product_array = $cart_data['product_array'];
 				$cart_total = $cart_data['cart_total'];
@@ -396,7 +396,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time )
 						),
-						array('session_id' => $wclcfc_session_id),
+						array('session_id' => $cartbounty_session_id),
 						array('%s', '%0.2f', '%s', '%s'),
 						array('%s')
 					)
@@ -411,18 +411,18 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @since    3.0
 	 * @return  boolean
 	 */
-	function current_session_exist_in_db($wclcfc_session_id){
+	function current_session_exist_in_db($cartbounty_session_id){
 		//If we have saved the abandoned cart in session variable
-		if( $wclcfc_session_id !== NULL ){
+		if( $cartbounty_session_id !== NULL ){
 			global $wpdb;
-			$main_table = $wpdb->prefix . WCLCFC_TABLE_NAME;
+			$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 			//Checking if we have this abandoned cart in our database already
 			return $result = $wpdb->get_var($wpdb->prepare(
 				"SELECT session_id
 				FROM ". $main_table ."
 				WHERE session_id = %s",
-				$wclcfc_session_id
+				$cartbounty_session_id
 			));
 
 		}else{
@@ -438,13 +438,13 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	function clear_cart_data(){
 		
 		global $wpdb;
-		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 		
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
 
-			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
-			if(isset($wclcfc_session_id)){
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			if(isset($cartbounty_session_id)){
 
 				$cart_data = $this->read_cart();
 				$cart_currency = $cart_data['cart_currency'];
@@ -460,7 +460,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time )
 						),
-						array('session_id' => $wclcfc_session_id),
+						array('session_id' => $cartbounty_session_id),
 						array('%s', '%s'),
 						array('%s')
 					)
@@ -476,26 +476,26 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 */
 	function delete_user_data(){
 		global $wpdb;
-		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
 
-			$wclcfc_session_id = WC()->session->get('wclcfc_session_id');
-			if(isset($wclcfc_session_id)){
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			if(isset($cartbounty_session_id)){
 				
 				//Deleting row from database
 				$wpdb->query(
 					$wpdb->prepare(
 						"DELETE FROM ". $table_name ."
 						 WHERE session_id = %s",
-						sanitize_key($wclcfc_session_id)
+						sanitize_key($cartbounty_session_id)
 					)
 				);
 				$this->decrease_captured_abandoned_cart_count( $count = false ); //Decreasing total count of captured abandoned carts
 			}
 			
-			$this->unset_wclcfc_session_id();
+			$this->unset_cartbounty_session_id();
 		}
 	}
 
@@ -622,15 +622,15 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	public function restore_input_data( $fields = array() ) {
 		global $wpdb;
 		
-		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
-		$wclcfc_session_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cartbounty_session_id = WC()->session->get('cartbounty_session_id'); //Retrieving current session ID from WooCommerce Session
 		
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT *
 			FROM ". $table_name ."
 			WHERE session_id = %s",
-			$wclcfc_session_id)
+			$cartbounty_session_id)
 		);
 		
 		if($row){ //If we have a user with such session ID in the database
@@ -668,37 +668,37 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			//Filling Checkout field values back with previously entered values
 			(empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : '';
 			(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
-			(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_company'])) : '';
+			(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_company'])) : '';
 			(empty( $_POST['billing_country'])) ? $_POST['billing_country'] = sprintf('%s', esc_html($country)) : '';
-			(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_1'])) : '';
-			(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_address_2'])) : '';
+			(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_1'])) : '';
+			(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_2'])) : '';
 			(empty( $_POST['billing_city'])) ? $_POST['billing_city'] = sprintf('%s', esc_html($city)) : '';
-			(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_state'])) : '';
-			(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_billing_postcode'])) : '';
+			(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_state'])) : '';
+			(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_postcode'])) : '';
 			(empty( $_POST['billing_phone'])) ? $_POST['billing_phone'] = sprintf('%s', esc_html($row->phone)) : '';
 			(empty( $_POST['billing_email'])) ? $_POST['billing_email'] = sprintf('%s', esc_html($row->email)) : '';
 			
-			(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_first_name'])) : '';
-			(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_last_name'])) : '';
-			(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_company'])) : '';
-			(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_country'])) : '';
-			(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_1'])) : '';
-			(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_address_2'])) : '';
-			(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_city'])) : '';
-			(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_state'])) : '';
-			(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['wlcfc_shipping_postcode'])) : '';
-			(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['wlcfc_order_comments'])) : '';
+			(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_first_name'])) : '';
+			(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_last_name'])) : '';
+			(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_company'])) : '';
+			(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_country'])) : '';
+			(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_1'])) : '';
+			(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_2'])) : '';
+			(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_city'])) : '';
+			(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_state'])) : '';
+			(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_postcode'])) : '';
+			(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['cartbounty_order_comments'])) : '';
 			
 			//Checking if Create account should be checked or not
-			if(isset($other_fields['wlcfc_create_account'])){
-				if($other_fields['wlcfc_create_account']){
+			if(isset($other_fields['cartbounty_create_account'])){
+				if($other_fields['cartbounty_create_account']){
 					add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
 				}
 			}
 
 			//Checking if Ship to a different location must be checked or not
-			if(isset($other_fields['wlcfc_ship_elsewhere'])){
-				if($other_fields['wlcfc_ship_elsewhere']){
+			if(isset($other_fields['cartbounty_ship_elsewhere'])){
+				if($other_fields['cartbounty_ship_elsewhere']){
 					add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
 				}
 			}
@@ -712,9 +712,9 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 *
 	 * @since    3.0
 	 */
-	function unset_wclcfc_session_id(){
+	function unset_cartbounty_session_id(){
 		//Removing stored ID value from WooCommerce Session
-		WC()->session->__unset('wclcfc_session_id');
+		WC()->session->__unset('cartbounty_session_id');
 	}
 
 	/**
@@ -723,8 +723,8 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @since    2.1
 	 */
 	function increase_captured_abandoned_cart_count(){
-		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
-		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count + 1); //Updating the count by one abandoned cart
+		$previously_captured_abandoned_cart_count = get_option('cartbounty_captured_abandoned_cart_count');
+		update_option('cartbounty_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count + 1); //Updating the count by one abandoned cart
 	}
 
 	/**
@@ -736,8 +736,8 @@ class Woo_Live_Checkout_Field_Capture_Public{
 		if(!$count){
 			$count = 1;
 		}
-		$previously_captured_abandoned_cart_count = get_option('wclcfc_captured_abandoned_cart_count');
-		update_option('wclcfc_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - $count); //Decreasing the count by one abandoned cart
+		$previously_captured_abandoned_cart_count = get_option('cartbounty_captured_abandoned_cart_count');
+		update_option('cartbounty_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - $count); //Decreasing the count by one abandoned cart
 	}
 
 	/**
@@ -753,7 +753,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 		if( WC()->cart->get_cart_contents_count() > 0 ){ //If the cart is not empty
 			$current_user_is_admin = current_user_can( 'manage_options' );
 			$output = $this->build_exit_intent_output($current_user_is_admin); //Creating the Exit Intent output
-			if (isset( $_POST["wlcfc_insert"])) { //In case function triggered using Ajax Add to Cart
+			if (isset( $_POST["cartbounty_insert"])) { //In case function triggered using Ajax Add to Cart
 				return wp_send_json_success($output); //Sending Output to Javascript function
 			}
 			else{ //Outputing in case of page reload
@@ -784,10 +784,10 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 */
 	function build_exit_intent_output($current_user_is_admin){
 		global $wpdb;
-		$table_name = $wpdb->prefix . WCLCFC_TABLE_NAME;
-		$wclcfc_session_id = WC()->session->get('wclcfc_session_id'); //Retrieving current session ID from WooCommerce Session
-		$main_color = esc_attr( get_option('wclcfc_exit_intent_main_color'));
-		$inverse_color = esc_attr( get_option('wclcfc_exit_intent_inverse_color'));
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cartbounty_session_id = WC()->session->get('cartbounty_session_id'); //Retrieving current session ID from WooCommerce Session
+		$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
+		$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
 		if(!$main_color){
 			$main_color = '#e3e3e3';
 		}
@@ -800,7 +800,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 			"SELECT *
 			FROM ". $table_name ."
 			WHERE session_id = %s",
-			$wclcfc_session_id)
+			$cartbounty_session_id)
 		);
 
 		if($row && !$current_user_is_admin){ //Exit if Abandoned Cart already saved and the current user is not admin
@@ -809,11 +809,11 @@ class Woo_Live_Checkout_Field_Capture_Public{
 
 		//In case the function is called via Ajax Add to Cart button
 		//We must add wp_die() or otherwise the function does not return anything
-		if (isset( $_POST["wlcfc_insert"])){ 
-			$output = $this->get_template( 'wclcfc-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
+		if (isset( $_POST["cartbounty_insert"])){ 
+			$output = $this->get_template( 'cartbounty-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
 			die();
 		}else{
-			return $this->get_template( 'wclcfc-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
+			return $this->get_template( 'cartbounty-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
 		}
 	}
 
@@ -824,8 +824,8 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * @return   boolean
 	 */
 	function exit_intent_enabled(){
-		$exit_intent_on = get_option('wclcfc_exit_intent_status');
-		$test_mode_on = get_option('wclcfc_exit_intent_test_mode');
+		$exit_intent_on = get_option('cartbounty_exit_intent_status');
+		$test_mode_on = get_option('cartbounty_exit_intent_test_mode');
 		$current_user_is_admin = current_user_can( 'manage_options' );
 
 		if($test_mode_on && $current_user_is_admin){
@@ -874,7 +874,7 @@ class Woo_Live_Checkout_Field_Capture_Public{
 	 * Function returns the path to the template
 	 *
 	 * Search Order:
-	 * 1. /themes/theme/wclcfc-templates/$template_name
+	 * 1. /themes/theme/cartbounty-templates/$template_name
 	 * 2. /themes/theme/$template_name
 	 * 3. /plugins/woocommerce-plugin-templates/templates/$template_name.
 	 *

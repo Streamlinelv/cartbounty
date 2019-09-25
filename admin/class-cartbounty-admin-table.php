@@ -4,8 +4,8 @@
  *
  * Defines how Table should be outputed
  *
- * @package    WooCommerce Live Checkout Field Capture
- * @subpackage WooCommerce Live Checkout Field Capture/admin
+ * @package    CartBounty - Save and recover abandoned carts for WooCommerce
+ * @subpackage CartBounty - Save and recover abandoned carts for WooCommerce/admin
  * @author     Streamline.lv
  */
  
@@ -13,7 +13,7 @@ if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
  
-class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
+class CartBounty_Table extends WP_List_Table{
 
    /**
     * Constructor, we override the parent to pass our own arguments
@@ -41,14 +41,14 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
 	function get_columns(){
 	   return $columns= array(
 		  'cb'				=> 		'<input type="checkbox" />',
-		  'id'				=>		__('ID', WCLCFC_TEXT_DOMAIN),
-		  'nameSurname'		=>		__('Name, Surname', WCLCFC_TEXT_DOMAIN),
-		  'email'			=>		__('Email', WCLCFC_TEXT_DOMAIN),
-		  'phone'			=>		__('Phone', WCLCFC_TEXT_DOMAIN),
-          'location'        =>      __('Location', WCLCFC_TEXT_DOMAIN),
-		  'cart_contents'	=>		__('Cart contents', WCLCFC_TEXT_DOMAIN),
-		  'cart_total'		=>		__('Cart total', WCLCFC_TEXT_DOMAIN),
-		  'time'			=>		__('Time', WCLCFC_TEXT_DOMAIN)
+		  'id'				=>		__('ID', CARTBOUNTY_TEXT_DOMAIN),
+		  'nameSurname'		=>		__('Name, Surname', CARTBOUNTY_TEXT_DOMAIN),
+		  'email'			=>		__('Email', CARTBOUNTY_TEXT_DOMAIN),
+		  'phone'			=>		__('Phone', CARTBOUNTY_TEXT_DOMAIN),
+          'location'        =>      __('Location', CARTBOUNTY_TEXT_DOMAIN),
+		  'cart_contents'	=>		__('Cart contents', CARTBOUNTY_TEXT_DOMAIN),
+		  'cart_total'		=>		__('Cart total', CARTBOUNTY_TEXT_DOMAIN),
+		  'time'			=>		__('Time', CARTBOUNTY_TEXT_DOMAIN)
 	   );
 	}
 	
@@ -217,7 +217,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      */
 	 function get_bulk_actions(){
         $actions = array(
-            'delete' => __('Delete', WCLCFC_TEXT_DOMAIN)
+            'delete' => __('Delete', CARTBOUNTY_TEXT_DOMAIN)
         );
         return $actions;
     }
@@ -233,7 +233,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      */
     function process_bulk_action(){
         global $wpdb;
-        $table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
         if ('delete' === $this->current_action()) {
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
@@ -272,7 +272,7 @@ class Woo_Live_Checkout_Field_Capture_Table extends WP_List_Table{
      */
 	function prepare_items(){
         global $wpdb;
-        $table_name = $wpdb->prefix . WCLCFC_TABLE_NAME; // do not forget about tables prefix
+        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
         $per_page = 10; // constant, how much records will be shown per page
 

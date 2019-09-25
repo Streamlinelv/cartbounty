@@ -6,11 +6,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    WooCommerce Live Checkout Field Capture
- * @subpackage WooCommerce Live Checkout Field Capture/includes
+ * @package    CartBounty - Save and recover abandoned carts for WooCommerce
+ * @subpackage CartBounty - Save and recover abandoned carts for WooCommerce/includes
  * @author     Streamline.lv
  */
-class Woo_Live_Checkout_Field_Capture_Loader{
+class CartBounty_Loader{
 
 	/**
 	 * The array of actions registered with WordPress.

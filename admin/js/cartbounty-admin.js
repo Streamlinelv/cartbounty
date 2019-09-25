@@ -31,19 +31,19 @@
 	 
 	 jQuery(document).ready(function(){
 
-	 	$('.wclcfc-exit-intent-color-picker').wpColorPicker(); //Activating color picker
+	 	$('.cartbounty-exit-intent-color-picker').wpColorPicker(); //Activating color picker
 
 	 	function addGetProClass(){ //Adding class when changing radio button to display Get Pro notice
-			$(this).siblings().removeClass('wclcfc-get-pro-active');
-			$(this).addClass('wclcfc-get-pro-active');
+			$(this).siblings().removeClass('cartbounty-get-pro-active');
+			$(this).addClass('cartbounty-get-pro-active');
 		}
 
 		function addLoadingIndicator(){ //Adding loading indicator once Submit button pressed
-			$(this).parent().addClass('wclcfc-loading');
+			$(this).parent().addClass('cartbounty-loading');
 		}
 
-		jQuery(".wclcfc-exit-intent-type").on("click", addGetProClass );
-		jQuery("#wclcfc-page-wrapper #submit").on("mousedown", addLoadingIndicator );
+		jQuery(".cartbounty-exit-intent-type").on("click", addGetProClass );
+		jQuery("#cartbounty-page-wrapper #submit").on("mousedown", addLoadingIndicator );
 	});
 
 })( jQuery );

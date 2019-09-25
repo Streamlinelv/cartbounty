@@ -3,7 +3,7 @@
  * included in this file.
  */
 
-#wclcfc-exit-intent-form{
+#cartbounty-exit-intent-form{
 	z-index: -1;
 	opacity: 0;
 	visibility: hidden;
@@ -14,7 +14,7 @@
 	left: 0;
 }
 
-#wclcfc-exit-intent-form-backdrop{
+#cartbounty-exit-intent-form-backdrop{
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -33,20 +33,20 @@
 	transition: 			all .6s cubic-bezier(.38,1.09,.5,.98);
 }
 
-#wclcfc-exit-intent-form.wclcfc-visible,
-#wclcfc-exit-intent-form-backdrop.wclcfc-visible,
-.wclcfc-visible #wclcfc-exit-intent-form-container{
+#cartbounty-exit-intent-form.cartbounty-visible,
+#cartbounty-exit-intent-form-backdrop.cartbounty-visible,
+.cartbounty-visible #cartbounty-exit-intent-form-container{
 	z-index: 99999999;
 	opacity: 1;
 	visibility: visible;
 }
 
-#wclcfc-exit-intent-form-backdrop.wclcfc-visible{
+#cartbounty-exit-intent-form-backdrop.cartbounty-visible{
 	z-index: 99999998;
 	opacity: .5;
 }
 
-#wclcfc-exit-intent-close{
+#cartbounty-exit-intent-close{
 	height: 42px;
 	width: 42px;
 	top: 20px;
@@ -64,11 +64,11 @@
 	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
 }
 
-#wclcfc-exit-intent-close:hover{
+#cartbounty-exit-intent-close:hover{
 	opacity: 1;
 }
 
-#wclcfc-exit-intent-form-container{
+#cartbounty-exit-intent-form-container{
 	position: relative;
 	padding: 20px 60px 30px;
 	opacity: 0;
@@ -80,20 +80,20 @@
 	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
 }
 
-#wclcfc-exit-intent-form label{
+#cartbounty-exit-intent-form label{
 	cursor: pointer;
 }
 
-#wclcfc-exit-intent-form label,
-#wclcfc-exit-intent-form input{
+#cartbounty-exit-intent-form label,
+#cartbounty-exit-intent-form input{
 	margin: 0 10px 10px 0;
 }
 
-#wclcfc-exit-intent-form-content-l{
+#cartbounty-exit-intent-form-content-l{
 	text-align: center;
 }
 
-#wclcfc-exit-intent-form-content img{
+#cartbounty-exit-intent-form-content img{
 	display: block;
 	margin: 0 auto;
 	margin-bottom: 20px;
@@ -102,7 +102,7 @@
 	max-width: 100%;
 }
 
-#wclcfc-exit-intent-submit{
+#cartbounty-exit-intent-submit{
 	opacity: .9;
 	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
 	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
@@ -111,20 +111,20 @@
 	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
 }
 
-#wclcfc-exit-intent-submit:hover{
+#cartbounty-exit-intent-submit:hover{
 	opacity: 1;
 }
 
-#wclcfc-exit-intent-email{
+#cartbounty-exit-intent-email{
 	width: 230px;
 }
 
-#wclcfc-exit-intent-form h2{
+#cartbounty-exit-intent-form h2{
 	font-size: 34px;
 	line-height: 42px;
 }
 
-#wclcfc-exit-intent-form p{
+#cartbounty-exit-intent-form p{
 	font-size: 15px;
 	line-height: 20px;
 }
@@ -132,7 +132,7 @@
 /* Exit Intent Template
  * Appear In Center
  */
- .wclcfc-ei-center#wclcfc-exit-intent-form{
+ .cartbounty-ei-center#cartbounty-exit-intent-form{
  	overflow-y: auto;
  	display: -webkit-box; 
 	display: -moz-box;
@@ -141,7 +141,7 @@
 	display: flex;
  }
 
-.wclcfc-ei-center #wclcfc-exit-intent-form-container{
+.cartbounty-ei-center #cartbounty-exit-intent-form-container{
 	margin: 0;
 	position: relative;
 	height: auto;
@@ -154,25 +154,25 @@
 }
 
 @media screen and (max-width: 768px) {
-	.wclcfc-ei-center #wclcfc-exit-intent-form-container{
+	.cartbounty-ei-center #cartbounty-exit-intent-form-container{
 		width: 90%;
 	}
 }
 
 @media screen and (max-width: 576px) {
-	.wclcfc-ei-center #wclcfc-exit-intent-form-container{
+	.cartbounty-ei-center #cartbounty-exit-intent-form-container{
 		width: 94%;
 	}
 }
 
 @media screen and (max-width: 768px) {
-	#wclcfc-exit-intent-email{
+	#cartbounty-exit-intent-email{
 		width: 100%;
 	}
 }
 
 @media screen and (max-width: 576px) {
-	#wclcfc-exit-intent-form-container{
+	#cartbounty-exit-intent-form-container{
 		padding: 20px 30px 10px;
 	}
 }
