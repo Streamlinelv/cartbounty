@@ -33,7 +33,7 @@ If you would like to receive email notifications about abandoned carts and send 
 The Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
 Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
 
-* If the user completes the payment and receives a "Thank you" page, he is removed from the Checkout Field Capture table and the Checkout form fields will be cleared.
+* If the user completes the payment and receives a "Thank you" page, he is removed from the abandoned cart table and the Checkout form fields will be cleared.
 
 * Since we love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 
@@ -71,7 +71,7 @@ Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class
 
 1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the "Plugins" screen in WordPress.
-1. Look for the page "Checkout Field Capture" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
+1. Look for the page "CartBounty Abandoned carts" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
 1. Optionally setup the Exit Intent notice that will be displayed to unregistered users once per hour in case the user has added items to his shopping cart and tries to leave your shop.
 
 == Frequently Asked Questions ==
@@ -85,7 +85,7 @@ Data and information about the cart is saved right after the user gets to the Ch
 * On Checkout page load if email or phone number input fields are already filled
 * Any Checkout form input field with a class "input-text" is entered or changed if a valid Email or Phone number has been entered
 
-If the user completes the checkout process and receives a "Thank you" page, the cart is removed from the Checkout Field Capture table of abandoned carts and the Checkout form fields are cleared.
+If the user completes the checkout process and receives a "Thank you" page, the cart is removed from the abandoned cart table and the Checkout form fields are cleared.
 
 = Where can I view WooCommerce abandoned carts? =
 

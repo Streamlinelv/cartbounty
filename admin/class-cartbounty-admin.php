@@ -127,7 +127,7 @@ class CartBounty_Admin{
 				, CARTBOUNTY_STILL_SHOPPING, CARTBOUNTY_NEW_NOTICE )
 			);
 			
-			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for Checkout Field Capture
+			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for CartBounty Abandoned carts
 				if ( 0 === strpos( $menu_item[0], __('CartBounty Abandoned carts', CARTBOUNTY_TEXT_DOMAIN))) {
 					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . $order_count . '">' .  $order_count .'</span>';
 				}
