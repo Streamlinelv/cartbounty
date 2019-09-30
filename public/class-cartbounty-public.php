@@ -177,7 +177,7 @@ class CartBounty_Public{
 							'email'			=>	sanitize_email( $_POST['cartbounty_email'] ),
 							'phone'			=>	filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
 							'location'		=>	sanitize_text_field( $location ),
-							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
+							'cart_contents'	=>	serialize($product_array),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time ),
@@ -203,7 +203,7 @@ class CartBounty_Public{
 							sanitize_email( $_POST['cartbounty_email'] ),
 							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
 							sanitize_text_field( $location ),
-							sanitize_text_field( serialize($product_array) ),
+							serialize($product_array),
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currency ),
 							sanitize_text_field( $current_time ),
@@ -279,7 +279,7 @@ class CartBounty_Public{
 					$wpdb->update(
 						$table_name,
 						array(
-							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
+							'cart_contents'	=>	serialize($product_array),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time )
@@ -345,7 +345,7 @@ class CartBounty_Public{
 							sanitize_email( $email ),
 							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
 							sanitize_text_field( $location ),
-							sanitize_text_field( serialize($product_array) ),
+							serialize($product_array),
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currency ),
 							sanitize_text_field( $current_time ),
@@ -391,7 +391,7 @@ class CartBounty_Public{
 					$wpdb->update(
 						$table_name,
 						array(
-							'cart_contents'	=>	sanitize_text_field( serialize($product_array) ),
+							'cart_contents'	=>	serialize($product_array),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time )

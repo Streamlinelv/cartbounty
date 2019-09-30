@@ -6,7 +6,7 @@ Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.2
 Stable tag: 4.0
-Version: 4.0
+Version: 4.1
 License: GPLv2 or later
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -180,6 +180,9 @@ Example how to change the main title using a filter:
 3. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 4.1 =
+* Fixed cart content saving if product's title contains HTML tags
 
 = 4.0 =
 * Baby's got a new name - please welcome CartBounty :) (ex. WooCommerce Live Checkout Field Capture)
