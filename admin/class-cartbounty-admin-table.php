@@ -136,15 +136,15 @@ class CartBounty_Table extends WP_List_Table{
             foreach($product_array as $product){
                 if(is_array($product)){ //After version 1.4
                     if(isset($product['product_title'])){ //After version 2.0
-                        $product_title = $product['product_title'];
+                        $product_title = esc_html($product['product_title']);
                         $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                         $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
-                        $output .= '<li><a href="'. $edit_product_link .'" title="'. esc_html($product_title) .'" target="_blank">'. esc_html($product_title) . $quantity .'</a></li>';
+                        $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
                     }else{
                         $product_title = $product[0];
                         $edit_product_link = get_edit_post_link( $product[2], '&' ); //Get product link by product ID
                         $quantity = " (". $product[1] .")"; //Enclose product quantity in brackets
-                        $output .= '<li><a href="'. $edit_product_link .'" title="'. esc_html($product_title) .'" target="_blank">'. esc_html($product_title) . $quantity .'</a></li>';
+                        $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
                     }
                 }else{ //Prior version 1.4
                     $output .= '<li>'. $product .'</li>';

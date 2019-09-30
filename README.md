@@ -172,6 +172,10 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 4.1
+
+* Fixed cart content saving if product's title contains HTML tags
+
 ##### 4.0
 
 * Baby's got a new name - please welcome CartBounty :) (ex. WooCommerce Live Checkout Field Capture)
