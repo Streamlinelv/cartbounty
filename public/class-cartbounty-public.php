@@ -614,7 +614,7 @@ class CartBounty_Public{
 	}
 	
 	/**
-	 * Function restores previous Checkout form data for users that are not registered
+	 * Function restores previous Checkout form data for users who are not registered
 	 *
 	 * @since    2.0
 	 * Return: Input field values
@@ -624,6 +624,13 @@ class CartBounty_Public{
 		
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cartbounty_session_id = WC()->session->get('cartbounty_session_id'); //Retrieving current session ID from WooCommerce Session
+		$current_customer_id = WC()->session->get_customer_id(); //Retrieving current customer ID
+		
+		//Checking if current cartbounty sesion ID matches current customer ID. If they do not match, this means that the user has either logged in/signed out or switched his account. In this case we must match both session ID values	
+		if($cartbounty_session_id != $current_customer_id){
+			WC()->session->set('cartbounty_session_id', $current_customer_id);
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+		}
 		
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
@@ -631,8 +638,8 @@ class CartBounty_Public{
 			FROM ". $table_name ."
 			WHERE session_id = %s",
 			$cartbounty_session_id)
-		);
-		
+		);		
+
 		if($row){ //If we have a user with such session ID in the database
 
 			$other_fields = unserialize($row->other_fields);
@@ -647,24 +654,6 @@ class CartBounty_Public{
 				$city = '';
 			}
 
-			//Filling Checkout field values back with previously entered values
-			if(is_user_logged_in()){ //If the user is logged in, we want to only automatically fill his first name and last name previously saved abandoned cart during "Add to Cart" action.
-			//Restoring Just Name and surname since the rest of the fields are restored automatically by WooCommerce if the user has previously purchased anything
-
-				//Looking if a user has previously made an order
-				//If not, using previously captured Abandoned cart data
-				//Handling users name
-				$current_user = wp_get_current_user(); //Retrieving users data
-				if($current_user->billing_first_name){
-					$row->name = $current_user->billing_first_name; 
-				}
-
-				//Handling users surname
-				if($current_user->billing_last_name){
-					$row->surname = $current_user->billing_last_name;
-				}
-			}
-			
 			//Filling Checkout field values back with previously entered values
 			(empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : '';
 			(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
@@ -703,7 +692,6 @@ class CartBounty_Public{
 				}
 			}
 		}
-		
 		return $fields;
 	}
 

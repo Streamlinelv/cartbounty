@@ -172,6 +172,10 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 4.2 =
+
+* Improved function that restores checkout fields after user logged in
+
 ##### 4.1
 
 * Fixed cart content saving if product's title contains HTML tags
@@ -193,7 +197,7 @@ Example how to change the main title using a filter:
 
 ##### 3.2
 
-* Fixed issue with saving City data for logged in users
+* Fixed issue when saving City data for logged in users
 * Fixed PHP notices if checkboxes were not defined
 
 ##### 3.1
