@@ -58,7 +58,7 @@ msgstr "Dzēst"
 #: ../admin/class-cartbounty-admin.php:105
 #: ../admin/class-cartbounty-admin.php:131
 msgid "CartBounty Abandoned carts"
-msgstr "CartBounty novārtā atstātie pirkumu grozi"
+msgstr "CartBounty pamestie pirkumu grozi"
 
 #: ../admin/class-cartbounty-admin.php:148
 msgid "You do not have sufficient permissions to access this page."
@@ -81,8 +81,8 @@ msgid ""
 "save his shopping cart. You can even offer to send a discount code."
 msgstr ""
 "Ar Iziešanas mēģinājuma funkcionalitāti Jūs varēsiet saglabāt vēl vairāk "
-"novārtā atstātus pirkumu grozus attēlojot lietotājam, kurš cenšas pamest "
-"Jūsu veikalu, papildus logu ar e-pasta ievadlauku. Jūs pat varēsiet piedāvāt "
+"pamestus pirkumu grozus attēlojot lietotājam, kurš cenšas pamest Jūsu "
+"veikalu, papildus logu ar e-pasta ievadlauku. Jūs pat varēsiet piedāvāt "
 "lietotājam kuponu kodu, ja viņš piekrīt atstāt šeit savu e-pasta adresi."
 
 #: ../admin/class-cartbounty-admin.php:188
@@ -184,7 +184,7 @@ msgstr "Saglabāt iestatījumus"
 #: ../admin/class-cartbounty-admin.php:298
 #: ../admin/class-cartbounty-admin.php:323
 msgid "Abandoned carts"
-msgstr "Novārtā atstātie pirkumu grozi"
+msgstr "Pamestie pirkumu grozi"
 
 #: ../admin/class-cartbounty-admin.php:303
 msgid ""
@@ -193,10 +193,10 @@ msgid ""
 "number</strong> fields of your WooCommerce Checkout form and abandons the "
 "cart, it will automatically appear here."
 msgstr ""
-"Izskatās, ka vēl neviens novārta atstāts pirkumu grozs nav saglabāts.<br/"
-">Taču neraizējieties, tiklīdz kāds aizpildīs <strong>e-pasta</strong> vai "
+"Izskatās, ka vēl neviens pamests pirkumu grozs nav saglabāts.<br/>Taču "
+"neraizējieties, tiklīdz kāds aizpildīs <strong>e-pasta</strong> vai "
 "<strong>telefona</strong> laukus un pametīs WooCommerce iepirkšanās procesu, "
-"viņa novārtā pamestais pirkumu grozs būs šeit redzams."
+"viņa pamestais pirkumu grozs būs šeit redzams."
 
 #: ../admin/class-cartbounty-admin.php:481
 msgid ""
@@ -209,7 +209,7 @@ msgstr ""
 #: ../admin/class-cartbounty-admin.php:487
 #, php-format
 msgid "%s You have already captured %d abandoned carts!"
-msgstr "%s Jau %d. novārtā atstātais pirkumu grozs notverts!"
+msgstr "%s Jau %d. pamestais pirkumu grozs notverts!"
 
 #: ../admin/class-cartbounty-admin.php:488
 msgid ""
@@ -239,8 +239,8 @@ msgid ""
 "Automate your abandoned cart recovery workflow and get back to those lovely "
 "cat videos (:"
 msgstr ""
-"Automatizējiet savu novārtā atstāto pirkumu grozu atgūšanu un atgriezieties "
-"pie tiem foršajiem kaķu video (:"
+"Automatizējiet savu pamesto pirkumu grozu atgūšanu un atgriezieties pie tiem "
+"foršajiem kaķu video (:"
 
 #: ../admin/class-cartbounty-admin.php:515
 msgid "Use your time wisely by enabling Pro features and increase your sales."
@@ -286,8 +286,8 @@ msgid ""
 "<h2 style=\"color: %s\" >You were not leaving your cart just like that, "
 "right?</h2>"
 msgstr ""
-"<h2 style=“color: %s” >Tu taču nebiji plānojis atstāt novārtā savu pirkumu "
-"grozu?</h2>"
+"<h2 style=“color: %s” >Tu taču nebiji plānojis pamest savu pirkumu grozu?</"
+"h2>"
 
 #: ../templates/cartbounty-exit-intent.php:40
 #, php-format
