@@ -1,5 +1,5 @@
 === CartBounty - Save and recover abandoned carts for WooCommerce ===
-Donate link: https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/
+Donate link: https://www.cartbounty.com
 Contributors: streamlinestar, nauriskolats
 Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
@@ -16,7 +16,7 @@ CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all a
 
 You will be able to manually contact your visitors and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 
-If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
+If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
 
 [youtube https://www.youtube.com/watch?v=Sb4DpkDilw0]
 
@@ -96,12 +96,12 @@ Once user reaches the "Thank you" page the abandoned cart is automatically remov
 
 = How to enable email notifications about abandoned carts? =
 
-This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications and automate abandoned cart recovery using MailChimp or ActiveCampaign, please visit our Pro [WooCommerce save abandoned carts](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "WooCommerce save abandoned carts") plugin version.
+This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications and automate abandoned cart recovery using MailChimp or ActiveCampaign, please visit our Pro [WooCommerce save abandoned carts](https://www.cartbounty.com "WooCommerce save abandoned carts") plugin version.
 
 = How to send automated abandoned cart recovery emails? =
 
 The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
-If you would like to [send your visitors automated abandoned cart recovery emails via MailChimp or ActiveCampaign](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
+If you would like to [send your visitors automated abandoned cart recovery emails via MailChimp or ActiveCampaign](https://www.cartbounty.com "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
 
 [MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
 And [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
@@ -114,11 +114,11 @@ Exit Intent form will be displayed only to unregistered users once per hour. If 
 
 If you would like to test the visual appearance of the Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see the Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
 
-In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro "CartBounty Pro - Save and recover abandoned carts for WooCommerce") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
+In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
 
 = How to change the content and image of the Exit Intent? =
 
-If you would like to make adjustments to the default content of the Exit Intent, you can use either [action hooks and filters](https://majas-lapu-izstrade.lv/woocommerce-save-abandoned-carts-pro/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
+If you would like to make adjustments to the default content of the Exit Intent, you can use either [action hooks and filters](https://www.cartbounty.com/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
 
 You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/cartbounty-exit-intent.php". This template file contains the markup to display the Exit Intent and to capture the Abandoned cart prior the user leaves your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
 
