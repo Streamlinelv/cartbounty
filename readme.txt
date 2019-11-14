@@ -4,7 +4,7 @@ Contributors: streamlinestar, nauriskolats
 Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
-Tested up to: 5.2
+Tested up to: 5.3
 Stable tag: 4.2
 License: GPLv2 or later
 

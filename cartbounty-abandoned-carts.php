@@ -11,7 +11,7 @@
  * Developer URI: http://www.majas-lapu-izstrade.lv/en
  * 
  * WC requires at least: 2.2
- * WC tested up to: 3.6
+ * WC tested up to: 3.8
  *
  * Copyright: © 2009-2015 WooCommerce.
  * License: GNU General Public License v3.0
