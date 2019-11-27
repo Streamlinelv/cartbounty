@@ -182,7 +182,62 @@ class CartBounty_Admin{
 					$tab = 'carts';
 				}
 
-				if($tab == 'exit_intent'): //Exit intent output ?>
+				if($tab == 'settings'): //Settings tab output ?>
+
+					<h1><?php echo CARTBOUNTY_ABREVIATION; ?> <?php echo __('Settings', CARTBOUNTY_TEXT_DOMAIN); ?></h1>
+					<form method="post" action="options.php">
+						<?php
+							settings_fields( 'cartbounty-settings' );
+							do_settings_sections( 'cartbounty-settings' );
+						?>
+						<table id="cartbounty-settings-table" class="form-table">
+							<tr>
+								<th scope="row">
+									<label for="cartbounty_notification_email"><?php echo __('Send notifications about abandoned carts to this email:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<input id="cartbounty_notification_email" type="email" name="cartbounty_notification_email" value="<?php echo esc_attr( get_option('cartbounty_notification_email') ); ?>" <?php echo $this->disableField(); ?> />
+									<p><small><?php echo sprintf(__('By default, notifications will be sent to WordPress admin email - %s.', CARTBOUNTY_TEXT_DOMAIN), get_option( 'admin_email' )); ?></small></p>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<label for="cartbounty_notification_frequency[hours]"><?php echo __('How often to check and send emails about newly abandoned carts?', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<!-- Using selected() instead -->
+									<?php $options = get_option( 'cartbounty_notification_frequency' );
+										if(!$options){
+											$options = array('hours' => 60);
+										}
+									?>
+									 <select id="cartbounty_notification_frequency[hours]" name='cartbounty_notification_frequency[hours]' <?php echo $this->disableField(); ?>>
+										<option value='10' <?php selected( $options['hours'], 10 ); ?>><?php echo 		__('Every 10 minutes', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='20' <?php selected( $options['hours'], 20 ); ?>><?php echo 		__('Every 20 minutes', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='30' <?php selected( $options['hours'], 30 ); ?>><?php echo 		__('Every 30 minutes', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='60' <?php selected( $options['hours'], 60 ); ?>><?php echo 		__('Every hour', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='120' <?php selected( $options['hours'], 120 ); ?>><?php echo 	__('Every 2 hours', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='180' <?php selected( $options['hours'], 180 ); ?>><?php echo 	__('Every 3 hours', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='240' <?php selected( $options['hours'], 240 ); ?>><?php echo 	__('Every 4 hours', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='300' <?php selected( $options['hours'], 300 ); ?>><?php echo 	__('Every 5 hours', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='360' <?php selected( $options['hours'], 360 ); ?>><?php echo 	__('Every 6 hours', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='720' <?php selected( $options['hours'], 720 ); ?>><?php echo 	__('Twice a day', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='1440' <?php selected( $options['hours'], 1440 ); ?>><?php echo 	__('Once a day', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='2880' <?php selected( $options['hours'], 2880 ); ?>><?php echo 	__('Once every 2 days', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+										<option value='0' <?php selected( $options['hours'], 0 ); ?>><?php echo 		__('Disable notifications', CARTBOUNTY_TEXT_DOMAIN); ?></option>
+									</select>
+								</td>
+							</tr>
+						</table>
+						
+						<?php
+						if(current_user_can( 'manage_options' )){
+							submit_button(__('Save settings', CARTBOUNTY_TEXT_DOMAIN));
+						}?>
+					</form>
+
+				<?php elseif($tab == 'exit_intent'): //Exit intent output ?>
+
 					<h1><?php echo CARTBOUNTY_ABREVIATION; ?> <?php echo __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN); ?></h1>
 					<p class="cartbounty-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.', CARTBOUNTY_TEXT_DOMAIN); ?></p>
 					<p class="cartbounty-description"><?php echo __('Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart and try to leave your shop.', CARTBOUNTY_TEXT_DOMAIN); ?></p>
@@ -295,6 +350,7 @@ class CartBounty_Admin{
 					</form>
 
 				<?php else: //Table output ?>
+
 					<h1><?php echo CARTBOUNTY_ABREVIATION; ?> <?php echo __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN); ?></h1>
 					<?php do_action('cartbounty_after_page_title'); ?>
 					<?php echo $message; 
@@ -320,12 +376,15 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 */
 	function create_admin_tabs( $current = 'carts' ){
-		$tabs = array( 'carts' => __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'exit_intent' => __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN));
+		$tabs = array( 'carts' => __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'settings' => __('Settings', CARTBOUNTY_TEXT_DOMAIN), 'exit_intent' => __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN));
 		echo '<h2 class="nav-tab-wrapper">';
 		$icon_image = NULL;
 		
 		foreach( $tabs as $tab => $name ){
-			if($name == 'Exit Intent'){
+			if($name == 'Settings'){
+				$icon_class = 'dashicons-admin-generic';
+			}
+			elseif($name == 'Exit Intent'){
 				//$icon_image = '';
 				$icon_class = 'cartbounty-exit-intent-icon';
 				$icon_image = "<img src='data:image/svg+xml;base64," . $this->exit_intent_svg_icon() . "' alt=''  />";
@@ -346,11 +405,135 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 */
 	function additional_cron_intervals(){
+		$interval['cartbounty_notification_sendout_interval'] = array( //Defining cron Interval for sending out email notifications about abandoned carts
+			'interval' => CARTBOUNTY_EMAIL_INTERVAL * 60,
+			'display' => 'Every '. CARTBOUNTY_EMAIL_INTERVAL .' minutes'
+		);
 		$interval['cartbounty_remove_empty_carts_interval'] = array( //Defining cron Interval for removing abandoned carts that do not have products
 			'interval' => 12 * 60 * 60,
 			'display' => 'Twice a day'
 		);
 		return $interval;
+	}
+
+	/**
+	 * Function resets Wordpress cron function after user sets other notification frequency
+	 * wp_schedule_event() Schedules a hook which will be executed by the WordPress actions core on a specific interval, specified by you. 
+	 * The action will trigger when someone visits your WordPress site, if the scheduled time has passed.
+	 *
+	 * @since    4.3
+	 */
+	function notification_sendout_interval_update(){
+		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+		if(intval($user_settings_notification_frequency['hours']) == 0){ //If Email notifications have been disabled, we disable cron job
+			wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
+		}else{
+			if (wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
+				wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
+			}
+			wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
+		}
+	}
+
+	/**
+	 * Function shows warnings if any of the WP Cron events required for MailChimp or ActiveCampaign are not scheduled (either sending notifications or pushing carts) or if the WP Cron has been disabled
+	 *
+	 * @since    4.3
+	 */
+	function display_wp_cron_warnings(){
+		global $pagenow;
+
+		//Checking if we are on open plugin page
+		if ($pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY_TEXT_DOMAIN){
+			
+				
+				//Checking if WP Cron hooks are scheduled
+				$missing_hooks = array();
+				$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+
+				if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
+					$missing_hooks[] = 'cartbounty_notification_sendout_hook';
+				}
+				if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
+					$hooks = '';
+					$current = 1;
+					$total = count($missing_hooks);
+					foreach($missing_hooks as $missing_hook){
+						$hooks .= $missing_hook;
+						if ($current != $total){
+							$hooks .= ', ';
+						}
+						$current++;
+					}
+					?>
+					<div id="cartbounty-cron-schedules" class="cartbounty-notification warning update-nag">
+						<p class="left-part"><?php echo sprintf(_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?></p>
+					</div>
+					<?php 
+				}
+
+				//Checking if WP Cron is enabled
+				if(defined('DISABLE_WP_CRON')){
+					if(DISABLE_WP_CRON == true){ ?>
+						<div id="cartbounty-cron-schedules" class="cartbounty-notification warning update-nag">
+							<p class="left-part"><?php echo __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", CARTBOUNTY_TEXT_DOMAIN ); ?></p>
+						</div>
+					<?php
+					}
+				}
+
+
+		}
+	}
+
+	/**
+	 * Function to send out e-mail notification in order to notify about new abandoned carts
+	 *
+	 * @since    4.3
+	 */
+	function send_email(){
+		global $wpdb;
+		
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		
+		// Retrieve from database rows that have not been e-mailed and are older than 60 minutes
+		$rows_to_email = $wpdb->get_var(
+			"SELECT COUNT(id) FROM ". $table_name ."
+			WHERE mail_sent = 0 AND cart_contents != '' AND time < (NOW() - INTERVAL ". CARTBOUNTY_STILL_SHOPPING ." MINUTE)"
+		);
+		
+		if ($rows_to_email){ //If we have new rows in the database				
+			echo esc_html( sprintf( __( 'Character set: %s', CARTBOUNTY_TEXT_DOMAIN), get_option('blog_charset')));
+			$user_settings_email = get_option('cartbounty_notification_email'); //Retrieving email address if the user has entered one
+			if($user_settings_email == '' || $user_settings_email == NULL){
+				$to = get_option( 'admin_email' );
+			}else{
+				$to = $user_settings_email;
+			}
+			
+			$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
+			$from = "From: WordPress <$sender>";
+			$blog_name = get_option( 'blogname' );
+			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY_TEXT_DOMAIN;
+			if($rows_to_email > 1){
+				$subject = '['.$blog_name.'] '. __('New abandoned carts saved', CARTBOUNTY_TEXT_DOMAIN);
+				$message = sprintf(__('Congratulations, you have saved %d new abandoned carts via %s. <br/>View them here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+				
+			}else{
+				$subject = '['.$blog_name.'] '. __('New abandoned cart saved', CARTBOUNTY_TEXT_DOMAIN);
+				$message = sprintf(__('Great! You have saved %d new abandoned cart via %s. <br/>View it here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+			}
+			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+			
+			//Sending out e-mail
+			wp_mail( esc_html($to), esc_html($subject), $message, $headers );
+			
+			//Update mail_sent status to true with mail_status = 0 and are older than 60 minutes
+			$wpdb->query( $wpdb->prepare("UPDATE ". $table_name ." 
+				SET mail_sent = %d 
+				WHERE mail_sent = %d AND cart_contents != '' AND time < (NOW() - INTERVAL %d MINUTE)", 1, 0, CARTBOUNTY_STILL_SHOPPING)
+			);
+		}
 	}
 
 	/**

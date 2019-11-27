@@ -44,6 +44,7 @@ class CartBounty_Activator{
 			currency VARCHAR(10),
 			time DATETIME DEFAULT '0000-00-00 00:00:00',
 			session_id VARCHAR(60),
+			mail_sent TINYINT NOT NULL DEFAULT 0,
 			other_fields LONGTEXT,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
@@ -56,6 +57,14 @@ class CartBounty_Activator{
 		*/
 		$sql ="ALTER TABLE $table_name AUTO_INCREMENT = 1";
 		dbDelta( $sql );
+
+		//Registering email notification frequency
+		if ( get_option('cartbounty_notification_frequency') !== false ) {
+			// The option already exists, so we do not do nothing
+		}else{
+			// The option hasn't been added yet
+			add_option('cartbounty_notification_frequency', array('hours' => 60));
+		}
 
 		//Setting default Exit Intent type if it has not been previously set
 		add_option('cartbounty_exit_intent_type', 1);
@@ -105,5 +114,19 @@ class CartBounty_Activator{
 			update_option( 'cartbounty_exit_intent_inverse_color', get_option( 'wclcfc_exit_intent_inverse_color' ));
 		}
 		delete_option( 'wclcfc_exit_intent_inverse_color' );
+
+		/**
+		 * Starting WordPress cron function in order to send out e-mails on a set interval
+		 *
+		 * @since    4.3
+		 */
+		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+		if(intval($user_settings_notification_frequency['hours']) == 0){ //If Email notifications have been disabled, we disable cron job
+			wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
+		}else{
+			if (! wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
+				wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
+			}
+		}
 	}
 }

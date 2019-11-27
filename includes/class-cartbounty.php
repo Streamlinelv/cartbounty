@@ -120,6 +120,9 @@ class CartBounty{
 		$this->loader->add_action( 'init', $plugin_admin, 'cartbounty_text_domain'); //Adding language support
 		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $plugin_admin, 'delete_empty_carts');
 		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'additional_cron_intervals'); //Ads a filter to set new interval for Wordpress cron function
+		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $plugin_admin, 'notification_sendout_interval_update');
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_wp_cron_warnings'); //Outputing warnings if any of the WP Cron events are note scheduled or if WP Cron is disabled
+		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $plugin_admin, 'send_email'); //Hooks into Wordpress cron event to launch function for sending out e-mails
 	}
 
 	/**

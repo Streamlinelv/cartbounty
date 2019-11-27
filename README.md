@@ -6,15 +6,17 @@ Save abandoned carts and increase your sales by recovering them. Plugin instantl
 
 ### Description
 
-CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them. You can also make use of the new Exit Intent popup technology to capture users email and later remind him about his shopping cart.
+CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted and sends notifications on newly abandoned carts. The plugin allows to see who abandons your shopping carts and get in touch with them. You can also make use of the new Exit Intent popup technology to capture users email and later remind him about his shopping cart.
 
-You will be able to manually contact your visitors and remind about the abandoned cart. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
+You will receive regular email notifications about newly abandoned shopping carts and will be able to manually remind about these abandoned carts. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 
-If you would like to receive email notifications about abandoned carts and send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
+If you would like to send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
 
 #### Plugin basics and features:
 
 * Instantly capture WooCommerce checkout field data before submission to save abandoned carts.
+
+* Receive notifications on newly abandoned shopping carts via email. You can set notification frequency or disable them in case you want to take some time off :)
 
 * The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form. Please note that this feature is enabled only for users who haven't logged in - WooCommerce takes care of this for authorized users.
 
@@ -171,6 +173,12 @@ Example how to change the main title using a filter:
 ![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.png "How the Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
+
+##### 4.3 =
+
+* Added email notifications about newly abandoned carts
+* Added option to set notification frequency or disable notifications
+* Added option to set custom email address for notifications
 
 ##### 4.2 =
 

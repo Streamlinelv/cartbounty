@@ -83,6 +83,25 @@
 	max-width: unset;
 }
 
+.cartbounty-notification{
+	display: block;
+	border-left-color: #46b450;
+}
+
+.cartbounty-notification.warning{
+	border-left-color: #ff5d00;
+}
+
+#cartbounty-setup-automation .left-part{
+	width: 85%;
+	padding-right: 5%;
+	float: left;
+}
+
+.cartbounty-notification p{
+	margin: 0;
+}
+
 .cartbounty-description{
 	max-width: 600px;
 }
