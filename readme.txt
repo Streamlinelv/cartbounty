@@ -98,12 +98,32 @@ Once user reaches the "Thank you" page the abandoned cart is automatically remov
 
 = How to enable email notifications about abandoned carts? =
 
-This version does all the hard work of collecting the data and presenting it to you, it is simple and efficient. You will have to manually check newly abandoned carts. If you would like to receive automated email notifications and automate abandoned cart recovery using MailChimp or ActiveCampaign, please visit our Pro [WooCommerce save abandoned carts](https://www.cartbounty.com "WooCommerce save abandoned carts") plugin version.
+Once the cart is saved and is considered as abandoned (after 1 hour of inactivity), you will get a notification about it in your email. You will not be notified about previously abandoned carts.
+
+You can set the following notification intervals:
+
+* Every 10 minutes
+* Every 20 minutes
+* Every 30 minutes
+* Every hour
+* Every 2 hours
+* Every 3 hours
+* Every 4 hours
+* Every 5 hours
+* Every 6 hours
+* Twice a day
+* Once a day
+* Once every 2 days
+* Disable notifications
+
+Default notification interval is “Every hour”. You also have the option to disable notifications in case you ever get tired of them ;)
+
+Please also note how WordPress handles Cron job that is responsible for sending out email notifications. Scheduled actions can only be triggered when a visitor arrives on a WordPress site. Therefore, if you are not getting any traffic on your website you will not receive any e-mail notifications until a visitor lands on your website.
 
 = How to send automated abandoned cart recovery emails? =
 
-The free version of our plugin allows collecting abandoned carts and you will be able to get in touch with your visitors manually.
-If you would like to [send your visitors automated abandoned cart recovery emails via MailChimp or ActiveCampaign](https://www.cartbounty.com "send your visitors automated abandoned cart recovery emails") please take a look at our Pro version.
+The free version of CartBounty does all the hard work of saving abandoned shopping carts and presenting them to you, it is simple and efficient.
+If you would like to [send your visitors automated abandoned cart recovery emails via MailChimp or ActiveCampaign](https://www.cartbounty.com "send your visitors automated abandoned cart recovery emails") please consider supporting our efforts and purchase our Pro version.
 
 [MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
 And [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
