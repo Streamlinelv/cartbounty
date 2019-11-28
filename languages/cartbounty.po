@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: woo-save-abandoned-carts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-27 22:23+0200\n"
+"POT-Creation-Date: 2019-11-28 23:49+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nauris Kolats <nauris@streamline.lv>\n"
 "Language-Team: Streamline.lv <info@streamline.lv>\n"
@@ -286,7 +286,7 @@ msgstr ""
 #: ../admin/class-cartbounty-admin.php:520
 #, php-format
 msgid ""
-"Congratulations, you have saved %d new abandoned carts via %s. <br/>View "
+"Congratulations, you have saved %d new abandoned carts using %s. <br/>View "
 "them here: <a href=\"%s\">%s</a>"
 msgstr ""
 
@@ -297,7 +297,7 @@ msgstr ""
 #: ../admin/class-cartbounty-admin.php:524
 #, php-format
 msgid ""
-"Great! You have saved %d new abandoned cart via %s. <br/>View it here: <a "
+"Great! You have saved %d new abandoned cart using %s. <br/>View it here: <a "
 "href=\"%s\">%s</a>"
 msgstr ""
 

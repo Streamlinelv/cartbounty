@@ -517,11 +517,11 @@ class CartBounty_Admin{
 			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY_TEXT_DOMAIN;
 			if($rows_to_email > 1){
 				$subject = '['.$blog_name.'] '. __('New abandoned carts saved', CARTBOUNTY_TEXT_DOMAIN);
-				$message = sprintf(__('Congratulations, you have saved %d new abandoned carts via %s. <br/>View them here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+				$message = sprintf(__('Congratulations, you have saved %d new abandoned carts using %s. <br/>View them here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
 				
 			}else{
 				$subject = '['.$blog_name.'] '. __('New abandoned cart saved', CARTBOUNTY_TEXT_DOMAIN);
-				$message = sprintf(__('Great! You have saved %d new abandoned cart via %s. <br/>View it here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+				$message = sprintf(__('Great! You have saved %d new abandoned cart using %s. <br/>View it here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
 			}
 			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
 			
