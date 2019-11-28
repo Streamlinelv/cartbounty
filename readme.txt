@@ -197,8 +197,9 @@ Example how to change the main title using a filter:
 == Screenshots ==
 
 1. Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation
-2. The Exit Intent popup settings tab
-3. How the Exit Intent popup looks like once the user tries to leave the shop
+2. Email notification settings tab
+3. The Exit Intent popup settings tab
+4. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
 

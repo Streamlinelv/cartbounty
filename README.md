@@ -189,8 +189,9 @@ Example how to change the main title using a filter:
 ## Screenshots
 
 ![Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.png "Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation")
-![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.png "Exit Intent popup settings tab")
-![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.png "How the Exit Intent popup looks like once the user tries to leave the shop")
+![Email notification settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.png "Email notification settings tab")
+![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.png "Exit Intent popup settings tab")
+![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.gif "How the Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
 
