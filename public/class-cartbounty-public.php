@@ -322,8 +322,8 @@ class CartBounty_Public{
 				//Handling users address
 				if($current_user->billing_country){
 					$country = $current_user->billing_country;
-					if($current_user->billing_state){ //checking if the state was entered
-						$city = ", ". $current_user->billing_state;
+					if($current_user->billing_city){ //checking if the city was entered
+						$city = ", ". $current_user->billing_city;
 					}else{
 						$city = '';
 					}

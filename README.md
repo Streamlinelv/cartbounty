@@ -195,6 +195,10 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 4.3.1 =
+
+* Fixed issue when restoring state field for logged in users
+
 ##### 4.3 =
 
 * Added email notifications about newly abandoned carts
