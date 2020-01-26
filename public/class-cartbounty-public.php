@@ -431,6 +431,41 @@ class CartBounty_Public{
 	}
 
 	/**
+	 * Function updates abandoned cart session from unknown session customer_id to known one in case if the user logs in
+	 *
+	 * @since    4.4
+	 */
+	function update_logged_customer_id(){
+
+		if(is_user_logged_in()){ //If a user is logged in
+			$session_id = WC()->session->get_customer_id();
+
+			if( WC()->session->get('cartbounty_session_id') !== NULL && WC()->session->get('cartbounty_session_id') !== $session_id){ //If session is set and it is different from the one that currently is assigned to the customer
+
+				global $wpdb;
+				$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+
+				//Updating session ID to match the one of a logged in user
+				$wpdb->prepare('%s',
+					$wpdb->update(
+						$main_table,
+						array('session_id' => $session_id),
+						array('session_id' => WC()->session->get('cartbounty_session_id'))
+					)
+				);
+
+				WC()->session->set('cartbounty_session_id', $session_id);
+
+			}else{
+				return;
+			}
+
+		}else{
+			return;
+		}
+	}
+
+	/**
 	 * Function to clear cart data from row
 	 *
 	 * @since    3.0
@@ -515,6 +550,7 @@ class CartBounty_Public{
 
 		//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
 		$session_id = WC()->session->get_customer_id();
+
 
 		//Retrieving cart
 		$products = $woocommerce->cart->cart_contents;

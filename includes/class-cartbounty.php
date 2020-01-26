@@ -155,6 +155,7 @@ class CartBounty{
 		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $plugin_public, 'display_exit_intent_form'); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is logged in
 		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $plugin_public, 'remove_exit_intent_form'); //Checking if we have an empty cart in case of Ajax action
 		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $plugin_public, 'remove_exit_intent_form'); //Checking if we have an empty cart in case of Ajax action if the user is logged in
+		$this->loader->add_action( 'woocommerce_checkout_init', $plugin_public, 'update_logged_customer_id', 10); //Fires when the Checkout form is loaded to update the abandoned cart session from unknown customer_id to known one in case if the user has logged in
 	}
 
 	/**
