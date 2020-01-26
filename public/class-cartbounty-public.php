@@ -168,7 +168,7 @@ class CartBounty_Public{
 			if( $current_session_exist_in_db && $cartbounty_session_id !== NULL ){
 
 				//Updating row in the Database where users Session id = same as prevously saved in Session
-				$wpdb->prepare('%s',
+				$updated_rows = $wpdb->prepare('%s',
 					$wpdb->update(
 						$table_name,
 						array(
@@ -188,6 +188,14 @@ class CartBounty_Public{
 						array('%s')
 					)
 				);
+
+				if($updated_rows){ //If we have updated at least one row
+					$updated_rows = str_replace("'", "", $updated_rows); //Removing quotes from the number of updated rows
+
+					if($updated_rows > 1){ //Checking if we have updated more than a single row to know if there were duplicates
+						$this->delete_duplicate_carts($cartbounty_session_id, $updated_rows);
+					}
+				}
 
 			}else{
 				
@@ -275,7 +283,7 @@ class CartBounty_Public{
 				
 				//Updating row in the Database where users Session id = same as prevously saved in Session
 				//Updating only Cart related data since the user can change his data only in the Checkout form
-				$wpdb->prepare('%s',
+				$updated_rows = $wpdb->prepare('%s',
 					$wpdb->update(
 						$table_name,
 						array(
@@ -289,6 +297,14 @@ class CartBounty_Public{
 						array('%s')
 					)
 				);
+
+				if($updated_rows){ //If we have updated at least one row
+					$updated_rows = str_replace("'", "", $updated_rows); //Removing quotes from the number of updated rows
+
+					if($updated_rows > 1){ //Checking if we have updated more than a single row to know if there were duplicates
+						$this->delete_duplicate_carts($cartbounty_session_id, $updated_rows);
+					}
+				}
 				
 			}else{
 
@@ -532,6 +548,28 @@ class CartBounty_Public{
 			
 			$this->unset_cartbounty_session_id();
 		}
+	}
+
+	/**
+	 * Function deletes duplicate abandoned carts from the database
+	 *
+	 * @since    4.4
+	 */
+	private function delete_duplicate_carts($cartbounty_session_id, $duplicate_count){
+		global $wpdb;
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+
+		$duplicate_rows = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM $table_name
+				WHERE session_id = %s
+				ORDER BY %s DESC
+				LIMIT %d",
+				$cartbounty_session_id,
+				'id',
+				$duplicate_count - 1
+			)
+		);
 	}
 
 	/**

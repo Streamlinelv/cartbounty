@@ -198,6 +198,7 @@ Example how to change the main title using a filter:
 ##### 4.4 =
 
 * Fixed issue when an additional abandoned cart was left after a user logged in
+* Added a function that removes duplicate abandoned carts of registered users
 
 ##### 4.3.1 =
 
