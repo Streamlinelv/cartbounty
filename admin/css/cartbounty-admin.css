@@ -79,7 +79,7 @@
 
 #cartbounty-page-wrapper .form-table .cartbounty-checkbox,
 #cartbounty-page-wrapper .form-table .cartbounty-radiobutton{
-	width: auto;
+	width: 1rem;
 	max-width: unset;
 }
 
