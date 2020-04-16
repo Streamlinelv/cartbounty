@@ -100,9 +100,9 @@ class CartBounty_Admin{
 	function cartbounty_menu(){
 		global $cartbounty_admin_menu_page;
 		if(class_exists('WooCommerce')){
-			$cartbounty_admin_menu_page = add_submenu_page( 'woocommerce', CARTBOUNTY_PLUGIN_NAME, __('CartBounty Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'list_users', CARTBOUNTY_TEXT_DOMAIN, array($this,'display_page'));
+			$cartbounty_admin_menu_page = add_submenu_page( 'woocommerce', CARTBOUNTY_PLUGIN_NAME, __('CartBounty Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'list_users', CARTBOUNTY, array($this,'display_page'));
 		}else{
-			$cartbounty_admin_menu_page = add_menu_page( CARTBOUNTY_PLUGIN_NAME, __('CartBounty Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'list_users', CARTBOUNTY_TEXT_DOMAIN, array($this,'display_page'), 'dashicons-archive' );
+			$cartbounty_admin_menu_page = add_menu_page( CARTBOUNTY_PLUGIN_NAME, __('CartBounty Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'list_users', CARTBOUNTY, array($this,'display_page'), 'dashicons-archive' );
 		}
 	}
 
@@ -175,7 +175,7 @@ class CartBounty_Admin{
 				$this->create_admin_tabs('carts');
 			}
 
-			if ( $pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY_TEXT_DOMAIN ){
+			if ( $pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY ){
 				if (isset($_GET['tab'])){
 					$tab = $_GET['tab'];
 				}else{
@@ -394,7 +394,7 @@ class CartBounty_Admin{
 			}
 			
 			$class = ( $tab == $current ) ? ' nav-tab-active' : ''; //if the tab is open, an additional class, nav-tab-active, is added
-			echo "<a class='nav-tab$class' href='?page=". CARTBOUNTY_TEXT_DOMAIN ."&tab=$tab'><span class='cartbounty-tab-icon dashicons $icon_class' >$icon_image</span><span class='cartbounty-tab-name'>$name</span></a>";
+			echo "<a class='nav-tab$class' href='?page=". CARTBOUNTY ."&tab=$tab'><span class='cartbounty-tab-icon dashicons $icon_class' >$icon_image</span><span class='cartbounty-tab-name'>$name</span></a>";
 		}
 		echo '</h2>';
 	}
@@ -444,7 +444,7 @@ class CartBounty_Admin{
 		global $pagenow;
 
 		//Checking if we are on open plugin page
-		if ($pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY_TEXT_DOMAIN){
+		if ($pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY){
 			
 				
 				//Checking if WP Cron hooks are scheduled
@@ -514,7 +514,7 @@ class CartBounty_Admin{
 			$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
 			$from = "From: WordPress <$sender>";
 			$blog_name = get_option( 'blogname' );
-			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY_TEXT_DOMAIN;
+			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
 			if($rows_to_email > 1){
 				$subject = '['.$blog_name.'] '. __('New abandoned carts saved', CARTBOUNTY_TEXT_DOMAIN);
 				$message = sprintf(__('Congratulations, you have saved %d new abandoned carts using %s. <br/>View them here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
