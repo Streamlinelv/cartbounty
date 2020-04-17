@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-16 12:52+0300\n"
+"POT-Creation-Date: 2020-04-17 12:28+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nauris Kolats <nauris@streamline.lv>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -370,7 +370,7 @@ msgid "Close"
 msgstr "Aizvērt"
 
 #: admin/class-cartbounty-admin.php:690
-msgid "Get CartBounty - Save and recover abandoned carts for WooCommerce Pro"
+msgid "Get CartBounty Pro - Save and recover abandoned carts for WooCommerce"
 msgstr "Apskatīt CartBounty Pro versiju"
 
 #: admin/class-cartbounty-admin.php:697

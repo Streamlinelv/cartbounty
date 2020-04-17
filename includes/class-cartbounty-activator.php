@@ -20,7 +20,7 @@ class CartBounty_Activator{
 	 */
 	public static function activate() {
 		
-		//Deactivating CartBounty - Save and recover abandoned carts for WooCommerce Pro plugin
+		//Deactivating CartBounty Pro plugin
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		deactivate_plugins('woo-save-abandoned-carts-pro/cartbounty-pro-abandoned-carts.php');
 		

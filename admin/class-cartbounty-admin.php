@@ -687,7 +687,7 @@ class CartBounty_Admin{
 			<?php endif; ?>
 			<div id="cartbounty-go-pro" class="cartbounty-bubble">
 				<div class="cartbounty-header-image">
-					<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=cartbounty" title="<?php __('Get CartBounty - Save and recover abandoned carts for WooCommerce Pro', CARTBOUNTY_TEXT_DOMAIN); ?>" target="_blank">
+					<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=cartbounty" title="<?php __('Get CartBounty Pro - Save and recover abandoned carts for WooCommerce', CARTBOUNTY_TEXT_DOMAIN); ?>" target="_blank">
 						<img src="<?php echo plugins_url( 'assets/notification-email.gif', __FILE__ ) ; ?>" alt="" title=""/>
 					</a>
 				</div>
