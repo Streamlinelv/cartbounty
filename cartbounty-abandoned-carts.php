@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 4.4.1
+ * Version: 4.5
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
@@ -32,7 +32,7 @@ if($user_settings_notification_frequency == '' || $user_settings_notification_fr
 }
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '4.4.1');
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '4.5');
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce');
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty');
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty');
@@ -49,6 +49,7 @@ if (!defined('CARTBOUNTY_NEW_NOTICE')) define( 'CARTBOUNTY_NEW_NOTICE', 240); //
 //Registering custom options
 register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );
 register_setting( 'cartbounty-settings', 'cartbounty_notification_frequency' );
+register_setting( 'cartbounty-settings', 'cartbounty_lift_email' );
 register_setting( 'cartbounty-settings-review', 'cartbounty_review_submitted' );
 register_setting( 'cartbounty-settings-declined', 'cartbounty_times_review_declined' );
 register_setting( 'cartbounty-settings-time', 'cartbounty_last_time_bubble_displayed' );

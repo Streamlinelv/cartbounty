@@ -30,3 +30,4 @@ delete_option( 'cartbounty_exit_intent_test_mode' );
 delete_option( 'cartbounty_exit_intent_type' );
 delete_option( 'cartbounty_exit_intent_main_color' );
 delete_option( 'cartbounty_exit_intent_inverse_color' );
+delete_option( 'cartbounty_lift_email' );

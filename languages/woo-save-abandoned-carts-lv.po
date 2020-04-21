@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-17 12:28+0300\n"
+"POT-Creation-Date: 2020-04-21 10:47+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nauris Kolats <nauris@streamline.lv>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -69,89 +69,109 @@ msgstr "Jums nav tiesību skatīt šo lapu."
 msgid "Items deleted: %d"
 msgstr "Ieraksti dzēsti: %d"
 
-#: admin/class-cartbounty-admin.php:187 admin/class-cartbounty-admin.php:379
+#: admin/class-cartbounty-admin.php:187 admin/class-cartbounty-admin.php:396
 msgid "Settings"
 msgstr "Iestatījumi"
 
-#: admin/class-cartbounty-admin.php:196
+#: admin/class-cartbounty-admin.php:197
 msgid "Send notifications about abandoned carts to this email:"
-msgstr ""
-"Sūtīt paziņojumus par novārtā atstātiem pirkumu groziem uz šo e-pasta adresi:"
+msgstr "Sūtīt paziņojumus par pamestiem pirkumu groziem uz šo e-pasta adresi:"
 
-#: admin/class-cartbounty-admin.php:200
+#: admin/class-cartbounty-admin.php:201
 #, php-format
 msgid "By default, notifications will be sent to WordPress admin email - %s."
 msgstr ""
-"Pēc noklusējuma paziņojumi par novārtā atstātiem pirkumu groziem tiks sūtīti "
-"uz WordPress administratora e-pastu - %s."
+"Pēc noklusējuma paziņojumi par pamestiem pirkumu groziem tiks sūtīti uz "
+"WordPress administratora e-pastu - %s."
 
-#: admin/class-cartbounty-admin.php:205
+#: admin/class-cartbounty-admin.php:206
 msgid "How often to check and send emails about newly abandoned carts?"
 msgstr ""
-"Cik bieži pārbaudīt un izsūtīt paziņojumus par jauniem novārtā atstātiem "
-"pirkumu groziem?"
+"Cik bieži pārbaudīt un izsūtīt paziņojumus par jauniem pamestiem pirkumu "
+"groziem?"
 
-#: admin/class-cartbounty-admin.php:215
+#: admin/class-cartbounty-admin.php:216
 msgid "Every 10 minutes"
 msgstr "Katras 10 minūtes"
 
-#: admin/class-cartbounty-admin.php:216
+#: admin/class-cartbounty-admin.php:217
 msgid "Every 20 minutes"
 msgstr "Katras 20 minūtes"
 
-#: admin/class-cartbounty-admin.php:217
+#: admin/class-cartbounty-admin.php:218
 msgid "Every 30 minutes"
 msgstr "Katras 30 minūtes"
 
-#: admin/class-cartbounty-admin.php:218
+#: admin/class-cartbounty-admin.php:219
 msgid "Every hour"
 msgstr "Katru stundu"
 
-#: admin/class-cartbounty-admin.php:219
+#: admin/class-cartbounty-admin.php:220
 msgid "Every 2 hours"
 msgstr "Reizi 2 stundās"
 
-#: admin/class-cartbounty-admin.php:220
+#: admin/class-cartbounty-admin.php:221
 msgid "Every 3 hours"
 msgstr "Reizi 3 stundās"
 
-#: admin/class-cartbounty-admin.php:221
+#: admin/class-cartbounty-admin.php:222
 msgid "Every 4 hours"
 msgstr "Reizi 4 stundās"
 
-#: admin/class-cartbounty-admin.php:222
+#: admin/class-cartbounty-admin.php:223
 msgid "Every 5 hours"
 msgstr "Reizi 5 stundās"
 
-#: admin/class-cartbounty-admin.php:223
+#: admin/class-cartbounty-admin.php:224
 msgid "Every 6 hours"
 msgstr "Reizi 6 stundās"
 
-#: admin/class-cartbounty-admin.php:224
+#: admin/class-cartbounty-admin.php:225
 msgid "Twice a day"
 msgstr "Divreiz dienā"
 
-#: admin/class-cartbounty-admin.php:225
+#: admin/class-cartbounty-admin.php:226
 msgid "Once a day"
 msgstr "Vienreiz dienā"
 
-#: admin/class-cartbounty-admin.php:226
+#: admin/class-cartbounty-admin.php:227
 msgid "Once every 2 days"
 msgstr "Vienreiz 2 dienās"
 
-#: admin/class-cartbounty-admin.php:227
+#: admin/class-cartbounty-admin.php:228
 msgid "Disable notifications"
 msgstr "Atslēgt paziņojumus"
 
-#: admin/class-cartbounty-admin.php:235 admin/class-cartbounty-admin.php:348
+#: admin/class-cartbounty-admin.php:234
+msgid "Lift email field:"
+msgstr "Pacelt e-pasta lauku:"
+
+#: admin/class-cartbounty-admin.php:240
+msgid ""
+"Please test the checkout after enabling this, as sometimes it can cause <br/"
+">issues or not raise the field if you have a custom checkout."
+msgstr ""
+"Lūdzu pārbaudiet apmaksas formu pēc tam, kad esat aktivizējuši šo. <br/"
+">Reizēm, ja tiek izmantota individuāli veidota apmaksas forma, lauks var "
+"netikt pacelts uz augšu."
+
+#: admin/class-cartbounty-admin.php:242
+msgid ""
+"You could increase the chances of capturing abandoned carts by <br/>moving "
+"the email field to the top of your checkout form."
+msgstr ""
+"Jūs variet saglabāt vairāk pamestos pirkumu grozus, <br/>ja apmaksas formā "
+"tiks pacelts augstāk e-pasta lauks."
+
+#: admin/class-cartbounty-admin.php:252 admin/class-cartbounty-admin.php:365
 msgid "Save settings"
 msgstr "Saglabāt iestatījumus"
 
-#: admin/class-cartbounty-admin.php:241 admin/class-cartbounty-admin.php:379
+#: admin/class-cartbounty-admin.php:258 admin/class-cartbounty-admin.php:396
 msgid "Exit Intent"
 msgstr "Mēģinājums iziet"
 
-#: admin/class-cartbounty-admin.php:242
+#: admin/class-cartbounty-admin.php:259
 msgid ""
 "With the help of Exit Intent you can capture even more abandoned carts by "
 "displaying a message including an e-mail field that the customer can fill to "
@@ -162,7 +182,7 @@ msgstr ""
 "veikalu, papildus logu ar e-pasta ievadlauku. Jūs pat varēsiet piedāvāt "
 "lietotājam kuponu kodu, ja viņš piekrīt atstāt šeit savu e-pasta adresi."
 
-#: admin/class-cartbounty-admin.php:243
+#: admin/class-cartbounty-admin.php:260
 msgid ""
 "Please note that the Exit Intent will only be showed to unregistered users "
 "once per hour after they have added an item to their cart and try to leave "
@@ -172,7 +192,7 @@ msgstr ""
 "nereģistrētiem lietotājiem vienu reizi stundā pēc tam, kad pirkumu grozā būs "
 "ievietots kāds produkts."
 
-#: admin/class-cartbounty-admin.php:244
+#: admin/class-cartbounty-admin.php:261
 #, php-format
 msgid ""
 "If you would like to customize the content of your Exit Intent, please see "
@@ -183,15 +203,15 @@ msgstr ""
 "<a href=\"%s\" target=\"_blank\">Kā mainīt Iziešanas mēģinājuma loga saturu "
 "un attēlu</a>."
 
-#: admin/class-cartbounty-admin.php:259
+#: admin/class-cartbounty-admin.php:276
 msgid "Enable Exit Intent:"
 msgstr "Ieslēgt Iziešanas mēģinājuma funkcionalitāti:"
 
-#: admin/class-cartbounty-admin.php:267
+#: admin/class-cartbounty-admin.php:284
 msgid "Enable test mode:"
 msgstr "Ieslēgt testēšanas režīmu:"
 
-#: admin/class-cartbounty-admin.php:273
+#: admin/class-cartbounty-admin.php:290
 msgid ""
 "Now go to your store and add a product to your shopping cart. Please note "
 "that only <br/>users with Admin rights will be able to see the Exit Intent "
@@ -204,44 +224,44 @@ msgstr ""
 "ierobežojumi attiecībā uz parādīšanas skaitu ir noņemti - logs tiks <br/"
 ">attēlots ikreiz, kad mēģināsiet atstāt savu veikalu."
 
-#: admin/class-cartbounty-admin.php:281
+#: admin/class-cartbounty-admin.php:298
 msgid "Choose style:"
 msgstr "Izvēlieties veidu:"
 
-#: admin/class-cartbounty-admin.php:292
+#: admin/class-cartbounty-admin.php:309
 msgid "Appear In Center"
 msgstr "Centrā"
 
-#: admin/class-cartbounty-admin.php:301 admin/class-cartbounty-admin.php:315
+#: admin/class-cartbounty-admin.php:318 admin/class-cartbounty-admin.php:332
 msgid "Upgrade to enable this style"
 msgstr "Atjaunini, lai aktivizētu"
 
-#: admin/class-cartbounty-admin.php:302 admin/class-cartbounty-admin.php:316
-#: admin/class-cartbounty-admin.php:564 admin/class-cartbounty-admin.php:700
+#: admin/class-cartbounty-admin.php:319 admin/class-cartbounty-admin.php:333
+#: admin/class-cartbounty-admin.php:581 admin/class-cartbounty-admin.php:717
 msgid "Get Pro"
 msgstr "Apskatīt"
 
-#: admin/class-cartbounty-admin.php:306
+#: admin/class-cartbounty-admin.php:323
 msgid "Slide In From Left"
 msgstr "No kreisās puses"
 
-#: admin/class-cartbounty-admin.php:320
+#: admin/class-cartbounty-admin.php:337
 msgid "Fullscreen"
 msgstr "Pilnekrāna"
 
-#: admin/class-cartbounty-admin.php:327
+#: admin/class-cartbounty-admin.php:344
 msgid "Exit Intent colors:"
 msgstr "Iziešanas mēģinājuma krāsas:"
 
-#: admin/class-cartbounty-admin.php:331
+#: admin/class-cartbounty-admin.php:348
 msgid "Main:"
 msgstr "Galvenā:"
 
-#: admin/class-cartbounty-admin.php:335
+#: admin/class-cartbounty-admin.php:352
 msgid "Inverse:"
 msgstr "Inversā:"
 
-#: admin/class-cartbounty-admin.php:339
+#: admin/class-cartbounty-admin.php:356
 msgid ""
 "If you leave the Inverse color empty, it will automatically use the inverse "
 "color of <br/>the main color you have picked. Clear both colors to use the "
@@ -251,11 +271,11 @@ msgstr ""
 "galvenās izvēlētās krāsas. <br/>. Nodzēsiet abas krāsas, lai izmantotu "
 "noklusētās krāsas."
 
-#: admin/class-cartbounty-admin.php:354 admin/class-cartbounty-admin.php:379
+#: admin/class-cartbounty-admin.php:371 admin/class-cartbounty-admin.php:396
 msgid "Abandoned carts"
 msgstr "Pamestie pirkumu grozi"
 
-#: admin/class-cartbounty-admin.php:359
+#: admin/class-cartbounty-admin.php:376
 msgid ""
 "Looks like you do not have any saved Abandoned carts yet.<br/>But do not "
 "worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone "
@@ -267,7 +287,7 @@ msgstr ""
 "<strong>telefona</strong> laukus un pametīs WooCommerce iepirkšanās procesu, "
 "viņa pamestais pirkumu grozs būs šeit redzams."
 
-#: admin/class-cartbounty-admin.php:470
+#: admin/class-cartbounty-admin.php:487
 #, php-format
 msgid ""
 "It seems that WP Cron event <strong>%s</strong> required for plugin "
@@ -285,7 +305,7 @@ msgstr[2] ""
 "Izskatās, ka WP Cron notikums <strong>%s</strong>, kas nepieciešams "
 "automatizācijai nav ieslēgts."
 
-#: admin/class-cartbounty-admin.php:470
+#: admin/class-cartbounty-admin.php:487
 #, php-format
 msgid ""
 "Please try disabling and enabling %s plugin. If this notice does not go away "
@@ -298,7 +318,7 @@ msgstr ""
 "pārliecinieties, ka WP Cron tiek ieslēgts. Bez tā nevarēsiet saņemt "
 "automatizētus e-pasta paziņojumus par svaigi pamestiem pirkumu groziem."
 
-#: admin/class-cartbounty-admin.php:479
+#: admin/class-cartbounty-admin.php:496
 msgid ""
 "WP Cron has been disabled. Several WordPress core features, such as checking "
 "for updates or sending notifications utilize this function. Please enable it "
@@ -309,16 +329,16 @@ msgstr ""
 "funkcionalitātes. Lūdzu ieslēdziet to vai sazinieties ar savu sistēmas "
 "administratoru, lai šo funkcionalitāti ieslēgtu."
 
-#: admin/class-cartbounty-admin.php:506
+#: admin/class-cartbounty-admin.php:523
 #, php-format
 msgid "Character set: %s"
 msgstr "Rakstzīmju kopa: %s"
 
-#: admin/class-cartbounty-admin.php:519
+#: admin/class-cartbounty-admin.php:536
 msgid "New abandoned carts saved"
-msgstr "Saglabāti jauni novārtā atstāti pirkumu grozi"
+msgstr "Saglabāti jauni pamesti pirkumu grozi"
 
-#: admin/class-cartbounty-admin.php:520
+#: admin/class-cartbounty-admin.php:537
 #, php-format
 msgid ""
 "Congratulations, you have saved %d new abandoned carts using %s. <br/>View "
@@ -327,53 +347,53 @@ msgstr ""
 "Apsveicam, jūs esat notvēris %d jaunus pamestus pirkumu grozus izmantojot "
 "%s. <br/>Apskatiet tos šeit: <a href=\"%s\">%s</a>"
 
-#: admin/class-cartbounty-admin.php:523
+#: admin/class-cartbounty-admin.php:540
 msgid "New abandoned cart saved"
-msgstr "Saglabāts jauns novārtā atstāts pirkumu grozs"
+msgstr "Saglabāts jauns pamests pirkumu grozs"
 
-#: admin/class-cartbounty-admin.php:524
+#: admin/class-cartbounty-admin.php:541
 #, php-format
 msgid ""
 "Great! You have saved %d new abandoned cart using %s. <br/>View it here: <a "
 "href=\"%s\">%s</a>"
 msgstr ""
-"Super! Jums ir %d novārtā atstāts pirkumu grozs, kas notverts izmantojot %s. "
-"<br/>Apskatiet to šeit: <a href=\"%s\">%s</a>"
+"Super! Jums ir %d pamests pirkumu grozs, kas notverts izmantojot %s. <br/"
+">Apskatiet to šeit: <a href=\"%s\">%s</a>"
 
-#: admin/class-cartbounty-admin.php:664
+#: admin/class-cartbounty-admin.php:681
 msgid ""
 "Leave CartBounty - Save and recover abandoned carts for WooCommerce a 5-star "
 "rating"
 msgstr "Atstājiet CartBounty spraudnim 5-zvaigžņu vērtējumu"
 
-#: admin/class-cartbounty-admin.php:670
+#: admin/class-cartbounty-admin.php:687
 #, php-format
 msgid "%s You have already captured %d abandoned carts!"
 msgstr "%s Jau %d. pamestais pirkumu grozs notverts!"
 
-#: admin/class-cartbounty-admin.php:671
+#: admin/class-cartbounty-admin.php:688
 msgid ""
 "If you like our plugin, please leave us a 5-star rating. It is the easiest "
 "way to help us grow and keep evolving further."
 msgstr "Ja Jums patīk šis produkts, lūdzu atstāj mums 5-zvaigžņu vērtējumu."
 
-#: admin/class-cartbounty-admin.php:675
+#: admin/class-cartbounty-admin.php:692
 msgid "Leave a 5-star rating"
 msgstr "Piešķirt 5 zvaigznes"
 
-#: admin/class-cartbounty-admin.php:676
+#: admin/class-cartbounty-admin.php:693
 msgid "Done that"
 msgstr "Darīts"
 
-#: admin/class-cartbounty-admin.php:681
+#: admin/class-cartbounty-admin.php:698
 msgid "Close"
 msgstr "Aizvērt"
 
-#: admin/class-cartbounty-admin.php:690
+#: admin/class-cartbounty-admin.php:707
 msgid "Get CartBounty Pro - Save and recover abandoned carts for WooCommerce"
 msgstr "Apskatīt CartBounty Pro versiju"
 
-#: admin/class-cartbounty-admin.php:697
+#: admin/class-cartbounty-admin.php:714
 msgid ""
 "Automate your abandoned cart recovery workflow and get back to those lovely "
 "cat videos (:"
@@ -381,41 +401,41 @@ msgstr ""
 "Automatizējiet savu pamesto pirkumu grozu atgūšanu un atgriezieties pie tiem "
 "foršajiem kaķu video (:"
 
-#: admin/class-cartbounty-admin.php:698
+#: admin/class-cartbounty-admin.php:715
 msgid "Use your time wisely by enabling Pro features and increase your sales."
 msgstr ""
 "Izmantojiet savu laiku gudri aktivizējoet Pro iespējas un palieliniet "
 "pārdošanas rādītājus."
 
-#: admin/class-cartbounty-admin.php:701
+#: admin/class-cartbounty-admin.php:718
 msgid "Not now"
 msgstr "Ne tagad"
 
-#: admin/class-cartbounty-admin.php:823
+#: admin/class-cartbounty-admin.php:840
 msgid "Congrats!"
 msgstr "Opiņā!"
 
-#: admin/class-cartbounty-admin.php:827
+#: admin/class-cartbounty-admin.php:844
 msgid "Awesome!"
 msgstr "Burvīgi!"
 
-#: admin/class-cartbounty-admin.php:831
+#: admin/class-cartbounty-admin.php:848
 msgid "Amazing!"
 msgstr "Satriecoši!"
 
-#: admin/class-cartbounty-admin.php:835
+#: admin/class-cartbounty-admin.php:852
 msgid "Incredible!"
 msgstr "Neticami!"
 
-#: admin/class-cartbounty-admin.php:839
+#: admin/class-cartbounty-admin.php:856
 msgid "Crazy!"
 msgstr "Wow!"
 
-#: admin/class-cartbounty-admin.php:843
+#: admin/class-cartbounty-admin.php:860
 msgid "Fantastic!"
 msgstr "Fantastiski!"
 
-#: admin/class-cartbounty-admin.php:847
+#: admin/class-cartbounty-admin.php:864
 msgid "Insane!"
 msgstr "Nereāli!"
 

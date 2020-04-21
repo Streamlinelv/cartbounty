@@ -189,6 +189,7 @@ class CartBounty_Admin{
 						<?php
 							settings_fields( 'cartbounty-settings' );
 							do_settings_sections( 'cartbounty-settings' );
+							$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
 						?>
 						<table id="cartbounty-settings-table" class="form-table">
 							<tr>
@@ -226,6 +227,22 @@ class CartBounty_Admin{
 										<option value='2880' <?php selected( $options['hours'], 2880 ); ?>><?php echo 	__('Once every 2 days', CARTBOUNTY_TEXT_DOMAIN); ?></option>
 										<option value='0' <?php selected( $options['hours'], 0 ); ?>><?php echo 		__('Disable notifications', CARTBOUNTY_TEXT_DOMAIN); ?></option>
 									</select>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<label for="cartbounty-lift-email"><?php echo __('Lift email field:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<input id="cartbounty-lift-email" class="cartbounty-checkbox" type="checkbox" name="cartbounty_lift_email" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $lift_email_on, false ); ?> />
+									<p><small>
+										<?php if($lift_email_on){
+											echo __('Please test the checkout after enabling this, as sometimes it can cause <br/>issues or not raise the field if you have a custom checkout.', CARTBOUNTY_TEXT_DOMAIN);
+										}else{
+											echo __('You could increase the chances of capturing abandoned carts by <br/>moving the email field to the top of your checkout form.', CARTBOUNTY_TEXT_DOMAIN);
+										}?>
+										</small>
+									</p>
 								</td>
 							</tr>
 						</table>
@@ -862,5 +879,19 @@ class CartBounty_Admin{
 			<svg height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61.75 63.11"><defs><style>.cls-1{fill:#1B1A19;}</style></defs><title>Untitled-2</title><path class="cls-1" d="M26.32,6.24A6.24,6.24,0,1,1,20.07,0a6.24,6.24,0,0,1,6.24,6.24h0Z"/><path class="cls-1" d="M55.43,39.26C48.88,43.09,45,37.47,42,32.07c-0.13-.52-5.27-10.44-7.77-14.79,4.89-1.56,9.35-.13,12.86,4.79,2.85,4,9.53.16,6.64-3.88C46.94,8.67,36.8,6.3,26.66,12.32c-0.42.25-2.33,1.3-2.76,1.56-6.31,3.75-12.17,3-16.54-3.1-2.86-4-9.54-.16-6.65,3.89,5.59,7.82,13.43,10.8,21.67,8.27,2.59,4.45,5,9,7.41,13.54-3.49,1.79-10,5.39-11.71,8.71C16,49.32,14,53.53,12,57.7c-2.17,4.48,4.8,7.73,7,3.27,1.92-4,6.28-12.22,6.53-12.43,3.48-3,12.25-7.18,12.44-7.28,5.35,6.79,12.81,10.52,21.75,5.3,4.71-2.75.45-10.07-4.27-7.31h0Z"/></svg>
 		');
     }
+
+    /**
+	 * Function tries to move the email field higher in the checkout form
+	 *
+	 * @since    4.5
+	 * return: 	 Array
+	 */ 
+	public function lift_checkout_email_field( $fields ) {
+		$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
+		if($lift_email_on){ //Changing the priority and moving the email higher
+			$fields['billing_email']['priority'] = 5;
+		}
+		return $fields;
+	}
 
 }

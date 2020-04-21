@@ -123,6 +123,7 @@ class CartBounty{
 		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $plugin_admin, 'notification_sendout_interval_update');
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_wp_cron_warnings'); //Outputing warnings if any of the WP Cron events are note scheduled or if WP Cron is disabled
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $plugin_admin, 'send_email'); //Hooks into Wordpress cron event to launch function for sending out e-mails
+		$this->loader->add_filter( 'woocommerce_billing_fields', $plugin_admin, 'lift_checkout_email_field', 10, 1); //Moves email field in the checkout higher to capture more abandoned carts
 	}
 
 	/**
@@ -138,7 +139,7 @@ class CartBounty{
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		$this->loader->add_action( 'woocommerce_after_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
+		$this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
 		$this->loader->add_action( 'wp_ajax_nopriv_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail or Phone field in Checkout form
 		$this->loader->add_action( 'wp_ajax_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
 		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
