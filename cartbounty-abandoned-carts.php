@@ -5,6 +5,7 @@
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
  * Version: 4.5
+ * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
@@ -14,7 +15,7 @@
  * WC tested up to: 3.8
  *
  * Copyright: © 2009-2015 WooCommerce.
- * License: GNU General Public License v3.0
+ * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
 
