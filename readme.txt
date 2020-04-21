@@ -204,7 +204,7 @@ Example how to change the main title using a filter:
 == Changelog ==
 
 = 4.5 =
-* Added option to move email field higher in the checkout field
+* Added option to move email field higher in the checkout form
 * Changed the script loading hook from "woocommerce_after_checkout_form" to "woocommerce_before_checkout_form"
 
 = 4.4.1 =
