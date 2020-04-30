@@ -38,14 +38,6 @@ Please note that the Exit Intent will only be showed to unregistered users once 
 
 * Since we love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned carts data, table and options created by this plugin) leaving your project clean.
 
-### How the idea was born:
-
-We started working on this plugin since WooCommerce currently does not come with an integrated solution for recovering abandoned carts and wanted to develop one that would be very simple and lightweight. We built this plugin in order to register and recover abandoned carts in a website that sells [light cube](https://www.uniqcube.com/shop "light cube") lamps since there were many people who left the checkout process.
-
-At the time when we started working on this project we knew that there were couple of plugins already available but they were offering a lot of functionality that slowed down our project and had many features that were not necessary. Also we weren't sure about the security that they provided and wanted to contribute to WordPress community by helping others with the same need to simply see abandoned carts and recover them.
-
-While continuing our work on [Mājas lapu izstrāde](https://www.majas-lapu-izstrade.lv "Mājas lapu izstrāde") (website design and development) we will be managing this plugin in order to keep up with the WooCommerce and WordPress updates.
-
 ### Plugin dependencies:
 
 1. Uses WordPress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
@@ -251,67 +243,3 @@ Example how to change the main title using a filter:
 * Added Exit Intent popup
 * Added Instant shopping cart capture for logged in users
 * Fixed total captured abandoned cart counter
-
-= 2.1 =
-* Added language support
-* Improved review bubble
-
-= 2.0.6 =
-* Improved review bubble
-
-= 2.0.5 =
-* Improved bubble display timing function
-
-= 2.0.4 =
-* Fixed PHP notice and a bug when working with WooCommerce orders within admin panel
-
-= 2.0.3 =
-* Updated Bubble timing function
-
-= 2.0.2 =
-* Fixed bug with Checkout form textarea field
-
-= 2.0.1 =
-* Modified "Remember user input" function. All Checkout form input fields are now triggering save data action
-
-= 2.0 =
-* Added "Remember user input" function that keeps user input in Checkout form until the Session has expired or user completes the Checkout
-* PHP default sessions functionality replaced by WooCommerce sessions
-
-= 1.5.2 =
-* Added additional hook for removing abandoned cart from the table once a corresponding WooCommerce order is created
-
-= 1.5.1 =
-* Added ability for Shop managers to access Abandoned carts
-
-= 1.5 =
-* Added ability to save abandoned carts via phone number input
-* Added function that collects and saves input field data if input fields already filled on Checkout page load
-
-= 1.4.3 =
-* Fixed bug when in some cases abandoned carts not being removed from table after reaching WooCommerce "Thank you" page
-
-= 1.4.2 =
-* Fixed bug related to notification output
-
-= 1.4.1 =
-* Fixed database update issue when upgrading to 1.4
-
-= 1.4 =
-* Added notification near menu about newly abandoned carts (last 2 hours)
-* Added location registration (Country and City)
-* Added links on product titles in Cart content column
-* Added additional output for product variations
-
-= 1.3 =
-* Fixed issue when in some cases single abandoned cart was saved multiple times creating duplicate entries in the table
-
-= 1.2 =
-* Fixed minor database warnings and notices
-
-= 1.1 =
-* Fixed PHP and MySQL warnings and notices
-* Updated security requirements that were introduced in WooCommerce 3.0
-
-= 1.0 =
-* Birthday

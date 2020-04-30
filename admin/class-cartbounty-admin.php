@@ -484,7 +484,10 @@ class CartBounty_Admin{
 					}
 					?>
 					<div id="cartbounty-cron-schedules" class="cartbounty-notification warning update-nag">
-						<p class="left-part"><?php echo sprintf(_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?></p>
+						<p class="left-part">
+							<?php /* translators: %s - Cron event name */
+								echo sprintf(_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?>
+							</p>
 					</div>
 					<?php 
 				}
@@ -532,14 +535,10 @@ class CartBounty_Admin{
 			$from = "From: WordPress <$sender>";
 			$blog_name = get_option( 'blogname' );
 			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
-			if($rows_to_email > 1){
-				$subject = '['.$blog_name.'] '. __('New abandoned carts saved', CARTBOUNTY_TEXT_DOMAIN);
-				$message = sprintf(__('Congratulations, you have saved %d new abandoned carts using %s. <br/>View them here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
-				
-			}else{
-				$subject = '['.$blog_name.'] '. __('New abandoned cart saved', CARTBOUNTY_TEXT_DOMAIN);
-				$message = sprintf(__('Great! You have saved %d new abandoned cart using %s. <br/>View it here: <a href="%s">%s</a>', CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
-			}
+			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved', 'New abandoned carts saved', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN);
+			$message = sprintf(
+				/* translators: %d - Abandoned cart count, %s - Plugin name, %s - Link, %s - Link */
+				_n('Great! You have saved %d new abandoned cart using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', 'Congratulations, you have saved %d new abandoned carts using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
 			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
 			
 			//Sending out e-mail
@@ -683,8 +682,13 @@ class CartBounty_Admin{
 						</a>
 					</div>
 					<div id="cartbounty-review-content">
-						<?php $expression = $this->get_expressions(); ?>
-						<h2><?php echo sprintf(__('%s You have already captured %d abandoned carts!', CARTBOUNTY_TEXT_DOMAIN ), $expression['exclamation'], $this->total_captured_abandoned_cart_count()); ?></h2>
+						<?php
+							$expression = $this->get_expressions();
+							$saved_cart_count = $this->total_captured_abandoned_cart_count();
+						?>
+						<h2><?php echo sprintf(
+							/* translators: %s - Gets replaced by an excitement word e.g. Awesome!, %d - Abandoned cart count*/
+							_n('%s You have already captured %d abandoned cart!', '%s You have already captured %d abandoned carts!', $saved_cart_count , CARTBOUNTY_TEXT_DOMAIN ), $expression['exclamation'], $saved_cart_count ); ?></h2>
 						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', CARTBOUNTY_TEXT_DOMAIN ); ?></p>
 						<div class="cartbounty-button-row">
 							<form method="post" action="options.php" class="cartbounty_inline">
