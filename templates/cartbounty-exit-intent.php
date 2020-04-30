@@ -35,9 +35,13 @@ $public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_
 				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_image_html', sprintf('<img src="%s" alt="" title=""/>', $public->get_plugin_url() . '/public/assets/abandoned-shopping-cart.gif' ) ) ); ?>
 			</div>
 			<div id="cartbounty-exit-intent-form-content-r">
-				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_title_html', sprintf(__( '<h2 style="color: %s" >You were not leaving your cart just like that, right?</h2>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) ); ?>
+				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_title_html', sprintf(
+					/* translators: %s - Color code */
+					__( '<h2 style="color: %s">You were not leaving your cart just like that, right?</h2>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) ); ?>
 				<?php do_action('cartbounty_exit_intent_after_title'); ?>
-				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_description_html', sprintf(__( '<p style="color: %s" >Just enter your email below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)</p>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) );?>
+				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_description_html', sprintf(
+					/* translators: %s - Color code */
+					__( '<p style="color: %s">Just enter your email below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)</p>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) );?>
 				<form>
 					<?php do_action('cartbounty_exit_intent_before_form_fields'); ?>
 					<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_email_label_html', sprintf('<label for="cartbounty-exit-intent-email" style="color: %s">%s</label>', $args['inverse_color'], __('Your email:', CARTBOUNTY_TEXT_DOMAIN) ) ) ); ?>
