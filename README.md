@@ -108,7 +108,7 @@ You can set the following notification intervals:
 * Once every 2 days
 * Disable notifications
 
-Default notification interval is “Every hour”. You also have the option to disable notifications in case you ever get tired of them ;)
+Default notification interval is "Every hour". You also have the option to disable notifications in case you ever get tired of them ;)
 
 Please also note how WordPress handles Cron job that is responsible for sending out email notifications. Scheduled actions can only be triggered when a visitor arrives on a WordPress site. Therefore, if you are not getting any traffic on your website you will not receive any e-mail notifications until a visitor lands on your website.
 
