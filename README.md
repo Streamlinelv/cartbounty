@@ -1,4 +1,4 @@
-[![CartBounty - Save and recover abandoned carts for WooCommerce](https://ps.w.org/woo-save-abandoned-carts/assets/banner-1544x500.png "Save abandoned carts")](https://www.cartbounty.com)
+[![CartBounty - Save and recover abandoned carts for WooCommerce](https://ps.w.org/woo-save-abandoned-carts/assets/banner-1544x500.gif "Save abandoned carts")](https://www.cartbounty.com)
 
 # CartBounty - Save and recover abandoned carts for WooCommerce
 
