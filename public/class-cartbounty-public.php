@@ -511,7 +511,8 @@ class CartBounty_Public{
 							'cart_contents'	=>	'',
 							'cart_total'	=>	0,
 							'currency'		=>	sanitize_text_field( $cart_currency ),
-							'time'			=>	sanitize_text_field( $current_time )
+							'time'			=>	sanitize_text_field( $current_time ),
+							'session_id' 	=> ''
 						),
 						array('session_id' => $cartbounty_session_id),
 						array('%s', '%s'),

@@ -868,7 +868,7 @@ class CartBounty_Admin{
 				//$plugin_public->clear_cart_data();
 
 				//Clearing cart data
-				$updated_rows = $wpdb->update( $table_name, array( 'cart_contents' => '', 'cart_total' => 0 ), array( 'session_id' => $session_id ));
+				$updated_rows = $wpdb->update( $table_name, array( 'cart_contents' => '', 'cart_total' => 0, 'session_id' => '' ), array( 'session_id' => $session_id ));
 				$this->log('info', "CartBounty: Cleared row count: " . $updated_rows );
 
 				//Disabling this since this is already done in the delete_empty_carts() function
