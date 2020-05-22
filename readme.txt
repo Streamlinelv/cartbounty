@@ -2,7 +2,7 @@
 Donate link: https://www.cartbounty.com
 Contributors: streamlinestar, nauriskolats
 Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
-Requires at least: 4.6
+Requires at least: 4.6.1
 Requires PHP: 5.2.4
 Tested up to: 5.4
 Stable tag: trunk

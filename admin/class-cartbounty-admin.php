@@ -845,6 +845,47 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Function in order to delete row from table if the user completes the checkout
+	 *
+	 * @since    1.3
+	 */
+	function delete_user_data(){
+		global $wpdb;
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$plugin_public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+
+		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
+		if(isset(WC()->session)){
+
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			if(isset($cartbounty_session_id)){
+
+				$this->log('info', "CartBounty: Clearing user's abandned cart. Session ID: " . $cartbounty_session_id );
+
+				//Deleting row from database
+				//$wpdb->delete( $table_name, array( 'session_id' => sanitize_key( $cartbounty_session_id )));
+				//for testing pursposes - clearing abandoned cart data. They are going to be deleted in 24 hours
+				//$plugin_public->clear_cart_data();
+
+				//Clearing cart data
+				$updated_rows = $wpdb->update( $table_name, array( 'cart_contents' => '', 'cart_total' => 0 ), array( 'session_id' => $cartbounty_session_id ));
+				$this->log('info', "CartBounty: Cleared row count: " . $updated_rows );
+
+				//Disabling this since this is already done in the delete_empty_carts() function
+				//$plugin_public->decrease_captured_abandoned_cart_count( $count = false ); //Decreasing total count of captured abandoned carts
+			}
+			else{
+				$this->log('info', "CartBounty: CartBounty session doesn't exist." );
+			}
+			
+			$plugin_public->unset_cartbounty_session_id();
+		}
+		else{
+			$this->log('info', "CartBounty: WooCommerce session doesn't exist." );
+		}
+	}
+
+	/**
 	 * Function returns different expressions depending on the amount of captured carts
 	 *
 	 * @since    3.2.1
@@ -909,6 +950,19 @@ class CartBounty_Admin{
 			$fields['billing_email']['priority'] = 5;
 		}
 		return $fields;
+	}
+
+	/**
+	 * Outputs debugging information to WooCommerce log
+	 *
+	 * @since 4.6
+	 */
+	function log($level, $message){
+		//if(get_option('cartbounty_logging_status')){
+			$logger = wc_get_logger();
+			$woocommerce_log_name = array( 'source' => CARTBOUNTY_PLUGIN_NAME_SLUG );
+			$logger->log( $level, $message, $woocommerce_log_name );
+		//}
 	}
 
 }

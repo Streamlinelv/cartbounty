@@ -519,36 +519,6 @@ class CartBounty_Public{
 			}
 		}
 	}
-	
-	/**
-	 * Function in order to delete row from table if the user completes the checkout
-	 *
-	 * @since    1.3
-	 */
-	function delete_user_data(){
-		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
-
-		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
-		if(isset(WC()->session)){
-
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-			if(isset($cartbounty_session_id)){
-				
-				//Deleting row from database
-				$wpdb->query(
-					$wpdb->prepare(
-						"DELETE FROM ". $table_name ."
-						 WHERE session_id = %s",
-						sanitize_key($cartbounty_session_id)
-					)
-				);
-				$this->decrease_captured_abandoned_cart_count( $count = false ); //Decreasing total count of captured abandoned carts
-			}
-			
-			$this->unset_cartbounty_session_id();
-		}
-	}
 
 	/**
 	 * Function deletes duplicate abandoned carts from the database
