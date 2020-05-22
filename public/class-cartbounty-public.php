@@ -99,6 +99,7 @@ class CartBounty_Public{
 	function save_user_data(){
 		//First check if data is being sent and that it is the data we want
 		if ( isset( $_POST["cartbounty_email"] ) ) {
+
 			global $wpdb;
 			$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
@@ -238,6 +239,7 @@ class CartBounty_Public{
 	 */
 	function save_looged_in_user_data(){
 		if(is_user_logged_in()){ //If a user is logged in
+
 			global $wpdb;
 			$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 

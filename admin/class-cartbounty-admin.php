@@ -857,18 +857,18 @@ class CartBounty_Admin{
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
 
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-			if(isset($cartbounty_session_id)){
+			$session_id = WC()->session->get_customer_id();
+			if(isset($session_id)){
 
-				$this->log('info', "CartBounty: Clearing user's abandned cart. Session ID: " . $cartbounty_session_id );
+				$this->log('info', "CartBounty: Clearing user's abandned cart. Session ID: " . $session_id );
 
 				//Deleting row from database
-				//$wpdb->delete( $table_name, array( 'session_id' => sanitize_key( $cartbounty_session_id )));
+				//$wpdb->delete( $table_name, array( 'session_id' => sanitize_key( $session_id )));
 				//for testing pursposes - clearing abandoned cart data. They are going to be deleted in 24 hours
 				//$plugin_public->clear_cart_data();
 
 				//Clearing cart data
-				$updated_rows = $wpdb->update( $table_name, array( 'cart_contents' => '', 'cart_total' => 0 ), array( 'session_id' => $cartbounty_session_id ));
+				$updated_rows = $wpdb->update( $table_name, array( 'cart_contents' => '', 'cart_total' => 0 ), array( 'session_id' => $session_id ));
 				$this->log('info', "CartBounty: Cleared row count: " . $updated_rows );
 
 				//Disabling this since this is already done in the delete_empty_carts() function
@@ -878,7 +878,7 @@ class CartBounty_Admin{
 				$this->log('info', "CartBounty: CartBounty session doesn't exist." );
 			}
 			
-			$plugin_public->unset_cartbounty_session_id();
+			//$plugin_public->unset_cartbounty_session_id();
 		}
 		else{
 			$this->log('info', "CartBounty: WooCommerce session doesn't exist." );
