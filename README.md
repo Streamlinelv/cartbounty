@@ -195,6 +195,11 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 4.5.1 =
+* Improved abandoned cart removal after order cempletion
+* Abandoned cart time calculations changed to local time
+* Removed link to product in the Cart contents column in case the product no longer exists
+
 ##### 4.5 =
 * Added option to move email field higher in the checkout form
 * Changed the script loading hook from "woocommerce_after_checkout_form" to "woocommerce_before_checkout_form"

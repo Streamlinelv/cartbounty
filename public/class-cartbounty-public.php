@@ -111,10 +111,11 @@ class CartBounty_Public{
 			$session_id = $cart_data['session_id'];
 			$product_array = $cart_data['product_array'];
 			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 
 			//In case if the cart has no items in it, we need to delete the abandoned cart
 			if(empty($product_array)){
-				$this->clear_cart_data();
+				$admin->clear_cart_data();
 				return;
 			}
 			
@@ -199,7 +200,6 @@ class CartBounty_Public{
 				}
 
 			}else{
-				
 				//Inserting row into Database
 				$wpdb->query(
 					$wpdb->prepare(
@@ -251,10 +251,11 @@ class CartBounty_Public{
 			$session_id = $cart_data['session_id'];
 			$product_array = $cart_data['product_array'];
 			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 
 			//In case if the user updates the cart and takes out all items from the cart
 			if(empty($product_array)){
-				$this->clear_cart_data();
+				$admin->clear_cart_data();
 				return;
 			}
 
@@ -309,7 +310,6 @@ class CartBounty_Public{
 				}
 				
 			}else{
-
 				//Looking if a user has previously made an order
 				//If not, using default WordPress assigned data
 				//Handling users name
@@ -397,10 +397,11 @@ class CartBounty_Public{
 				$cart_total = $cart_data['cart_total'];
 				$cart_currency = $cart_data['cart_currency'];
 				$current_time = $cart_data['current_time'];
+				$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 
 				//In case if the cart has no items in it, we need to delete the abandoned cart
 				if(empty($product_array)){
-					$this->clear_cart_data();
+					$admin->clear_cart_data();
 					return;
 				}
 
@@ -480,45 +481,6 @@ class CartBounty_Public{
 
 		}else{
 			return;
-		}
-	}
-
-	/**
-	 * Function to clear cart data from row
-	 *
-	 * @since    3.0
-	 */
-	function clear_cart_data(){
-		
-		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
-		
-		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
-		if(isset(WC()->session)){
-
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-			if(isset($cartbounty_session_id)){
-
-				$cart_data = $this->read_cart();
-				$cart_currency = $cart_data['cart_currency'];
-				$current_time = $cart_data['current_time'];
-				
-				//Cleaning Cart data
-				$wpdb->prepare('%s',
-					$wpdb->update(
-						$table_name,
-						array(
-							'cart_contents'	=>	'',
-							'cart_total'	=>	0,
-							'currency'		=>	sanitize_text_field( $cart_currency ),
-							'time'			=>	sanitize_text_field( $current_time )
-						),
-						array('session_id' => $cartbounty_session_id),
-						array('%s', '%s'),
-						array('%s')
-					)
-				);
-			}
 		}
 	}
 
@@ -739,16 +701,6 @@ class CartBounty_Public{
 			}
 		}
 		return $fields;
-	}
-
-	/**
-	 * Function unsets session variable
-	 *
-	 * @since    3.0
-	 */
-	function unset_cartbounty_session_id(){
-		//Removing stored ID value from WooCommerce Session
-		WC()->session->__unset('cartbounty_session_id');
 	}
 
 	/**

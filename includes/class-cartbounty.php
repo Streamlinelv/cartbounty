@@ -124,8 +124,8 @@ class CartBounty{
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_wp_cron_warnings'); //Outputing warnings if any of the WP Cron events are note scheduled or if WP Cron is disabled
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $plugin_admin, 'send_email'); //Hooks into Wordpress cron event to launch function for sending out e-mails
 		$this->loader->add_filter( 'woocommerce_billing_fields', $plugin_admin, 'lift_checkout_email_field', 10, 1); //Moves email field in the checkout higher to capture more abandoned carts
-		$this->loader->add_action( 'woocommerce_new_order', $plugin_admin, 'delete_user_data'); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
-		$this->loader->add_action( 'woocommerce_thankyou', $plugin_admin, 'delete_user_data'); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
+		$this->loader->add_action( 'woocommerce_new_order', $plugin_admin, 'clear_cart_data'); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
+		$this->loader->add_action( 'woocommerce_thankyou', $plugin_admin, 'clear_cart_data'); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
 	}
 
 	/**

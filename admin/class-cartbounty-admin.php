@@ -116,15 +116,19 @@ class CartBounty_Admin{
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		
 		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
-			
-			//Counting newly abandoned carts
-			$order_count = $wpdb->get_var(
+			$time = $this->get_time_intervals();
+			// Retrieve from database rows that have not been e-mailed and are older than 60 minutes
+			$order_count = $wpdb->get_var( //Counting newly abandoned carts
 				$wpdb->prepare(
-					"SELECT COUNT(id) FROM $table_name
+					"SELECT COUNT(id)
+					FROM $table_name
 					WHERE
-					cart_contents != '' AND time < (NOW() - INTERVAL %d MINUTE) AND 
-					time > (NOW() - INTERVAL %d MINUTE)"
-				, CARTBOUNTY_STILL_SHOPPING, CARTBOUNTY_NEW_NOTICE )
+					cart_contents != '' AND
+					time < %s AND 
+					time > %s ",
+					$time['cart_abandoned'],
+					$time['old_cart']
+				)
 			);
 			
 			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for CartBounty Abandoned carts
@@ -471,8 +475,6 @@ class CartBounty_Admin{
 
 		//Checking if we are on open plugin page
 		if ($pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY){
-			
-				
 				//Checking if WP Cron hooks are scheduled
 				$missing_hooks = array();
 				$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
@@ -528,15 +530,17 @@ class CartBounty_Admin{
 		global $wpdb;
 		
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		
+		$time = $this->get_time_intervals();
+
 		// Retrieve from database rows that have not been e-mailed and are older than 60 minutes
 		$rows_to_email = $wpdb->get_var(
-			"SELECT COUNT(id) FROM ". $table_name ."
-			WHERE mail_sent = 0 AND cart_contents != '' AND time < (NOW() - INTERVAL ". CARTBOUNTY_STILL_SHOPPING ." MINUTE)"
+			$wpdb->prepare(
+				"SELECT COUNT(id) FROM ". $table_name ."
+				WHERE mail_sent = 0 AND cart_contents != '' AND time < %s", $time['cart_abandoned']
+			)
 		);
 		
-		if ($rows_to_email){ //If we have new rows in the database				
-			echo esc_html( sprintf( __( 'Character set: %s', CARTBOUNTY_TEXT_DOMAIN), get_option('blog_charset')));
+		if ($rows_to_email){ //If we have new rows in the database
 			$user_settings_email = get_option('cartbounty_notification_email'); //Retrieving email address if the user has entered one
 			if($user_settings_email == '' || $user_settings_email == NULL){
 				$to = get_option( 'admin_email' );
@@ -558,9 +562,17 @@ class CartBounty_Admin{
 			wp_mail( esc_html($to), esc_html($subject), $message, $headers );
 			
 			//Update mail_sent status to true with mail_status = 0 and are older than 60 minutes
-			$wpdb->query( $wpdb->prepare("UPDATE ". $table_name ." 
-				SET mail_sent = %d 
-				WHERE mail_sent = %d AND cart_contents != '' AND time < (NOW() - INTERVAL %d MINUTE)", 1, 0, CARTBOUNTY_STILL_SHOPPING)
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $table_name
+					SET mail_sent = %d 
+					WHERE mail_sent = %d AND
+					cart_contents != '' AND
+					time < %s",
+					1,
+					0,
+					$time['cart_abandoned']
+				)
 			);
 		}
 	}
@@ -826,14 +838,15 @@ class CartBounty_Admin{
 		
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$time = $this->get_time_intervals();
 
 		//Deleting row from database
 		$count = $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM ". $table_name ."
 				WHERE cart_contents = '' AND
-				time < (NOW() - INTERVAL %d DAY)",
-				1
+				time < %s",
+				$time['day']
 			)
 		);
 
@@ -845,43 +858,41 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function in order to delete row from table if the user completes the checkout
+	 * Function to clear cart data from row
 	 *
-	 * @since    1.3
+	 * @since    3.0
 	 */
-	function delete_user_data(){
+	function clear_cart_data(){
+		
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
-		$plugin_public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-
+		
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
 
-			$session_id = WC()->session->get_customer_id();
-			if(isset($session_id)){
-
-				$this->log('info', "CartBounty: Clearing user's abandned cart. Session ID: " . $session_id );
-
-				//Deleting row from database
-				//$wpdb->delete( $table_name, array( 'session_id' => sanitize_key( $session_id )));
-				//for testing pursposes - clearing abandoned cart data. They are going to be deleted in 24 hours
-				//$plugin_public->clear_cart_data();
-
-				//Clearing cart data
-				$updated_rows = $wpdb->update( $table_name, array( 'cart_contents' => '', 'cart_total' => 0 ), array( 'session_id' => $session_id ));
-				$this->log('info', "CartBounty: Cleared row count: " . $updated_rows );
-
-				//Disabling this since this is already done in the delete_empty_carts() function
-				//$plugin_public->decrease_captured_abandoned_cart_count( $count = false ); //Decreasing total count of captured abandoned carts
+			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+			if(isset($cartbounty_session_id)){
+				$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+				$cart_data = $public->read_cart();
+				$cart_currency = $cart_data['cart_currency'];
+				$current_time = $cart_data['current_time'];
+				
+				//Cleaning Cart data
+				$wpdb->prepare('%s',
+					$wpdb->update(
+						$table_name,
+						array(
+							'cart_contents'	=>	'',
+							'cart_total'	=>	0,
+							'currency'		=>	sanitize_text_field( $cart_currency ),
+							'time'			=>	sanitize_text_field( $current_time )
+						),
+						array('session_id' => $cartbounty_session_id),
+						array('%s', '%s'),
+						array('%s')
+					)
+				);
 			}
-			else{
-				$this->log('info', "CartBounty: CartBounty session doesn't exist." );
-			}
-			
-			//$plugin_public->unset_cartbounty_session_id();
-		}
-		else{
-			$this->log('info', "CartBounty: WooCommerce session doesn't exist." );
 		}
 	}
 
@@ -953,16 +964,18 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Outputs debugging information to WooCommerce log
+	 * Function prepares and returns an array of different time intervals used for calulating time substractions
 	 *
-	 * @since 4.6
+	 * @since    4.6
+	 * return: 	 Array
 	 */
-	function log($level, $message){
-		//if(get_option('cartbounty_logging_status')){
-			$logger = wc_get_logger();
-			$woocommerce_log_name = array( 'source' => CARTBOUNTY_PLUGIN_NAME_SLUG );
-			$logger->log( $level, $message, $woocommerce_log_name );
-		//}
+	public function get_time_intervals(){
+		//Calculating time intervals
+		$datetime = current_time( 'mysql' );
+		return array(
+			'cart_abandoned' 	=> date( 'Y-m-d H:i:s', strtotime( '-' . CARTBOUNTY_STILL_SHOPPING . ' minutes', strtotime( $datetime ) ) ),
+			'old_cart' 			=> date( 'Y-m-d H:i:s', strtotime( '-' . CARTBOUNTY_NEW_NOTICE . ' minutes', strtotime( $datetime ) ) ),
+			'day' 				=> date( 'Y-m-d H:i:s', strtotime( '-1 day', strtotime( $datetime ) ) )
+		);
 	}
-
 }

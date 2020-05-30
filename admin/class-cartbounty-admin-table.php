@@ -128,28 +128,24 @@ class CartBounty_Table extends WP_List_Table{
      */
     function column_cart_contents($item){
         //Retrieving array from database column cart_contents
-        $product_array = @unserialize($item['cart_contents']);
+        $product_array = unserialize($item['cart_contents']);
         
         if ($product_array){
             //Creating Cart content output in a list
             $output = '<ul class="wlcfc-product-list">';
             foreach($product_array as $product){
-                if(is_array($product)){ //After version 1.4
-                    if(isset($product['product_title'])){ //After version 2.0
+                if(is_array($product)){
+                    if(isset($product['product_title'])){
                         $product_title = esc_html($product['product_title']);
-                        $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                         $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
-                        $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
-                    }else{
-                        $product_title = $product[0];
-                        $edit_product_link = get_edit_post_link( $product[2], '&' ); //Get product link by product ID
-                        $quantity = " (". $product[1] .")"; //Enclose product quantity in brackets
-                        $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
+                        $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
+                        if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
+                            $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
+                        }else{
+                            $output .= '<li>'. $product_title . $quantity .'</li>';
+                        }
                     }
-                }else{ //Prior version 1.4
-                    $output .= '<li>'. $product .'</li>';
                 }
-               
             }
             $output .= '</ul>';
             
