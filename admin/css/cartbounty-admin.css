@@ -65,7 +65,7 @@
 }
 
 .woocommerce_page_cartbounty .column-time{
-	width: 130px;
+	width: 140px;
 }
 
 #cartbounty-table .column-id{
@@ -78,6 +78,28 @@
 
 .cartbounty-tab-icon{
 	padding: 2px 5px 2px 5px;
+}
+
+.cartbounty-tab-icon.cartbounty-logo{
+	padding-top: 1px;
+}
+
+.cartbounty-customer-icon,
+.cartbounty-time-icon{
+	height: 15px;
+	width: auto;
+	position: relative;
+	top: 2px;
+	padding-right: 7px;
+	fill: #555;
+}
+
+.cartbounty-customer-icon{
+	height: 14px;
+}
+
+.cartbounty-time-icon{
+	top: 3px;
 }
 
 .cartbounty-tab-name{

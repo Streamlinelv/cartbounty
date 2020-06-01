@@ -422,14 +422,16 @@ class CartBounty_Admin{
 		foreach( $tabs as $tab => $name ){
 			if($name == 'Settings'){
 				$icon_class = 'dashicons-admin-generic';
+				$icon_image = '';
 			}
 			elseif($name == 'Exit Intent'){
 				//$icon_image = '';
 				$icon_class = 'cartbounty-exit-intent-icon';
-				$icon_image = "<img src='data:image/svg+xml;base64," . $this->exit_intent_svg_icon() . "' alt=''  />";
+				$icon_image = "<img src='data:image/svg+xml;base64," . $this->exit_intent_svg_icon($current) . "' alt=''  />";
 			}
 			else{
-				$icon_class = 'dashicons-cart';
+				$icon_class = 'cartbounty-logo';
+				$icon_image = "<img src='data:image/svg+xml;base64," . $this->cartbounty_svg_icon($current) . "' alt=''  />";
 			}
 			
 			$class = ( $tab == $current ) ? ' nav-tab-active' : ''; //if the tab is open, an additional class, nav-tab-active, is added
@@ -952,9 +954,27 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 * return: 	 String
 	 */
-	public function exit_intent_svg_icon(){
-		return base64_encode('<?xml version="1.0" encoding="UTF-8"?>
-			<svg height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61.75 63.11"><defs><style>.cls-1{fill:#1B1A19;}</style></defs><title>Untitled-2</title><path class="cls-1" d="M26.32,6.24A6.24,6.24,0,1,1,20.07,0a6.24,6.24,0,0,1,6.24,6.24h0Z"/><path class="cls-1" d="M55.43,39.26C48.88,43.09,45,37.47,42,32.07c-0.13-.52-5.27-10.44-7.77-14.79,4.89-1.56,9.35-.13,12.86,4.79,2.85,4,9.53.16,6.64-3.88C46.94,8.67,36.8,6.3,26.66,12.32c-0.42.25-2.33,1.3-2.76,1.56-6.31,3.75-12.17,3-16.54-3.1-2.86-4-9.54-.16-6.65,3.89,5.59,7.82,13.43,10.8,21.67,8.27,2.59,4.45,5,9,7.41,13.54-3.49,1.79-10,5.39-11.71,8.71C16,49.32,14,53.53,12,57.7c-2.17,4.48,4.8,7.73,7,3.27,1.92-4,6.28-12.22,6.53-12.43,3.48-3,12.25-7.18,12.44-7.28,5.35,6.79,12.81,10.52,21.75,5.3,4.71-2.75.45-10.07-4.27-7.31h0Z"/></svg>
+	public function exit_intent_svg_icon($current){
+		$color = '#555';
+		if($current == 'exit_intent'){
+			$color = '#000';
+		}
+		return base64_encode('<svg height="18px" style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61.75 63.11"><path d="M26.32,6.24A6.24,6.24,0,1,1,20.07,0a6.24,6.24,0,0,1,6.24,6.24h0Z"/><path d="M55.43,39.26C48.88,43.09,45,37.47,42,32.07c-0.13-.52-5.27-10.44-7.77-14.79,4.89-1.56,9.35-.13,12.86,4.79,2.85,4,9.53.16,6.64-3.88C46.94,8.67,36.8,6.3,26.66,12.32c-0.42.25-2.33,1.3-2.76,1.56-6.31,3.75-12.17,3-16.54-3.1-2.86-4-9.54-.16-6.65,3.89,5.59,7.82,13.43,10.8,21.67,8.27,2.59,4.45,5,9,7.41,13.54-3.49,1.79-10,5.39-11.71,8.71C16,49.32,14,53.53,12,57.7c-2.17,4.48,4.8,7.73,7,3.27,1.92-4,6.28-12.22,6.53-12.43,3.48-3,12.25-7.18,12.44-7.28,5.35,6.79,12.81,10.52,21.75,5.3,4.71-2.75.45-10.07-4.27-7.31h0Z"/></svg>
+		');
+    }
+
+    /**
+	 * Function returns CartBounty icon as SVG code
+	 *
+	 * @since    4.6
+	 * return: 	 String
+	 */
+	public function cartbounty_svg_icon($current){
+		$color = '#555';
+		if($current == 'carts'){
+			$color = '#000';
+		}
+		return base64_encode('<svg height="18px" style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.34 29.48"><path d="M7.65,24c-2.43,0-3.54-1.51-3.54-2.91V3.44C3.77,3.34,3,3.15,2.48,3L.9,2.59A1.28,1.28,0,0,1,0,1.15,1.32,1.32,0,0,1,1.34,0a1.52,1.52,0,0,1,.42.06l.68.2c1.38.41,2.89.85,3.25,1A1.72,1.72,0,0,1,6.79,2.8V5.16L24.67,7.53a1.75,1.75,0,0,1,1.67,2v6.1a3.45,3.45,0,0,1-3.59,3.62h-16v1.68c0,.14,0,.47,1.07.47H21.13a1.32,1.32,0,0,1,1.29,1.38,1.35,1.35,0,0,1-.25.79,1.18,1.18,0,0,1-1,.5Zm-.86-7.5,15.76,0c.41,0,1.11,0,1.11-1.45V10c-3-.41-13.49-1.69-16.87-2.11Z"/><path d="M21.78,29.48a4,4,0,1,1,4-4A4,4,0,0,1,21.78,29.48Zm0-5.37a1.35,1.35,0,1,0,1.34,1.34A1.35,1.35,0,0,0,21.78,24.11ZM10.14,29.48a4,4,0,1,1,4-4A4,4,0,0,1,10.14,29.48Zm0-5.37a1.35,1.35,0,1,0,1.34,1.34A1.34,1.34,0,0,0,10.14,24.11Z"/><path d="M18.61,18.91a1.34,1.34,0,0,1-1.34-1.34v-9a1.34,1.34,0,1,1,2.67,0v9A1.34,1.34,0,0,1,18.61,18.91Z"/><path d="M12.05,18.87a1.32,1.32,0,0,1-1.34-1.29v-10a1.34,1.34,0,0,1,2.68,0v10A1.32,1.32,0,0,1,12.05,18.87Z"/></svg>
 		');
     }
 
