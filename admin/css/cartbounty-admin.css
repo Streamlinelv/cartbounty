@@ -15,7 +15,9 @@
 .cartbounty-close,
 #cartbounty-go-pro-header-image a,
 #cartbounty-page-wrapper .submit:after,
-.cartbounty-exit-intent-type .button{
+.cartbounty-exit-intent-type .button,
+.cartbounty-tooltip .tooltiptext,
+.woocommerce_page_cartbounty td.cart_contents img{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
@@ -45,7 +47,7 @@
 	font-size: 20px;
 	line-height: 26px;
 }
- 
+
 .wlcfc-product-list{
 	list-style-type: decimal;
 	list-style-position: outside;
@@ -53,12 +55,17 @@
 	margin: 0;
 }
 
-.woocommerce_page_cartbounty .column-cart_contents{
+.woocommerce_page_cartbounty .cartbounty-without-thumbnails .column-cart_contents{
 	width: 350px;
 }
 
+.woocommerce_page_cartbounty .column-cart_contents{
+	width: 20%;
+	line-height: 1em;
+}
+
 .woocommerce_page_cartbounty .column-time{
-	width: 180px;
+	width: 130px;
 }
 
 #cartbounty-table .column-id{
@@ -392,6 +399,68 @@
 	margin: 8px 0 0;
 	background: #23282d;
 	color: #fff;
+}
+
+.woocommerce_page_cartbounty td.cart_contents a{
+	display: inline-block;
+	line-height: 1em;
+}
+
+.woocommerce_page_cartbounty td.cart_contents img{
+	height: 40px;
+	width: auto;
+	display: inline-block;
+	opacity: .8;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	margin: 3px 5px;
+}
+
+.cartbounty-tooltip{
+	position: relative;
+	display: inline-block;
+}
+
+.cartbounty-tooltip .tooltiptext{
+	visibility: hidden;
+	width: 120px;
+	color: #fff;
+	text-align: center;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 5px 8px;
+	position: absolute;
+	z-index: 1;
+	bottom: 122%;
+	left: 50%;
+	margin-left: -68px;
+	font-size: 12px;
+	line-height: 1.5em;
+	background: #343434;
+	opacity: 0;
+}
+
+.cartbounty-tooltip .tooltiptext:after{
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #343434 transparent transparent transparent;
+}
+
+.cartbounty-tooltip:hover .tooltiptext{
+	visibility: visible;
+	opacity: 1;
+	bottom: 115%;
+}
+
+#cartbounty-table tr:hover img{
+	opacity: 1;
 }
 
 @media screen and (max-width: 1200px) {

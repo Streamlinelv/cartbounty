@@ -124,7 +124,7 @@ class CartBounty_Public{
 			(isset($_POST['cartbounty_surname'])) ? $surname = $_POST['cartbounty_surname'] : $surname = '';
 			(isset($_POST['cartbounty_phone'])) ? $phone = $_POST['cartbounty_phone'] : $phone = '';
 			(isset($_POST['cartbounty_country'])) ? $country = $_POST['cartbounty_country'] : $country = '';
-			(isset($_POST['cartbounty_city']) && $_POST['cartbounty_city'] != '') ? $city = ", ". $_POST['cartbounty_city'] : $city = '';
+			(isset($_POST['cartbounty_city']) && $_POST['cartbounty_city'] != '') ? $city = $_POST['cartbounty_city'] : $city = '';
 			(isset($_POST['cartbounty_billing_company'])) ? $company = $_POST['cartbounty_billing_company'] : $company = '';
 			(isset($_POST['cartbounty_billing_address_1'])) ? $address_1 = $_POST['cartbounty_billing_address_1'] : $address_1 = '';
 			(isset($_POST['cartbounty_billing_address_2'])) ? $address_2 = $_POST['cartbounty_billing_address_2'] : $address_2 = '';
@@ -148,7 +148,6 @@ class CartBounty_Public{
 				'cartbounty_billing_address_1' 		=> $address_1,
 				'cartbounty_billing_address_2' 		=> $address_2,
 				'cartbounty_billing_state' 			=> $state,
-				'cartbounty_billing_postcode' 		=> $postcode,
 				'cartbounty_shipping_first_name' 	=> $shipping_name,
 				'cartbounty_shipping_last_name' 	=> $shipping_surname,
 				'cartbounty_shipping_company' 		=> $shipping_company,
@@ -163,7 +162,11 @@ class CartBounty_Public{
 				'cartbounty_ship_elsewhere' 		=> $ship_elsewhere
 			);
 			
-			$location = $country . $city;
+			$location = array(
+				'country' 	=> $country,
+				'city' 		=> $city,
+				'postcode' 	=> $postcode
+			);
 
 			$current_session_exist_in_db = $this->current_session_exist_in_db($cartbounty_session_id);
 			//If we have already inserted the Users session ID in Session variable and it is not NULL and Current session ID exists in Database we update the abandoned cart row
@@ -178,8 +181,8 @@ class CartBounty_Public{
 							'surname'		=>	sanitize_text_field( $surname ),
 							'email'			=>	sanitize_email( $_POST['cartbounty_email'] ),
 							'phone'			=>	filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
-							'location'		=>	sanitize_text_field( $location ),
-							'cart_contents'	=>	serialize($product_array),
+							'location'		=>	sanitize_text_field( serialize($location) ),
+							'cart_contents'	=>	serialize( $product_array ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time ),
@@ -210,9 +213,9 @@ class CartBounty_Public{
 							sanitize_text_field( $name ),
 							sanitize_text_field( $surname ),
 							sanitize_email( $_POST['cartbounty_email'] ),
-							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
-							sanitize_text_field( $location ),
-							serialize($product_array),
+							filter_var( $phone, FILTER_SANITIZE_NUMBER_INT ),
+							sanitize_text_field( serialize($location) ),
+							serialize( $product_array ),
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currency ),
 							sanitize_text_field( $current_time ),
@@ -290,7 +293,7 @@ class CartBounty_Public{
 					$wpdb->update(
 						$table_name,
 						array(
-							'cart_contents'	=>	serialize($product_array),
+							'cart_contents'	=>	serialize( $product_array ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time )
@@ -340,16 +343,28 @@ class CartBounty_Public{
 				//Handling users address
 				if($current_user->billing_country){
 					$country = $current_user->billing_country;
-					if($current_user->billing_city){ //checking if the city was entered
-						$city = ", ". $current_user->billing_city;
-					}else{
-						$city = '';
-					}
-					$location = $country . $city; 
 				}else{
-					$location = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
-					$location = $location['country'];
+					$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
+					$country = $country['country'];
 				}
+
+				if($current_user->billing_city){
+					$city = $current_user->billing_city;
+				}else{
+					$city = '';
+				}
+
+				if($current_user->billing_postcode){
+					$postcode = $current_user->billing_postcode;
+				}else{
+					$postcode = '';
+				}
+
+				$location = array(
+					'country' 	=> $country,
+					'city' 		=> $city,
+					'postcode' 	=> $postcode
+				);
 
 				//Inserting row into Database
 				$wpdb->query(
@@ -361,9 +376,9 @@ class CartBounty_Public{
 							sanitize_text_field( $name ),
 							sanitize_text_field( $surname ),
 							sanitize_email( $email ),
-							filter_var($phone, FILTER_SANITIZE_NUMBER_INT),
-							sanitize_text_field( $location ),
-							serialize($product_array),
+							filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
+							sanitize_text_field( serialize($location) ),
+							serialize( $product_array ),
 							sanitize_text_field( $cart_total ),
 							sanitize_text_field( $cart_currency ),
 							sanitize_text_field( $current_time ),
@@ -410,7 +425,7 @@ class CartBounty_Public{
 					$wpdb->update(
 						$table_name,
 						array(
-							'cart_contents'	=>	serialize($product_array),
+							'cart_contents'	=>	serialize( $product_array ),
 							'cart_total'	=>	sanitize_text_field( $cart_total ),
 							'currency'		=>	sanitize_text_field( $cart_currency ),
 							'time'			=>	sanitize_text_field( $current_time )
@@ -650,42 +665,56 @@ class CartBounty_Public{
 
 		if($row){ //If we have a user with such session ID in the database
 
-			$other_fields = unserialize($row->other_fields);
-			
-			$parts = explode(',', $row->location); //Splits the Location field into parts where there are commas
-			if (count($parts) > 1) {
-			   $country = $parts[0];
-			   $city = trim($parts[1]); //Trim removes white space before and after the string
-			}
-			else{
-				$country = $parts[0];
-				$city = '';
-			}
+			$other_fields = @unserialize($row->other_fields);
 
-			//Filling Checkout field values back with previously entered values
-			(empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : '';
+			if(is_serialized($row->location)){ //Since version 4.6
+	            $location_data = unserialize($row->location);
+	            $country = $location_data['country'];
+	            $city = $location_data['city'];
+	            $postcode = $location_data['postcode'];
+
+	        }else{ //Prior version 4.6. Will be removed in future releases
+	        	$parts = explode(',', $row->location); //Splits the Location field into parts where there are commas
+	            if (count($parts) > 1) {
+	                $country = $parts[0];
+	                $city = trim($parts[1]); //Trim removes white space before and after the string
+	            }
+	            else{
+	                $country = $parts[0];
+	                $city = '';
+	            }
+
+	            $postcode = '';
+                if(isset($other_fields['cartbounty_billing_postcode'])){
+                    $postcode = $other_fields['cartbounty_billing_postcode'];
+                }
+	        }
+
+	        (empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : '';
 			(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
-			(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_company'])) : '';
 			(empty( $_POST['billing_country'])) ? $_POST['billing_country'] = sprintf('%s', esc_html($country)) : '';
-			(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_1'])) : '';
-			(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_2'])) : '';
 			(empty( $_POST['billing_city'])) ? $_POST['billing_city'] = sprintf('%s', esc_html($city)) : '';
-			(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_state'])) : '';
-			(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_postcode'])) : '';
 			(empty( $_POST['billing_phone'])) ? $_POST['billing_phone'] = sprintf('%s', esc_html($row->phone)) : '';
 			(empty( $_POST['billing_email'])) ? $_POST['billing_email'] = sprintf('%s', esc_html($row->email)) : '';
-			
-			(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_first_name'])) : '';
-			(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_last_name'])) : '';
-			(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_company'])) : '';
-			(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_country'])) : '';
-			(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_1'])) : '';
-			(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_2'])) : '';
-			(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_city'])) : '';
-			(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_state'])) : '';
-			(empty( $_POST['shipping_postcode'])) ? $_POST['shipping_postcode'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_postcode'])) : '';
-			(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['cartbounty_order_comments'])) : '';
-			
+			(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($postcode)) : '';
+
+			if($other_fields){
+				(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_company'])) : '';
+				(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_1'])) : '';
+				(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_2'])) : '';
+				(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_state'])) : '';
+				(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_postcode'])) : '';
+				(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_first_name'])) : '';
+				(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_last_name'])) : '';
+				(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_company'])) : '';
+				(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_country'])) : '';
+				(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_1'])) : '';
+				(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_2'])) : '';
+				(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_city'])) : '';
+				(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_state'])) : '';
+				(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['cartbounty_order_comments'])) : '';
+			}
+
 			//Checking if Create account should be checked or not
 			if(isset($other_fields['cartbounty_create_account'])){
 				if($other_fields['cartbounty_create_account']){

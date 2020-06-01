@@ -39,17 +39,17 @@ class CartBounty_Table extends WP_List_Table{
      * @return array
      */
 	function get_columns(){
-	   return $columns= array(
-		  'cb'				=> 		'<input type="checkbox" />',
-		  'id'				=>		__('ID', CARTBOUNTY_TEXT_DOMAIN),
-		  'nameSurname'		=>		__('Name, Surname', CARTBOUNTY_TEXT_DOMAIN),
-		  'email'			=>		__('Email', CARTBOUNTY_TEXT_DOMAIN),
-		  'phone'			=>		__('Phone', CARTBOUNTY_TEXT_DOMAIN),
-          'location'        =>      __('Location', CARTBOUNTY_TEXT_DOMAIN),
-		  'cart_contents'	=>		__('Cart contents', CARTBOUNTY_TEXT_DOMAIN),
-		  'cart_total'		=>		__('Cart total', CARTBOUNTY_TEXT_DOMAIN),
-		  'time'			=>		__('Time', CARTBOUNTY_TEXT_DOMAIN)
-	   );
+        return $columns= array(
+            'cb'            => 		'<input type="checkbox" />',
+            'id'            =>		__('ID', CARTBOUNTY_TEXT_DOMAIN),
+            'name'          =>		__('Name, Surname', CARTBOUNTY_TEXT_DOMAIN),
+            'email'         =>		__('Email', CARTBOUNTY_TEXT_DOMAIN),
+            'phone'			=>		__('Phone', CARTBOUNTY_TEXT_DOMAIN),
+            'location'      =>      __('Location', CARTBOUNTY_TEXT_DOMAIN),
+            'cart_contents' =>		__('Cart contents', CARTBOUNTY_TEXT_DOMAIN),
+            'cart_total'    =>		__('Cart total', CARTBOUNTY_TEXT_DOMAIN),
+            'time'          =>		__('Time', CARTBOUNTY_TEXT_DOMAIN)
+        );
 	}
 	
 	/**
@@ -62,11 +62,12 @@ class CartBounty_Table extends WP_List_Table{
      */
 	public function get_sortable_columns(){
 		return $sortable = array(
-			'id'				=>		array('id', true),
-            'nameSurname'       =>      array('name', true),
-			'location'	     	=>		array('location', true),
-			'cart_total'		=>		array('cart_total', true),
-			'time'				=>		array('time', true)
+			'id'             =>		array('id', true),
+            'name'           =>     array('name', true),
+            'email'          =>     array('email', true),
+			'phone'          =>		array('phone', true),
+			'cart_total'     =>		array('cart_total', true),
+			'time'			 =>		array('time', true)
 		);
 	}
 	
@@ -90,7 +91,7 @@ class CartBounty_Table extends WP_List_Table{
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_nameSurname($item){
+    function column_name($item){
         // links going to /admin.php?page=[your_plugin_page][&other_params]
         // notice how we used $_REQUEST['page'], so action will be done on curren page
         // also notice how we use $this->_args['singular'] so in this example it will
@@ -118,6 +119,53 @@ class CartBounty_Table extends WP_List_Table{
             esc_html($item['email'])
         );
     }
+
+    /**
+     * Rendering location column
+     *
+     * @since    4.6
+     * @param $item - row (key, value array)
+     * @return HTML
+     */
+    function column_location($item){
+        if(is_serialized($item['location'])){ //Since version 4.6
+            $location_data = unserialize($item['location']);
+            $country = $location_data['country'];
+            $city = $location_data['city'];
+            $postcode = $location_data['postcode'];
+
+        }else{ //Prior version 4.6. Will be removed in future releases
+            $parts = explode(',', $item['location']); //Splits the Location field into parts where there are commas
+            if (count($parts) > 1) {
+                $country = $parts[0];
+                $city = trim($parts[1]); //Trim removes white space before and after the string
+            }
+            else{
+                $country = $parts[0];
+                $city = '';
+            }
+
+            $postcode = '';
+            if(is_serialized($item['other_fields'])){
+                $other_fields = @unserialize($item['other_fields']);
+                if(isset($other_fields['cartbounty_billing_postcode'])){
+                    $postcode = $other_fields['cartbounty_billing_postcode'];
+                }
+            }
+        }
+
+        $location = $country;
+        if(!empty($city)){
+             $location .= ', ' . $city;
+        }
+        if(!empty($postcode)){
+             $location .= ', ' . $postcode;
+        }
+
+        return sprintf('%s',
+            esc_html($location)
+        );
+    }
 	
 	/**
      * Rendering Cart Contents field
@@ -127,35 +175,64 @@ class CartBounty_Table extends WP_List_Table{
      * @return HTML
      */
     function column_cart_contents($item){
-        //Retrieving array from database column cart_contents
-        $product_array = unserialize($item['cart_contents']);
+        if(!is_serialized($item['cart_contents'])){
+            return;
+        }
+
+        $product_array = unserialize($item['cart_contents']); //Retrieving array from database column cart_contents
+        $output = '';
         
-        if ($product_array){
-            //Creating Cart content output in a list
-            $output = '<ul class="wlcfc-product-list">';
-            foreach($product_array as $product){
-                if(is_array($product)){
-                    if(isset($product['product_title'])){
-                        $product_title = esc_html($product['product_title']);
-                        $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
-                        $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
-                        if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                            $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
-                        }else{
-                            $output .= '<li>'. $product_title . $quantity .'</li>';
+        if($product_array){
+            if(get_option('cartbounty_hide_images')){ //Outputing Cart contents as a list
+                $output = '<ul class="wlcfc-product-list">';
+                foreach($product_array as $product){
+                    if(is_array($product)){
+                        if(isset($product['product_title'])){
+                            $product_title = esc_html($product['product_title']);
+                            $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
+                            $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
+                            if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
+                                $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
+                            }else{
+                                $output .= '<li>'. $product_title . $quantity .'</li>';
+                            }
+                        }
+                    }
+                }
+                $output .= '</ul>';
+
+            }else{ //Displaying cart contents with thumbnails
+                foreach($product_array as $product){
+                    if(is_array($product)){
+                        if(isset($product['product_title'])){
+                            //Checking product image
+                            if(!empty($product['product_variation_id'])){ //In case of a variable product
+                                $image = get_the_post_thumbnail_url($product['product_variation_id'], 'thumbnail');
+                                if(empty($image)){ //If variation didn't have an image set
+                                    $image = get_the_post_thumbnail_url($product['product_id'], 'thumbnail');
+                                }
+                            }else{ //In case of a simple product
+                                 $image = get_the_post_thumbnail_url($product['product_id'], 'thumbnail');
+                            }
+
+                            if(empty($image)){//In case product has no image, output default WooCommerce image
+                                $image = wc_placeholder_img_src('thumbnail');
+                            }
+
+                            $product_title = esc_html($product['product_title']);
+                            $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
+                            $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
+                            if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
+                                $output .= '<div class="cartbounty-tooltip"><span class="tooltiptext">'. $product_title . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title . $quantity .'" target="_blank"><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></a></div>';
+                            }else{
+                                $output .= '<div class="cartbounty-tooltip"><span class="tooltiptext">'. $product_title . $quantity .'</span><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></div>';
+                            }
                         }
                     }
                 }
             }
-            $output .= '</ul>';
-            
-            return sprintf('%s',
-                $output
-            );
         }
-        else{
-            return false;
-        }
+        return sprintf('%s', $output );
     }
 	
 	/**
@@ -179,16 +256,22 @@ class CartBounty_Table extends WP_List_Table{
      * @return HTML
      */
 	function column_time($item){
-		$database_time = $item['time'];
-		$date_time = new DateTime($database_time);
-		$date = $date_time->format('d.m.Y');
-		$time = $date_time->format('H:i:s');
-		
-		return sprintf(
-			'<span class="dashicons dashicons-clock"></span> %s %s',
-			esc_html($time),
-			esc_html($date)
-		);
+		$time = new DateTime($item['time']);
+		$full_date = $time->format('M d, Y H:i:s');
+		$utc_time = $time->format('U');
+
+        if($utc_time > strtotime( '-1 day', current_time( 'timestamp' ))){ //In case the abandoned cart is newly captued
+             $friendly_time = sprintf( 
+                /* translators: %1$s - Time, e.g. 1 minute, 5 hours */
+                __( '%1$s ago', CARTBOUNTY_TEXT_DOMAIN ),
+                human_time_diff( $utc_time,
+                current_time( 'timestamp' ))
+            );
+        }else{ //In case the abandoned cart is older tahn 24 hours
+            $friendly_time = $time->format('M d, Y');
+        }
+
+		return sprintf( '<time datetime="%1$s" title="%1$s">%2$s</time>', esc_html($full_date), esc_html($friendly_time));
 	}	
 	
 	/**

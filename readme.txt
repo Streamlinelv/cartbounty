@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.4
-Stable tag: 4.5.1
+Stable tag: 4.6
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -194,6 +194,12 @@ Example how to change the main title using a filter:
 4. How the Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 4.6 =
+* Introduced Compact abandoned cart contents with product thumbnails
+* Added Postcode to location output
+* Fixed abandoned cart sorting by Name and added sorting by Email and Phone number
+* Improved Time column output in a more user friendly way (hover to see get the exact time)
 
 = 4.5.1 =
 * Improved abandoned cart removal after order cempletion

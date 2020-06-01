@@ -174,7 +174,7 @@ class CartBounty_Admin{
 		}
 		?>
 
-		<div id="cartbounty-page-wrapper" class="wrap">
+		<div id="cartbounty-page-wrapper" class="wrap<?php if(get_option('cartbounty_hide_images')) {echo " cartbounty-without-thumbnails";}?>">
 
 			<?php if ( isset ( $_GET['tab'] ) ){
 				$this->create_admin_tabs($_GET['tab']);
@@ -196,7 +196,8 @@ class CartBounty_Admin{
 						<?php
 							settings_fields( 'cartbounty-settings' );
 							do_settings_sections( 'cartbounty-settings' );
-							$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
+							$lift_email_on = esc_attr( get_option('cartbounty_lift_email') );
+							$hide_images_on = esc_attr( get_option('cartbounty_hide_images') );
 						?>
 						<table id="cartbounty-settings-table" class="form-table">
 							<tr>
@@ -253,6 +254,14 @@ class CartBounty_Admin{
 										}?>
 										</small>
 									</p>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<label for="cartbounty-hide-images"><?php echo __('Display abandoned cart contents in a list:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<input id="cartbounty-hide-images" class="cartbounty-checkbox" type="checkbox" name="cartbounty_hide_images" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $hide_images_on, false ); ?> />
 								</td>
 							</tr>
 						</table>

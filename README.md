@@ -195,6 +195,13 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 4.6 =
+
+* Introduced Compact abandoned cart contents with product thumbnails
+* Added Postcode to location output
+* Fixed abandoned cart sorting by Name and added sorting by Email and Phone number
+* Improved Time column output in a more user friendly way (hover to see get the exact time)
+
 ##### 4.5.1 =
 * Improved abandoned cart removal after order cempletion
 * Abandoned cart time calculations changed to local time
