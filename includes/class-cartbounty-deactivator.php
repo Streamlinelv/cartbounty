@@ -11,17 +11,13 @@
 class CartBounty_Deactivator{
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Deactivation function
 	 *
 	 * @since    1.0
 	 */
 	public static function deactivate() {
-
 		//Deactivating Wordpress cron job functions and stop sending out e-mails
 		wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
 		wp_clear_scheduled_hook( 'cartbounty_remove_empty_carts_hook' );
-
 	}
 }

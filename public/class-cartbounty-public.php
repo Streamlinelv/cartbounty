@@ -35,8 +35,8 @@ class CartBounty_Public{
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param    string    $plugin_name       The name of the plugin.
+	 * @param    string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ){
 		global $wpdb;
@@ -443,9 +443,10 @@ class CartBounty_Public{
 	 * Function checks if current user session ID also exists in the database
 	 *
 	 * @since    3.0
-	 * @return  boolean
+	 * @return   boolean
+	 * @param    $cartbounty_session_id    Session ID
 	 */
-	function current_session_exist_in_db($cartbounty_session_id){
+	function current_session_exist_in_db( $cartbounty_session_id ){
 		//If we have saved the abandoned cart in session variable
 		if( $cartbounty_session_id !== NULL ){
 			global $wpdb;
@@ -503,8 +504,10 @@ class CartBounty_Public{
 	 * Function deletes duplicate abandoned carts from the database
 	 *
 	 * @since    4.4
+	 * @param    $cartbounty_session_id    Session ID
+	 * @param    $duplicate_count          Number of duplicate carts
 	 */
-	private function delete_duplicate_carts($cartbounty_session_id, $duplicate_count){
+	private function delete_duplicate_carts( $cartbounty_session_id, $duplicate_count ){
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
@@ -579,7 +582,8 @@ class CartBounty_Public{
 	 * Function returns product attributes
 	 *
 	 * @since    1.4.1
-	 * Return: String
+	 * @return   String
+	 * @param    $product_variations    Product variations - array
 	 */
 	public function attribute_slug_to_title( $product_variations ) {
 		global $woocommerce;
@@ -640,7 +644,8 @@ class CartBounty_Public{
 	 * Function restores previous Checkout form data for users who are not registered
 	 *
 	 * @since    2.0
-	 * Return: Input field values
+	 * @return   Input field values
+	 * @param    $fields    Checkout fields - array
 	 */
 	public function restore_input_data( $fields = array() ) {
 		global $wpdb;
@@ -703,7 +708,6 @@ class CartBounty_Public{
 				(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_1'])) : '';
 				(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_2'])) : '';
 				(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_state'])) : '';
-				(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_postcode'])) : '';
 				(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_first_name'])) : '';
 				(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_last_name'])) : '';
 				(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_company'])) : '';
@@ -746,8 +750,9 @@ class CartBounty_Public{
 	 * Function decreases the total count of captured abandoned carts
 	 *
 	 * @since    3.0
+	 * @param    $count    Abandoned cart number - integer 
 	 */
-	function decrease_captured_abandoned_cart_count($count){
+	function decrease_captured_abandoned_cart_count( $count ){
 		if(!$count){
 			$count = 1;
 		}
@@ -796,8 +801,9 @@ class CartBounty_Public{
 	 *
 	 * @since    3.0
 	 * @return   string
+	 * @param    $current_user_is_admin    If the current user has Admin rights or not - boolean
 	 */
-	function build_exit_intent_output($current_user_is_admin){
+	function build_exit_intent_output( $current_user_is_admin ){
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cartbounty_session_id = WC()->session->get('cartbounty_session_id'); //Retrieving current session ID from WooCommerce Session
@@ -861,8 +867,9 @@ class CartBounty_Public{
 	 *
 	 * @since    3.0
 	 * @return   string
+	 * @param    $color    Color code - string
 	 */
-	function invert_color($color){
+	function invert_color( $color ){
 	    $color = str_replace('#', '', $color);
 	    if (strlen($color) != 6){ return '000000'; }
 	    $rgb = '';
@@ -895,11 +902,11 @@ class CartBounty_Public{
 	 *
 	 * @since    3.0
 	 * @return   string
-	 * @param 	 string     $template_name - template to load.
-	 * @param 	 string     $string $template_path - path to templates.
-	 * @param    string     $default_path - default path to template files.
+	 * @param 	 string    $template_name - template to load.
+	 * @param 	 string    $string $template_path - path to templates.
+	 * @param    string    $default_path - default path to template files.
 	 */
-	function get_exit_intent_template_path($template_name, $template_path = '', $default_path = ''){
+	function get_exit_intent_template_path( $template_name, $template_path = '', $default_path = '' ){
 		// Set variable to search in woocommerce-plugin-templates folder of theme.
 		if ( ! $template_path ) :
 			$template_path = 'templates/';
@@ -926,14 +933,14 @@ class CartBounty_Public{
 	/**
 	 * Get the template.
 	 *
-	 * @since 3.0
+	 * @since    3.0
 	 *
-	 * @param string 	$template_name - template to load.
-	 * @param array 	$args - args passed for the template file.
-	 * @param string 	$string $template_path - path to templates.
-	 * @param string	$default_path - default path to template files.
+	 * @param    string    $template_name - template to load.
+	 * @param    array     $args - args passed for the template file.
+	 * @param    string    $string $template_path - path to templates.
+	 * @param    string	   $default_path - default path to template files.
 	 */
-	function get_template($template_name, $args = array(), $tempate_path = '', $default_path = '') {
+	function get_template( $template_name, $args = array(), $tempate_path = '', $default_path = '' ) {
 		if ( is_array( $args ) && isset( $args ) ){
 			extract( $args );
 		}
@@ -944,5 +951,4 @@ class CartBounty_Public{
 		}
 		include $template_file;
 	}
-
 }

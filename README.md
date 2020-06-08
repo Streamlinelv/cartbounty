@@ -203,7 +203,7 @@ Example how to change the main title using a filter:
 * Improved Time column output in a more user friendly way (hover to see get the exact time)
 
 ##### 4.5.1 =
-* Improved abandoned cart removal after order cempletion
+* Improved abandoned cart removal after order completion
 * Abandoned cart time calculations changed to local time
 * Removed link to product in the Cart contents column in case the product no longer exists
 

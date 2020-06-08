@@ -33,8 +33,8 @@ class CartBounty_Admin{
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param    string    $plugin_name       The name of this plugin.
+	 * @param    string    $version    	      The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ){
 
@@ -50,22 +50,10 @@ class CartBounty_Admin{
 	 */
 	public function enqueue_styles(){
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Plugin_Name_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
 		
-		//Do not continue if we are not on CARTBOUNTY plugin page
+		//Do not continue if we are not on CartBounty plugin page
 		if(!is_object($screen)){
 			return;
 		}
@@ -84,7 +72,7 @@ class CartBounty_Admin{
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
 		
-		//Do not continue if we are not on CARTBOUNTY plugin page
+		//Do not continue if we are not on CartBounty plugin page
 		if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
 			return;
 		}
@@ -413,6 +401,7 @@ class CartBounty_Admin{
 	 * Function creates tabs on plugin page
 	 *
 	 * @since    3.0
+	 * @param    $current    Currently open tab - string
 	 */
 	function create_admin_tabs( $current = 'carts' ){
 		$tabs = array( 'carts' => __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'settings' => __('Settings', CARTBOUNTY_TEXT_DOMAIN), 'exit_intent' => __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN));
@@ -513,7 +502,7 @@ class CartBounty_Admin{
 									_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(
 									/* translators: %s - Plugin name */
 									__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?>
-							</p>
+						</p>
 					</div>
 					<?php 
 				}
@@ -605,6 +594,8 @@ class CartBounty_Admin{
 	 * Adds custom action link on Plugin page under plugin name
 	 *
 	 * @since    1.2
+	 * @param    $actions        Action
+	 * @param    $plugin_file    Location of the plugin
 	 */
 	function add_plugin_action_links( $actions, $plugin_file ){
 		if ( ! is_array( $actions ) ) {
@@ -624,7 +615,11 @@ class CartBounty_Admin{
 	 * Function that merges the links on Plugin page under plugin name
 	 *
 	 * @since    1.2
-	 * @return array
+	 * @return   array
+	 * @param    $actions        Action
+	 * @param    $plugin_file    Location of the plugin
+	 * @param    $action_links   Action links - array
+	 * @param    $position       Postition
 	 */
 	function add_display_plugin_action_links( $actions, $plugin_file, $action_links = array(), $position = 'after' ){
 		static $plugin;
@@ -647,14 +642,12 @@ class CartBounty_Admin{
 	/**
 	 * Function calculates if time has passed since the given time period (In days)
 	 *
-	 * $option	= Option from WordPress database
-	 * $days	= Number that defines days
-	 *
 	 * @since    1.3
-	 * @return Boolean
+	 * @return   Boolean
+	 * @param    $option    Option from WordPress database
+	 * @param    $days      Number of days
 	 */
-	 
-	function days_have_passed($option, $days){
+	function days_have_passed( $option, $days ){
 		$last_time = esc_attr(get_option($option)); //Get time value from the database
 		$last_time = strtotime($last_time); //Convert time from text to Unix timestamp
 		
@@ -690,9 +683,10 @@ class CartBounty_Admin{
 	/**
 	 * Checks if we have to disable input field or not because of the users access right to save data
 	 *
-	 * @since     3.0
+	 * @since    3.0
+	 * @param    $options    Options
 	 */
-	function disableField($options = array()){
+	function disableField( $options = array() ){
 		if($options){
 			if($options['forced'] == true){
 				return 'disabled=""';
@@ -723,7 +717,7 @@ class CartBounty_Admin{
 							$saved_cart_count = $this->total_captured_abandoned_cart_count();
 						?>
 						<h2><?php echo sprintf(
-							/* translators: %s - Gets replaced by an excitement word e.g. Awesome!, %d - Abandoned cart count*/
+							/* translators: %s - Gets replaced by an excitement word e.g. Awesome!, %d - Abandoned cart count */
 							_n('%s You have already captured %d abandoned cart!', '%s You have already captured %d abandoned carts!', $saved_cart_count , CARTBOUNTY_TEXT_DOMAIN ), $expression['exclamation'], $saved_cart_count ); ?></h2>
 						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', CARTBOUNTY_TEXT_DOMAIN ); ?></p>
 						<div class="cartbounty-button-row">
@@ -819,8 +813,8 @@ class CartBounty_Admin{
 	/**
 	 * Returns the count of total captured abandoned carts
 	 *
-	 * @since 	2.1
-	 * @return 	number
+	 * @since    2.1
+	 * @return 	 number
 	 */
 	function total_captured_abandoned_cart_count(){
 		if ( false === ( $captured_abandoned_cart_count = get_transient( 'cartbounty_captured_abandoned_cart_count' ))){ //If value is not cached or has expired
@@ -834,7 +828,7 @@ class CartBounty_Admin{
 	/**
 	 * Sets the path to language folder for internationalization
 	 *
-	 * @since 	2.1
+	 * @since    2.1
 	 */
 	function cartbounty_text_domain(){
 		return load_plugin_textdomain( CARTBOUNTY_TEXT_DOMAIN, false, basename( plugin_dir_path( __DIR__ ) ) . '/languages' );
@@ -911,7 +905,7 @@ class CartBounty_Admin{
 	 * Function returns different expressions depending on the amount of captured carts
 	 *
 	 * @since    3.2.1
-	 * return: 	 String
+	 * @return 	 String
 	 */
 	function get_expressions(){
 
@@ -952,9 +946,10 @@ class CartBounty_Admin{
 	 * Function returns Exit Intent icon as SVG code
 	 *
 	 * @since    3.0
-	 * return: 	 String
+	 * @return 	 String
+	 * @param    $current    Current active tab - string
 	 */
-	public function exit_intent_svg_icon($current){
+	public function exit_intent_svg_icon( $current ){
 		$color = '#555';
 		if($current == 'exit_intent'){
 			$color = '#000';
@@ -967,9 +962,10 @@ class CartBounty_Admin{
 	 * Function returns CartBounty icon as SVG code
 	 *
 	 * @since    4.6
-	 * return: 	 String
+	 * @return 	 String
+	 * @param    $current    Current active tab - string
 	 */
-	public function cartbounty_svg_icon($current){
+	public function cartbounty_svg_icon( $current ){
 		$color = '#555';
 		if($current == 'carts'){
 			$color = '#000';
@@ -982,7 +978,8 @@ class CartBounty_Admin{
 	 * Function tries to move the email field higher in the checkout form
 	 *
 	 * @since    4.5
-	 * return: 	 Array
+	 * @return 	 Array
+	 * @param 	 $fields    Checkout form fields
 	 */ 
 	public function lift_checkout_email_field( $fields ) {
 		$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
@@ -996,7 +993,7 @@ class CartBounty_Admin{
 	 * Function prepares and returns an array of different time intervals used for calulating time substractions
 	 *
 	 * @since    4.6
-	 * return: 	 Array
+	 * @return 	 Array
 	 */
 	public function get_time_intervals(){
 		//Calculating time intervals

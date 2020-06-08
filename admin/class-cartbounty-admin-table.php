@@ -2,7 +2,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * Defines how Table should be outputed
+ * Defines how Abandoned cart Table should be displayed
  *
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce
  * @subpackage CartBounty - Save and recover abandoned carts for WooCommerce/admin
@@ -31,15 +31,13 @@ class CartBounty_Table extends WP_List_Table{
     }
 	
 	/**
-     * [REQUIRED] This method return columns to display in table
-     * you can skip columns that you do not want to show
-     * like content, or description
+     * This method return columns to display in table
      *
      * @since    1.0
-     * @return array
+     * @return   array
      */
 	function get_columns(){
-        return $columns= array(
+        return $columns = array(
             'cb'            => 		'<input type="checkbox" />',
             'id'            =>		__('ID', CARTBOUNTY_TEXT_DOMAIN),
             'name'          =>		__('Name, Surname', CARTBOUNTY_TEXT_DOMAIN),
@@ -53,49 +51,44 @@ class CartBounty_Table extends WP_List_Table{
 	}
 	
 	/**
-     * [OPTIONAL] This method return columns that may be used to sort table
+     * This method return columns that may be used to sort table
      * all strings in array - is column names
-     * notice that true on name column means that its default sort
+     * True on name column means that its default sort
      *
      * @since    1.0
-     * @return array
+     * @return   array
      */
 	public function get_sortable_columns(){
 		return $sortable = array(
-			'id'             =>		array('id', true),
-            'name'           =>     array('name', true),
-            'email'          =>     array('email', true),
-			'phone'          =>		array('phone', true),
-			'cart_total'     =>		array('cart_total', true),
-			'time'			 =>		array('time', true)
+			'id'                =>      array('id', true),
+            'name'              =>      array('name', true),
+            'email'             =>      array('email', true),
+            'phone'             =>      array('phone', true),
+            'cart_total'        =>      array('cart_total', true),
+            'time'              =>      array('time', true)
 		);
 	}
 	
 	/**
-     * [REQUIRED] this is a default column renderer
+     * This is a default column renderer
      *
      * @since    1.0
-     * @param $item - row (key, value array)
-     * @param $column_name - string (key)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
+     * @param    $column_name - string (key)
      */
-    function column_default($item, $column_name){
+    function column_default( $item, $column_name ){
         return $item[$column_name];
     }
 	
 	/**
-     * This is example, how to render column with actions,
-     * when you hover row "Edit | Delete" links showed
+     * Rendering Name column
      *
      * @since    1.0
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-    function column_name($item){
-        // links going to /admin.php?page=[your_plugin_page][&other_params]
-        // notice how we used $_REQUEST['page'], so action will be done on curren page
-        // also notice how we use $this->_args['singular'] so in this example it will
-        // be something like &person=2
+    function column_name( $item ){
         $actions = array(
             'delete' => sprintf('<a href="?page=%s&action=delete&id=%s">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'custom_table_example')),
         );
@@ -108,26 +101,26 @@ class CartBounty_Table extends WP_List_Table{
     }
 	
 	/**
-     * Rendering Email field
+     * Rendering Email column
      *
      * @since    1.0
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-    function column_email($item){
+    function column_email( $item ){
         return sprintf('<a href="mailto:%1$s" title="">%1$s</a>',
             esc_html($item['email'])
         );
     }
 
     /**
-     * Rendering location column
+     * Rendering Location column
      *
      * @since    4.6
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-    function column_location($item){
+    function column_location( $item ){
         if(is_serialized($item['location'])){ //Since version 4.6
             $location_data = unserialize($item['location']);
             $country = $location_data['country'];
@@ -168,13 +161,13 @@ class CartBounty_Table extends WP_List_Table{
     }
 	
 	/**
-     * Rendering Cart Contents field
+     * Rendering Cart Contents column
      *
      * @since    1.0
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-    function column_cart_contents($item){
+    function column_cart_contents( $item ){
         if(!is_serialized($item['cart_contents'])){
             return;
         }
@@ -223,7 +216,7 @@ class CartBounty_Table extends WP_List_Table{
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<div class="cartbounty-tooltip"><span class="tooltiptext">'. $product_title . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title . $quantity .'" target="_blank"><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></a></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="tooltiptext">'. $product_title . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title . $quantity .'" target="_blank"><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></a></div>';
                             }else{
                                 $output .= '<div class="cartbounty-tooltip"><span class="tooltiptext">'. $product_title . $quantity .'</span><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></div>';
                             }
@@ -236,12 +229,13 @@ class CartBounty_Table extends WP_List_Table{
     }
 	
 	/**
-     * Rendering Cart Total field
+     * Rendering Cart Total column
      *
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @since    1.0
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-    function column_cart_total($item){
+    function column_cart_total( $item ){
         return sprintf('%0.2f %s',
             esc_html($item['cart_total']),
             esc_html($item['currency'])
@@ -249,16 +243,17 @@ class CartBounty_Table extends WP_List_Table{
     }
 	
 	/**
-     * Render date column 
+     * Render Time column 
      *
      * @since    1.0
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-	function column_time($item){
+	function column_time( $item ){
 		$time = new DateTime($item['time']);
-		$full_date = $time->format('M d, Y H:i:s');
-		$utc_time = $time->format('U');
+		$date_iso = $time->format('c');
+        $date_title = $time->format('M d, Y H:i:s');
+        $utc_time = $time->format('U');
 
         if($utc_time > strtotime( '-1 day', current_time( 'timestamp' ))){ //In case the abandoned cart is newly captued
              $friendly_time = sprintf( 
@@ -271,19 +266,19 @@ class CartBounty_Table extends WP_List_Table{
             $friendly_time = $time->format('M d, Y');
         }
 
-		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%1$s" title="%1$s">%2$s</time>', esc_html($full_date), esc_html($friendly_time));
+		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%s" title="%s">%s</time>', esc_html($date_iso), esc_html($date_title), esc_html($friendly_time));
 	}	
 
     
 	
 	/**
-     * [REQUIRED] this is how checkbox column renders
+     * Rendering checkbox column
      *
      * @since    1.0
-     * @param $item - row (key, value array)
-     * @return HTML
+     * @return   HTML
+     * @param    $item - row (key, value array)
      */
-	function column_cb($item){
+	function column_cb( $item ){
 		return sprintf(
 			'<input type="checkbox" name="id[]" value="%s" />',
 			esc_html($item['id'])
@@ -291,10 +286,10 @@ class CartBounty_Table extends WP_List_Table{
 	}
 	
 	/**
-     * [OPTIONAL] Return array of bult actions if has any
+     * Return array of bulk actions if we have any
      *
      * @since    1.0
-     * @return array
+     * @return   array
      */
 	 function get_bulk_actions(){
         $actions = array(
@@ -304,11 +299,7 @@ class CartBounty_Table extends WP_List_Table{
     }
 
     /**
-     * [OPTIONAL] This method processes bulk actions
-     * it can be outside of class
-     * it can not use wp_redirect cause there is output already
-     * in this example we are processing delete action
-     * message about successful deletion will be shown on page in next part
+     * This method processes bulk actions
      *
      * @since    1.0
      */
@@ -345,9 +336,7 @@ class CartBounty_Table extends WP_List_Table{
     }
 	
 	/**
-     * [REQUIRED] This is the most important method
-     *
-     * It will get rows from database and prepare them to be showed in table
+     * Method that renders the table
      *
      * @since    1.0
      */
@@ -360,30 +349,23 @@ class CartBounty_Table extends WP_List_Table{
         $columns = $this->get_columns();
         $hidden = array();
         $sortable = $this->get_sortable_columns();
-
-        // here we configure table headers, defined in our methods
-        $this->_column_headers = array($columns, $hidden, $sortable);
-
-        // [OPTIONAL] process bulk action if any
-        $this->process_bulk_action();
-
-        // will be used in pagination settings
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
+        $this->_column_headers = array($columns, $hidden, $sortable); // here we configure table headers, defined in our methods
+        $this->process_bulk_action(); // process bulk action if any
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name"); // will be used in pagination settings
 
         // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;
-        $orderby = (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array_keys($this->get_sortable_columns()))) ? $_REQUEST['orderby'] : 'id';
+        $orderby = (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array_keys($this->get_sortable_columns()))) ? $_REQUEST['orderby'] : 'time';
         $order = (isset($_REQUEST['order']) && in_array($_REQUEST['order'], array('asc', 'desc'))) ? $_REQUEST['order'] : 'desc';
 
-        // [REQUIRED] configure pagination
+        // configure pagination
         $this->set_pagination_args(array(
             'total_items' => $total_items, // total items defined above
             'per_page' => $per_page, // per page constant defined at top of method
             'total_pages' => ceil($total_items / $per_page) // calculate pages count
         ));
 		
-		// [REQUIRED] define $items array
-        // notice that last argument is ARRAY_A, so we will retrieve array
+		// define $items array
         $this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE cart_contents != '' ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $paged * $per_page), ARRAY_A);
     }
 }

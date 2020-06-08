@@ -12,9 +12,9 @@
  * Developer URI: http://www.majas-lapu-izstrade.lv/en
  * 
  * WC requires at least: 2.2
- * WC tested up to: 3.8
+ * WC tested up to: 4.2
  *
- * Copyright: © 2009-2015 WooCommerce.
+ * Copyright: © 2018-2020 CartBounty
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -94,10 +94,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-cartbounty.php';
 
 /**
  * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
  *
  * @since    1.0
  */
