@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 4.6
+ * Version: 4.6.1
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -33,19 +33,19 @@ if($user_settings_notification_frequency == '' || $user_settings_notification_fr
 }
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '4.6');
-if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce');
-if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty');
-if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty');
-if (!defined('CARTBOUNTY_BASENAME')) define( 'CARTBOUNTY_BASENAME', plugin_basename( __FILE__ ));
-if (!defined('CARTBOUNTY_TABLE_NAME')) define( 'CARTBOUNTY_TABLE_NAME', 'captured_wc_fields');
-if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER_URL', 'https://www.cartbounty.com');
-if (!defined('CARTBOUNTY_REVIEW_LINK')) define('CARTBOUNTY_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post');
-if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-save-abandoned-carts');
-if (!defined('CARTBOUNTY_ABREVIATION')) define( 'CARTBOUNTY_ABREVIATION', 'CartBounty');
-if (!defined('CARTBOUNTY_EMAIL_INTERVAL')) define( 'CARTBOUNTY_EMAIL_INTERVAL', $frequency); //In minutes. Defines the interval at which e-mailing function is fired
-if (!defined('CARTBOUNTY_STILL_SHOPPING')) define( 'CARTBOUNTY_STILL_SHOPPING', 60); //In minutes. Defines the time period after which an e-mail notice will be sent to admin and the cart is presumed abandoned
-if (!defined('CARTBOUNTY_NEW_NOTICE')) define( 'CARTBOUNTY_NEW_NOTICE', 240); //Defining time in minutes how long New status is shown in the table
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '4.6.1' );
+if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
+if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
+if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
+if (!defined('CARTBOUNTY_BASENAME')) define( 'CARTBOUNTY_BASENAME', plugin_basename( __FILE__ ) );
+if (!defined('CARTBOUNTY_TABLE_NAME')) define( 'CARTBOUNTY_TABLE_NAME', 'captured_wc_fields' );
+if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER_URL', 'https://www.cartbounty.com' );
+if (!defined('CARTBOUNTY_REVIEW_LINK')) define('CARTBOUNTY_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post' );
+if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-save-abandoned-carts' );
+if (!defined('CARTBOUNTY_ABREVIATION')) define( 'CARTBOUNTY_ABREVIATION', 'CartBounty' );
+if (!defined('CARTBOUNTY_EMAIL_INTERVAL')) define( 'CARTBOUNTY_EMAIL_INTERVAL', $frequency ); //In minutes. Defines the interval at which e-mailing function is fired
+if (!defined('CARTBOUNTY_STILL_SHOPPING')) define( 'CARTBOUNTY_STILL_SHOPPING', 60 ); //In minutes. Defines the time period after which an e-mail notice will be sent to admin and the cart is presumed abandoned
+if (!defined('CARTBOUNTY_NEW_NOTICE')) define( 'CARTBOUNTY_NEW_NOTICE', 240 ); //Defining time in minutes how long New status is shown in the table
 
 //Registering custom options
 register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );

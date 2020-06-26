@@ -40,7 +40,7 @@ While continuing our work on [Mājas lapu izstrāde](https://www.majas-lapu-izst
 
 #### Plugin dependencies:
 
-1. Uses WordPress private WP_List_Table class in order to output the table in the admin section. If this class changes, the table and all of its functions might break.
+1. Uses WordPress private WP_List_Table class
 1. WooCommerce hooks
 1. WooCommerce session
 
@@ -55,8 +55,6 @@ Input field ID values should be default:
 * etc.
 
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
-
-Since version 2.0.1 plugin also uses WooCommerce Checkout form input field class "input-text" in order to trigger save action from all form fields.
 
 * Please note that this link to ActiveCampaign has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign customer.
 
@@ -194,6 +192,10 @@ Example how to change the main title using a filter:
 ![How the Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.gif "How the Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
+
+##### 4.6.1 =
+
+* Fixed conflict issue with WP Cron schedules
 
 ##### 4.6 =
 

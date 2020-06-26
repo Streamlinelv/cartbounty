@@ -434,16 +434,16 @@ class CartBounty_Admin{
 	 *
 	 * @since    3.0
 	 */
-	function additional_cron_intervals(){
-		$interval['cartbounty_notification_sendout_interval'] = array( //Defining cron Interval for sending out email notifications about abandoned carts
+	function additional_cron_intervals($intervals){
+		$intervals['cartbounty_notification_sendout_interval'] = array( //Defining cron Interval for sending out email notifications about abandoned carts
 			'interval' => CARTBOUNTY_EMAIL_INTERVAL * 60,
 			'display' => 'Every '. CARTBOUNTY_EMAIL_INTERVAL .' minutes'
 		);
-		$interval['cartbounty_remove_empty_carts_interval'] = array( //Defining cron Interval for removing abandoned carts that do not have products
+		$intervals['cartbounty_remove_empty_carts_interval'] = array( //Defining cron Interval for removing abandoned carts that do not have products
 			'interval' => 12 * 60 * 60,
 			'display' => 'Twice a day'
 		);
-		return $interval;
+		return $intervals;
 	}
 
 	/**
