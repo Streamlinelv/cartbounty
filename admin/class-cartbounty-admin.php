@@ -163,6 +163,7 @@ class CartBounty_Admin{
 		?>
 
 		<div id="cartbounty-page-wrapper" class="wrap<?php if(get_option('cartbounty_hide_images')) {echo " cartbounty-without-thumbnails";}?>">
+			<h1><?php echo CARTBOUNTY_ABREVIATION; ?></h1>
 
 			<?php if ( isset ( $_GET['tab'] ) ){
 				$this->create_admin_tabs($_GET['tab']);
@@ -178,8 +179,6 @@ class CartBounty_Admin{
 				}
 
 				if($tab == 'settings'): //Settings tab output ?>
-
-					<h1><?php echo CARTBOUNTY_ABREVIATION; ?> <?php echo __('Settings', CARTBOUNTY_TEXT_DOMAIN); ?></h1>
 					<form method="post" action="options.php">
 						<?php
 							settings_fields( 'cartbounty-settings' );
@@ -193,7 +192,7 @@ class CartBounty_Admin{
 									<label for="cartbounty_notification_email"><?php echo __('Send notifications about abandoned carts to this email:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="cartbounty_notification_email" type="email" name="cartbounty_notification_email" value="<?php echo esc_attr( get_option('cartbounty_notification_email') ); ?>" <?php echo $this->disableField(); ?> />
+									<input id="cartbounty_notification_email" type="email" name="cartbounty_notification_email" value="<?php echo esc_attr( get_option('cartbounty_notification_email') ); ?>" <?php echo $this->disable_field(); ?> />
 									<p><small><?php echo sprintf(
 										/* translators: %s - Email address */
 										__('By default, notifications will be sent to WordPress admin email - %s.', CARTBOUNTY_TEXT_DOMAIN), get_option( 'admin_email' )); ?>
@@ -211,7 +210,7 @@ class CartBounty_Admin{
 											$options = array('hours' => 60);
 										}
 									?>
-									 <select id="cartbounty_notification_frequency[hours]" name='cartbounty_notification_frequency[hours]' <?php echo $this->disableField(); ?>>
+									 <select id="cartbounty_notification_frequency[hours]" name='cartbounty_notification_frequency[hours]' <?php echo $this->disable_field(); ?>>
 										<option value='10' <?php selected( $options['hours'], 10 ); ?>><?php echo 		__('Every 10 minutes', CARTBOUNTY_TEXT_DOMAIN); ?></option>
 										<option value='20' <?php selected( $options['hours'], 20 ); ?>><?php echo 		__('Every 20 minutes', CARTBOUNTY_TEXT_DOMAIN); ?></option>
 										<option value='30' <?php selected( $options['hours'], 30 ); ?>><?php echo 		__('Every 30 minutes', CARTBOUNTY_TEXT_DOMAIN); ?></option>
@@ -233,7 +232,7 @@ class CartBounty_Admin{
 									<label for="cartbounty-lift-email"><?php echo __('Lift email field:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="cartbounty-lift-email" class="cartbounty-checkbox" type="checkbox" name="cartbounty_lift_email" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $lift_email_on, false ); ?> />
+									<input id="cartbounty-lift-email" class="cartbounty-checkbox" type="checkbox" name="cartbounty_lift_email" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $lift_email_on, false ); ?> />
 									<p><small>
 										<?php if($lift_email_on){
 											echo __('Please test the checkout after enabling this, as sometimes it can cause <br/>issues or not raise the field if you have a custom checkout.', CARTBOUNTY_TEXT_DOMAIN);
@@ -249,7 +248,7 @@ class CartBounty_Admin{
 									<label for="cartbounty-hide-images"><?php echo __('Display abandoned cart contents in a list:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="cartbounty-hide-images" class="cartbounty-checkbox" type="checkbox" name="cartbounty_hide_images" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $hide_images_on, false ); ?> />
+									<input id="cartbounty-hide-images" class="cartbounty-checkbox" type="checkbox" name="cartbounty_hide_images" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $hide_images_on, false ); ?> />
 								</td>
 							</tr>
 						</table>
@@ -261,8 +260,6 @@ class CartBounty_Admin{
 					</form>
 
 				<?php elseif($tab == 'exit_intent'): //Exit intent output ?>
-
-					<h1><?php echo CARTBOUNTY_ABREVIATION; ?> <?php echo __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN); ?></h1>
 					<p class="cartbounty-description"><?php echo __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an e-mail field that the customer can fill to save his shopping cart. You can even offer to send a discount code.', CARTBOUNTY_TEXT_DOMAIN); ?></p>
 					<p class="cartbounty-description"><?php echo __('Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart and try to leave your shop.', CARTBOUNTY_TEXT_DOMAIN); ?></p>
 					<p class="cartbounty-description"><?php echo sprintf(
@@ -278,6 +275,7 @@ class CartBounty_Admin{
 							$exit_intent_type = esc_attr( get_option('cartbounty_exit_intent_type'));
 							$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
 							$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
+							$main_image = esc_attr( get_option('cartbounty_exit_intent_image'));
 						?>
 						
 						<table id="cartbounty-exit-intent-table" class="form-table">
@@ -286,7 +284,7 @@ class CartBounty_Admin{
 									<label for="cartbounty-exit-intent-status"><?php echo __('Enable Exit Intent:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="cartbounty-exit-intent-status" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_status" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $exit_intent_on, false ); ?> />
+									<input id="cartbounty-exit-intent-status" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_status" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exit_intent_on, false ); ?> />
 								</td>
 							</tr>
 							<tr>
@@ -294,7 +292,7 @@ class CartBounty_Admin{
 									<label for="cartbounty-exit-intent-test-mode"><?php echo __('Enable test mode:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="cartbounty-exit-intent-test-mode" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_test_mode" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $test_mode_on, false ); ?> />
+									<input id="cartbounty-exit-intent-test-mode" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_test_mode" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $test_mode_on, false ); ?> />
 									<p><small>
 										<?php if($test_mode_on){
 										echo __('Now go to your store and add a product to your shopping cart. Please note that only <br/>users with Admin rights will be able to see the Exit Intent and appearance limits <br/>have been removed - it will be shown each time you try to leave your shop.', CARTBOUNTY_TEXT_DOMAIN);
@@ -315,7 +313,7 @@ class CartBounty_Admin{
 													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
 												</i>
 											</em>
-											<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disableField(); ?> <?php echo checked( 1, $exit_intent_type, false ); ?> />
+											<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exit_intent_type, false ); ?> />
 											<?php echo __('Appear In Center', CARTBOUNTY_TEXT_DOMAIN); ?>
 										</label>
 									</div>
@@ -329,7 +327,7 @@ class CartBounty_Admin{
 													<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 												</span>
 											</em>
-											<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disableField(array('forced' => true )); ?> />
+											<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disable_field(array('forced' => true )); ?> />
 											<?php echo __('Slide In From Left', CARTBOUNTY_TEXT_DOMAIN); ?>
 										</label>
 									</div>
@@ -343,7 +341,7 @@ class CartBounty_Admin{
 													<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 												</span>
 											</em>
-											<input id="cartbounty-radiobutton-fullscreen" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disableField(array('forced' => true )); ?> />
+											<input id="cartbounty-radiobutton-fullscreen" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disable_field(array('forced' => true )); ?> />
 											<?php echo __('Fullscreen', CARTBOUNTY_TEXT_DOMAIN); ?>
 										</label>
 									</div>
@@ -356,17 +354,47 @@ class CartBounty_Admin{
 								<td>
 									<div class="cartbounty-exit-intent-colors">
 										<label for="cartbounty-exit-intent-main-color"><?php echo __('Main:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
-										<input id="cartbounty-exit-intent-main-color" type="text" name="cartbounty_exit_intent_main_color" class="cartbounty-exit-intent-color-picker" value="<?php echo $main_color; ?>" <?php echo $this->disableField(); ?> />
+										<input id="cartbounty-exit-intent-main-color" type="text" name="cartbounty_exit_intent_main_color" class="cartbounty-exit-intent-color-picker" value="<?php echo $main_color; ?>" <?php echo $this->disable_field(); ?> />
 									</div>
 									<div class="cartbounty-exit-intent-colors">
 										<label for="cartbounty-exit-intent-inverse-color"><?php echo __('Inverse:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
-										<input id="cartbounty-exit-intent-inverse-color" type="text" name="cartbounty_exit_intent_inverse_color" class="cartbounty-exit-intent-color-picker" value="<?php echo $inverse_color; ?>" <?php echo $this->disableField(); ?> />
+										<input id="cartbounty-exit-intent-inverse-color" type="text" name="cartbounty_exit_intent_inverse_color" class="cartbounty-exit-intent-color-picker" value="<?php echo $inverse_color; ?>" <?php echo $this->disable_field(); ?> />
 									</div>
 									<p class="clear"><small>
 										<?php echo __('If you leave the Inverse color empty, it will automatically use the inverse color of <br/>the main color you have picked. Clear both colors to use the default colors.', CARTBOUNTY_TEXT_DOMAIN);
 										?>
 										</small>
 									</p>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<?php echo __('Exit Intent image:', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</th>
+								<td>
+									<?php
+									if(!did_action('wp_enqueue_media')){
+										wp_enqueue_media();
+									}
+									$image = wp_get_attachment_image_src( $main_image ); ?>
+									<div id="cartbounty-exit-intent-image-container">
+										<p href="#" id="cartbounty-upload-image">
+											<?php if($image):?>
+												<img src="<?php echo $image[0]; ?>" />
+											<?php else: ?>
+												<input type="button" value="<?php echo __('Add custom image', CARTBOUNTY_TEXT_DOMAIN); ?>" class="button" <?php echo $this->disable_field(); ?>/>
+											<?php endif;?>
+										</p>
+										<a href="#" id="cartbounty-remove-image" <?php if(!$image){echo 'style="display:none"';}?>></a>
+									</div>
+									<?php if(!$image):?>
+										<p class="clear">
+											<small>
+												<?php echo __('Recommended size: 1024 x 600 px.', CARTBOUNTY_TEXT_DOMAIN); ?>
+											</small>
+										</p>
+									<?php endif;?>
+									<input id="cartbounty_exit_intent_image" type="hidden" name="cartbounty_exit_intent_image" value="<?php if($main_image){echo $main_image;}?>" <?php echo $this->disable_field(); ?>>
 								</td>
 							</tr>
 						</table>
@@ -377,8 +405,6 @@ class CartBounty_Admin{
 					</form>
 
 				<?php else: //Table output ?>
-
-					<h1><?php echo CARTBOUNTY_ABREVIATION; ?> <?php echo __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN); ?></h1>
 					<?php do_action('cartbounty_after_page_title'); ?>
 					<?php echo $message; 
 					if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note ?>
@@ -475,49 +501,47 @@ class CartBounty_Admin{
 
 		//Checking if we are on open plugin page
 		if ($pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY){
-				//Checking if WP Cron hooks are scheduled
-				$missing_hooks = array();
-				$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+			//Checking if WP Cron hooks are scheduled
+			$missing_hooks = array();
+			$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
 
-				if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
-					$missing_hooks[] = 'cartbounty_notification_sendout_hook';
-				}
-				if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
-					$hooks = '';
-					$current = 1;
-					$total = count($missing_hooks);
-					foreach($missing_hooks as $missing_hook){
-						$hooks .= $missing_hook;
-						if ($current != $total){
-							$hooks .= ', ';
-						}
-						$current++;
+			if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
+				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
+			}
+			if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
+				$hooks = '';
+				$current = 1;
+				$total = count($missing_hooks);
+				foreach($missing_hooks as $missing_hook){
+					$hooks .= $missing_hook;
+					if ($current != $total){
+						$hooks .= ', ';
 					}
-					?>
-					<div id="cartbounty-cron-schedules" class="cartbounty-notification warning update-nag">
-						<p class="left-part">
-							<?php
-								echo sprintf(
-									/* translators: %s - Cron event name */
-									_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(
-									/* translators: %s - Plugin name */
-									__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?>
-						</p>
+					$current++;
+				}
+				?>
+				<div id="cartbounty-cron-schedules" class="cartbounty-notification warning notice updated">
+					<p class="left-part">
+						<?php
+							echo sprintf(
+								/* translators: %s - Cron event name */
+								_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(
+								/* translators: %s - Plugin name */
+								__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?>
+					</p>
+				</div>
+				<?php 
+			}
+
+			//Checking if WP Cron is enabled
+			if(defined('DISABLE_WP_CRON')){
+				if(DISABLE_WP_CRON == true){ ?>
+					<div id="cartbounty-cron-schedules" class="cartbounty-notification warning notice updated">
+						<p class="left-part"><?php echo __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", CARTBOUNTY_TEXT_DOMAIN ); ?></p>
 					</div>
-					<?php 
+				<?php
 				}
-
-				//Checking if WP Cron is enabled
-				if(defined('DISABLE_WP_CRON')){
-					if(DISABLE_WP_CRON == true){ ?>
-						<div id="cartbounty-cron-schedules" class="cartbounty-notification warning update-nag">
-							<p class="left-part"><?php echo __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", CARTBOUNTY_TEXT_DOMAIN ); ?></p>
-						</div>
-					<?php
-					}
-				}
-
-
+			}
 		}
 	}
 
@@ -686,7 +710,7 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 * @param    $options    Options
 	 */
-	function disableField( $options = array() ){
+	function disable_field( $options = array() ){
 		if($options){
 			if($options['forced'] == true){
 				return 'disabled=""';

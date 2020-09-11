@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.5
-Stable tag: 4.6.1
+Stable tag: 4.7
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -16,7 +16,7 @@ CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all a
 
 You will receive regular email notifications about newly abandoned shopping carts and will be able to manually remind about these abandoned carts. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.
 
-If you would like to send automated abandoned cart recovery emails to customers via [MailChimp](https://mailchimp.com) or [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
+If you would like to send automated abandoned cart recovery emails to customers via [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* or [MailChimp](https://mailchimp.com), please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin version.
 
 [youtube https://www.youtube.com/watch?v=Sb4DpkDilw0]
 
@@ -30,9 +30,9 @@ If you would like to send automated abandoned cart recovery emails to customers 
 
 * If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
-* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With help of the Exit Intent Technology you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
-The Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
-Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
+* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With help of Exit Intent Technology you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
+Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
+Please note that Exit Intent popup will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
 
 * If the user completes the payment and receives a "Thank you" page, he is removed from the abandoned cart table and the Checkout form fields will be cleared.
 
@@ -56,14 +56,14 @@ Input field ID values should be default:
 
 If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
 
-*Please note that this link to ActiveCampaign has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign customer.
+*Please note that this link has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign or GetResponse customer.
 
 == Installation ==
 
 1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the "Plugins" screen in WordPress.
 1. Look for the page "CartBounty Abandoned carts" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
-1. Optionally setup the Exit Intent notice that will be displayed to unregistered users once per hour in case the user has added items to his shopping cart and tries to leave your shop.
+1. Optionally setup Exit Intent notice that will be displayed to unregistered users once per hour in case the user has added items to his shopping cart and tries to leave your shop.
 
 == Frequently Asked Questions ==
 
@@ -113,37 +113,38 @@ Please also note how WordPress handles Cron job that is responsible for sending 
 = How to send automated abandoned cart recovery emails? =
 
 The free version of CartBounty does all the hard work of saving abandoned shopping carts and presenting them to you, it is simple and efficient.
-If you would like to [send your visitors automated abandoned cart recovery emails via MailChimp or ActiveCampaign](https://www.cartbounty.com "send your visitors automated abandoned cart recovery emails") please consider supporting our efforts and purchase our Pro version.
+If you would like to [send your visitors automated abandoned cart recovery emails via ActiveCampaign, GetResponse or MailChimp](https://www.cartbounty.com "send your visitors automated abandoned cart recovery emails") please consider supporting our efforts and purchase our Pro version.
 
-[MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
-And [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
+[ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
+[GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* is a beautifully designed email marketing platform to save and recover online abandoned shopping carts.
+And [MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
 
-= How does the Exit Intent Technology work? =
+= How does Exit Intent Technology work? =
 
 If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his email address. Once it is entered (no need to submit the form), user's cart will be automatically captured.
 
-Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in the Exit Intent form or in the Checkout form - Exit Intent will no longer be displayed upon leaving your shop.
+Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in Exit Intent form or in the Checkout form - popup will no longer be displayed upon leaving your shop.
 
-If you would like to test the visual appearance of the Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see the Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
+If you would like to test the visual appearance of Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
 
 In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
 
-= How to change the content and image of the Exit Intent? =
+= How to change the contents of Exit Intent popup? =
 
-If you would like to make adjustments to the default content of the Exit Intent, you can use either [action hooks and filters](https://www.cartbounty.com/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
+If you would like to make adjustments to the default contents of Exit Intent, you can use either [action hooks and filters](https://www.cartbounty.com/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
 
-You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/cartbounty-exit-intent.php". This template file contains the markup to display the Exit Intent and to capture the Abandoned cart prior the user leaves your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
+You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/cartbounty-exit-intent.php". This template file contains the markup to display the popup and to capture the Abandoned cart prior the user leaves your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
 
 You can copy this template file to either one of these locations:
 
 * yourtheme/templates/cartbounty-exit-intent.php
 * yourtheme/cartbounty-exit-intent.php
 
-When modifying our template, please do not change the ID #cartbounty-exit-intent-email of the email input field. If changed, the plugin will not be able to capture abandoned carts using the Exit Intent form.
+When modifying our template, please do not change the ID #cartbounty-exit-intent-email of the email input field. If changed, the plugin will not be able to capture abandoned carts using Exit Intent form.
 
 = What action hooks and filters are available for additional customization? =
 
-Our Exit Intent template contains different action hooks and filters that allow you to create new, edit, replace or remove existing content including the main image in the Exit Intent window.
+Our Exit Intent template contains different action hooks and filters that allow you to create new, edit, replace or remove existing content including the main image in Exit Intent window.
 
 Available action hooks:
 
@@ -188,10 +189,15 @@ Example how to change the main title using a filter:
 
 1. Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation
 2. Email notification settings tab
-3. The Exit Intent popup settings tab
-4. How the Exit Intent popup looks like once the user tries to leave the shop
+3. Exit Intent popup settings tab
+4. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 4.7 =
+* Added option to replace the default Exit Intent image via admin panel
+* Minor visual design updates
+* Other minor fixes
 
 = 4.6.1 =
 * Fixed conflict issue with WP Cron schedules

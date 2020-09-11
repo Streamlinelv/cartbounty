@@ -63,16 +63,22 @@ class CartBounty_Public{
 	 */
 	public function enqueue_scripts(){
 		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
+
+			$cart_content_count = 0;
+			if(WC()->cart){
+				$cart_content_count = WC()->cart->get_cart_contents_count();
+			}
+
 			if(get_option('cartbounty_exit_intent_test_mode')){ //If Exit Intent Test mode is on
 				$data = array(
 				    'hours' => 0, //For Exit Intent Testing purposes
-				    'product_count' => WC()->cart->get_cart_contents_count(),
+				    'product_count' => $cart_content_count,
 				    'ajaxurl' => admin_url( 'admin-ajax.php' )
 				);
 			}else{
 				$data = array(
 				    'hours' => 1,
-				    'product_count' => WC()->cart->get_cart_contents_count(),
+				    'product_count' => $cart_content_count,
 				    'ajaxurl' => admin_url( 'admin-ajax.php' )
 				);
 			}
@@ -766,7 +772,7 @@ class CartBounty_Public{
 	 * @since    3.0
 	 */
 	function display_exit_intent_form(){
-		if(!$this->exit_intent_enabled()){ //If Exit Intent disabled
+		if(!$this->exit_intent_enabled() || !WC()->cart){ //If Exit Intent disabled or WooCommerce cart does not exist
 			return;
 		}
 		
@@ -789,6 +795,9 @@ class CartBounty_Public{
 	 * @return   boolean
 	 */
 	function remove_exit_intent_form(){
+		if(!WC()->cart){
+			return;
+		}
 		if( WC()->cart->get_cart_contents_count() == 0 ){ //If the cart is empty
 			return wp_send_json_success('true'); //Sending successful output to Javascript function
 		}else{

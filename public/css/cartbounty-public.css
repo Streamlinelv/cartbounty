@@ -70,7 +70,7 @@
 
 #cartbounty-exit-intent-form-container{
 	position: relative;
-	padding: 20px 60px 30px;
+	padding: 60px 60px 30px;
 	opacity: 0;
 	overflow-x: hidden;
 	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
@@ -173,6 +173,6 @@
 
 @media screen and (max-width: 576px) {
 	#cartbounty-exit-intent-form-container{
-		padding: 20px 30px 10px;
+		padding: 30px 30px 10px;
 	}
 }

@@ -351,7 +351,7 @@ class CartBounty_Table extends WP_List_Table{
         $sortable = $this->get_sortable_columns();
         $this->_column_headers = array($columns, $hidden, $sortable); // here we configure table headers, defined in our methods
         $this->process_bulk_action(); // process bulk action if any
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name"); // will be used in pagination settings
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE cart_contents != ''"); // will be used in pagination settings
 
         // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;

@@ -21,7 +21,14 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 	exit;
 }
 $public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-
+$image_id = esc_attr( get_option('cartbounty_exit_intent_image'));
+$image_url = $public->get_plugin_url() . '/public/assets/abandoned-shopping-cart.gif';
+if($image_id){
+	$image = wp_get_attachment_image_src( $image_id, 'full' );
+	if(is_array($image)){
+		$image_url = $image[0];
+	}
+}
 ?>
 
 <div id="cartbounty-exit-intent-form" class="cartbounty-ei-center">
@@ -32,7 +39,7 @@ $public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_
 		<div id="cartbounty-exit-intent-form-content">
 			<?php do_action('cartbounty_exit_intent_start'); ?>
 			<div id="cartbounty-exit-intent-form-content-l">
-				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_image_html', sprintf('<img src="%s" alt="" title=""/>', $public->get_plugin_url() . '/public/assets/abandoned-shopping-cart.gif' ) ) ); ?>
+				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_image_html', sprintf('<img src="%s" alt="" title=""/>', $image_url ) ) ); ?>
 			</div>
 			<div id="cartbounty-exit-intent-form-content-r">
 				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_title_html', sprintf(

@@ -17,7 +17,8 @@
 #cartbounty-page-wrapper .submit:after,
 .cartbounty-exit-intent-type .button,
 .cartbounty-abandoned-product .tooltiptext,
-.woocommerce_page_cartbounty td.cart_contents img{
+.woocommerce_page_cartbounty td.cart_contents img,
+#cartbounty-upload-image img{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
@@ -43,9 +44,13 @@
 }
 
 #cartbounty-page-wrapper h1{
-	margin: 15px 0;
+	margin: 10px 0;
 	font-size: 20px;
 	line-height: 26px;
+}
+
+#cartbounty-page-wrapper .nav-tab-wrapper{
+	margin-bottom: 25px;
 }
 
 .wlcfc-product-list{
@@ -70,6 +75,10 @@
 
 #cartbounty-table .column-id{
 	width: 60px;
+}
+
+#cartbounty-table .wp-list-table td{
+	vertical-align: top;
 }
 
 #adminmenu li.current a .new-abandoned{
@@ -106,6 +115,16 @@
 	padding: 0 10px 0 5px;
 }
 
+#cartbounty-page-wrapper .form-table input,
+#cartbounty-page-wrapper .form-table select{
+	width: 100%;
+	max-width: 300px;
+}
+
+#cartbounty-page-wrapper .form-table input.button{
+	width: auto;
+}
+
 #cartbounty-page-wrapper .form-table .cartbounty-checkbox,
 #cartbounty-page-wrapper .form-table .cartbounty-radiobutton{
 	width: 1rem;
@@ -113,7 +132,6 @@
 }
 
 .cartbounty-notification{
-	display: block;
 	border-left-color: #46b450;
 }
 
@@ -122,13 +140,9 @@
 }
 
 #cartbounty-setup-automation .left-part{
-	width: 85%;
+	width: 80%;
 	padding-right: 5%;
 	float: left;
-}
-
-.cartbounty-notification p{
-	margin: 0;
 }
 
 .cartbounty-description{
@@ -282,7 +296,11 @@
 	float: left;
 	width: 150px;
 	margin-right: 5%;
-	margin-bottom: 30px;
+	margin-bottom: 15px;
+}
+
+.cartbounty-exit-intent-colors .wp-color-result-text{
+	color: #0071a1;
 }
 
 .cartbounty-exit-intent-image{
@@ -382,6 +400,42 @@
 
 .cartbounty-exit-intent-colors .wp-picker-container{
 	display: inline;
+}
+
+#cartbounty-exit-intent-image-container{
+	position: relative;
+	display: inline-block;
+}
+
+#cartbounty-upload-image{
+	cursor: pointer;
+}
+
+#cartbounty-upload-image img{
+	max-height: 80px;
+	width: auto;
+  	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	opacity: .7;
+}
+
+#cartbounty-upload-image img:hover{
+	opacity: 1;
+}
+
+#cartbounty-remove-image{
+	display: block;
+	width: 15px;
+	height: 15px;
+	padding: 4px;
+	position: absolute;
+	top: -2px;
+	right: -5px;
+	background: white url('../assets/close-icon.svg') no-repeat center;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
 }
 
 .cartbounty-radio-active em,
@@ -507,6 +561,6 @@
 
 	#cartbounty-page-wrapper .form-table .cartbounty-checkbox,
 	#cartbounty-page-wrapper .form-table .cartbounty-radiobutton{
-		width: 25px;
+		width: 1.5625rem;
 	}
 }
