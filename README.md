@@ -22,7 +22,7 @@ If you would like to send automated abandoned cart recovery emails to customers 
 
 * If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
-* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With help of Exit Intent Technology you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
+* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With the help of Exit Intent Technology you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
 Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
 Please note that Exit Intent popup will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
 
@@ -131,7 +131,7 @@ In case you would like to enable Exit Intent Technology on mobile phones and tab
 
 ### How to change the contents of Exit Intent popup?
 
-If you would like to make adjustments to the default contents of Exit Intent, you can use either [action hooks and filters](https://www.cartbounty.com/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
+If you would like to make adjustments to the default contents of Exit Intent, you can use either [actions and filters](https://www.cartbounty.com/#actions-and-filters) that we have provided for you or use our Exit Intent template file to make the necessary adjustments.
 
 You can find the Exit Intent template file inside "/plugins/woo-save-abandoned-carts/templates/cartbounty-exit-intent.php". This template file contains the markup to display the popup and to capture the Abandoned cart prior the user leaves your shop. Please copy this template to your shops theme to keep your customization intact after plugin updates.
 
@@ -142,11 +142,11 @@ You can copy this template file to either one of these locations:
 
 When modifying our template, please do not change the ID #cartbounty-exit-intent-email of the email input field. If changed, the plugin will not be able to capture abandoned carts using Exit Intent form.
 
-### What action hooks and filters are available for additional customization?
+### What hooks are available for additional customization?
 
-Our Exit Intent template contains different action hooks and filters that allow you to create new, edit, replace or remove existing content including the main image in Exit Intent window.
+Our Exit Intent template contains different actions and filters that allow you to create new, edit, replace or remove existing content including the main image in Exit Intent window.
 
-Available action hooks:
+Available actions:
 
 * cartbounty_exit_intent_start
 * cartbounty_exit_intent_after_title
