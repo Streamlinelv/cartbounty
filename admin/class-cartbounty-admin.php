@@ -569,12 +569,19 @@ class CartBounty_Admin{
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $this->get_time_intervals();
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$where_sentence = $this->get_where_sentence( 'recoverable' );
 
 		// Retrieve from database rows that have not been e-mailed and are older than 60 minutes
 		$rows_to_email = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(id) FROM ". $table_name ."
-				WHERE mail_sent = 0 AND cart_contents != '' AND time < %s", $time['cart_abandoned']
+				"SELECT COUNT(id)
+				FROM $table_name
+				WHERE mail_sent = 0
+				$where_sentence AND
+				cart_contents != '' AND
+				time < %s",
+				$time['cart_abandoned']
 			)
 		);
 		
