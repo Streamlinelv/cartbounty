@@ -15,7 +15,7 @@
 		        if(productCount == 0){
 
 		        }
-		        else if(last_time_displayed == null || timePeriod == 0) { //If time period has passed or we Exit Intent test mode is enabled
+		        else if(last_time_displayed == null || timePeriod == 0) { //If time period has passed or Exit Intent test mode is enabled
 		            $('#cartbounty-exit-intent-form').addClass('cartbounty-visible'); //Display form
 		        	$('#cartbounty-exit-intent-form-backdrop').css('opacity', '').addClass('cartbounty-visible'); //Show backdrop
 		        	if(timePeriod != 0){
@@ -38,8 +38,8 @@
 
 			if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length)){ //Checking if the email field is valid
 				var data = {
-					action:			"save_data",
-					cartbounty_email:	cartbounty_email
+					action:						"cartbounty_save",
+					cartbounty_email:			cartbounty_email
 				}
 
 				timer = setTimeout(function(){
@@ -56,7 +56,7 @@
 
 		function insertExitIntentForm(){//Adding Exit Intent form in case if Ajax Add To Cart button pressed
 			var data = {
-				action: 		"insert_exit_intent",
+				action: 			"insert_exit_intent",
 				cartbounty_insert: 	true
 			}
 			
@@ -77,7 +77,7 @@
 
 		function removeExitIntentFormIfEmptyCart(){//Removing Exit Intent form in case if cart emptied using Ajax
 			var data = {
-				action: 		"remove_exit_intent",
+				action: 			"remove_exit_intent",
 				cartbounty_remove: 	true
 			}
 			if($('#cartbounty-exit-intent-form').length > 0){ //If Exit intent HTML exists on page

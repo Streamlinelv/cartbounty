@@ -63,8 +63,8 @@ class CartBounty_Public{
 	 */
 	public function enqueue_scripts(){
 		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
-
 			$cart_content_count = 0;
+
 			if(WC()->cart){
 				$cart_content_count = WC()->cart->get_cart_contents_count();
 			}
@@ -75,6 +75,7 @@ class CartBounty_Public{
 				    'product_count' => $cart_content_count,
 				    'ajaxurl' => admin_url( 'admin-ajax.php' )
 				);
+
 			}else{
 				$data = array(
 				    'hours' => 1,
@@ -88,46 +89,310 @@ class CartBounty_Public{
 	}
 	
 	/**
-	 * Function to add aditional JS file to the checkout field and read data from inputs
+	 * Method to add aditional JS file to the checkout field and read data from inputs
 	 *
 	 * @since    1.0
 	 */
 	function add_additional_scripts_on_checkout(){
+		$data = array(
+		    'ajaxurl' => admin_url( 'admin-ajax.php' )
+		);
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-public.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script( $this->plugin_name, 'ajaxLink', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
+		wp_localize_script( $this->plugin_name, 'public_data', $data);
 	}
-	
+
 	/**
-	 * Function to receive data from Checkout input fields or Exit Intent form, sanitize it and save to Database
+	 * Method that takes care of saving and updating carts
 	 *
-	 * @since    1.4.1
+	 * @since    5.0
 	 */
-	function save_user_data(){
-		//First check if data is being sent and that it is the data we want
-		if ( isset( $_POST["cartbounty_email"] ) ) {
+	function save_cart(){
+		if(!WC()->cart){ //Exit if Woocommerce cart has not been initialized
+			return;
+		}
+		$ghost = true;
 
-			global $wpdb;
-			$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		if($this->cart_recoverable()){ //If cart is recoverable
+			$ghost = false;
+			$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
+		}
 
-			//Retrieving cart array consisting of currency, cart toal, time, session id and products and their quantities
-			$cart_data = $this->read_cart();
-			$cart_total = $cart_data['cart_total'];
-			$cart_currency = $cart_data['cart_currency'];
-			$current_time = $cart_data['current_time'];
-			$session_id = $cart_data['session_id'];
-			$product_array = $cart_data['product_array'];
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
+		if(get_option('cartbounty_exclude_ghost_carts') && $ghost){ //If Ghost carts are disabled and current cart is a ghost cart - do not save it
+			return;
+		}
+
+		$cart = $this->read_cart();
+		$cart_saved = $this->cart_saved($cart['session_id']);
+
+		if( $cart_saved ){ //If cart has already been saved
+			$this->update_cart( $ghost );
+		}else{
+			$this->create_new_cart( $ghost );
+		}
+	}
+
+	/**
+	 * Method creates a new cart
+	 *
+	 * @since    5.0
+	 * @param    boolean    $ghost    If the cart is a ghost cart or not
+	 */
+	function create_new_cart( $ghost ){
+		global $wpdb;
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$cart = $this->read_cart();
+		$user_data = $this->get_user_data();
+
+		//In case if the cart has no items in it, we must delete the cart
+		if(empty( $cart['product_array'] )){
 			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+			$admin->clear_cart_data();
+			return;
+		}
 
-			//In case if the cart has no items in it, we need to delete the abandoned cart
-			if(empty($product_array)){
-				$admin->clear_cart_data();
-				return;
+		if($ghost){ //If dealing with a ghost cart
+			//Inserting row into database
+			$wpdb->query(
+				$wpdb->prepare(
+					"INSERT INTO ". $table_name ."
+					( location, cart_contents, cart_total, currency, time, session_id )
+					VALUES ( %s, %s, %0.2f, %s, %s, %s )",
+					array(
+						'location'		=> sanitize_text_field( serialize( $user_data['location'] ) ),
+						'products'		=> serialize( $cart['product_array'] ),
+						'total'			=> sanitize_text_field( $cart['cart_total'] ),
+						'currency'		=> sanitize_text_field( $cart['cart_currency'] ),
+						'time'			=> sanitize_text_field( $cart['current_time'] ),
+						'session_id'	=> sanitize_text_field( $cart['session_id'] )
+					)
+				)
+			);
+			$this->increase_ghost_cart_count();
+
+		}else{
+			$other_fields = NULL;
+			if(!empty($user_data['other_fields'])){
+				$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 			}
-			
-			//Checking if we have values coming from the input fields
+			//Inserting row into Database
+			$wpdb->query(
+				$wpdb->prepare(
+					"INSERT INTO ". $table_name ."
+					( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields)
+					VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s)",
+					array(
+						'name'			=> sanitize_text_field( $user_data['name'] ),
+						'surname'		=> sanitize_text_field( $user_data['surname'] ),
+						'email'			=> sanitize_email( $user_data['email'] ),
+						'phone'			=> filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
+						'location'		=> sanitize_text_field( serialize( $user_data['location'] ) ),
+						'products'		=> serialize( $cart['product_array'] ),
+						'total'			=> sanitize_text_field( $cart['cart_total'] ),
+						'currency'		=> sanitize_text_field( $cart['cart_currency'] ),
+						'time'			=> sanitize_text_field( $cart['current_time'] ),
+						'session_id'	=> sanitize_text_field( $cart['session_id'] ),
+						'other_fields'	=> $other_fields
+					)
+				)
+			);
+			$this->increase_recoverable_cart_count();
+		}
+
+		$this->set_cartbounty_session($cart['session_id']);
+	}
+
+	/**
+	 * Method updates a cart
+	 *
+	 * @since    5.0
+	 * @param    boolean    $ghost    If the cart is a ghost cart or not
+	 */
+	function update_cart( $ghost ){
+		$cart = $this->read_cart();
+		$user_data = $this->get_user_data();
+
+		//In case if the cart has no items in it, we must delete the cart
+		if(empty( $cart['product_array'] )){
+			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+			$admin->clear_cart_data();
+			return;
+		}
+
+		if($ghost){ //In case of a ghost cart
+			$this->update_cart_data($cart);
+
+		}else{
+			if($this->was_ghost_cart($cart['session_id'])){ //Check if previously the cart was a ghost cart
+				$this->decrease_ghost_cart_count( 1 );
+				$this->increase_recoverable_cart_count();
+			}
+
+			if(is_user_logged_in() && !$this->cart_identifiable()){ //In cases when a user is signed in and he has no cart saved that can be identified
+				$this->update_cart_and_user_data($cart, $user_data);
+
+			}elseif(!isset($_POST["action"])){ //In case the update is not coming from input fields, update just cart related data
+				$this->update_cart_data($cart);
+
+			}else{
+				$this->update_cart_and_user_data($cart, $user_data);
+			}
+		}
+		
+		$this->set_cartbounty_session($cart['session_id']);
+	}
+
+	/**
+	 * Method updates only cart related data excluding customer details
+	 *
+	 * @since    5.0
+	 * @param    Array    $cart    Cart contents inclding cart session ID
+	 */
+	function update_cart_data($cart){
+		global $wpdb;
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$updated_rows = $wpdb->prepare('%s',
+			$wpdb->update(
+				$table_name,
+				array(
+					'cart_contents'	=>	serialize( $cart['product_array'] ),
+					'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
+					'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
+					'time'			=>	sanitize_text_field( $cart['current_time'] )
+				),
+				array('session_id' => $cart['session_id']),
+				array('%s', '%0.2f', '%s', '%s'),
+				array('%s')
+			)
+		);
+		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
+	}
+
+	/**
+	 * Method updates both customer data and contents of the cart
+	 *
+	 * @since    5.0
+	 * @param    Array    $cart    		Cart contents inclding cart session ID
+	 * @param    Array    $user_data    User's data
+	 */
+	function update_cart_and_user_data($cart, $user_data){
+		global $wpdb;
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$other_fields = NULL;
+		if(!empty($user_data['other_fields'])){
+			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
+		}
+
+		$updated_rows = $wpdb->prepare('%s',
+			$wpdb->update(
+				$table_name,
+				array(
+					'name'			=>	sanitize_text_field( $user_data['name'] ),
+					'surname'		=>	sanitize_text_field( $user_data['surname'] ),
+					'email'			=>	sanitize_email( $user_data['email'] ),
+					'phone'			=>	filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
+					'location'		=>	sanitize_text_field( serialize( $user_data['location'] ) ),
+					'cart_contents'	=>	serialize( $cart['product_array'] ),
+					'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
+					'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
+					'time'			=>	sanitize_text_field( $cart['current_time'] ),
+					'other_fields'	=>	$other_fields
+				),
+				array('session_id' => $cart['session_id']),
+				array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
+				array('%s')
+			)
+		);
+		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
+	}
+
+	/**
+	 * Method shows if the current user can be identifiable and the cart can be recovered later
+	 *
+	 * @since    5.0
+	 * @return   Boolean
+	 */
+	function cart_recoverable(){
+		$recoverable = false;
+		if( is_user_logged_in() || isset( $_POST["action"]) || $this->cart_identifiable() ){
+			$recoverable = true;
+		}
+		return $recoverable;
+	}
+
+	/**
+	 * Method returns True in case the current user has got a cart that consists phone or email
+	 *
+	 * @since    5.0
+	 * @return   Boolean
+	 */
+	function cart_identifiable(){
+		global $wpdb;
+		$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$identifiable = false;
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$where_sentence = $admin->get_where_sentence('recoverable');
+		$cart = $this->read_cart();
+
+		//Checking if we have this abandoned cart in our database already
+		$result = $wpdb->get_var($wpdb->prepare(
+			"SELECT id
+			FROM $main_table
+			WHERE session_id = %s
+			$where_sentence",
+			$cart['session_id']
+		));
+
+		if($result){
+			$identifiable = true;
+		}
+
+		return $identifiable;
+	}
+
+	/**
+	 * Method returns available user's data
+	 *
+	 * @since    5.0
+	 * @return   Array
+	 */
+	function get_user_data(){
+		$user_data = array();
+
+		if ( is_user_logged_in() && !isset( $_POST["action"] )){ //If user has signed in and the request is not triggered by checkout fields or Exit Intent
+			$current_user = wp_get_current_user(); //Retrieving users data
+			//Looking if a user has previously made an order. If not, using default WordPress assigned data
+			(isset($current_user->billing_first_name)) ? $name = $current_user->billing_first_name : $name = $current_user->user_firstname; //If/Else shorthand (condition) ? True : False
+			(isset($current_user->billing_last_name)) ? $surname = $current_user->billing_last_name : $surname = $current_user->user_lastname;
+			(isset($current_user->billing_email)) ? $email = $current_user->billing_email : $email = $current_user->user_email;
+			(isset($current_user->billing_phone)) ? $phone = $current_user->billing_phone : $phone = '';
+			(isset($current_user->billing_country)) ? $country = $current_user->billing_country : $country = '';
+			(isset($current_user->billing_city)) ? $city = $current_user->billing_city : $city = '';
+			(isset($current_user->billing_postcode)) ? $postcode = $current_user->billing_postcode : $postcode = '';
+
+			if($country == ''){ //Trying to Geolocate user's country in case it was not found
+				$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
+				$country = $country['country'];
+			}
+
+			$location = array(
+				'country' 	=> $country,
+				'city' 		=> $city,
+				'postcode' 	=> $postcode
+			);
+
+			$user_data = array(
+				'name'			=> $name,
+				'surname'		=> $surname,
+				'email'			=> $email,
+				'phone'			=> $phone,
+				'location'		=> $location,
+				'other_fields'	=> ''
+			);
+
+		}else{ //Checking if we have values coming from the input fields
 			(isset($_POST['cartbounty_name'])) ? $name = $_POST['cartbounty_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
 			(isset($_POST['cartbounty_surname'])) ? $surname = $_POST['cartbounty_surname'] : $surname = '';
+			(isset($_POST['cartbounty_email'])) ? $email = $_POST['cartbounty_email'] : $email = '';
 			(isset($_POST['cartbounty_phone'])) ? $phone = $_POST['cartbounty_phone'] : $phone = '';
 			(isset($_POST['cartbounty_country'])) ? $country = $_POST['cartbounty_country'] : $country = '';
 			(isset($_POST['cartbounty_city']) && $_POST['cartbounty_city'] != '') ? $city = $_POST['cartbounty_city'] : $city = '';
@@ -167,6 +432,11 @@ class CartBounty_Public{
 				'cartbounty_create_account' 		=> $create_account,
 				'cartbounty_ship_elsewhere' 		=> $ship_elsewhere
 			);
+
+			if($country == ''){ //Trying to Geolocate user's country in case it was not found
+				$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
+				$country = $country['country'];
+			}
 			
 			$location = array(
 				'country' 	=> $country,
@@ -174,314 +444,69 @@ class CartBounty_Public{
 				'postcode' 	=> $postcode
 			);
 
-			$current_session_exist_in_db = $this->current_session_exist_in_db($cartbounty_session_id);
-			//If we have already inserted the Users session ID in Session variable and it is not NULL and Current session ID exists in Database we update the abandoned cart row
-			if( $current_session_exist_in_db && $cartbounty_session_id !== NULL ){
-
-				//Updating row in the Database where users Session id = same as prevously saved in Session
-				$updated_rows = $wpdb->prepare('%s',
-					$wpdb->update(
-						$table_name,
-						array(
-							'name'			=>	sanitize_text_field( $name ),
-							'surname'		=>	sanitize_text_field( $surname ),
-							'email'			=>	sanitize_email( $_POST['cartbounty_email'] ),
-							'phone'			=>	filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
-							'location'		=>	sanitize_text_field( serialize($location) ),
-							'cart_contents'	=>	serialize( $product_array ),
-							'cart_total'	=>	sanitize_text_field( $cart_total ),
-							'currency'		=>	sanitize_text_field( $cart_currency ),
-							'time'			=>	sanitize_text_field( $current_time ),
-							'other_fields'	=>	sanitize_text_field( serialize($other_fields) )
-						),
-						array('session_id' => $cartbounty_session_id),
-						array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
-						array('%s')
-					)
-				);
-
-				if($updated_rows){ //If we have updated at least one row
-					$updated_rows = str_replace("'", "", $updated_rows); //Removing quotes from the number of updated rows
-
-					if($updated_rows > 1){ //Checking if we have updated more than a single row to know if there were duplicates
-						$this->delete_duplicate_carts($cartbounty_session_id, $updated_rows);
-					}
-				}
-
-			}else{
-				//Inserting row into Database
-				$wpdb->query(
-					$wpdb->prepare(
-						"INSERT INTO ". $table_name ."
-						( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields )
-						VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s)",
-						array(
-							sanitize_text_field( $name ),
-							sanitize_text_field( $surname ),
-							sanitize_email( $_POST['cartbounty_email'] ),
-							filter_var( $phone, FILTER_SANITIZE_NUMBER_INT ),
-							sanitize_text_field( serialize($location) ),
-							serialize( $product_array ),
-							sanitize_text_field( $cart_total ),
-							sanitize_text_field( $cart_currency ),
-							sanitize_text_field( $current_time ),
-							sanitize_text_field( $session_id ),
-							sanitize_text_field( serialize($other_fields) )
-						) 
-					)
-				);
-				
-				//Storing session_id in WooCommerce session
-				WC()->session->set('cartbounty_session_id', $session_id);
-				$this->increase_captured_abandoned_cart_count(); //Updating total count of captured abandoned carts
-			}
-			
-			die();
+			$user_data = array(
+				'name'			=> $name,
+				'surname'		=> $surname,
+				'email'			=> $email,
+				'phone'			=> $phone,
+				'location'		=> $location,
+				'other_fields'	=> $other_fields
+			);
 		}
+
+		return $user_data;
 	}
 
 	/**
-	 * Function automatically saves a cart if a logged in user adds something to his shopping cart, removes something or updates his cart
-	 * If we are updating the cart, we do not change users data, but just the Cart data since user can only change his data in the Checkout form
-	 *
-	 * @since    3.0
-	 */
-	function save_looged_in_user_data(){
-		if(is_user_logged_in()){ //If a user is logged in
-
-			global $wpdb;
-			$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
-
-			//Retrieving cart array consisting of currency, cart toal, time, session id and products and their quantities
-			$cart_data = $this->read_cart();
-			$cart_total = $cart_data['cart_total'];
-			$cart_currency = $cart_data['cart_currency'];
-			$current_time = $cart_data['current_time'];
-			$session_id = $cart_data['session_id'];
-			$product_array = $cart_data['product_array'];
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-
-			//In case if the user updates the cart and takes out all items from the cart
-			if(empty($product_array)){
-				$admin->clear_cart_data();
-				return;
-			}
-
-			$abandoned_cart = '';
-
-			//If we haven't set cartbounty_session_id, then need to check in the database if the current user has got an abandoned cart already
-			if( $cartbounty_session_id === NULL ){
-				$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-				$abandoned_cart = $wpdb->get_row($wpdb->prepare(
-					"SELECT session_id FROM ". $main_table ."
-					WHERE session_id = %d", get_current_user_id())
-				);
-			}
-
-			$current_session_exist_in_db = $this->current_session_exist_in_db($cartbounty_session_id);
-			//If the current user has got an abandoned cart already or if we have already inserted the Users session ID in Session variable and it is not NULL and already inserted the Users session ID in Session variable we update the abandoned cart row
-			if( $current_session_exist_in_db && (!empty($abandoned_cart) || $cartbounty_session_id !== NULL )){
-
-				//If the user has got an abandoned cart previously, we set session ID back
-				if(!empty($abandoned_cart)){
-					$session_id = $abandoned_cart->session_id;
-					//Storing session_id in WooCommerce session
-					WC()->session->set('cartbounty_session_id', $session_id);
-
-				}else{
-					$session_id = $cartbounty_session_id;
-				}
-				
-				//Updating row in the Database where users Session id = same as prevously saved in Session
-				//Updating only Cart related data since the user can change his data only in the Checkout form
-				$updated_rows = $wpdb->prepare('%s',
-					$wpdb->update(
-						$table_name,
-						array(
-							'cart_contents'	=>	serialize( $product_array ),
-							'cart_total'	=>	sanitize_text_field( $cart_total ),
-							'currency'		=>	sanitize_text_field( $cart_currency ),
-							'time'			=>	sanitize_text_field( $current_time )
-						),
-						array('session_id' => $session_id),
-						array('%s', '%0.2f', '%s', '%s'),
-						array('%s')
-					)
-				);
-
-				if($updated_rows){ //If we have updated at least one row
-					$updated_rows = str_replace("'", "", $updated_rows); //Removing quotes from the number of updated rows
-
-					if($updated_rows > 1){ //Checking if we have updated more than a single row to know if there were duplicates
-						$this->delete_duplicate_carts($cartbounty_session_id, $updated_rows);
-					}
-				}
-				
-			}else{
-				//Looking if a user has previously made an order
-				//If not, using default WordPress assigned data
-				//Handling users name
-				$current_user = wp_get_current_user(); //Retrieving users data
-				if($current_user->billing_first_name){
-					$name = $current_user->billing_first_name; 
-				}else{
-					$name = $current_user->user_firstname; //Users name
-				}
-
-				//Handling users surname
-				if($current_user->billing_last_name){
-					$surname = $current_user->billing_last_name;
-				}else{
-					$surname = $current_user->user_lastname;
-				}
-				
-				//Handling users email address
-				if($current_user->billing_email){
-					$email = $current_user->billing_email;
-				}else{
-					$email = $current_user->user_email;
-				}
-
-				//Handling users phone
-				$phone = $current_user->billing_phone;
-
-				//Handling users address
-				if($current_user->billing_country){
-					$country = $current_user->billing_country;
-				}else{
-					$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
-					$country = $country['country'];
-				}
-
-				if($current_user->billing_city){
-					$city = $current_user->billing_city;
-				}else{
-					$city = '';
-				}
-
-				if($current_user->billing_postcode){
-					$postcode = $current_user->billing_postcode;
-				}else{
-					$postcode = '';
-				}
-
-				$location = array(
-					'country' 	=> $country,
-					'city' 		=> $city,
-					'postcode' 	=> $postcode
-				);
-
-				//Inserting row into Database
-				$wpdb->query(
-					$wpdb->prepare(
-						"INSERT INTO ". $table_name ."
-						( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id)
-						VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s)",
-						array(
-							sanitize_text_field( $name ),
-							sanitize_text_field( $surname ),
-							sanitize_email( $email ),
-							filter_var( $phone, FILTER_SANITIZE_NUMBER_INT),
-							sanitize_text_field( serialize($location) ),
-							serialize( $product_array ),
-							sanitize_text_field( $cart_total ),
-							sanitize_text_field( $cart_currency ),
-							sanitize_text_field( $current_time ),
-							sanitize_text_field( $session_id )
-						) 
-					)
-				);
-				//Storing session_id in WooCommerce session
-				WC()->session->set('cartbounty_session_id', $session_id);
-
-				$this->increase_captured_abandoned_cart_count(); //Increasing total count of captured abandoned carts
-			}
-		}
-	}
-
-	/**
-	 * Function updates cart data for users who are not signed in
-	 *
-	 * @since    3.0
-	 */
-	function update_cart_data(){
-		if(!is_user_logged_in()){ //If a user is not logged in
-
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-			if( $cartbounty_session_id !== NULL ){
-				
-				global $wpdb;
-				$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-				$cart_data = $this->read_cart();
-				$product_array = $cart_data['product_array'];
-				$cart_total = $cart_data['cart_total'];
-				$cart_currency = $cart_data['cart_currency'];
-				$current_time = $cart_data['current_time'];
-				$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-
-				//In case if the cart has no items in it, we need to delete the abandoned cart
-				if(empty($product_array)){
-					$admin->clear_cart_data();
-					return;
-				}
-
-				//Updating row in the Database where users Session id = same as prevously saved in Session
-				$wpdb->prepare('%s',
-					$wpdb->update(
-						$table_name,
-						array(
-							'cart_contents'	=>	serialize( $product_array ),
-							'cart_total'	=>	sanitize_text_field( $cart_total ),
-							'currency'		=>	sanitize_text_field( $cart_currency ),
-							'time'			=>	sanitize_text_field( $current_time )
-						),
-						array('session_id' => $cartbounty_session_id),
-						array('%s', '%0.2f', '%s', '%s'),
-						array('%s')
-					)
-				);
-			}
-		}
-	}
-
-	/**
-	 * Function checks if current user session ID also exists in the database
+	 * Method checks if current cart has been saved or not
 	 *
 	 * @since    3.0
 	 * @return   boolean
-	 * @param    $cartbounty_session_id    Session ID
+	 * @param    $session_id    Session ID
 	 */
-	function current_session_exist_in_db( $cartbounty_session_id ){
-		//If we have saved the abandoned cart in session variable
-		if( $cartbounty_session_id !== NULL ){
+	function cart_saved( $session_id ){
+		$saved = false;
+		if( $session_id !== NULL ){
 			global $wpdb;
 			$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 			//Checking if we have this abandoned cart in our database already
-			return $result = $wpdb->get_var($wpdb->prepare(
+			$result = $wpdb->get_var($wpdb->prepare(
 				"SELECT session_id
 				FROM ". $main_table ."
 				WHERE session_id = %s",
-				$cartbounty_session_id
+				$session_id
 			));
 
-		}else{
-			return false;
+			if($result){
+				$saved = true;
+			}
+		}
+
+		return $saved;
+	}
+
+	/**
+	 * Method sets CartBounty session id value
+	 *
+	 * @since    5.0
+	 */
+	function set_cartbounty_session($session_id){
+		if(!WC()->session->get('cartbounty_session_id')){ //In case browser session is not set, we make sure it gets set
+			WC()->session->set('cartbounty_session_id', $session_id); //Storing session_id in WooCommerce session
 		}
 	}
 
 	/**
-	 * Function updates abandoned cart session from unknown session customer_id to known one in case if the user logs in
+	 * Method updates abandoned cart session from unknown session customer_id to known one in case if the user logs in
 	 *
 	 * @since    4.4
 	 */
 	function update_logged_customer_id(){
-
 		if(is_user_logged_in()){ //If a user is logged in
-			$session_id = WC()->session->get_customer_id();
+			$customer_id = WC()->session->get_customer_id();
 
-			if( WC()->session->get('cartbounty_session_id') !== NULL && WC()->session->get('cartbounty_session_id') !== $session_id){ //If session is set and it is different from the one that currently is assigned to the customer
+			if( WC()->session->get('cartbounty_session_id') !== NULL && WC()->session->get('cartbounty_session_id') !== $customer_id){ //If session is set and it is different from the one that currently is assigned to the customer
 
 				global $wpdb;
 				$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
@@ -490,12 +515,15 @@ class CartBounty_Public{
 				$wpdb->prepare('%s',
 					$wpdb->update(
 						$main_table,
-						array('session_id' => $session_id),
+						array('session_id' => $customer_id),
 						array('session_id' => WC()->session->get('cartbounty_session_id'))
 					)
 				);
 
-				WC()->session->set('cartbounty_session_id', $session_id);
+				WC()->session->set('cartbounty_session_id', $customer_id);
+				$cart = $this->read_cart();
+				$user_data = $this->get_user_data();
+				$this->update_cart_and_user_data($cart, $user_data); //Updating logged in user cart data so we do not have anything that was entered in the checkout form prior the user signed in
 
 			}else{
 				return;
@@ -507,38 +535,57 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Function deletes duplicate abandoned carts from the database
+	 * Method deletes duplicate abandoned carts from the database
 	 *
 	 * @since    4.4
-	 * @param    $cartbounty_session_id    Session ID
+	 * @param    $session_id    Session ID
 	 * @param    $duplicate_count          Number of duplicate carts
 	 */
-	private function delete_duplicate_carts( $cartbounty_session_id, $duplicate_count ){
+	private function delete_duplicate_carts( $session_id, $duplicate_count ){
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
-		$duplicate_rows = $wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $table_name
-				WHERE session_id = %s
-				ORDER BY %s DESC
-				LIMIT %d",
-				$cartbounty_session_id,
-				'id',
-				$duplicate_count - 1
-			)
-		);
+		if($duplicate_count){ //If we have updated at least one row
+			$duplicate_count = str_replace("'", "", $duplicate_count); //Removing quotes from the number of updated rows
+			if($duplicate_count > 1){ //Checking if we have updated more than a single row to know if there were duplicates
+				$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+				$where_sentence = $admin->get_where_sentence('ghost');
+				//First delete all duplicate ghost carts
+				$deleted_duplicate_ghost_carts = $wpdb->query(
+					$wpdb->prepare(
+						"DELETE FROM $table_name
+						WHERE session_id = %s
+						$where_sentence",
+						$session_id
+					)
+				);
+
+				$limit = $duplicate_count - $deleted_duplicate_ghost_carts - 1;
+				if($limit < 1){
+					$limit = 0;
+				}
+
+				$wpdb->query( //Leaving one cart remaining that can be identified
+					$wpdb->prepare(
+						"DELETE FROM $table_name
+						WHERE session_id = %s
+						ORDER BY id DESC
+						LIMIT %d",
+						$session_id,
+						$limit
+					)
+				);
+			}
+		}
 	}
 
 	/**
-	 * Function builds and returns an array of cart products and their quantities, car total value, currency, time, session id
+	 * Method builds and returns an array of cart products and their quantities, car total value, currency, time, session id
 	 *
 	 * @since    3.0
 	 * @return   Array
 	 */
 	function read_cart(){
-		global $woocommerce;
-
 		//Retrieving cart total value and currency
 		$cart_total = WC()->cart->total;
 		$cart_currency = get_woocommerce_currency();
@@ -547,9 +594,8 @@ class CartBounty_Public{
 		//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
 		$session_id = WC()->session->get_customer_id();
 
-
 		//Retrieving cart
-		$products = $woocommerce->cart->cart_contents;
+		$products = WC()->cart->get_cart_contents();
 		$product_array = array();
 				
 		foreach($products as $product => $values){
@@ -585,20 +631,17 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Function returns product attributes
+	 * Method returns product attributes
 	 *
 	 * @since    1.4.1
 	 * @return   String
 	 * @param    $product_variations    Product variations - array
 	 */
 	public function attribute_slug_to_title( $product_variations ) {
-		global $woocommerce;
 		$attribute_array = array();
-		
+
 		if($product_variations){
-
 			foreach($product_variations as $product_variation_key => $product_variation_name){
-
 				$value = '';
 				if ( taxonomy_exists( esc_attr( str_replace( 'attribute_', '', $product_variation_key )))){
 					$term = get_term_by( 'slug', $product_variation_name, esc_attr( str_replace( 'attribute_', '', $product_variation_key )));
@@ -647,7 +690,7 @@ class CartBounty_Public{
 	}
 	
 	/**
-	 * Function restores previous Checkout form data for users who are not registered
+	 * Method restores previous Checkout form data
 	 *
 	 * @since    2.0
 	 * @return   Input field values
@@ -655,27 +698,20 @@ class CartBounty_Public{
 	 */
 	public function restore_input_data( $fields = array() ) {
 		global $wpdb;
-		
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$cartbounty_session_id = WC()->session->get('cartbounty_session_id'); //Retrieving current session ID from WooCommerce Session
-		$current_customer_id = WC()->session->get_customer_id(); //Retrieving current customer ID
+		$cart = $this->read_cart();
 		
-		//Checking if current cartbounty sesion ID matches current customer ID. If they do not match, this means that the user has either logged in/signed out or switched his account. In this case we must match both session ID values	
-		if($cartbounty_session_id != $current_customer_id){
-			WC()->session->set('cartbounty_session_id', $current_customer_id);
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-		}
-		
+		$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
+
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT *
 			FROM ". $table_name ."
 			WHERE session_id = %s",
-			$cartbounty_session_id)
-		);		
+			$cart['session_id'])
+		);
 
 		if($row){ //If we have a user with such session ID in the database
-
 			$other_fields = @unserialize($row->other_fields);
 
 			if(is_serialized($row->location)){ //Since version 4.6
@@ -739,35 +775,87 @@ class CartBounty_Public{
 				}
 			}
 		}
+
 		return $fields;
 	}
 
 	/**
-	 * Function saves and updates total count of captured abandoned carts
+	 * Method saves and updates total count of captured abandoned carts
 	 *
 	 * @since    2.1
 	 */
-	function increase_captured_abandoned_cart_count(){
-		$previously_captured_abandoned_cart_count = get_option('cartbounty_captured_abandoned_cart_count');
-		update_option('cartbounty_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count + 1); //Updating the count by one abandoned cart
+	function increase_recoverable_cart_count(){
+		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') + 1);
 	}
 
 	/**
-	 * Function decreases the total count of captured abandoned carts
+	 * Method saves and updates total count of captured ghost carts
+	 *
+	 * @since    5.0
+	 */
+	function increase_ghost_cart_count(){
+		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') + 1);
+	}
+
+	/**
+	 * Method decreases the total count of captured abandoned carts
 	 *
 	 * @since    3.0
 	 * @param    $count    Abandoned cart number - integer 
 	 */
-	function decrease_captured_abandoned_cart_count( $count ){
+	function decrease_recoverable_cart_count( $count ){
 		if(!$count){
 			$count = 1;
 		}
-		$previously_captured_abandoned_cart_count = get_option('cartbounty_captured_abandoned_cart_count');
-		update_option('cartbounty_captured_abandoned_cart_count', $previously_captured_abandoned_cart_count - $count); //Decreasing the count by one abandoned cart
+		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') - $count);
+		delete_transient( 'cartbounty_recoverable_cart_count' );
 	}
 
 	/**
-	 * Outputing email form if a user who is not logged in wants to leave with a full shopping cart
+	 * Method decreases the total count of captured ghost carts
+	 *
+	 * @since    5.0
+	 * @param    $count    Cart number - integer 
+	 */
+	function decrease_ghost_cart_count( $count ){
+		if(!$count){
+			$count = 1;
+		}
+		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') - $count);
+	}
+
+	/**
+	 * Method checks if the cart was a ghost cart or not
+	 *
+	 * @since    5.0
+	 * @return   Boolean
+	 * @param    string    $session_id    Session ID value
+	 */
+	function was_ghost_cart( $session_id ){
+		global $wpdb;
+		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$where_sentence = $admin->get_where_sentence('ghost');
+		$ghost_cart = false;
+
+		//Checking if the cart is a ghost cart
+		$row = $wpdb->get_row($wpdb->prepare(
+			"SELECT id
+			FROM  $table_name
+			WHERE session_id = %s
+			$where_sentence",
+			$session_id)
+		);
+
+		if($row){
+			$ghost_cart = true;
+		}
+
+		return $ghost_cart;
+	}
+
+	/**
+	 * Outputing email form if a ghost user who is not logged in wants to leave with a full shopping cart
 	 *
 	 * @since    3.0
 	 */
@@ -815,9 +903,12 @@ class CartBounty_Public{
 	function build_exit_intent_output( $current_user_is_admin ){
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$cartbounty_session_id = WC()->session->get('cartbounty_session_id'); //Retrieving current session ID from WooCommerce Session
+		$cart = $this->read_cart();
 		$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
 		$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$where_sentence = $admin->get_where_sentence('recoverable');
+
 		if(!$main_color){
 			$main_color = '#e3e3e3';
 		}
@@ -828,12 +919,13 @@ class CartBounty_Public{
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT *
-			FROM ". $table_name ."
-			WHERE session_id = %s",
-			$cartbounty_session_id)
+			FROM $table_name
+			WHERE session_id = %s
+			$where_sentence",
+			$cart['session_id'])
 		);
 
-		if($row && !$current_user_is_admin){ //Exit if Abandoned Cart already saved and the current user is not admin
+		if($row && !$current_user_is_admin){ //Exit if cart already saved and the current user is not admin
 			return;
 		}
 
@@ -902,7 +994,7 @@ class CartBounty_Public{
 
 	/**
 	 * Locating Exit Intent template file.
-	 * Function returns the path to the template
+	 * Method returns the path to the template
 	 *
 	 * Search Order:
 	 * 1. /themes/theme/cartbounty-templates/$template_name

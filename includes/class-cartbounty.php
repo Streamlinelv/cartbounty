@@ -142,21 +142,17 @@ class CartBounty{
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
-		$this->loader->add_action( 'wp_ajax_nopriv_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail or Phone field in Checkout form
-		$this->loader->add_action( 'wp_ajax_save_data', $plugin_public, 'save_user_data' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
-		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_cart_item_removed', $plugin_public, 'save_looged_in_user_data', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'update_cart_data', 210 );
-		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'update_cart_data', 210 );
-		$this->loader->add_action( 'woocommerce_cart_item_removed', $plugin_public, 'update_cart_data', 210 );
+		$this->loader->add_action( 'wp_ajax_nopriv_cartbounty_save', $plugin_public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the E-mail or Phone field in Checkout form
+		$this->loader->add_action( 'wp_ajax_cartbounty_save', $plugin_public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
+		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'save_cart', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
+		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'save_cart', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
+		$this->loader->add_action( 'woocommerce_cart_item_removed', $plugin_public, 'save_cart', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public, 'restore_input_data', 1 ); //Restoring previous user input in Checkout form
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'display_exit_intent_form' ); //Outputing the exit intent form in the footer of the page
 		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $plugin_public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in
 		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $plugin_public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is logged in
 		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $plugin_public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action
 		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $plugin_public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action if the user is logged in
-		$this->loader->add_action( 'woocommerce_checkout_init', $plugin_public, 'update_logged_customer_id', 10 ); //Fires when the Checkout form is loaded to update the abandoned cart session from unknown customer_id to known one in case if the user has logged in
 	}
 
 	/**

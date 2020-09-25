@@ -37,10 +37,8 @@ class CartBounty_Admin{
 	 * @param    string    $version    	      The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ){
-
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -49,7 +47,6 @@ class CartBounty_Admin{
 	 * @since    1.0
 	 */
 	public function enqueue_styles(){
-
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
 		
@@ -133,8 +130,7 @@ class CartBounty_Admin{
 	 * @since    1.3
 	 */
 	function display_page(){
-		global $wpdb, $pagenow;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		global $pagenow;
 		
 		if ( !current_user_can( 'list_users' )){
 			wp_die( __( 'You do not have sufficient permissions to access this page.', CARTBOUNTY_TEXT_DOMAIN ) );
@@ -143,12 +139,12 @@ class CartBounty_Admin{
 		//Our class extends the WP_List_Table class, so we need to make sure that it's there
 		//Prepare Table of elements
 		require_once plugin_dir_path( __FILE__ ) . 'class-cartbounty-admin-table.php';
-		$wp_list_table = new CartBounty_Table();
-		$wp_list_table->prepare_items();
+		$table = new CartBounty_Table();
+		$table->prepare_items();
 		
 		//Output table contents
-		 $message = '';
-		if ('delete' === $wp_list_table->current_action()) {
+		$message = '';
+		if ('delete' === $table->current_action()) {
 			if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
 				$deleted_row_count = esc_html(count($_REQUEST['id']));
 			}
@@ -160,6 +156,11 @@ class CartBounty_Admin{
 				__('Items deleted: %d', CARTBOUNTY_TEXT_DOMAIN ), $deleted_row_count
 			) . '</p></div>';
 		}
+
+		$cart_status = 'all';
+        if (isset($_GET['cart-status'])){
+            $cart_status = $_GET['cart-status'];
+        }
 		?>
 
 		<div id="cartbounty-page-wrapper" class="wrap<?php if(get_option('cartbounty_hide_images')) {echo " cartbounty-without-thumbnails";}?>">
@@ -185,6 +186,7 @@ class CartBounty_Admin{
 							do_settings_sections( 'cartbounty-settings' );
 							$lift_email_on = esc_attr( get_option('cartbounty_lift_email') );
 							$hide_images_on = esc_attr( get_option('cartbounty_hide_images') );
+							$exclude_ghost_carts = esc_attr( get_option('cartbounty_exclude_ghost_carts') );
 						?>
 						<table id="cartbounty-settings-table" class="form-table">
 							<tr>
@@ -249,6 +251,14 @@ class CartBounty_Admin{
 								</th>
 								<td>
 									<input id="cartbounty-hide-images" class="cartbounty-checkbox" type="checkbox" name="cartbounty_hide_images" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $hide_images_on, false ); ?> />
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									<label for="cartbounty-exclude-ghost-carts"><?php echo __('Exclude ghost carts:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								</th>
+								<td>
+									<input id="cartbounty-exclude-ghost-carts" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exclude_ghost_carts" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_ghost_carts, false ); ?> />
 								</td>
 							</tr>
 						</table>
@@ -407,14 +417,15 @@ class CartBounty_Admin{
 				<?php else: //Table output ?>
 					<?php do_action('cartbounty_after_page_title'); ?>
 					<?php echo $message; 
-					if ($this->abandoned_cart_count() == 0): //If no abandoned carts, then output this note ?>
+					if ($this->get_cart_count( 'all' ) == 0): //If no abandoned carts, then output this note ?>
 						<p>
 							<?php echo __( 'Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.', CARTBOUNTY_TEXT_DOMAIN); ?>
 						</p>
 					<?php else: ?>
 						<form id="cartbounty-table" method="GET">
+							<?php $this->display_cart_statuses( $cart_status, $tab);?>
 							<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
-							<?php $wp_list_table->display(); ?>
+							<?php $table->display(); ?>
 						</form>
 					<?php endif; ?>
 				<?php endif;
@@ -424,13 +435,17 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function creates tabs on plugin page
+	 * Method creates tabs on plugin page
 	 *
 	 * @since    3.0
 	 * @param    $current    Currently open tab - string
 	 */
 	function create_admin_tabs( $current = 'carts' ){
-		$tabs = array( 'carts' => __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN), 'settings' => __('Settings', CARTBOUNTY_TEXT_DOMAIN), 'exit_intent' => __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN));
+		$tabs = array(
+			'carts' => __('Abandoned carts', CARTBOUNTY_TEXT_DOMAIN),
+			'settings' => __('Settings', CARTBOUNTY_TEXT_DOMAIN),
+			'exit_intent' => __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN)
+		);
 		echo '<h2 class="nav-tab-wrapper">';
 		$icon_image = NULL;
 		
@@ -456,7 +471,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function adds additional intervals to default Wordpress cron intervals (hourly, twicedaily, daily). Interval provided in minutes
+	 * Method adds additional intervals to default Wordpress cron intervals (hourly, twicedaily, daily). Interval provided in minutes
 	 *
 	 * @since    3.0
 	 */
@@ -473,7 +488,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function resets Wordpress cron function after user sets other notification frequency
+	 * Method resets Wordpress cron function after user sets other notification frequency
 	 * wp_schedule_event() Schedules a hook which will be executed by the WordPress actions core on a specific interval, specified by you. 
 	 * The action will trigger when someone visits your WordPress site, if the scheduled time has passed.
 	 *
@@ -492,7 +507,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function shows warnings if any of the WP Cron events required for MailChimp or ActiveCampaign are not scheduled (either sending notifications or pushing carts) or if the WP Cron has been disabled
+	 * Method shows warnings if any of the WP Cron events required for MailChimp or ActiveCampaign are not scheduled (either sending notifications or pushing carts) or if the WP Cron has been disabled
 	 *
 	 * @since    4.3
 	 */
@@ -546,13 +561,12 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function to send out e-mail notification in order to notify about new abandoned carts
+	 * Method for sending out e-mail notification in order to notify about new abandoned carts
 	 *
 	 * @since    4.3
 	 */
 	function send_email(){
 		global $wpdb;
-		
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $this->get_time_intervals();
 
@@ -602,19 +616,6 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Count abandoned carts
-	 *
-	 * @since    1.1
-	 */
-	function abandoned_cart_count(){
-		global $wpdb;
-        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
-
-        return $total_items;
-	}
-
-	/**
 	 * Adds custom action link on Plugin page under plugin name
 	 *
 	 * @since    1.2
@@ -636,7 +637,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function that merges the links on Plugin page under plugin name
+	 * Method that merges the links on Plugin page under plugin name
 	 *
 	 * @since    1.2
 	 * @return   array
@@ -664,7 +665,7 @@ class CartBounty_Admin{
 	}
 	
 	/**
-	 * Function calculates if time has passed since the given time period (In days)
+	 * Method calculates if time has passed since the given time period (In days)
 	 *
 	 * @since    1.3
 	 * @return   Boolean
@@ -687,7 +688,7 @@ class CartBounty_Admin{
 	}
 	
 	/**
-	 * Function checks the current plugin version with the one saved in database
+	 * Method checks the current plugin version with the one saved in database
 	 *
 	 * @since    1.4.1
 	 */
@@ -722,7 +723,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function outputs bubble content
+	 * Method outputs bubble content
 	 *
 	 * @since    1.4.2
 	 */
@@ -738,7 +739,7 @@ class CartBounty_Admin{
 					<div id="cartbounty-review-content">
 						<?php
 							$expression = $this->get_expressions();
-							$saved_cart_count = $this->total_captured_abandoned_cart_count();
+							$saved_cart_count = $this->total_cartbounty_recoverable_cart_count();
 						?>
 						<h2><?php echo sprintf(
 							/* translators: %s - Gets replaced by an excitement word e.g. Awesome!, %d - Abandoned cart count */
@@ -794,16 +795,16 @@ class CartBounty_Admin{
 		//Checking if we should display the Review bubble or Get Pro bubble
 		//Displaying review bubble after 10, 30, 100, 300, 500 and 1000 abandoned carts have been captured and if the review has not been submitted
 		if(
-			($this->total_captured_abandoned_cart_count() > 9 && get_option('cartbounty_times_review_declined') < 1 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_captured_abandoned_cart_count() > 29 && get_option('cartbounty_times_review_declined') < 2 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_captured_abandoned_cart_count() > 99 && get_option('cartbounty_times_review_declined') < 3 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_captured_abandoned_cart_count() > 299 && get_option('cartbounty_times_review_declined') < 4 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_captured_abandoned_cart_count() > 499 && get_option('cartbounty_times_review_declined') < 5 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_captured_abandoned_cart_count() > 999 && get_option('cartbounty_times_review_declined') < 6 && !get_option('cartbounty_review_submitted'))
+			($this->total_cartbounty_recoverable_cart_count() > 9 && get_option('cartbounty_times_review_declined') < 1 && !get_option('cartbounty_review_submitted')) ||
+			($this->total_cartbounty_recoverable_cart_count() > 29 && get_option('cartbounty_times_review_declined') < 2 && !get_option('cartbounty_review_submitted')) ||
+			($this->total_cartbounty_recoverable_cart_count() > 99 && get_option('cartbounty_times_review_declined') < 3 && !get_option('cartbounty_review_submitted')) ||
+			($this->total_cartbounty_recoverable_cart_count() > 299 && get_option('cartbounty_times_review_declined') < 4 && !get_option('cartbounty_review_submitted')) ||
+			($this->total_cartbounty_recoverable_cart_count() > 499 && get_option('cartbounty_times_review_declined') < 5 && !get_option('cartbounty_review_submitted')) ||
+			($this->total_cartbounty_recoverable_cart_count() > 999 && get_option('cartbounty_times_review_declined') < 6 && !get_option('cartbounty_review_submitted'))
 		){
 			$bubble_type = '#cartbounty-review';
 			$display_bubble = true; //Show the bubble
-		}elseif($this->total_captured_abandoned_cart_count() > 5 && $this->days_have_passed('cartbounty_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
+		}elseif($this->total_cartbounty_recoverable_cart_count() > 5 && $this->days_have_passed('cartbounty_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#cartbounty-go-pro';
 			$display_bubble = true; //Show the bubble
 		}else{
@@ -840,10 +841,10 @@ class CartBounty_Admin{
 	 * @since    2.1
 	 * @return 	 number
 	 */
-	function total_captured_abandoned_cart_count(){
-		if ( false === ( $captured_abandoned_cart_count = get_transient( 'cartbounty_captured_abandoned_cart_count' ))){ //If value is not cached or has expired
-			$captured_abandoned_cart_count = get_option('cartbounty_captured_abandoned_cart_count');
-			set_transient( 'cartbounty_captured_abandoned_cart_count', $captured_abandoned_cart_count, 60 * 10 ); //Temporary cache will expire in 10 minutes
+	function total_cartbounty_recoverable_cart_count(){
+		if ( false === ( $captured_abandoned_cart_count = get_transient( 'cartbounty_recoverable_cart_count' ))){ //If value is not cached or has expired
+			$captured_abandoned_cart_count = get_option('cartbounty_recoverable_cart_count');
+			set_transient( 'cartbounty_recoverable_cart_count', $captured_abandoned_cart_count, 60 * 10 ); //Temporary cache will expire in 10 minutes
 		}
 		
 		return $captured_abandoned_cart_count;
@@ -859,53 +860,60 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function removes empty abandoned carts that do not have any products and are older than 1 day
+	 * Method removes empty abandoned carts that do not have any products and are older than 1 day
 	 *
 	 * @since    3.0
 	 */
 	function delete_empty_carts(){
-		
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 		$time = $this->get_time_intervals();
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$where_sentence = $this->get_where_sentence( 'ghost' );
 
-		//Deleting row from database
-		$count = $wpdb->query(
+		//Deleting ghost rows from database first
+		$ghost_row_count = $wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM ". $table_name ."
+				"DELETE FROM $table_name
+				WHERE cart_contents = ''
+				$where_sentence AND
+				time < %s",
+				$time['day']
+			)
+		);
+		if($ghost_row_count){
+			$public->decrease_ghost_cart_count( $ghost_row_count );
+		}
+
+		//Deleting rest of the abandoned carts without products
+		$rest_count = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM $table_name
 				WHERE cart_contents = '' AND
 				time < %s",
 				$time['day']
 			)
 		);
-
-		if($count){
-			$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-			$public->decrease_captured_abandoned_cart_count( $count );
+		if($rest_count){
+			$public->decrease_recoverable_cart_count( $rest_count );
 		}
-		
 	}
 
 	/**
-	 * Function to clear cart data from row
+	 * Method to clear cart data from row
 	 *
 	 * @since    3.0
 	 */
 	function clear_cart_data(){
-		
 		global $wpdb;
 		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 		
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
+			$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+			$cart = $public->read_cart();
 
-			$cartbounty_session_id = WC()->session->get('cartbounty_session_id');
-			if(isset($cartbounty_session_id)){
-				$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-				$cart_data = $public->read_cart();
-				$cart_currency = $cart_data['cart_currency'];
-				$current_time = $cart_data['current_time'];
-				
+			if(isset($cart['session_id'])){
 				//Cleaning Cart data
 				$wpdb->prepare('%s',
 					$wpdb->update(
@@ -913,10 +921,10 @@ class CartBounty_Admin{
 						array(
 							'cart_contents'	=>	'',
 							'cart_total'	=>	0,
-							'currency'		=>	sanitize_text_field( $cart_currency ),
-							'time'			=>	sanitize_text_field( $current_time )
+							'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
+							'time'			=>	sanitize_text_field( $cart['current_time'] )
 						),
-						array('session_id' => $cartbounty_session_id),
+						array('session_id' => $cart['session_id']),
 						array('%s', '%s'),
 						array('%s')
 					)
@@ -926,34 +934,33 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function returns different expressions depending on the amount of captured carts
+	 * Method returns different expressions depending on the amount of captured carts
 	 *
 	 * @since    3.2.1
 	 * @return 	 String
 	 */
 	function get_expressions(){
-
-		if($this->total_captured_abandoned_cart_count() <= 10){
+		if($this->total_cartbounty_recoverable_cart_count() <= 10){
 			$expressions = array(
 				'exclamation' => __('Congrats!', CARTBOUNTY_TEXT_DOMAIN)
 			);
-		}elseif($this->total_captured_abandoned_cart_count() <= 30){
+		}elseif($this->total_cartbounty_recoverable_cart_count() <= 30){
 			$expressions = array(
 				'exclamation' => __('Awesome!', CARTBOUNTY_TEXT_DOMAIN)
 			);
-		}elseif($this->total_captured_abandoned_cart_count() <= 100){
+		}elseif($this->total_cartbounty_recoverable_cart_count() <= 100){
 			$expressions = array(
 				'exclamation' => __('Amazing!', CARTBOUNTY_TEXT_DOMAIN)
 			);
-		}elseif($this->total_captured_abandoned_cart_count() <= 300){
+		}elseif($this->total_cartbounty_recoverable_cart_count() <= 300){
 			$expressions = array(
 				'exclamation' => __('Incredible!', CARTBOUNTY_TEXT_DOMAIN)
 			);
-		}elseif($this->total_captured_abandoned_cart_count() <= 500){
+		}elseif($this->total_cartbounty_recoverable_cart_count() <= 500){
 			$expressions = array(
 				'exclamation' => __('Crazy!', CARTBOUNTY_TEXT_DOMAIN)
 			);
-		}elseif($this->total_captured_abandoned_cart_count() <= 1000){
+		}elseif($this->total_cartbounty_recoverable_cart_count() <= 1000){
 			$expressions = array(
 				'exclamation' => __('Fantastic!', CARTBOUNTY_TEXT_DOMAIN)
 			);
@@ -967,7 +974,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function returns Exit Intent icon as SVG code
+	 * Method returns Exit Intent icon as SVG code
 	 *
 	 * @since    3.0
 	 * @return 	 String
@@ -983,7 +990,7 @@ class CartBounty_Admin{
     }
 
     /**
-	 * Function returns CartBounty icon as SVG code
+	 * Method returns CartBounty icon as SVG code
 	 *
 	 * @since    4.6
 	 * @return 	 String
@@ -999,7 +1006,7 @@ class CartBounty_Admin{
     }
 
     /**
-	 * Function tries to move the email field higher in the checkout form
+	 * Method tries to move the email field higher in the checkout form
 	 *
 	 * @since    4.5
 	 * @return 	 Array
@@ -1014,7 +1021,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Function prepares and returns an array of different time intervals used for calulating time substractions
+	 * Method prepares and returns an array of different time intervals used for calulating time substractions
 	 *
 	 * @since    4.6
 	 * @return 	 Array
@@ -1028,4 +1035,85 @@ class CartBounty_Admin{
 			'day' 				=> date( 'Y-m-d H:i:s', strtotime( '-1 day', strtotime( $datetime ) ) )
 		);
 	}
+
+	/**
+     * Method that counts carts in the selected category
+     *
+     * @since    5.0
+     * @return   number
+     */
+    function get_cart_count( $cart_status ){
+        global $wpdb;
+        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+        $total_items = 0;
+        $where_sentence = $this->get_where_sentence($cart_status);
+
+        $total_items = $wpdb->get_var("
+            SELECT COUNT(id)
+            FROM $table_name
+            WHERE cart_contents != ''
+            $where_sentence
+        ");
+
+        return $total_items;
+    }
+
+    /**
+     * Method that displays available cart type filters
+     *
+     * @since    5.0
+     * @return   string
+     * @param 	 $cart_status    Currently filtered cart status
+     * @param 	 $tab    		 Currently open tab
+     */
+    function display_cart_statuses( $cart_status, $tab ){
+    	$exclude = false;
+    	$divider = ' | ';
+    	if(get_option('cartbounty_exclude_ghost_carts' )){
+			$exclude = true;
+		}
+    	$cart_types = array(
+    		'all' 			=> __('All', CARTBOUNTY_TEXT_DOMAIN),
+    		'recoverable' 	=> __('Recoverable', CARTBOUNTY_TEXT_DOMAIN),
+    		'ghost' 		=> __('Ghost', CARTBOUNTY_TEXT_DOMAIN)
+    	);
+    	$total_items = count($cart_types);
+    	if(count($cart_types) <= 3 && $exclude){ //Do not output the filter if we are excluding Ghost carts and we have only 3 cart types
+    		return;
+    	}
+    	echo '<ul id="cartbounty-cart-statuses" class="subsubsub">';
+    	$counter = 0;
+    	foreach( $cart_types as $key => $type ){
+    		$counter++;
+    		if($counter == $total_items){
+    			$divider = '';
+    		}
+    		$class = ( $key == $cart_status ) ? 'current' : '';
+    		$count = $this->get_cart_count($key);
+    		if (!($key == 'ghost' && $exclude)){ //If we are not processing Ghost carts and they have not been excluded
+	    		echo "<li><a href='?page=". CARTBOUNTY ."&tab=$tab&cart-status=$key' title='$type' class='$class'>$type <span class='count'>($count)</span></a></li>$divider";
+	    	}
+    	}
+    	echo '</ul>';
+    }
+
+    /**
+     * Method for creating SQL query depending on different post types
+     *
+     * @since    5.0
+     * @return   string
+     */
+    function get_where_sentence( $cart_status ){
+        $where_sentence = '';
+        if($cart_status == 'recoverable'){
+            $where_sentence = "AND (email != '' OR phone != '')";
+
+        }elseif($cart_status == 'ghost'){
+            $where_sentence = "AND (email IS NULL AND phone IS NULL)";
+
+        }elseif(get_option('cartbounty_exclude_ghost_carts')){ //In case Ghost carts have been excluded
+            $where_sentence = "AND (email != '' OR phone != '')";
+        }
+        return $where_sentence;
+    }
 }

@@ -14,7 +14,9 @@ If you would like to send automated abandoned cart recovery emails to customers 
 
 #### Plugin basics and features:
 
-* Instantly capture WooCommerce checkout field data before submission to save abandoned carts.
+* Instantly save WooCommerce checkout field data before submission to save abandoned carts.
+
+* Save and view ghost shopping carts.
 
 * Receive notifications on newly abandoned shopping carts via email. You can set notification frequency or disable them in case you want to take some time off :)
 
@@ -194,6 +196,11 @@ Example how to change the main title using a filter:
 
 ## Changelog
 
+##### 5.0 =
+
+* Added option to save and view ghost carts
+* Added option to filter between ghost and recoverable carts
+
 ##### 4.7 =
 
 * Added option to replace the default Exit Intent image via admin panel
@@ -212,11 +219,13 @@ Example how to change the main title using a filter:
 * Improved Time column output in a more user friendly way (hover to see get the exact time)
 
 ##### 4.5.1 =
+
 * Improved abandoned cart removal after order completion
 * Abandoned cart time calculations changed to local time
 * Removed link to product in the Cart contents column in case the product no longer exists
 
 ##### 4.5 =
+
 * Added option to move email field higher in the checkout form
 * Changed the script loading hook from "woocommerce_after_checkout_form" to "woocommerce_before_checkout_form"
 

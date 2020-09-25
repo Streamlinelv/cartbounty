@@ -89,8 +89,13 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_name( $item ){
+        $cart_status = 'all';
+        if (isset($_GET['cart-status'])){
+            $cart_status = $_GET['cart-status'];
+        }
+
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'custom_table_example')),
+            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'custom_table_example')),
         );
 
         return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s %s',
@@ -267,10 +272,8 @@ class CartBounty_Table extends WP_List_Table{
         }
 
 		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%s" title="%s">%s</time>', esc_html($date_iso), esc_html($date_title), esc_html($friendly_time));
-	}	
+	}
 
-    
-	
 	/**
      * Rendering checkbox column
      *
@@ -334,7 +337,7 @@ class CartBounty_Table extends WP_List_Table{
             }
         }
     }
-	
+
 	/**
      * Method that renders the table
      *
@@ -344,14 +347,19 @@ class CartBounty_Table extends WP_List_Table{
         global $wpdb;
         $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
 
-        $per_page = 10; // constant, how much records will be shown per page
+        $cart_status = 'all';
+        if (isset($_GET['cart-status'])){
+            $cart_status = $_GET['cart-status'];
+        }
 
+        $per_page = 10;
         $columns = $this->get_columns();
         $hidden = array();
         $sortable = $this->get_sortable_columns();
         $this->_column_headers = array($columns, $hidden, $sortable); // here we configure table headers, defined in our methods
         $this->process_bulk_action(); // process bulk action if any
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE cart_contents != ''"); // will be used in pagination settings
+        $admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+        $total_items = $admin->get_cart_count($cart_status);
 
         // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;
@@ -364,8 +372,14 @@ class CartBounty_Table extends WP_List_Table{
             'per_page' => $per_page, // per page constant defined at top of method
             'total_pages' => ceil($total_items / $per_page) // calculate pages count
         ));
-		
-		// define $items array
-        $this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE cart_contents != '' ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $paged * $per_page), ARRAY_A);
+
+        $where_sentence = $admin->get_where_sentence($cart_status);
+        $this->items = $wpdb->get_results($wpdb->prepare("
+            SELECT * FROM $table_name
+            WHERE cart_contents != ''
+            $where_sentence
+            ORDER BY $orderby $order
+            LIMIT %d OFFSET %d",
+        $per_page, $paged * $per_page), ARRAY_A);
     }
 }

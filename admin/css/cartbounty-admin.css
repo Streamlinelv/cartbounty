@@ -547,6 +547,10 @@
 	opacity: 1;
 }
 
+#cartbounty-cart-statuses{
+	margin-top: -10px;
+}
+
 @media screen and (max-width: 1200px) {
 	.woocommerce_page_cartbounty .column-time,
 	.woocommerce_page_cartbounty .column-cart_contents{

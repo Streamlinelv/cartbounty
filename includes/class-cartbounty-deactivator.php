@@ -19,5 +19,6 @@ class CartBounty_Deactivator{
 		//Deactivating Wordpress cron job functions and stop sending out e-mails
 		wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
 		wp_clear_scheduled_hook( 'cartbounty_remove_empty_carts_hook' );
+		delete_transient( 'cartbounty_recoverable_cart_count' );
 	}
 }

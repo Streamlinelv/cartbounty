@@ -89,7 +89,7 @@
 					}
 					
 					var data = {
-						action:								"save_data",
+						action:								"cartbounty_save",
 						cartbounty_email:					cartbounty_email,
 						cartbounty_name:					cartbounty_name,
 						cartbounty_surname:					cartbounty_surname,
@@ -116,7 +116,7 @@
 					}
 
 					timer = setTimeout(function(){
-						jQuery.post(ajaxLink.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+						jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 						function(response) {
 							//console.log(response);
 							//If we have successfully captured abandoned cart, we do not have to display Exit intent form anymore

@@ -115,6 +115,12 @@ class CartBounty_Activator{
 		}
 		delete_option( 'wclcfc_exit_intent_inverse_color' );
 
+		//Since v5.0 this option updated
+		if (get_option( 'cartbounty_captured_abandoned_cart_count' )){
+			update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_captured_abandoned_cart_count' ));
+		}
+		delete_option( 'cartbounty_captured_abandoned_cart_count' );
+
 		/**
 		 * Starting WordPress cron function in order to send out e-mails on a set interval
 		 *
