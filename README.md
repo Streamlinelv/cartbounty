@@ -200,6 +200,7 @@ Example how to change the main title using a filter:
 
 * Added option to save and view ghost carts
 * Added option to filter between ghost and recoverable carts
+* Added screen options tab
 
 ##### 4.7 =
 
