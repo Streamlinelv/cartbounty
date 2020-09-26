@@ -577,10 +577,11 @@ class CartBounty_Admin{
 			$wpdb->prepare(
 				"SELECT COUNT(id)
 				FROM $table_name
-				WHERE mail_sent = 0
+				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
 				time < %s",
+				0,
 				$time['cart_abandoned']
 			)
 		);
@@ -610,8 +611,9 @@ class CartBounty_Admin{
 			$wpdb->query(
 				$wpdb->prepare(
 					"UPDATE $table_name
-					SET mail_sent = %d 
-					WHERE mail_sent = %d AND
+					SET mail_sent = %d
+					WHERE mail_sent = %d 
+					$where_sentence AND
 					cart_contents != '' AND
 					time < %s",
 					1,
