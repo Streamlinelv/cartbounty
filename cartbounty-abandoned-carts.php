@@ -12,7 +12,7 @@
  * Developer URI: http://www.majas-lapu-izstrade.lv/en
  * 
  * WC requires at least: 2.2
- * WC tested up to: 4.3.2
+ * WC tested up to: 4.5.2
  *
  * Copyright: © 2018-2020 CartBounty
  * License: GPLv3
