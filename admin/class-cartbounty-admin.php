@@ -601,7 +601,7 @@ class CartBounty_Admin{
 			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved', 'New abandoned carts saved', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN);
 			$message = sprintf(
 				/* translators: %d - Abandoned cart count, %s - Plugin name, %s - Link, %s - Link */
-				_n('Great! You have saved %d new abandoned cart using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', 'Congratulations, you have saved %d new abandoned carts using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+				_n('Great! You have saved %d new recoverable abandoned cart using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', 'Congratulations, you have saved %d new abandoned carts using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
 			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
 			
 			//Sending out e-mail
