@@ -199,6 +199,7 @@ Example how to change the main title using a filter:
 = 5.0 =
 * Added option to save and view ghost carts
 * Added option to filter between ghost and recoverable carts
+* Added screen options tab
 
 = 4.7 =
 * Added option to replace the default Exit Intent image via admin panel

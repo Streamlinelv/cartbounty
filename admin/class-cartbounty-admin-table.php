@@ -352,7 +352,16 @@ class CartBounty_Table extends WP_List_Table{
             $cart_status = $_GET['cart-status'];
         }
 
-        $per_page = 10;
+        $screen = get_current_screen();
+        $user = get_current_user_id();
+        $option = $screen->get_option('per_page', 'option');
+        $per_page = get_user_meta($user, $option, true);
+
+        //How much records will be shown per page, if the user has not saved any custom values under Screen options, then default amount of 10 rows will be shown
+        if ( empty ( $per_page ) || $per_page < 1 ) {
+            $per_page = $screen->get_option( 'per_page', 'default' );
+        }
+
         $columns = $this->get_columns();
         $hidden = array();
         $sortable = $this->get_sortable_columns();

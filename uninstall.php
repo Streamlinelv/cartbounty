@@ -34,3 +34,4 @@ delete_option( 'cartbounty_exit_intent_inverse_color' );
 delete_option( 'cartbounty_exit_intent_image' );
 delete_option( 'cartbounty_lift_email' );
 delete_option( 'cartbounty_hide_images' );
+delete_option( 'cartbounty_carts_per_page' );

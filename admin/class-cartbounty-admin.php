@@ -123,6 +123,64 @@ class CartBounty_Admin{
 			}
 		}
 	}
+
+	/**
+	 * Adds Screen options tab
+	 *
+	 * @since    5.0
+	 */
+	function register_admin_screen_options_tab(){
+		global $cartbounty_admin_menu_page;
+		$screen = get_current_screen();
+
+		// Check if we are on CartBounty page
+		if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
+			return;
+
+		}else{
+			//Outputing how many rows we would like to see on the page
+			$option = 'per_page';
+			$args = array(
+				'label' => __('Carts per page: ', CARTBOUNTY_TEXT_DOMAIN),
+				'default' => 10,
+				'option' => 'cartbounty_carts_per_page'
+			);
+			add_screen_option( $option, $args );
+		}
+	}
+
+	/**
+	 * Saves settings displayed under Screen options
+	 *
+	 * @since    1.0
+	 */
+	function save_page_options(){
+		if ( isset( $_POST['wp_screen_options'] ) && is_array( $_POST['wp_screen_options'] ) ) {
+			check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
+
+			global $cartbounty_admin_menu_page;
+			$screen = get_current_screen();
+
+			//Do not continue if we are not on CartBounty Pro plugin page
+			if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
+				return;
+			}
+
+			$user = wp_get_current_user();
+	        if ( ! $user ) {
+	            return;
+	        }
+
+	        $option = $_POST['wp_screen_options']['option'];
+	        $value  = $_POST['wp_screen_options']['value'];
+	 
+	        if ( sanitize_key( $option ) != $option ) {
+	            return;
+	        }
+
+	        update_user_meta( $user->ID, $option, $value );
+	    }
+	}
 	
 	/**
 	 * Display the abandoned carts and settings under admin page
