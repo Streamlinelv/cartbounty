@@ -98,7 +98,7 @@ class CartBounty_Admin{
 	 */
 	function menu_abandoned_count(){
 		global $wpdb, $submenu;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		
 		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
 			$time = $this->get_time_intervals();
@@ -106,7 +106,7 @@ class CartBounty_Admin{
 			$order_count = $wpdb->get_var( //Counting newly abandoned carts
 				$wpdb->prepare(
 					"SELECT COUNT(id)
-					FROM $table_name
+					FROM $cart_table
 					WHERE
 					cart_contents != '' AND
 					time < %s AND 
@@ -194,7 +194,6 @@ class CartBounty_Admin{
 			wp_die( __( 'You do not have sufficient permissions to access this page.', CARTBOUNTY_TEXT_DOMAIN ) );
 		}
 		
-		//Our class extends the WP_List_Table class, so we need to make sure that it's there
 		//Prepare Table of elements
 		require_once plugin_dir_path( __FILE__ ) . 'class-cartbounty-admin-table.php';
 		$table = new CartBounty_Table();
@@ -218,8 +217,7 @@ class CartBounty_Admin{
 		$cart_status = 'all';
         if (isset($_GET['cart-status'])){
             $cart_status = $_GET['cart-status'];
-        }
-		?>
+        }?>
 
 		<div id="cartbounty-page-wrapper" class="wrap<?php if(get_option('cartbounty_hide_images')) {echo " cartbounty-without-thumbnails";}?>">
 			<h1><?php echo CARTBOUNTY_ABREVIATION; ?></h1>
@@ -508,11 +506,11 @@ class CartBounty_Admin{
 		$icon_image = NULL;
 		
 		foreach( $tabs as $tab => $name ){
-			if($name == 'Settings'){
+			if($tab == 'settings'){
 				$icon_class = 'dashicons-admin-generic';
 				$icon_image = '';
 			}
-			elseif($name == 'Exit Intent'){
+			elseif($tab == 'exit_intent'){
 				//$icon_image = '';
 				$icon_class = 'cartbounty-exit-intent-icon';
 				$icon_image = "<img src='data:image/svg+xml;base64," . $this->exit_intent_svg_icon($current) . "' alt=''  />";
@@ -625,16 +623,17 @@ class CartBounty_Admin{
 	 */
 	function send_email(){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $this->get_time_intervals();
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$where_sentence = $this->get_where_sentence( 'recoverable' );
+		$to = get_option( 'admin_email' );
 
 		// Retrieve from database rows that have not been e-mailed and are older than 60 minutes
-		$rows_to_email = $wpdb->get_var(
+		$cart_count = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(id)
-				FROM $table_name
+				FROM $cart_table
 				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
@@ -644,11 +643,9 @@ class CartBounty_Admin{
 			)
 		);
 		
-		if ($rows_to_email){ //If we have new rows in the database
+		if ($cart_count){ //If we have new rows in the database
 			$user_settings_email = get_option('cartbounty_notification_email'); //Retrieving email address if the user has entered one
-			if($user_settings_email == '' || $user_settings_email == NULL){
-				$to = get_option( 'admin_email' );
-			}else{
+			if(!empty($user_settings_email)){
 				$to = $user_settings_email;
 			}
 			
@@ -656,10 +653,10 @@ class CartBounty_Admin{
 			$from = "From: WordPress <$sender>";
 			$blog_name = get_option( 'blogname' );
 			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
-			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved', 'New abandoned carts saved', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN);
+			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved', 'New abandoned carts saved', $cart_count, CARTBOUNTY_TEXT_DOMAIN);
 			$message = sprintf(
-				/* translators: %d - Abandoned cart count, %s - Plugin name, %s - Link, %s - Link */
-				_n('Great! You have saved %d new recoverable abandoned cart using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', 'Congratulations, you have saved %d new abandoned carts using %s. <br/>View your abandoned carts here: <a href="%s">%s</a>', $rows_to_email, CARTBOUNTY_TEXT_DOMAIN), esc_html($rows_to_email), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+				/* translators: %1$d - Abandoned cart count, %2$s - Plugin name, %3$s - Link, %4$s - Link */
+				_n('Great! You have saved %1$d new recoverable abandoned cart using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', 'Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, CARTBOUNTY_TEXT_DOMAIN), esc_html($cart_count), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
 			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
 			
 			//Sending out e-mail
@@ -668,7 +665,7 @@ class CartBounty_Admin{
 			//Update mail_sent status to true with mail_status = 0 and are older than 60 minutes
 			$wpdb->query(
 				$wpdb->prepare(
-					"UPDATE $table_name
+					"UPDATE $cart_table
 					SET mail_sent = %d
 					WHERE mail_sent = %d 
 					$where_sentence AND
@@ -933,7 +930,7 @@ class CartBounty_Admin{
 	 */
 	function delete_empty_carts(){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $this->get_time_intervals();
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$where_sentence = $this->get_where_sentence( 'ghost' );
@@ -941,29 +938,25 @@ class CartBounty_Admin{
 		//Deleting ghost rows from database first
 		$ghost_row_count = $wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM $table_name
+				"DELETE FROM $cart_table
 				WHERE cart_contents = ''
 				$where_sentence AND
 				time < %s",
 				$time['day']
 			)
 		);
-		if($ghost_row_count){
-			$public->decrease_ghost_cart_count( $ghost_row_count );
-		}
+		$public->decrease_ghost_cart_count( $ghost_row_count );
 
 		//Deleting rest of the abandoned carts without products
 		$rest_count = $wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM $table_name
+				"DELETE FROM $cart_table
 				WHERE cart_contents = '' AND
 				time < %s",
 				$time['day']
 			)
 		);
-		if($rest_count){
-			$public->decrease_recoverable_cart_count( $rest_count );
-		}
+		$public->decrease_recoverable_cart_count( $rest_count );
 	}
 
 	/**
@@ -973,7 +966,7 @@ class CartBounty_Admin{
 	 */
 	function clear_cart_data(){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if(isset(WC()->session)){
@@ -984,7 +977,7 @@ class CartBounty_Admin{
 				//Cleaning Cart data
 				$wpdb->prepare('%s',
 					$wpdb->update(
-						$table_name,
+						$cart_table,
 						array(
 							'cart_contents'	=>	'',
 							'cart_total'	=>	0,
@@ -1104,20 +1097,20 @@ class CartBounty_Admin{
 	}
 
 	/**
-     * Method that counts carts in the selected category
+     * Method counts carts in the selected category
      *
      * @since    5.0
      * @return   number
      */
     function get_cart_count( $cart_status ){
         global $wpdb;
-        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+        $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
         $total_items = 0;
         $where_sentence = $this->get_where_sentence($cart_status);
 
         $total_items = $wpdb->get_var("
             SELECT COUNT(id)
-            FROM $table_name
+            FROM $cart_table
             WHERE cart_contents != ''
             $where_sentence
         ");
@@ -1126,7 +1119,7 @@ class CartBounty_Admin{
     }
 
     /**
-     * Method that displays available cart type filters
+     * Method displays available cart type filters
      *
      * @since    5.0
      * @return   string
@@ -1171,16 +1164,18 @@ class CartBounty_Admin{
      * @return   string
      */
     function get_where_sentence( $cart_status ){
-        $where_sentence = '';
-        if($cart_status == 'recoverable'){
-            $where_sentence = "AND (email != '' OR phone != '')";
+		$where_sentence = '';
 
-        }elseif($cart_status == 'ghost'){
-            $where_sentence = "AND (email IS NULL AND phone IS NULL)";
+		if($cart_status == 'recoverable'){
+			$where_sentence = "AND (email != '' OR phone != '')";
 
-        }elseif(get_option('cartbounty_exclude_ghost_carts')){ //In case Ghost carts have been excluded
-            $where_sentence = "AND (email != '' OR phone != '')";
-        }
-        return $where_sentence;
+		}elseif($cart_status == 'ghost'){
+			$where_sentence = "AND (email IS NULL AND phone IS NULL)";
+
+		}elseif(get_option('cartbounty_exclude_ghost_carts')){ //In case Ghost carts have been excluded
+			$where_sentence = "AND (email != '' OR phone != '')";
+		}
+
+		return $where_sentence;
     }
 }

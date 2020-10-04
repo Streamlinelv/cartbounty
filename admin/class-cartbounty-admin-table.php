@@ -95,7 +95,7 @@ class CartBounty_Table extends WP_List_Table{
         }
 
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'custom_table_example')),
+            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'CARTBOUNTY_TEXT_DOMAIN')),
         );
 
         return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s %s',
@@ -308,7 +308,7 @@ class CartBounty_Table extends WP_List_Table{
      */
     function process_bulk_action(){
         global $wpdb;
-        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+        $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
         if ('delete' === $this->current_action()) {
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
@@ -318,7 +318,7 @@ class CartBounty_Table extends WP_List_Table{
                     foreach ($ids as $key => $id){
                         $wpdb->query(
                             $wpdb->prepare(
-                                "DELETE FROM $table_name
+                                "DELETE FROM $cart_table
                                 WHERE id = %d",
                                 intval($id)
                             )
@@ -328,7 +328,7 @@ class CartBounty_Table extends WP_List_Table{
                     $id = $ids;
                     $wpdb->query(
                         $wpdb->prepare(
-                            "DELETE FROM $table_name
+                            "DELETE FROM $cart_table
                             WHERE id = %d",
                             intval($id)
                         )
@@ -345,7 +345,7 @@ class CartBounty_Table extends WP_List_Table{
      */
 	function prepare_items(){
         global $wpdb;
-        $table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+        $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
         $cart_status = 'all';
         if (isset($_GET['cart-status'])){
@@ -384,7 +384,7 @@ class CartBounty_Table extends WP_List_Table{
 
         $where_sentence = $admin->get_where_sentence($cart_status);
         $this->items = $wpdb->get_results($wpdb->prepare("
-            SELECT * FROM $table_name
+            SELECT * FROM $cart_table
             WHERE cart_contents != ''
             $where_sentence
             ORDER BY $orderby $order

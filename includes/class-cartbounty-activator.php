@@ -27,12 +27,12 @@ class CartBounty_Activator{
 		/**
 		* Creating table
 		*/
-		global $wpdb, $table_name;
+		global $wpdb, $cart_table;
 		
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = "CREATE TABLE $table_name (
+		$sql = "CREATE TABLE $cart_table (
 			id BIGINT(20) NOT NULL AUTO_INCREMENT,
 			name VARCHAR(60),
 			surname VARCHAR(60),
@@ -55,7 +55,7 @@ class CartBounty_Activator{
 		/**
 		* Resets table Auto increment index to 1
 		*/
-		$sql ="ALTER TABLE $table_name AUTO_INCREMENT = 1";
+		$sql ="ALTER TABLE $cart_table AUTO_INCREMENT = 1";
 		dbDelta( $sql );
 
 		//Registering email notification frequency
@@ -115,7 +115,7 @@ class CartBounty_Activator{
 		}
 		delete_option( 'wclcfc_exit_intent_inverse_color' );
 
-		//Since v5.0 this option updated
+		//Since version 5.0 this option updated
 		if (get_option( 'cartbounty_captured_abandoned_cart_count' )){
 			update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_captured_abandoned_cart_count' ));
 		}

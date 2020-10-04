@@ -139,7 +139,7 @@ class CartBounty_Public{
 	 */
 	function create_new_cart( $ghost ){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cart = $this->read_cart();
 		$user_data = $this->get_user_data();
 
@@ -154,7 +154,7 @@ class CartBounty_Public{
 			//Inserting row into database
 			$wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO ". $table_name ."
+					"INSERT INTO $cart_table
 					( location, cart_contents, cart_total, currency, time, session_id )
 					VALUES ( %s, %s, %0.2f, %s, %s, %s )",
 					array(
@@ -177,7 +177,7 @@ class CartBounty_Public{
 			//Inserting row into Database
 			$wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO ". $table_name ."
+					"INSERT INTO $cart_table
 					( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields)
 					VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s)",
 					array(
@@ -197,7 +197,6 @@ class CartBounty_Public{
 			);
 			$this->increase_recoverable_cart_count();
 		}
-
 		$this->set_cartbounty_session($cart['session_id']);
 	}
 
@@ -249,15 +248,16 @@ class CartBounty_Public{
 	 */
 	function update_cart_data($cart){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$updated_rows = $wpdb->prepare('%s',
 			$wpdb->update(
-				$table_name,
+				$cart_table,
 				array(
 					'cart_contents'	=>	serialize( $cart['product_array'] ),
 					'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
 					'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-					'time'			=>	sanitize_text_field( $cart['current_time'] )
+					'time'			=>	sanitize_text_field( $cart['current_time'] ),
+					'mail_sent'		=>	0
 				),
 				array('session_id' => $cart['session_id']),
 				array('%s', '%0.2f', '%s', '%s'),
@@ -276,7 +276,7 @@ class CartBounty_Public{
 	 */
 	function update_cart_and_user_data($cart, $user_data){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$other_fields = NULL;
 		if(!empty($user_data['other_fields'])){
 			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
@@ -284,7 +284,7 @@ class CartBounty_Public{
 
 		$updated_rows = $wpdb->prepare('%s',
 			$wpdb->update(
-				$table_name,
+				$cart_table,
 				array(
 					'name'			=>	sanitize_text_field( $user_data['name'] ),
 					'surname'		=>	sanitize_text_field( $user_data['surname'] ),
@@ -295,7 +295,8 @@ class CartBounty_Public{
 					'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
 					'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
 					'time'			=>	sanitize_text_field( $cart['current_time'] ),
-					'other_fields'	=>	$other_fields
+					'other_fields'	=>	$other_fields,
+					'mail_sent'		=>	0
 				),
 				array('session_id' => $cart['session_id']),
 				array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
@@ -327,7 +328,7 @@ class CartBounty_Public{
 	 */
 	function cart_identifiable(){
 		global $wpdb;
-		$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$identifiable = false;
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$where_sentence = $admin->get_where_sentence('recoverable');
@@ -336,7 +337,7 @@ class CartBounty_Public{
 		//Checking if we have this abandoned cart in our database already
 		$result = $wpdb->get_var($wpdb->prepare(
 			"SELECT id
-			FROM $main_table
+			FROM $cart_table
 			WHERE session_id = %s
 			$where_sentence",
 			$cart['session_id']
@@ -468,12 +469,12 @@ class CartBounty_Public{
 		$saved = false;
 		if( $session_id !== NULL ){
 			global $wpdb;
-			$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 			//Checking if we have this abandoned cart in our database already
 			$result = $wpdb->get_var($wpdb->prepare(
 				"SELECT session_id
-				FROM ". $main_table ."
+				FROM $cart_table
 				WHERE session_id = %s",
 				$session_id
 			));
@@ -509,12 +510,12 @@ class CartBounty_Public{
 			if( WC()->session->get('cartbounty_session_id') !== NULL && WC()->session->get('cartbounty_session_id') !== $customer_id){ //If session is set and it is different from the one that currently is assigned to the customer
 
 				global $wpdb;
-				$main_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+				$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 				//Updating session ID to match the one of a logged in user
 				$wpdb->prepare('%s',
 					$wpdb->update(
-						$main_table,
+						$cart_table,
 						array('session_id' => $customer_id),
 						array('session_id' => WC()->session->get('cartbounty_session_id'))
 					)
@@ -538,12 +539,12 @@ class CartBounty_Public{
 	 * Method deletes duplicate abandoned carts from the database
 	 *
 	 * @since    4.4
-	 * @param    $session_id    Session ID
-	 * @param    $duplicate_count          Number of duplicate carts
+	 * @param    $session_id			Session ID
+	 * @param    $duplicate_count		Number of duplicate carts
 	 */
 	private function delete_duplicate_carts( $session_id, $duplicate_count ){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME; // do not forget about tables prefix
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 		if($duplicate_count){ //If we have updated at least one row
 			$duplicate_count = str_replace("'", "", $duplicate_count); //Removing quotes from the number of updated rows
@@ -553,7 +554,7 @@ class CartBounty_Public{
 				//First delete all duplicate ghost carts
 				$deleted_duplicate_ghost_carts = $wpdb->query(
 					$wpdb->prepare(
-						"DELETE FROM $table_name
+						"DELETE FROM $cart_table
 						WHERE session_id = %s
 						$where_sentence",
 						$session_id
@@ -567,7 +568,7 @@ class CartBounty_Public{
 
 				$wpdb->query( //Leaving one cart remaining that can be identified
 					$wpdb->prepare(
-						"DELETE FROM $table_name
+						"DELETE FROM $cart_table
 						WHERE session_id = %s
 						ORDER BY id DESC
 						LIMIT %d",
@@ -627,7 +628,13 @@ class CartBounty_Public{
 			);
 		}
 
-		return $results_array = array('cart_total' => $cart_total, 'cart_currency' => $cart_currency, 'current_time' => $current_time, 'session_id' => $session_id, 'product_array' => $product_array);
+		return $results_array = array(
+			'cart_total' 	=> $cart_total,
+			'cart_currency' => $cart_currency,
+			'current_time' 	=> $current_time,
+			'session_id' 	=> $session_id,
+			'product_array' => $product_array
+		);
 	}
 
 	/**
@@ -698,7 +705,7 @@ class CartBounty_Public{
 	 */
 	public function restore_input_data( $fields = array() ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cart = $this->read_cart();
 		
 		$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
@@ -706,7 +713,7 @@ class CartBounty_Public{
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT *
-			FROM ". $table_name ."
+			FROM  $cart_table
 			WHERE session_id = %s",
 			$cart['session_id'])
 		);
@@ -780,9 +787,9 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Method saves and updates total count of captured abandoned carts
+	 * Method saves and updates total count of captured recoverable abandoned carts
 	 *
-	 * @since    2.1
+	 * @since    5.0
 	 */
 	function increase_recoverable_cart_count(){
 		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') + 1);
@@ -800,13 +807,10 @@ class CartBounty_Public{
 	/**
 	 * Method decreases the total count of captured abandoned carts
 	 *
-	 * @since    3.0
+	 * @since    5.0
 	 * @param    $count    Abandoned cart number - integer 
 	 */
 	function decrease_recoverable_cart_count( $count ){
-		if(!$count){
-			$count = 1;
-		}
 		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') - $count);
 		delete_transient( 'cartbounty_recoverable_cart_count' );
 	}
@@ -818,9 +822,6 @@ class CartBounty_Public{
 	 * @param    $count    Cart number - integer 
 	 */
 	function decrease_ghost_cart_count( $count ){
-		if(!$count){
-			$count = 1;
-		}
 		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') - $count);
 	}
 
@@ -833,7 +834,7 @@ class CartBounty_Public{
 	 */
 	function was_ghost_cart( $session_id ){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$where_sentence = $admin->get_where_sentence('ghost');
 		$ghost_cart = false;
@@ -841,7 +842,7 @@ class CartBounty_Public{
 		//Checking if the cart is a ghost cart
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT id
-			FROM  $table_name
+			FROM  $cart_table
 			WHERE session_id = %s
 			$where_sentence",
 			$session_id)
@@ -902,7 +903,7 @@ class CartBounty_Public{
 	 */
 	function build_exit_intent_output( $current_user_is_admin ){
 		global $wpdb;
-		$table_name = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cart = $this->read_cart();
 		$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
 		$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
@@ -919,7 +920,7 @@ class CartBounty_Public{
 		//Retrieve a single row with current customer ID
 		$row = $wpdb->get_row($wpdb->prepare(
 			"SELECT *
-			FROM $table_name
+			FROM $cart_table
 			WHERE session_id = %s
 			$where_sentence",
 			$cart['session_id'])
