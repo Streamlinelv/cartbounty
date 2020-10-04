@@ -36,3 +36,5 @@ delete_option( 'cartbounty_exit_intent_image' );
 delete_option( 'cartbounty_lift_email' );
 delete_option( 'cartbounty_hide_images' );
 delete_option( 'cartbounty_carts_per_page' );
+
+delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true ); //Removes cartbounty_carts_per_page from wp_usermeta table on plugin uninstall
