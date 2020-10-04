@@ -80,13 +80,14 @@ If the user completes the checkout process and arrives on the "Thank you" page, 
 
 Once the cart is saved it is considered as abandoned after a period of 60 minutes. Email notifications will be sent out only after the cart is abandoned.
 
-### What are ghost carts, how do they work and how can I use them?
+### What are ghost carts, how do they work and how to use them?
 
 Ghost cart is a cart that can’t be identified since the customer has neither signed in your store nor he has entered his email / phone in your checkout form or Exit intent popup.
 
 Any customer who is unidentifiable and adds anything to his shopping cart instantly appears in CartBounty cart list as a ghost shopping cart. If during his shopping journey he adds his details, his ghost cart automatically is turned into a recoverable cart.
 
 There can be many different reasons why you would like to see ghost cart data, here are a couple of ideas:
+
 * Monitor live cart activity in your store and have a better overview of what is happening in your store
 * See which products are being placed into shopping carts to know which are products are trending and what your customers are interested in
 * Analyze which products are being placed into the cart but not getting purchased
@@ -197,7 +198,7 @@ Example how to change the main title using a filter:
 	}
 	add_filter( 'cartbounty_exit_intent_title_html', 'modify_title' );
 
-### WooCommerce order status is "Failed", but no abandoned cart saved?
+### WooCommerce order "Failed", but no abandoned cart saved?
 
 Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
 
