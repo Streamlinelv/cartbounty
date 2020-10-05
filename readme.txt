@@ -69,7 +69,7 @@ If WordPress changes the location of "admin-ajax.php" file, then will have to up
 
 == Frequently Asked Questions ==
 
-= When is the cart and checkout form input field data saved? =
+= When is the cart and checkout form data saved? =
 
 Data and information about the cart is saved right after the user gets to the Checkout form and one of the following events happen:
 
@@ -82,7 +82,7 @@ If ghost carts have been enabled, the cart will be saved as soon as the user add
 
 In case a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
-If the user completes the checkout process and arrives on the "Thank you" page, the cart is removed from the abandoned cart table and the Checkout form fields are cleared.
+If a customer completes the checkout process and arrives on the WooCommerce "Thank you" page, the cart is removed from the abandoned cart table and the Checkout form fields are cleared.
 
 = When would a cart be considered as abandoned? =
 
@@ -98,12 +98,12 @@ There can be many different reasons why you would like to see ghost cart data, h
 
 * Monitor live cart activity in your store and have a better overview of what is happening in your store
 * See which products are being placed into shopping carts to know which are products are trending and what your customers are interested in
-* Analyze which products are being placed into the cart, but not getting purchased
+* Manually analyze which products are being placed into the cart, but not getting purchased
 * Knowledge about the potential revenue that is missed out
 
 If you would rather not see ghost carts, you can exclude them from being saved in your CartBounty settings tab.
 
-= How to enable email notifications about abandoned carts? =
+= How do the email notifications work? =
 
 Once the cart is saved and is considered as abandoned, you will receive a notification about it in your email. You will not be notified about previously abandoned carts.
 
@@ -127,8 +127,6 @@ Default notification interval is "Every hour". You also have the option to disab
 
 Please also note how WordPress handles Cron job that is responsible for sending out email notifications. Scheduled actions can only be triggered when a visitor arrives on a WordPress site. Therefore, if you are not getting any traffic on your website you will not receive any email notifications until a visitor lands on your website.
 
-= Where are notifications delivered to? =
-
 By default, notifications will be sent to WordPress registered admin email. But you can also set a different email address.
 
 = How to send automated abandoned cart recovery emails? =
@@ -142,7 +140,7 @@ And [MailChimp](https://mailchimp.com) offers a forever Free plan that you can u
 
 = How does Exit Intent Technology work? =
 
-If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his email address. Once it is entered (no need to submit the form), user's cart will be automatically captured.
+If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his email address. Once it is entered (no need to submit the form), user's cart will be automatically captured and labeled as recoverable.
 
 Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in Exit Intent form or in the Checkout form - popup will no longer be displayed upon leaving your shop.
 
