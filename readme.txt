@@ -86,7 +86,7 @@ If the user completes the checkout process and arrives on the "Thank you" page, 
 
 = When would a cart be considered as abandoned? =
 
-Once the cart is saved it is considered as abandoned after a period of 60 minutes. Email notifications will be sent out only after the cart is abandoned.
+Once the cart is saved, it is considered as abandoned after a period of 60 minutes. Email notifications will be sent out only after the cart is abandoned.
 
 = What are ghost carts, how do they work and how to use them? =
 
@@ -98,7 +98,7 @@ There can be many different reasons why you would like to see ghost cart data, h
 
 * Monitor live cart activity in your store and have a better overview of what is happening in your store
 * See which products are being placed into shopping carts to know which are products are trending and what your customers are interested in
-* Analyze which products are being placed into the cart but not getting purchased
+* Analyze which products are being placed into the cart, but not getting purchased
 * Knowledge about the potential revenue that is missed out
 
 If you would rather not see ghost carts, you can exclude them from being saved in your CartBounty settings tab.
