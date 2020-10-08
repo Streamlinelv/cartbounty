@@ -127,7 +127,7 @@ class CartBounty_Table extends WP_List_Table{
      */
     function column_location( $item ){
         if(is_serialized($item['location'])){ //Since version 4.6
-            $location_data = unserialize($item['location']);
+            $location_data = @unserialize($item['location']);
             $country = $location_data['country'];
             $city = $location_data['city'];
             $postcode = $location_data['postcode'];
@@ -177,7 +177,7 @@ class CartBounty_Table extends WP_List_Table{
             return;
         }
 
-        $product_array = unserialize($item['cart_contents']); //Retrieving array from database column cart_contents
+        $product_array = @unserialize($item['cart_contents']); //Retrieving array from database column cart_contents
         $output = '';
         
         if($product_array){
