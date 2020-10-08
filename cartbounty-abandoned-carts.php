@@ -38,7 +38,7 @@ if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartB
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
 if (!defined('CARTBOUNTY_BASENAME')) define( 'CARTBOUNTY_BASENAME', plugin_basename( __FILE__ ) );
-if (!defined('CARTBOUNTY_TABLE_NAME')) define( 'CARTBOUNTY_TABLE_NAME', 'captured_wc_fields' );
+if (!defined('CARTBOUNTY_TABLE_NAME')) define( 'CARTBOUNTY_TABLE_NAME', 'cartbounty' );
 if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER_URL', 'https://www.cartbounty.com' );
 if (!defined('CARTBOUNTY_REVIEW_LINK')) define('CARTBOUNTY_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post' );
 if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-save-abandoned-carts' );

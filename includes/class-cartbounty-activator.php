@@ -27,9 +27,10 @@ class CartBounty_Activator{
 		/**
 		* Creating table
 		*/
-		global $wpdb, $cart_table;
+		global $wpdb;
 		
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$old_cart_table = $wpdb->prefix . "captured_wc_fields";
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $cart_table (
@@ -57,6 +58,135 @@ class CartBounty_Activator{
 		*/
 		$sql ="ALTER TABLE $cart_table AUTO_INCREMENT = 1";
 		dbDelta( $sql );
+
+		/**
+		 * Handling cart transfer from the old captured_wc_fields table to new one
+		 * Temporary block since version 5.0.1. Will be removed in future versions
+		 *
+		 * @since    5.0.1
+		 */
+		function cartbounty_transfer_carts( $wpdb, $cart_table, $old_cart_table ){
+		    if(!cartbounty_old_table_exists( $wpdb, $old_cart_table )){ //If old table no longer exists, exit
+		    	return;
+		    }
+		    if(!get_option('cartbounty_transferred_table')){ //If we have not yet transfered carts to the new table
+		    	$old_carts = $wpdb->get_results( //Selecting all rows that are not empty
+	    			"SELECT * FROM $old_cart_table
+	    			WHERE cart_contents != ''
+	    			"
+		    	);
+
+		    	if($old_carts){ //If we have carts
+		    		$imported_cart_count = 0;
+		    		$batch_count = 0; //Keeps count of current batch of data to insert
+		    		$batches = array(); //Array containing the batches of import since SQL is having troubles importing too many rows at once
+					$abandoned_cart_data = array();
+					$placeholders = array();
+
+					foreach($old_carts as $key => $cart){ // Looping through abandoned carts to create the arrays
+						$batch_count++;
+
+						array_push(
+							$abandoned_cart_data,
+							sanitize_text_field( $cart->id ),
+							sanitize_text_field( $cart->name ),
+							sanitize_text_field( $cart->surname ),
+							sanitize_email( $cart->email ),
+							sanitize_text_field( $cart->phone ),
+							sanitize_text_field( $cart->location ),
+							sanitize_text_field( $cart->cart_contents ),
+							sanitize_text_field( $cart->cart_total ),
+							sanitize_text_field( $cart->currency ),
+							sanitize_text_field( $cart->time ),
+							sanitize_text_field( $cart->session_id ),
+							sanitize_text_field( $cart->mail_sent ),
+							sanitize_text_field( $cart->other_fields )
+						);
+						$placeholders[] = "( %d, %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %d, %s )";
+
+						if($batch_count >= 100){ //If we get a full batch, add it to the array and start preparing a new one
+							$batches[] = array(
+								'data'			=>	$abandoned_cart_data,
+								'placeholders'	=>	$placeholders
+							);
+							$batch_count = 0;
+							$abandoned_cart_data = array();
+							$placeholders = array();
+						}
+					}
+
+					//In case something is left at the end of the loop, we add it to the batches so we do not loose any abandoned carts during the import process
+					if($abandoned_cart_data){
+						$batches[] = array(
+							'data'			=>	$abandoned_cart_data,
+							'placeholders'	=>	$placeholders
+						);
+					}
+					
+					foreach ($batches as $key => $batch) { //Looping through the batches and importing the carts
+						$query = "INSERT INTO ". $cart_table ." (id, name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, mail_sent, other_fields) VALUES ";
+						$query .= implode(', ', $batch['placeholders']);
+						$count = $wpdb->query( $wpdb->prepare("$query ", $batch['data']));
+						$imported_cart_count = $imported_cart_count + $count;
+					}
+
+					if($imported_cart_count){ //If at least one abandoned cart was imported
+						//Make sure ghost carts remain as ghost carts after transfer
+						$wpdb->update($cart_table,
+							array(
+								'name' 			=> NULL,
+								'surname' 		=> NULL,
+								'email' 		=> NULL,
+								'phone' 		=> NULL,
+								'other_fields' 	=> NULL
+							), array(
+								'name' 			=> '',
+								'surname' 		=> '',
+								'email' 		=> '',
+								'phone' 		=> '',
+								'other_fields' 	=> ''
+							), array(
+								NULL,
+								NULL,
+								NULL,
+								NULL,
+								NULL
+							), array(
+								'%s',
+								'%s',
+								'%s',
+								'%s',
+								'%s'
+							)
+						);
+					}
+		    	}
+
+		    	update_option('cartbounty_transferred_table', true); //Making sure the user is not allowed to transfer carts more than once
+		    	$wpdb->query( "DROP TABLE IF EXISTS $old_cart_table" ); //Removing old table from the database
+		    }
+		}
+
+		/**
+		 * Determine if we have old CartBounty cart table still present
+		 * Temporary block since version 5.0.1. Will be removed in future versions
+		 *
+		 * @since    5.0.1
+		 * @return 	 Boolean
+		 */
+		function cartbounty_old_table_exists( $wpdb, $old_cart_table ){
+			$exists = false;
+			$table_exists = $wpdb->query(
+				"SHOW TABLES LIKE '{$old_cart_table}'"
+			);
+			if($table_exists){ //In case table exists
+				$exists = true;
+			}
+			return $exists;
+		}
+
+		//Temporary function since version 5.0.1. Will be removed in future releases
+		cartbounty_transfer_carts( $wpdb, $cart_table, $old_cart_table );
 
 		//Registering email notification frequency
 		if ( get_option('cartbounty_notification_frequency') !== false ) {

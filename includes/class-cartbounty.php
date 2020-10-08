@@ -109,25 +109,25 @@ class CartBounty{
 	 */
 	private function define_admin_hooks(){
 
-		$plugin_admin = new CartBounty_Admin( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'cartbounty_menu', 35 ); //Creates admin menu
-		$this->loader->add_action( 'admin_head', $plugin_admin, 'menu_abandoned_count' );
-		$this->loader->add_action( 'admin_head', $plugin_admin, 'register_admin_screen_options_tab' );
-		$this->loader->add_action( 'admin_head', $plugin_admin, 'save_page_options' ); //Saving Screen options
-		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'check_current_plugin_version' );
-		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $plugin_admin, 'add_plugin_action_links', 10, 2 ); //Adds additional links on Plugin page
-		$this->loader->add_action( 'cartbounty_after_page_title', $plugin_admin, 'output_bubble_content' ); //Hooks into hook in order to output bubbles
-		$this->loader->add_action( 'init', $plugin_admin, 'cartbounty_text_domain' ); //Adding language support
-		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $plugin_admin, 'delete_empty_carts' );
-		$this->loader->add_filter( 'cron_schedules', $plugin_admin, 'additional_cron_intervals' ); //Ads a filter to set new interval for Wordpress cron function
-		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $plugin_admin, 'notification_sendout_interval_update' );
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_wp_cron_warnings' ); //Outputing warnings if any of the WP Cron events are note scheduled or if WP Cron is disabled
-		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $plugin_admin, 'send_email' ); //Hooks into Wordpress cron event to launch function for sending out e-mails
-		$this->loader->add_filter( 'woocommerce_billing_fields', $plugin_admin, 'lift_checkout_email_field', 10, 1 ); //Moves email field in the checkout higher to capture more abandoned carts
-		$this->loader->add_action( 'woocommerce_new_order', $plugin_admin, 'clear_cart_data', 30 ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
-		$this->loader->add_action( 'woocommerce_thankyou', $plugin_admin, 'clear_cart_data', 30 ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
+		$admin = new CartBounty_Admin( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $admin, 'cartbounty_menu', 35 ); //Creates admin menu
+		$this->loader->add_action( 'admin_head', $admin, 'menu_abandoned_count' );
+		$this->loader->add_action( 'admin_head', $admin, 'register_admin_screen_options_tab' );
+		$this->loader->add_action( 'admin_head', $admin, 'save_page_options' ); //Saving Screen options
+		$this->loader->add_action( 'plugins_loaded', $admin, 'check_current_plugin_version' );
+		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 ); //Adds additional links on Plugin page
+		$this->loader->add_action( 'cartbounty_after_page_title', $admin, 'output_bubble_content' ); //Hooks into hook in order to output bubbles
+		$this->loader->add_action( 'init', $admin, 'cartbounty_text_domain' ); //Adding language support
+		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
+		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' ); //Ads a filter to set new interval for Wordpress cron function
+		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $admin, 'notification_sendout_interval_update' );
+		$this->loader->add_action( 'admin_notices', $admin, 'display_wp_cron_warnings' ); //Outputing warnings if any of the WP Cron events are note scheduled or if WP Cron is disabled
+		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' ); //Hooks into Wordpress cron event to launch function for sending out e-mails
+		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_email_field', 10, 1 ); //Moves email field in the checkout higher to capture more abandoned carts
+		$this->loader->add_action( 'woocommerce_new_order', $admin, 'clear_cart_data', 30 ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
+		$this->loader->add_action( 'woocommerce_thankyou', $admin, 'clear_cart_data', 30 ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
 	}
 
 	/**
@@ -139,22 +139,22 @@ class CartBounty{
 	 */
 	private function define_public_hooks(){
 
-		$plugin_public = new CartBounty_Public( $this->get_plugin_name(), $this->get_version() );
+		$public = new CartBounty_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		$this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
-		$this->loader->add_action( 'wp_ajax_nopriv_cartbounty_save', $plugin_public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the E-mail or Phone field in Checkout form
-		$this->loader->add_action( 'wp_ajax_cartbounty_save', $plugin_public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
-		$this->loader->add_action( 'woocommerce_add_to_cart', $plugin_public, 'save_cart', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_cart_actions', $plugin_public, 'save_cart', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_cart_item_removed', $plugin_public, 'save_cart', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public, 'restore_input_data', 1 ); //Restoring previous user input in Checkout form
-		$this->loader->add_action( 'wp_footer', $plugin_public, 'display_exit_intent_form' ); //Outputing the exit intent form in the footer of the page
-		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $plugin_public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in
-		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $plugin_public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is logged in
-		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $plugin_public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action
-		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $plugin_public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action if the user is logged in
+		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
+		$this->loader->add_action( 'woocommerce_before_checkout_form', $public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
+		$this->loader->add_action( 'wp_ajax_nopriv_cartbounty_save', $public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the E-mail or Phone field in Checkout form
+		$this->loader->add_action( 'wp_ajax_cartbounty_save', $public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the E-mail field for Logged in users
+		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
+		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
+		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
+		$this->loader->add_filter( 'woocommerce_checkout_fields', $public, 'restore_input_data', 1 ); //Restoring previous user input in Checkout form
+		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in the footer of the page
+		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in
+		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is logged in
+		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action
+		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action if the user is logged in
 	}
 
 	/**

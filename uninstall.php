@@ -13,7 +13,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' )){
 
 //Deletes database table and all it's data on uninstall
 global $wpdb;
-$cart_table = $wpdb->prefix . "captured_wc_fields";
+$cart_table = $wpdb->prefix . "cartbounty";
 
 $wpdb->query( "DROP TABLE IF EXISTS $cart_table" );
 
@@ -36,5 +36,6 @@ delete_option( 'cartbounty_exit_intent_image' );
 delete_option( 'cartbounty_lift_email' );
 delete_option( 'cartbounty_hide_images' );
 delete_option( 'cartbounty_carts_per_page' );
+delete_option( 'cartbounty_transferred_table' ); //Temporary option since version 5.0.1
 
 delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true ); //Removes cartbounty_carts_per_page from wp_usermeta table on plugin uninstall

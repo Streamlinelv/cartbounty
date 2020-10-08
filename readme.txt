@@ -217,6 +217,9 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 == Changelog ==
 
+= 5.0.1 =
+* CartBounty database table name renamed from "captured_wc_fields" to "cartbounty"
+
 = 5.0 =
 * Added option to save and view ghost carts
 * Added option to filter between ghost and recoverable carts
