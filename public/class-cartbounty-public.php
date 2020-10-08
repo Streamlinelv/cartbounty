@@ -221,11 +221,6 @@ class CartBounty_Public{
 			$this->update_cart_data($cart);
 
 		}else{
-			if($this->was_ghost_cart($cart['session_id'])){ //Check if previously the cart was a ghost cart
-				$this->decrease_ghost_cart_count( 1 );
-				$this->increase_recoverable_cart_count();
-			}
-
 			if(is_user_logged_in() && !$this->cart_identifiable()){ //In cases when a user is signed in and he has no cart saved that can be identified
 				$this->update_cart_and_user_data($cart, $user_data);
 
@@ -823,36 +818,6 @@ class CartBounty_Public{
 	 */
 	function decrease_ghost_cart_count( $count ){
 		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') - $count);
-	}
-
-	/**
-	 * Method checks if the cart was a ghost cart or not
-	 *
-	 * @since    5.0
-	 * @return   Boolean
-	 * @param    string    $session_id    Session ID value
-	 */
-	function was_ghost_cart( $session_id ){
-		global $wpdb;
-		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$where_sentence = $admin->get_where_sentence('ghost');
-		$ghost_cart = false;
-
-		//Checking if the cart is a ghost cart
-		$row = $wpdb->get_row($wpdb->prepare(
-			"SELECT id
-			FROM  $cart_table
-			WHERE session_id = %s
-			$where_sentence",
-			$session_id)
-		);
-
-		if($row){
-			$ghost_cart = true;
-		}
-
-		return $ghost_cart;
 	}
 
 	/**

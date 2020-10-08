@@ -149,6 +149,7 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
 		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
 		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
+		$this->loader->add_action( 'woocommerce_new_order', $public, 'update_logged_customer_id', 18 ); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $public, 'restore_input_data', 1 ); //Restoring previous user input in Checkout form
 		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in the footer of the page
 		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in

@@ -1170,7 +1170,7 @@ class CartBounty_Admin{
 			$where_sentence = "AND (email != '' OR phone != '')";
 
 		}elseif($cart_status == 'ghost'){
-			$where_sentence = "AND (email IS NULL AND phone IS NULL)";
+			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = ''))";
 
 		}elseif(get_option('cartbounty_exclude_ghost_carts')){ //In case Ghost carts have been excluded
 			$where_sentence = "AND (email != '' OR phone != '')";
