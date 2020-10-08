@@ -129,37 +129,6 @@ class CartBounty_Activator{
 						$count = $wpdb->query( $wpdb->prepare("$query ", $batch['data']));
 						$imported_cart_count = $imported_cart_count + $count;
 					}
-
-					if($imported_cart_count){ //If at least one abandoned cart was imported
-						//Make sure ghost carts remain as ghost carts after transfer
-						$wpdb->update($cart_table,
-							array(
-								'name' 			=> NULL,
-								'surname' 		=> NULL,
-								'email' 		=> NULL,
-								'phone' 		=> NULL,
-								'other_fields' 	=> NULL
-							), array(
-								'name' 			=> '',
-								'surname' 		=> '',
-								'email' 		=> '',
-								'phone' 		=> '',
-								'other_fields' 	=> ''
-							), array(
-								NULL,
-								NULL,
-								NULL,
-								NULL,
-								NULL
-							), array(
-								'%s',
-								'%s',
-								'%s',
-								'%s',
-								'%s'
-							)
-						);
-					}
 		    	}
 
 		    	update_option('cartbounty_transferred_table', true); //Making sure the user is not allowed to transfer carts more than once
