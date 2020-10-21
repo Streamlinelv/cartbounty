@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.5
-Stable tag: 5.0.1
+Stable tag: 5.0.2
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -163,16 +163,33 @@ When modifying our template, please do not change the ID #cartbounty-exit-intent
 
 = What hooks are available for additional customization? =
 
-Our Exit Intent template contains different actions and filters that allow you to create new, edit, replace or remove existing content including the main image in Exit Intent window.
+CartBounty comes with different hooks that make it possible to change some parts or extend the existing functionality of the plugin without modifying core files.
 
-Available actions:
+**General hooks**
+
+Filters:
+
+* cartbounty_from_email
+
+Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
+
+	function change_from_email( $html ){
+		return 'your@email.com';
+	}
+	add_filter( 'cartbounty_from_email', 'change_from_email' );
+
+**Exit Intent hooks**
+
+Exit Intent template contains different actions and filters that allow you to create new, edit, replace or remove existing content including the main image in Exit Intent window.
+
+Actions:
 
 * cartbounty_exit_intent_start
 * cartbounty_exit_intent_after_title
 * cartbounty_exit_intent_before_form_fields
 * cartbounty_exit_intent_end
 
-Available filters:
+Filters:
 
 * cartbounty_exit_intent_close_html
 * cartbounty_exit_intent_image_html
@@ -216,6 +233,13 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 4. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 5.0.2 =
+* Added filter "cartbounty_from_email" to change the From email address that sends out notifications about abandoned carts
+* Added abbreviation to country in abandoned cart table. Hover over country code to view its name
+* Added link to user's profile page for registered abandoned cart users in the "Name, Surname" column
+* Fixed issue with adding a manual WooCommerce order
+* Code cleanup
 
 = 5.0.1 =
 * CartBounty database table name renamed from "captured_wc_fields" to "cartbounty"

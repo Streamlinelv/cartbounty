@@ -500,6 +500,9 @@ class CartBounty_Public{
 	 */
 	function update_logged_customer_id(){
 		if(is_user_logged_in()){ //If a user is logged in
+			if(!WC()->session){ //If session does not exist, exit function
+				return;
+			}
 			$customer_id = WC()->session->get_customer_id();
 
 			if( WC()->session->get('cartbounty_session_id') !== NULL && WC()->session->get('cartbounty_session_id') !== $customer_id){ //If session is set and it is different from the one that currently is assigned to the customer

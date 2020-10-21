@@ -650,7 +650,7 @@ class CartBounty_Admin{
 			}
 			
 			$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
-			$from = "From: WordPress <$sender>";
+			$from = "From: WordPress <" . apply_filters( 'cartbounty_from_email', $sender ) . ">";
 			$blog_name = get_option( 'blogname' );
 			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
 			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved', 'New abandoned carts saved', $cart_count, CARTBOUNTY_TEXT_DOMAIN);
@@ -1178,4 +1178,16 @@ class CartBounty_Admin{
 
 		return $where_sentence;
     }
+
+    /**
+	 * Handling abandoned carts in case of a new order is placed
+	 *
+	 * @since    5.0.2
+	 * @param    Integer    $order_id - ID of the order created by WooCommerce
+	 */
+	function handle_order( $order_id ){
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$public->update_logged_customer_id(); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
+		$this->clear_cart_data(); //Clearing abandoned cart after it has been synced
+	}
 }

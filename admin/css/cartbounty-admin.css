@@ -550,6 +550,11 @@
 	margin-top: -10px;
 }
 
+.cartbounty-country{
+	text-decoration: none;
+	font-variant: none;
+}
+
 @media screen and (max-width: 1200px) {
 	.woocommerce_page_cartbounty .column-time,
 	.woocommerce_page_cartbounty .column-cart_contents{

@@ -98,9 +98,24 @@ class CartBounty_Table extends WP_List_Table{
             'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'CARTBOUNTY_TEXT_DOMAIN')),
         );
 
-        return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s %s',
-            esc_html($item['name']),
-            esc_html($item['surname']),
+        $name_array = array();
+
+        if(!empty($item['name'])){
+            $name_array[] = $item['name'];
+        }
+
+        if(!empty($item['surname'])){
+            $name_array[] = $item['surname'];
+        }
+
+        $name = implode(' ', $name_array);
+
+        if(get_user_by('id', $item['session_id'])){ //If the user is registered, add link to his profile page
+            $name = '<a href="' . add_query_arg( 'user_id', $item['session_id'], self_admin_url( 'user-edit.php')) . '" title="' . __( 'View user profile', CARTBOUNTY_TEXT_DOMAIN ) . '">'. $name .'</a>';
+        }
+
+        return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
+            $name,
             $this->row_actions($actions)
         );
     }
@@ -152,6 +167,10 @@ class CartBounty_Table extends WP_List_Table{
             }
         }
 
+        if($country){ //In case we have Country data, we can add abbreviation to it with a full country name
+            $country = '<abbr class="cartbounty-country" title="' . WC()->countries->countries[ $country ] . '">' . esc_html($country) . '</abbr>';
+        }
+
         $location = $country;
         if(!empty($city)){
              $location .= ', ' . $city;
@@ -161,7 +180,7 @@ class CartBounty_Table extends WP_List_Table{
         }
 
         return sprintf('%s',
-            esc_html($location)
+            $location
         );
     }
 	
