@@ -167,7 +167,7 @@ class CartBounty_Table extends WP_List_Table{
             }
         }
 
-        if($country){ //In case we have Country data, we can add abbreviation to it with a full country name
+        if($country && class_exists('WooCommerce')){ //In case WooCommerce is active and we have Country data, we can add abbreviation to it with a full country name
             $country = '<abbr class="cartbounty-country" title="' . WC()->countries->countries[ $country ] . '">' . esc_html($country) . '</abbr>';
         }
 
@@ -208,10 +208,14 @@ class CartBounty_Table extends WP_List_Table{
                             $product_title = esc_html($product['product_title']);
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
+                            $price = '';
+                            if($product['product_variation_price']){
+                                $price = ', ' . $product['product_variation_price'] . ' ' . esc_html($item['currency']);
+                            }
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $quantity .'</a></li>';
+                                $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $price . $quantity .'</a></li>';
                             }else{
-                                $output .= '<li>'. $product_title . $quantity .'</li>';
+                                $output .= '<li>'. $product_title . $price . $quantity .'</li>';
                             }
                         }
                     }
@@ -232,17 +236,21 @@ class CartBounty_Table extends WP_List_Table{
                                  $image = get_the_post_thumbnail_url($product['product_id'], 'thumbnail');
                             }
 
-                            if(empty($image)){//In case product has no image, output default WooCommerce image
+                            if(empty($image) && class_exists('WooCommerce')){ //In case WooCommerce is active and product has no image, output default WooCommerce image
                                 $image = wc_placeholder_img_src('thumbnail');
                             }
 
                             $product_title = esc_html($product['product_title']);
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
+                            $price = '';
+                            if($product['product_variation_price']){
+                                $price = ', ' . $product['product_variation_price'] . ' ' . esc_html($item['currency']);
+                            }
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="tooltiptext">'. $product_title . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title . $quantity .'" target="_blank"><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></a></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="tooltiptext">'. $product_title . $price . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank"><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></a></div>';
                             }else{
-                                $output .= '<div class="cartbounty-tooltip"><span class="tooltiptext">'. $product_title . $quantity .'</span><img src="'. $image .'" title="'. $product_title . $quantity .'" alt ="'. $product_title . $quantity .'" /></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="tooltiptext">'. $product_title . $price . $quantity .'</span><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></div>';
                             }
                         }
                     }

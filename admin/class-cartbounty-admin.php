@@ -994,6 +994,56 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Reseting abandoned cart data in case if a registered user has an existing abandoned cart and updates his data on his Account page
+	 *
+	 * @since    5.0.3
+	 */
+	public function reset_abandoned_cart(){
+		if(!is_user_logged_in()){ //Exit in case the user is not logged in
+			return;
+		}
+
+		global $wpdb;
+		$user_id = 0;
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+
+		if (!empty($_POST['user_id']) && is_numeric($_POST['user_id']) ) { //In case the user's data is updated from WordPress admin dashboard "Edit profile page"
+			$user_id = $_POST['user_id'];
+
+		}elseif(!empty($_POST['action'])){ //This check is to prevent profile update to be fired after a new Order is created since no "action" is provided and the user's ID remians 0 and we exit resetting of the abandoned cart
+			$user_id = get_current_user_id();
+		}
+
+		if(!$user_id){ //Exit in case we do not have user's ID value
+			return;
+		}
+		
+		if($public->cart_saved($user_id)){ //If we have saved an abandoned cart for the user - go ahead and reset it
+			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+			$updated_rows = $wpdb->prepare('%s',
+				$wpdb->update(
+					$cart_table,
+					array(
+						'name'			=>	'',
+						'surname'		=>	'',
+						'email'			=>	'',
+						'phone'			=>	'',
+						'location'		=>	'',
+						'cart_contents'	=>	'',
+						'cart_total'	=>	'',
+						'currency'		=>	'',
+						'time'			=>	'',
+						'other_fields'	=>	''
+					),
+					array('session_id' => $user_id),
+					array(),
+					array('%s')
+				)
+			);
+		}
+	}
+
+	/**
 	 * Method returns different expressions depending on the amount of captured carts
 	 *
 	 * @since    3.2.1

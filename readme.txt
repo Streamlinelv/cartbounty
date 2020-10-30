@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.5
-Stable tag: 5.0.2
+Stable tag: 5.0.3
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -221,6 +221,21 @@ Example how to change the main title using a filter:
 	}
 	add_filter( 'cartbounty_exit_intent_title_html', 'modify_title' );
 
+= How to prevent bots from leaving ghost carts? =
+
+If you have noticed unusual amounts of multiple new ghost carts being left almost in the same time, from one country and consisting of a single product, it might be that they are left by bots who are visiting your store.
+
+Bots can be divided into two groups – good ones and bad ones.
+
+* Good bots. The most common example of a good bot could be a web crawler. It is a bot that is sent via a search engine like Google to index your shop. Online store owners generally welcome these bots, because it keeps their content and products visible in the search engine results and hopefully will attract new visitors
+* Harmful bots. These bots are visiting your store for malicious purposes. Their actions range from mildly harmful to potentially critical. Bad bots are scanning your store for weak spots, security holes, ways to take over your store, steal your visitor credit card data etc. Besides that, they are also increasing stress on your server thus slowing down your store
+
+Harmful bots are the ones that might be responsible for leaving new ghost carts on your website. While this is not dangerous, it can be frustrating and annoying. Here are three solutions that will help you to deal to with them:
+
+1. The quick solution is to simply disable ghost carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities and slowing down your shop
+1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep ghost carts enabled to see what your customers are shopping for
+1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article [Block bad bots](https://perishablepress.com/block-bad-bots) which will provide in depth steps on doing this
+
 = WooCommerce order "Failed", but no abandoned cart saved? =
 
 Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
@@ -233,6 +248,10 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 4. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 5.0.3 =
+* Added individual product prices in the Cart contents column
+* Improved "Remember user input" function for authorized users who edit their account details
 
 = 5.0.2 =
 * Added filter "cartbounty_from_email" to change the From email address that sends out notifications about abandoned carts
@@ -258,7 +277,7 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 * Fixed conflict issue with WP Cron schedules
 
 = 4.6 =
-* Introduced Compact abandoned cart contents with product thumbnails
+* Introduced Compact abandoned Cart contents with product thumbnails
 * Added Postcode to location output
 * Fixed abandoned cart sorting by Name and added sorting by Email and Phone number
 * Improved Time column output in a more user friendly way (hover to see get the exact time)
@@ -296,23 +315,3 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 = 4.0 =
 * Baby's got a new name - please welcome CartBounty :) (ex. WooCommerce Live Checkout Field Capture)
 * All class names and hooks changed
-
-= 3.3 =
-* Improved database query security
-* Optimized plugin load time
-* Minor content updates
-
-= 3.2.1 =
-* Minor content updates
-
-= 3.2 =
-* Fixed issue when saving City data for logged in users
-* Fixed PHP notices if checkboxes were not defined
-
-= 3.1 =
-* Added support for Checkout form checkboxes
-
-= 3.0 =
-* Added Exit Intent popup
-* Added Instant shopping cart capture for logged in users
-* Fixed total captured abandoned cart counter

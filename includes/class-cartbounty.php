@@ -128,6 +128,7 @@ class CartBounty{
 		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_email_field', 10, 1 ); //Moves email field in the checkout higher to capture more abandoned carts
 		$this->loader->add_action( 'woocommerce_new_order', $admin, 'handle_order', 30 ); //Hook fired once a new order is created via Checkout process. Order is created as soon as user is taken to payment page. No matter if he pays or not
 		$this->loader->add_action( 'woocommerce_thankyou', $admin, 'handle_order', 30 ); //Hooks into Thank you page to delete a row with a user who completes the checkout (Backup version if first hook does not get triggered after an WooCommerce order gets created)
+		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' ); //Handles clearing of abandoned cart in case a registered user changes his account data like Name, Surname, Location etc.
 	}
 
 	/**

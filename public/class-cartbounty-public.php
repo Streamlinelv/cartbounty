@@ -585,6 +585,9 @@ class CartBounty_Public{
 	 * @return   Array
 	 */
 	function read_cart(){
+		if(!WC()->cart){ //Exit if Woocommerce cart has not been initialized
+			return;
+		}
 		//Retrieving cart total value and currency
 		$cart_total = WC()->cart->total;
 		$cart_currency = get_woocommerce_currency();
