@@ -249,7 +249,7 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 ##### 5.0.2
 
 * Added filter "cartbounty_from_email" to change the From email address that sends out notifications about abandoned carts
-* Added abbreviation to country in abandoned cart table. Hover over country code to view its name
+* Added country name to country code in Location column. Hover over country code to view its name
 * Added link to user's profile page for registered abandoned cart users in the "Name, Surname" column
 * Fixed issue with adding a manual WooCommerce order
 * Code cleanup
