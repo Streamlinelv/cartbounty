@@ -241,6 +241,10 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
+##### 5.0.4
+
+* Code cleanup
+
 ##### 5.0.3
 
 * Added individual product prices in the Cart contents column

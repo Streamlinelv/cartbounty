@@ -705,6 +705,11 @@ class CartBounty_Public{
 	 * @param    $fields    Checkout fields - array
 	 */
 	public function restore_input_data( $fields = array() ) {
+		
+		if(is_account_page()){ //In case this is user's account page, do not restore data. Added since some plugins change the My account form and may trigger this function unnecessarily
+			return $fields;
+		}
+
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cart = $this->read_cart();
