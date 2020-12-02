@@ -221,6 +221,14 @@ Example how to change the main title using a filter:
 	}
 	add_filter( 'cartbounty_exit_intent_title_html', 'modify_title' );
 
+Example how to change the description using a filter:
+
+	function modify_description( $html ){
+		$custom_description = 'New description here...';
+		return preg_replace('#(<p[^>]*>).*?(</p>)#', "$1 $custom_description $2", $html);
+	}
+	add_filter( 'cartbounty_exit_intent_description_html', 'modify_description' );
+
 = How to prevent bots from leaving ghost carts? =
 
 If you have noticed unusual amounts of multiple new ghost carts being left almost in the same time, from one country and consisting of a single product, it might be that they are left by bots who are visiting your store.
