@@ -251,8 +251,8 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 == Screenshots ==
 
 1. Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation
-2. Email notification settings tab
-3. Exit Intent popup settings tab
+2. Exit Intent popup settings tab
+3. Email notification settings tab
 4. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
