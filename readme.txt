@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.6
-Stable tag: 5.0.4
+Stable tag: 6.0
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -242,7 +242,7 @@ Harmful bots are the ones that might be responsible for leaving new ghost carts 
 
 1. The quick solution is to simply disable ghost carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities and slowing down your shop
 1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep ghost carts enabled to see what your customers are shopping for
-1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article [Block bad bots](https://perishablepress.com/block-bad-bots) which will provide in depth steps on doing this
+1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article on [how to block bad bots](https://www.seoblog.com/block-bots-spiders-htaccess) which will provide more about this topic
 
 = WooCommerce order "Failed", but no abandoned cart saved? =
 
@@ -256,6 +256,12 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 4. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 6.0 =
+* Overall design and user interface and experience improvements
+* Moved CartBounty menu closer to WooCommerce Orders section
+* Fixed issue with saving abandoned carts without an email field present in the checkout form
+* Fixed issue with abandoned cart count next to CartBounty menu with disabled ghost carts
 
 = 5.0.4 =
 * Code cleanup

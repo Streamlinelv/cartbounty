@@ -249,6 +249,13 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
+##### 6.0
+
+* Overall design and user interface and experience improvements
+* Moved CartBounty menu closer to WooCommerce Orders section
+* Fixed issue with saving abandoned carts without an email field present in the checkout form
+* Fixed issue with abandoned cart count next to CartBounty menu with disabled ghost carts
+
 ##### 5.0.4
 
 * Code cleanup

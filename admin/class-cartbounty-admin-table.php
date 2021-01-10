@@ -201,7 +201,7 @@ class CartBounty_Table extends WP_List_Table{
         
         if($product_array){
             if(get_option('cartbounty_hide_images')){ //Outputing Cart contents as a list
-                $output = '<ul class="wlcfc-product-list">';
+                $output = '<ul class="cartbounty-product-list">';
                 foreach($product_array as $product){
                     if(is_array($product)){
                         if(isset($product['product_title'])){
@@ -385,8 +385,8 @@ class CartBounty_Table extends WP_List_Table{
         $per_page = get_user_meta($user, $option, true);
 
         //How much records will be shown per page, if the user has not saved any custom values under Screen options, then default amount of 10 rows will be shown
-        if ( empty ( $per_page ) || $per_page < 1 ) {
-            $per_page = $screen->get_option( 'per_page', 'default' );
+        if ( is_array($per_page) || $per_page < 1 ) {
+            $per_page = 10;
         }
 
         $columns = $this->get_columns();

@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 5.0.4
+ * Version: 6.0
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -12,7 +12,7 @@
  * Developer URI: http://www.majas-lapu-izstrade.lv/en
  * 
  * WC requires at least: 2.2
- * WC tested up to: 4.7.1
+ * WC tested up to: 4.8
  *
  * Copyright: © 2018-2020 CartBounty
  * License: GPLv3
@@ -33,7 +33,7 @@ if($user_settings_notification_frequency == '' || $user_settings_notification_fr
 }
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '5.0.4' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '6.0' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
@@ -43,9 +43,13 @@ if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER
 if (!defined('CARTBOUNTY_REVIEW_LINK')) define('CARTBOUNTY_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post' );
 if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-save-abandoned-carts' );
 if (!defined('CARTBOUNTY_ABREVIATION')) define( 'CARTBOUNTY_ABREVIATION', 'CartBounty' );
-if (!defined('CARTBOUNTY_EMAIL_INTERVAL')) define( 'CARTBOUNTY_EMAIL_INTERVAL', $frequency ); //In minutes. Defines the interval at which e-mailing function is fired
-if (!defined('CARTBOUNTY_STILL_SHOPPING')) define( 'CARTBOUNTY_STILL_SHOPPING', 60 ); //In minutes. Defines the time period after which an e-mail notice will be sent to admin and the cart is presumed abandoned
+if (!defined('CARTBOUNTY_EMAIL_INTERVAL')) define( 'CARTBOUNTY_EMAIL_INTERVAL', $frequency ); //In minutes. Defines the interval at which emailing function is fired
+if (!defined('CARTBOUNTY_STILL_SHOPPING')) define( 'CARTBOUNTY_STILL_SHOPPING', 60 ); //In minutes. Defines the time period after which an email notice will be sent to admin and the cart is presumed abandoned
 if (!defined('CARTBOUNTY_NEW_NOTICE')) define( 'CARTBOUNTY_NEW_NOTICE', 240 ); //Defining time in minutes how long New status is shown in the table
+if (!defined('CARTBOUNTY_ACTIVECAMPAIGN_TRIAL_LINK')) define('CARTBOUNTY_ACTIVECAMPAIGN_TRIAL_LINK', 'https://www.activecampaign.com/?_r=5347LGDC' ); //ActiveCampaign trial link
+if (!defined('CARTBOUNTY_GETRESPONSE_TRIAL_LINK')) define('CARTBOUNTY_GETRESPONSE_TRIAL_LINK', 'https://www.getresponse.com/features/marketing-automation?a=vPJGRchyVX&c=integrate_cartbounty' ); //GetResponse free trial link
+if (!defined('CARTBOUNTY_MAILCHIMP_LINK')) define('CARTBOUNTY_MAILCHIMP_LINK', 'https://mailchimp.com/' ); //MailChimp link
+if (!defined('BOTS_FAQ_LINK')) define('BOTS_FAQ_LINK', 'https://www.cartbounty.com/?utm_source=pro_plugin&utm_medium=ghost_bots&utm_campaign=cartbounty&utm_content=link#ghost-bots' );
 
 //Registering custom options
 register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );

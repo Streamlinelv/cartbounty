@@ -62,6 +62,10 @@ class CartBounty_Public{
 	 * @since    3.0
 	 */
 	public function enqueue_scripts(){
+		if (!class_exists('WooCommerce')) { //If WooCommerce does not exist
+			return;
+		}
+
 		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
 			$cart_content_count = 0;
 
@@ -837,6 +841,10 @@ class CartBounty_Public{
 	 * @since    3.0
 	 */
 	function display_exit_intent_form(){
+		if (!class_exists('WooCommerce')) { //If WooCommerce does not exist
+			return;
+		}
+		
 		if(!$this->exit_intent_enabled() || !WC()->cart){ //If Exit Intent disabled or WooCommerce cart does not exist
 			return;
 		}

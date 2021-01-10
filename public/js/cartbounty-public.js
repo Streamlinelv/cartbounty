@@ -1,33 +1,5 @@
 (function( $ ) {
 	'use strict';
-
-	/**
-	 * All of the code for your public-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
 	 
 	 jQuery(document).ready(function(){
 
@@ -35,14 +7,16 @@
 
 		function getCheckoutData() { //Reading WooCommerce field values
 
-			if(jQuery("#billing_email").length > 0){ //If email address exists
+			if(jQuery("#billing_email").length > 0 || jQuery("#billing_phone").length > 0){ //If at least one of these two fields exist on page
 
-				var cartbounty_phone = jQuery("#billing_phone").val();
 				var cartbounty_email = jQuery("#billing_email").val();
-
+				if (typeof cartbounty_email === 'undefined' || cartbounty_email === null) { //If email field does not exist on the Checkout form
+				   cartbounty_email = '';
+				}
 				var atposition = cartbounty_email.indexOf("@");
 				var dotposition = cartbounty_email.lastIndexOf(".");
 
+				var cartbounty_phone = jQuery("#billing_phone").val();
 				if (typeof cartbounty_phone === 'undefined' || cartbounty_phone === null) { //If phone number field does not exist on the Checkout form
 				   cartbounty_phone = '';
 				}
@@ -125,7 +99,7 @@
 						
 					}, 800);
 				}else{
-					//console.log("Not a valid e-mail or phone address");
+					//console.log("Not a valid email or phone address");
 				}
 			}
 		}

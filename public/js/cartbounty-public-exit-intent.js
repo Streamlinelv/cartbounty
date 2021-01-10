@@ -50,7 +50,7 @@
 					
 				}, 800);
 			}else{
-				//console.log("Not a valid e-mail or phone address");
+				//console.log("Not a valid email or phone address");
 			}
 		}
 

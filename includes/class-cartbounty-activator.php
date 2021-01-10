@@ -221,7 +221,7 @@ class CartBounty_Activator{
 		delete_option( 'cartbounty_captured_abandoned_cart_count' );
 
 		/**
-		 * Starting WordPress cron function in order to send out e-mails on a set interval
+		 * Starting WordPress cron function in order to send out emails on a set interval
 		 *
 		 * @since    4.3
 		 */
