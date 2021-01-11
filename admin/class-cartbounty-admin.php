@@ -366,7 +366,7 @@ class CartBounty_Admin{
 									<div class="cartbounty-titles-column cartbounty-col-sm-4 cartbounty-col-lg-3">
 										<h4><?php echo __('Notifications', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
 										<p class="cartbounty-titles-column-description">
-											<?php echo __('Receive email notifications about newly abandoned and recovered carts. Please note, that you will not get emails about ghost carts.', CARTBOUNTY_TEXT_DOMAIN); ?>
+											<?php echo __('Receive email notifications about newly abandoned carts. Please note, that you will not get emails about ghost carts.', CARTBOUNTY_TEXT_DOMAIN); ?>
 										</p>
 									</div>
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
@@ -615,21 +615,21 @@ class CartBounty_Admin{
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_ACTIVECAMPAIGN_TRIAL_LINK,
-					'description'		=> __("<p>ActiveCampaign is awesome since it allows you to create different If/Else statements and setup elaborate rules when to send out your captured abandoned cart recovery emails.</p><p>Worth noting that in contrast to MailChimp, ActiveCampaign allows you to send multiple abandoned cart reminder emails while MailChimp allows just one email to be sent for each abandoned cart.</p>", CARTBOUNTY_TEXT_DOMAIN)
+					'description'		=> __("<p>ActiveCampaign is awesome and allows creating different If/Else statements to setup elaborate rules for sending abandoned cart recovery emails.</p><p>In contrast to MailChimp, it allows sending reminder email series without the requirement to subscribe.</p>", CARTBOUNTY_TEXT_DOMAIN)
 				),
 				'getresponse'	=> array(
 					'name'				=> __('GetResponse', CARTBOUNTY_TEXT_DOMAIN),
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_GETRESPONSE_TRIAL_LINK,
-					'description'		=> __("<p>GetResponse is a beautifully designed email marketing system to save and recover online abandoned shopping carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates.</p>", CARTBOUNTY_TEXT_DOMAIN)
+					'description'		=> __("<p>GetResponse offers efficient and beautifully designed email marketing platform to recover abandoned carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates.</p>", CARTBOUNTY_TEXT_DOMAIN)
 				),
 				'mailchimp'	=> array(
 					'name'				=> __('MailChimp', CARTBOUNTY_TEXT_DOMAIN),
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_MAILCHIMP_LINK,
-					'description'		=> __("<p>MailChimp offers a forever free plan and allows to create both single and a series of reminder emails (e.g. first email in the 1st hour of cart abandonment, 2nd email after 24 hours etc.).</p><p>Please note that MailChimp will only send the 1st reminder email to a user if he has not subscribed to your list.</p>", CARTBOUNTY_TEXT_DOMAIN)
+					'description'		=> __("<p>MailChimp offers a forever free plan and allows to create both single and series of reminder emails (e.g. first email in the 1st hour of cart abandonment, 2nd after 24 hours etc.).</p><p>MailChimp will only send the 1st email in the series unless a user becomes a subscriber.</p>", CARTBOUNTY_TEXT_DOMAIN)
 				)
 			);
 		}
