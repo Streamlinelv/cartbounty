@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-01-10 18:43+0200\n"
+"POT-Creation-Date: 2021-01-12 17:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: Poedit 2.0.6\n"
 "X-Domain: woo-save-abandoned-carts\n"
@@ -128,7 +128,7 @@ msgid "Notifications"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:369
-msgid "Receive email notifications about newly abandoned and recovered carts. Please note, that you will not get emails about ghost carts."
+msgid "Receive email notifications about newly abandoned carts. Please note, that you will not get emails about ghost carts."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:374
@@ -270,7 +270,7 @@ msgid "ActiveCampaign"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:618
-msgid "<p>ActiveCampaign is awesome since it allows you to create different If/Else statements and setup elaborate rules when to send out your captured abandoned cart recovery emails.</p><p>Worth noting that in contrast to MailChimp, ActiveCampaign allows you to send multiple abandoned cart reminder emails while MailChimp allows just one email to be sent for each abandoned cart.</p>"
+msgid "<p>ActiveCampaign is awesome and allows creating different If/Else statements to setup elaborate rules for sending abandoned cart recovery emails.</p><p>In contrast to MailChimp, it allows sending reminder email series without the requirement to subscribe.</p>"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:621
@@ -278,7 +278,7 @@ msgid "GetResponse"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:625
-msgid "<p>GetResponse is a beautifully designed email marketing system to save and recover online abandoned shopping carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates.</p>"
+msgid "<p>GetResponse offers efficient and beautifully designed email marketing platform to recover abandoned carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates.</p>"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:628
@@ -286,7 +286,7 @@ msgid "MailChimp"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:632
-msgid "<p>MailChimp offers a forever free plan and allows to create both single and a series of reminder emails (e.g. first email in the 1st hour of cart abandonment, 2nd email after 24 hours etc.).</p><p>Please note that MailChimp will only send the 1st reminder email to a user if he has not subscribed to your list.</p>"
+msgid "<p>MailChimp offers a forever free plan and allows to create both single and series of reminder emails (e.g. first email in the 1st hour of cart abandonment, 2nd after 24 hours etc.).</p><p>MailChimp will only send the 1st email in the series unless a user becomes a subscriber.</p>"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:640
