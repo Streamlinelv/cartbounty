@@ -702,7 +702,24 @@ class CartBounty_Admin{
 								</label>
 								<label for="cartbounty-exit-intent-mobile-status" class="cartbounty-unavailable"><?php echo __('Enable mobile Exit Intent', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								<p class='cartbounty-additional-information'>
-									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'mobile_exit_intent' ); ?></i>
+									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'exit_intent_mobile' ); ?></i>
+								</p>
+							</div>
+							<div class="cartbounty-settings-group">
+								<h4><?php echo __('Field type', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+								<p class='cartbounty-additional-information'>
+									<?php echo __('Choose which input field should be collected in the popup.', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</p>
+								<label for="cartbounty-exit-intent-field-type-email" class="cartbounty-radiobutton-label">
+									<input id="cartbounty-exit-intent-field-type-email" class="cartbounty-radiobutton" type="radio" checked autocomplete="off" />
+										<?php echo __('Email', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</label>
+								<label for="cartbounty-exit-intent-field-type-phone" class="cartbounty-radiobutton-label cartbounty-unavailable">
+									<input id="cartbounty-exit-intent-field-type-phone" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+										<?php echo __('Phone', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</label>
+								<p class='cartbounty-additional-information'>
+									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'exit_intent_phone' ); ?></i>
 								</p>
 							</div>
 						</div>

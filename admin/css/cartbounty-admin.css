@@ -143,6 +143,12 @@ h2.cartbounty-section-title{
 	top: 3px;
 }
 
+.cartbounty-settings-group .cartbounty-radiobutton-label{
+	margin: 10px 35px 0 0;
+	padding: 0;
+	display: inline-block;
+}
+
 input.cartbounty-radiobutton{
 	background: transparent;
 	border-color: #d1cfcf;
@@ -484,7 +490,8 @@ input.cartbounty-radiobutton:checked:before{
 }
 
 .cartbounty-exit-intent-type:hover input.cartbounty-radiobutton,
-.cartbounty-exit-intent-type.cartbounty-radio-active:hover input.cartbounty-radiobutton:disabled{
+.cartbounty-exit-intent-type.cartbounty-radio-active:hover input.cartbounty-radiobutton:disabled,
+.cartbounty-radiobutton-label:hover input:disabled{
 	background-color: #fff;
 }
 
@@ -976,7 +983,12 @@ a.cartbounty-tab{
 .cartbounty-settings-group h4{
 	font-size: 16px;
 	line-height: 26px;
-	margin: 0 0 10px;
+	margin: 25px 0 10px;
+}
+
+.cartbounty-titles-column h4,
+.cartbounty-settings-column .cartbounty-settings-group:first-child h4{
+	margin-top: 0;
 }
 
 .cartbounty .cartbounty-titles-column .cartbounty-titles-column-description{

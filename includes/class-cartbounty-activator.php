@@ -157,11 +157,8 @@ class CartBounty_Activator{
 		//Temporary function since version 5.0.1. Will be removed in future releases
 		cartbounty_transfer_carts( $wpdb, $cart_table, $old_cart_table );
 
-		//Registering email notification frequency
-		if ( get_option('cartbounty_notification_frequency') !== false ) {
-			// The option already exists, so we do not do nothing
-		}else{
-			// The option hasn't been added yet
+		//Registering email notification frequency in case it has not been set before
+		if ( get_option('cartbounty_notification_frequency') === false ) {
 			add_option('cartbounty_notification_frequency', array('hours' => 60));
 		}
 

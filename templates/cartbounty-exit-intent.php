@@ -48,7 +48,7 @@ if($image_id){
 				<?php do_action('cartbounty_exit_intent_after_title'); ?>
 				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_description_html', sprintf(
 					/* translators: %s - Color code */
-					__( '<p style="color: %s">Just enter your email below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)</p>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) );?>
+					__( '<p style="color: %s">Enter your details below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)</p>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) );?>
 				<form>
 					<?php do_action('cartbounty_exit_intent_before_form_fields'); ?>
 					<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_email_label_html', sprintf('<label for="cartbounty-exit-intent-email" style="color: %s">%s</label>', $args['inverse_color'], __('Your email:', CARTBOUNTY_TEXT_DOMAIN) ) ) ); ?>
