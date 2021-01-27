@@ -3,6 +3,16 @@
  * included in this file.
  */
 
+#cartbounty-exit-intent-form-container,
+#cartbounty-exit-intent-close,
+#cartbounty-exit-intent-submit{
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
+	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
+	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
+}
+
 #cartbounty-exit-intent-form{
 	z-index: -1;
 	opacity: 0;
@@ -57,11 +67,6 @@
 	opacity: .6;
 	z-index: 2;
 	overflow: hidden;
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
-	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
-	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
 }
 
 #cartbounty-exit-intent-close:hover{
@@ -70,23 +75,9 @@
 
 #cartbounty-exit-intent-form-container{
 	position: relative;
-	padding: 60px 60px 30px;
+	padding: 60px 60px 50px;
 	opacity: 0;
 	overflow-x: hidden;
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
-	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
-	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
-}
-
-#cartbounty-exit-intent-form label{
-	cursor: pointer;
-}
-
-#cartbounty-exit-intent-form label,
-#cartbounty-exit-intent-form input{
-	margin: 0 10px 10px 0;
 }
 
 #cartbounty-exit-intent-form-content-l{
@@ -103,20 +94,34 @@
 }
 
 #cartbounty-exit-intent-submit{
+	display: inline-block;
+	width: 30%;
+	padding: 10px 5%;
+	position: relative;
+	margin: 0;
+	height: 50px;
+	float: none;
+	min-width: unset;
+	border: 0px none;
 	opacity: .9;
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
-	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
-	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
 }
 
 #cartbounty-exit-intent-submit:hover{
 	opacity: 1;
 }
 
-#cartbounty-exit-intent-email{
-	width: 230px;
+#cartbounty-exit-intent-form input{
+	width: 66%;
+	min-width: unset;
+	display: inline-block;
+	height: 50px;
+	vertical-align: top;
+	padding: 12px 15px;
+	margin: 0;
+}
+
+#cartbounty-exit-intent-form input:focus{
+	outline-color: transparent;
 }
 
 #cartbounty-exit-intent-form h2{
@@ -127,6 +132,8 @@
 #cartbounty-exit-intent-form p{
 	font-size: 15px;
 	line-height: 20px;
+	margin: 0;
+	padding: 0 0 20px;
 }
 
 /* Exit Intent Template
@@ -160,19 +167,31 @@
 }
 
 @media screen and (max-width: 576px) {
+	#cartbounty-exit-intent-form input{
+		width: 100%;
+		margin-bottom: 10px;
+	}
+
+	#cartbounty-exit-intent-submit{
+		width: auto;
+	}
+
+	#cartbounty-exit-intent-form-container{
+		padding: 30px 30px 20px;
+	}
+
 	.cartbounty-ei-center #cartbounty-exit-intent-form-container{
 		width: 94%;
 	}
-}
 
-@media screen and (max-width: 768px) {
-	#cartbounty-exit-intent-email{
-		width: 100%;
+	#cartbounty-exit-intent-form-container{
+		padding: 30px 30px 10px;
 	}
 }
 
-@media screen and (max-width: 576px) {
-	#cartbounty-exit-intent-form-container{
-		padding: 30px 30px 10px;
+@media screen and (max-width: 320px) {
+	#cartbounty-exit-intent-form h2{
+		font-size: 26px;
+		line-height: 36px;
 	}
 }

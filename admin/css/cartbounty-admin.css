@@ -15,7 +15,7 @@
 .cartbounty-close,
 #cartbounty-go-pro-header-image a,
 .cartbounty .submit:after,
-.cartbounty-exit-intent-type .button,
+.cartbounty-type .button,
 .cartbounty-abandoned-product .tooltiptext,
 .cartbounty td.cart_contents img,
 #cartbounty-remove-image,
@@ -30,8 +30,8 @@
 .cartbounty .bulkactions select,
 .cartbounty #cartbounty_carts_per_page,
 .cartbounty #current-page-selector,
-.cartbounty-exit-intent-colors .button,
-.cartbounty-exit-intent-colors .button .wp-color-result-text{
+.cartbounty-colors .button,
+.cartbounty-colors .button .wp-color-result-text{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
@@ -41,6 +41,8 @@
 
 #cartbounty-exit-intent-left i,
 #cartbounty-exit-intent-fullscreen i,
+#cartbounty-early-capture-center i,
+#cartbounty-early-capture-near-button i,
 .cartbounty-exit-intent-additional-style{
 	-webkit-transition: 	all 0.4s ease-in-out;
 	-webkit-transition: 	all 0.4s ease-in-out;
@@ -257,7 +259,7 @@ input.cartbounty-radiobutton:checked:before{
 }
 
 #cartbounty-bubbles .button,
-.cartbounty-exit-intent-type .button{
+.cartbounty-type .button{
 	background: #ffde01;
 	color: #000;
 	border: 0px none;
@@ -287,7 +289,7 @@ input.cartbounty-radiobutton:checked:before{
 
 #cartbounty-bubbles .button:hover,
 #cartbounty-review .cartbounty-review-submitted:hover,
-.cartbounty-exit-intent-type .button:hover{
+.cartbounty-type .button:hover{
 	background: #bc8df4;
 }
 
@@ -310,7 +312,7 @@ input.cartbounty-radiobutton:checked:before{
 	display: inline;
 }
 
-.cartbounty-exit-intent-type{
+.cartbounty-type{
 	display: inline-block;
 	width: 150px;
 	margin: 10px 5% 10px 0;
@@ -319,7 +321,9 @@ input.cartbounty-radiobutton:checked:before{
 #cartbounty-exit-intent-center.cartbounty-radio-active em i,
 #cartbounty-exit-intent-center:hover em i,
 #cartbounty-exit-intent-fullscreen.cartbounty-radio-active em i,
-#cartbounty-exit-intent-fullscreen:hover em i{
+#cartbounty-exit-intent-fullscreen:hover em i,
+#cartbounty-early-capture-center.cartbounty-radio-active em i,
+#cartbounty-early-capture-center:hover em i{
 	-webkit-animation: exitIntentfadeIn ease-in-out 10s infinite;
 	-moz-animation: exitIntentfadeIn ease-in-out 10s infinite;
     animation: exitIntentfadeIn ease-in-out 10s infinite;
@@ -332,19 +336,34 @@ input.cartbounty-radiobutton:checked:before{
     animation: exitIntentSlideIn ease-in-out 10s infinite;
 }
 
-.cartbounty-settings-group .cartbounty-exit-intent-type label{
+.cartbounty-radio-active #cartbounty-early-capture-popup-group,
+#cartbounty-early-capture-near-button:hover #cartbounty-early-capture-popup-group{
+	-webkit-animation: earlyCaptureFadeUp ease-in-out 10s infinite;
+	-moz-animation: earlyCaptureFadeUp ease-in-out 10s infinite;
+    animation: earlyCaptureFadeUp ease-in-out 10s infinite;
+}
+
+.cartbounty-radio-active #cartbounty-near-button-4,
+#cartbounty-early-capture-near-button:hover #cartbounty-near-button-4{
+	-webkit-animation: earlyCaptureClick ease-in-out 10s infinite;
+	-moz-animation: earlyCaptureClick ease-in-out 10s infinite;
+    animation: earlyCaptureClick ease-in-out 10s infinite;
+    transform-origin: 25% 10%;
+}
+
+.cartbounty-settings-group .cartbounty-type label{
 	padding-bottom: 0;
 }
 
-.cartbounty-exit-intent-colors .wp-color-result-text{
+.cartbounty-colors .wp-color-result-text{
 	color: #0071a1;
 }
 
-.cartbounty-exit-intent-image{
+.cartbounty-image{
 	display: block;
 }
 
-.cartbounty-exit-intent-image em{
+.cartbounty-image em{
 	display: block;
 	height: 100px;
 	margin-bottom: 15px;
@@ -363,7 +382,7 @@ input.cartbounty-radiobutton:checked:before{
 	overflow: hidden;
 }
 
-.cartbounty-exit-intent-image i{
+.cartbounty-image i{
 	margin: 0;
 	position: absolute;
 	top: 50%;
@@ -379,7 +398,7 @@ input.cartbounty-radiobutton:checked:before{
 	z-index: 2;
 }
 
-#cartbounty-exit-intent-left .cartbounty-exit-intent-image i{
+#cartbounty-exit-intent-left .cartbounty-image i{
 	width: 70%;
 	height: 100%;
 	left: 0;
@@ -391,11 +410,11 @@ input.cartbounty-radiobutton:checked:before{
 	-webkit-border-radius: 3px 0px 0px 0px;
 }
 
-#cartbounty-exit-intent-left.cartbounty-radio-active .cartbounty-exit-intent-image i{
+#cartbounty-exit-intent-left.cartbounty-radio-active .cartbounty-image i{
 	left: -100%;
 }
 
-#cartbounty-exit-intent-fullscreen .cartbounty-exit-intent-image i{
+#cartbounty-exit-intent-fullscreen .cartbounty-image i{
 	width: 100%;
 	height: 100%;
 	border-radius: 3px 3px 0px 0px;
@@ -403,11 +422,31 @@ input.cartbounty-radiobutton:checked:before{
 	-webkit-border-radius: 3px 3px 0px 0px;
 }
 
-#cartbounty-exit-intent-fullscreen.cartbounty-radio-active .cartbounty-exit-intent-image i{
+#cartbounty-exit-intent-fullscreen.cartbounty-radio-active .cartbounty-image i,
+#cartbounty-early-capture-center.cartbounty-radio-active .cartbounty-image i{
 	top: -50%;
 }
 
-.cartbounty-exit-intent-image img{
+#cartbounty-early-capture-center .cartbounty-image i{
+	height: 50px;
+	width: 85px;
+}
+
+#cartbounty-early-capture-near-button .cartbounty-image i{
+	background: none;
+	text-align: center;
+	height: 35px;
+}
+
+#cartbounty-early-capture-near-button.cartbounty-radio-active .cartbounty-image i{
+	top: 120%;
+}
+
+#cartbounty-early-capture-near-button .cartbounty-image svg{
+	height: 100%;
+}
+
+.cartbounty-image img{
 	margin: 0;
 	position: absolute;
 	top: 50%;
@@ -417,13 +456,13 @@ input.cartbounty-radiobutton:checked:before{
 	width: 58px;
 }
 
-.cartbounty-exit-intent-colors{
+.cartbounty-colors{
 	display: inline-block;
 	margin-right: 3%;
 	margin-top: 20px;
 }
 
-.cartbounty-settings-group .cartbounty-exit-intent-colors label{
+.cartbounty-settings-group .cartbounty-colors label{
 	margin: 0 10px 0 0;
 	padding: 0;
 	position: relative;
@@ -432,13 +471,13 @@ input.cartbounty-radiobutton:checked:before{
 	display: inline-block;
 }
 
-.cartbounty-settings-group .cartbounty-exit-intent-colors .wp-picker-input-wrap label{
+.cartbounty-settings-group .cartbounty-colors .wp-picker-input-wrap label{
 	top: 0;
 	min-width: unset;
 	margin-right: 0;
 }
 
-.cartbounty-exit-intent-colors .wp-picker-container{
+.cartbounty-colors .wp-picker-container{
 	display: inline;
 }
 
@@ -484,19 +523,21 @@ input.cartbounty-radiobutton:checked:before{
 
 #cartbounty-remove-image:hover,
 .cartbounty-radio-active em,
-.cartbounty-exit-intent-type:hover em,
-.cartbounty-radio-active .cartbounty-exit-intent-image em{
+.cartbounty-type:hover em,
+.cartbounty-radio-active .cartbounty-image em{
 	opacity: 1;
 }
 
-.cartbounty-exit-intent-type:hover input.cartbounty-radiobutton,
-.cartbounty-exit-intent-type.cartbounty-radio-active:hover input.cartbounty-radiobutton:disabled,
+.cartbounty-type:hover input.cartbounty-radiobutton,
+.cartbounty-radiobutton-label:hover .cartbounty-radiobutton,
+.cartbounty-type.cartbounty-radio-active:hover input.cartbounty-radiobutton:disabled,
 .cartbounty-radiobutton-label:hover input:disabled{
 	background-color: #fff;
 }
 
-.cartbounty-exit-intent-type.cartbounty-radio-active:hover input.cartbounty-radiobutton,
-.cartbounty-exit-intent-type:hover input.cartbounty-radiobutton:checked{
+.cartbounty-type.cartbounty-radio-active:hover input.cartbounty-radiobutton,
+.cartbounty-type:hover input.cartbounty-radiobutton:checked,
+.cartbounty-radiobutton-label:hover .cartbounty-radiobutton:checked{
 	background-color: #aa88fc;
 }
 
@@ -506,7 +547,7 @@ input.cartbounty-radiobutton:checked:before{
 	font-style: normal;
 	bottom: -100%;
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 	height: 100%;
 	background: #ffde01;
 	line-height: 18px;
@@ -516,7 +557,7 @@ input.cartbounty-radiobutton:checked:before{
 	bottom: 0;
 }
 
-.cartbounty-exit-intent-type .button.cartbounty-button{
+.cartbounty-type .button.cartbounty-button{
 	margin: 8px 0 0;
 	padding: 3px 20px;
 }
@@ -1003,7 +1044,7 @@ a.cartbounty-tab{
 .cartbounty .bulkactions select,
 .cartbounty #cartbounty_carts_per_page,
 .cartbounty #current-page-selector,
-#cartbounty-content-container .cartbounty-exit-intent-color-picker.cartbounty-text{
+#cartbounty-content-container .cartbounty-color-picker.cartbounty-text{
 	display: block;
 	width: 100%;
 	border: 1px solid #e2e2e2;
@@ -1043,7 +1084,7 @@ a.cartbounty-tab{
 	background-position: right 15px top 55%;
 }
 
-#cartbounty-content-container .cartbounty-exit-intent-color-picker.cartbounty-text{
+#cartbounty-content-container .cartbounty-color-picker.cartbounty-text{
 	width: 90px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -1213,6 +1254,19 @@ em.cartbounty-connection,
 	margin-top: 40px;
 }
 
+#cartbounty-near-button-1,
+#cartbounty-near-button-4{
+	fill:#8370f7;
+}
+
+#cartbounty-near-button-2{
+	fill:#6856d5;
+}
+
+#cartbounty-near-button-3{
+	fill:#ffde00;
+}
+
 @media screen and (min-width: 1900px) {
 	.cartbounty .cartbounty-sidebar,
 	.cartbounty .cartbounty-titles-column{
@@ -1276,7 +1330,7 @@ em.cartbounty-connection,
 		margin-bottom: 20px;
 	}
 
-	.cartbounty-settings-group .cartbounty-exit-intent-colors label{
+	.cartbounty-settings-group .cartbounty-colors label{
 		vertical-align: top;
 	}
 
@@ -1398,7 +1452,7 @@ em.cartbounty-connection,
 		margin-bottom: 0;
 	}
 
-	.cartbounty-settings-group .cartbounty-exit-intent-colors label{
+	.cartbounty-settings-group .cartbounty-colors label{
 		padding-bottom: 10px;
 	}
 }
@@ -1550,8 +1604,7 @@ input:checked + .cartbounty-slider:focus{
     0% { opacity: 0; }
     10% { opacity: 0; }
     15% { opacity: 1; }
-    80% { opacity: 1; }
-    85% { opacity: 0; }
+    90% { opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -1559,8 +1612,7 @@ input:checked + .cartbounty-slider:focus{
     0% { opacity: 0; }
     10% { opacity: 0; }
     15% { opacity: 1; }
-    80% { opacity: 1; }
-    85% { opacity: 0; }
+    90% { opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -1568,8 +1620,7 @@ input:checked + .cartbounty-slider:focus{
     0% { opacity: 0; }
     10% { opacity: 0; }
     15% { opacity: 1; }
-    80% { opacity: 1; }
-    85% { opacity: 0; }
+    90% { opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -1577,8 +1628,7 @@ input:checked + .cartbounty-slider:focus{
     0% { transform: translate(-100%,0); }
     10% { transform: translate(-100%,0); }
     15% { transform: translate(0,0); }
-    80% { transform: translate(0,0); opacity: 1; }
-    85% { opacity: 0; }
+    90% { transform: translate(0,0); opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -1586,8 +1636,7 @@ input:checked + .cartbounty-slider:focus{
     0% { transform: translate(-100%,0); }
     10% { transform: translate(-100%,0); }
     15% { transform: translate(0,0); }
-    80% { transform: translate(0,0); opacity: 1; }
-    85% { opacity: 0; }
+    90% { transform: translate(0,0); opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -1595,7 +1644,48 @@ input:checked + .cartbounty-slider:focus{
     0% { transform: translate(-100%,0); }
     10% { transform: translate(-100%,0); }
     15% { transform: translate(0,0); }
-    80% { transform: translate(0,0); opacity: 1; }
-    85% { opacity: 0; }
+    90% { transform: translate(0,0); opacity: 1; }
     100% { opacity: 0; }
+}
+
+@-moz-keyframes earlyCaptureFadeUp{
+    0% { transform: translate(0,-10%); opacity: 0; }
+    10% { transform: translate(0,-10%); opacity: 0; }
+    15% { transform: translate(0,0); opacity: 1; }
+    90% { transform: translate(0,0); opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@-webkit-keyframes earlyCaptureFadeUp{
+    0% { transform: translate(0,-10%); opacity: 0; }
+    10% { transform: translate(0,-10%); opacity: 0; }
+    15% { transform: translate(0,0); opacity: 1; }
+    90% { transform: translate(0,0); opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes earlyCaptureFadeUp{
+    0% { transform: translate(0,-10%); opacity: 0; }
+    10% { transform: translate(0,-10%); opacity: 0; }
+    15% { transform: translate(0,0); opacity: 1; }
+    90% { transform: translate(0,0); opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@-moz-keyframes earlyCaptureClick{
+    6% { transform: scale(1); }
+    8% { transform: scale(.75); }
+    10% { transform: scale(1); }
+}
+
+@-webkit-keyframes earlyCaptureClick{
+    6% { transform: scale(1); }
+    8% { transform: scale(.75); }
+    10% { transform: scale(1); }
+}
+
+@keyframes earlyCaptureClick{
+    6% { transform: scale(1); }
+    8% { transform: scale(.75); }
+    10% { transform: scale(1); }
 }

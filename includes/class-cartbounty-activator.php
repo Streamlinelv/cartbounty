@@ -4,6 +4,7 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
+ * @since      1.0
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce
  * @subpackage CartBounty - Save and recover abandoned carts for WooCommerce/includes
  * @author     Streamline.lv
@@ -158,9 +159,7 @@ class CartBounty_Activator{
 		cartbounty_transfer_carts( $wpdb, $cart_table, $old_cart_table );
 
 		//Registering email notification frequency in case it has not been set before
-		if ( get_option('cartbounty_notification_frequency') === false ) {
-			add_option('cartbounty_notification_frequency', array('hours' => 60));
-		}
+		add_option('cartbounty_notification_frequency', array('hours' => 60));
 
 		//Setting default Exit Intent type if it has not been previously set
 		add_option('cartbounty_exit_intent_type', 1);

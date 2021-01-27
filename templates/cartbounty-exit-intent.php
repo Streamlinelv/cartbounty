@@ -6,7 +6,7 @@
  * yourtheme/templates/cartbounty-exit-intent.php or
  * yourtheme/cartbounty-exit-intent.php
 
- * Please note that you should not change the ID (cartbounty-exit-intent-email) of the Email input field.
+ * Please do not change the ID "cartbounty-exit-intent-email".
  * If changed, the abandoned cart will not be captured
  *
  * If CartBounty - Save and recover abandoned carts for WooCommerce plugin will need to update template files, you
@@ -50,10 +50,9 @@ if($image_id){
 					/* translators: %s - Color code */
 					__( '<p style="color: %s">Enter your details below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)</p>', CARTBOUNTY_TEXT_DOMAIN ), $args['inverse_color'] ) ) );?>
 				<form>
-					<?php do_action('cartbounty_exit_intent_before_form_fields'); ?>
-					<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_email_label_html', sprintf('<label for="cartbounty-exit-intent-email" style="color: %s">%s</label>', $args['inverse_color'], __('Your email:', CARTBOUNTY_TEXT_DOMAIN) ) ) ); ?>
-					<?php echo apply_filters( 'cartbounty_exit_intent_email_field_html', '<input type="email" id="cartbounty-exit-intent-email" size="30" required >' ) ; ?>
-					<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_button_html', sprintf('<button type="submit" name="cartbounty-exit-intent-submit" id="cartbounty-exit-intent-submit" class="button" value="submit" style="background-color: %s; color: %s">%s</button>', $args['inverse_color'], $args['main_color'], __('Save cart', CARTBOUNTY_TEXT_DOMAIN) ) ) ); ?>
+					<?php do_action('cartbounty_exit_intent_before_form_fields');
+					echo apply_filters( 'cartbounty_exit_intent_field_html', '<input type="email" id="cartbounty-exit-intent-email" required placeholder="'. __('Enter your email', CARTBOUNTY_TEXT_DOMAIN) .'">' );
+					echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_button_html', sprintf('<button type="submit" name="cartbounty-exit-intent-submit" id="cartbounty-exit-intent-submit" class="button" value="submit" style="background-color: %s; color: %s">%s</button>', $args['inverse_color'], $args['main_color'], __('Save cart', CARTBOUNTY_TEXT_DOMAIN) ) ) ); ?>
 				</form>
 			</div>
 			<?php do_action('cartbounty_exit_intent_end'); ?>

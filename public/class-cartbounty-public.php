@@ -51,7 +51,7 @@ class CartBounty_Public{
 	 * @since    3.0
 	 */
 	public function enqueue_styles(){
-		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
+		if($this->tool_enabled( 'exit_intent' )){ //If Exit Intent Enabled
 			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cartbounty-public.css', array(), $this->version, 'all' );
 		}
 	}
@@ -66,29 +66,25 @@ class CartBounty_Public{
 			return;
 		}
 
-		if($this->exit_intent_enabled()){ //If Exit Intent Enabled
+		if($this->tool_enabled( 'exit_intent' )){ //If Exit Intent Enabled
 			$cart_content_count = 0;
 
 			if(WC()->cart){
 				$cart_content_count = WC()->cart->get_cart_contents_count();
 			}
 
-			if(get_option('cartbounty_exit_intent_test_mode')){ //If Exit Intent Test mode is on
-				$data = array(
-				    'hours' => 0, //For Exit Intent Testing purposes
-				    'product_count' => $cart_content_count,
-				    'ajaxurl' => admin_url( 'admin-ajax.php' )
-				);
-
-			}else{
-				$data = array(
-				    'hours' => 1,
-				    'product_count' => $cart_content_count,
-				    'ajaxurl' => admin_url( 'admin-ajax.php' )
-				);
+			$hours = 1;
+			if(get_option('cartbounty_exit_intent_test_mode')){ //If test mode is enabled
+				$hours = 0;
 			}
-			wp_enqueue_script( $this->plugin_name . 'exit_intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
-			wp_localize_script( $this->plugin_name . 'exit_intent', 'public_data', $data); //Sending variable over to JS file
+
+			$data = array(
+			    'hours' => $hours,
+			    'product_count' => $cart_content_count,
+			    'ajaxurl' => admin_url( 'admin-ajax.php' )
+			);
+			wp_enqueue_script( $this->plugin_name . '-exit-intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
+			wp_localize_script( $this->plugin_name . '-exit-intent', 'public_data', $data); //Sending variable over to JS file
 		}
 	}
 	
@@ -609,7 +605,10 @@ class CartBounty_Public{
 
 			$product_title = $item->get_title();
 			$product_quantity = $values['quantity'];
-			$product_variation_price = $values['line_total'];
+			$product_variation_price = '';
+			if(isset($values['line_total'])){
+				$product_variation_price = $values['line_total'];
+			}
 			
 			// Handling product variations
 			if($values['variation_id']){ //If user has chosen a variation
@@ -845,7 +844,7 @@ class CartBounty_Public{
 			return;
 		}
 		
-		if(!$this->exit_intent_enabled() || !WC()->cart){ //If Exit Intent disabled or WooCommerce cart does not exist
+		if(!$this->tool_enabled( 'exit_intent' ) || !WC()->cart){ //If Exit Intent disabled or WooCommerce cart does not exist
 			return;
 		}
 		
@@ -929,23 +928,28 @@ class CartBounty_Public{
 	 *
 	 * @since    3.0
 	 * @return   boolean
+	 * @param    string    $tool    Tool that is being checked
 	 */
-	function exit_intent_enabled(){
-		$exit_intent_on = get_option('cartbounty_exit_intent_status');
-		$test_mode_on = get_option('cartbounty_exit_intent_test_mode');
+	function tool_enabled( $tool ){
+		switch ( $tool ) {
+			case 'exit_intent':
+				$tool_enabled = get_option('cartbounty_exit_intent_status');
+				$test_mode_on = get_option('cartbounty_exit_intent_test_mode');
+				break;
+		}
+
 		$current_user_is_admin = current_user_can( 'manage_options' );
 
 		if($test_mode_on && $current_user_is_admin){
-			//Outputing Exit Intent for Testing purposes for Administrators
+			//Outputing tool for Testing purposes to Administrators
 			return true;
-		}elseif($exit_intent_on && !$test_mode_on && !is_user_logged_in()){
-			//Outputing Exit Intent for all users who are not logged in
+		}elseif($tool_enabled && !$test_mode_on && !is_user_logged_in()){
+			//Outputing tool for all users who are not logged in
 			return true;
 		}else{
-			//Do not Output Exit Intent
+			//Tool is not enabled
 			return false;
 		}
-		
 	}
 
 	/**
@@ -978,7 +982,7 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Locating Exit Intent template file.
+	 * Locating template file.
 	 * Method returns the path to the template
 	 *
 	 * Search Order:
@@ -992,7 +996,7 @@ class CartBounty_Public{
 	 * @param 	 string    $string $template_path - path to templates.
 	 * @param    string    $default_path - default path to template files.
 	 */
-	function get_exit_intent_template_path( $template_name, $template_path = '', $default_path = '' ){
+	function get_template_path( $template_name, $template_path = '', $default_path = '' ){
 		// Set variable to search in woocommerce-plugin-templates folder of theme.
 		if ( ! $template_path ) :
 			$template_path = 'templates/';
@@ -1013,7 +1017,7 @@ class CartBounty_Public{
 		if ( ! $template ) :
 			$template = $default_path . $template_name;
 		endif;
-		return apply_filters( 'get_exit_intent_template_path', $template, $template_name, $template_path, $default_path );
+		return apply_filters( 'get_template_path', $template, $template_name, $template_path, $default_path );
 	}
 
 	/**
@@ -1030,9 +1034,9 @@ class CartBounty_Public{
 		if ( is_array( $args ) && isset( $args ) ){
 			extract( $args );
 		}
-		$template_file = $this->get_exit_intent_template_path($template_name, $tempate_path, $default_path);
+		$template_file = $this->get_template_path($template_name, $tempate_path, $default_path);
 		if ( ! file_exists( $template_file ) ){ //Handling error output in case template file does not exist
-			_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $template_file ), '3.0' );
+			_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $template_file ), '6.1' );
 			return;
 		}
 		include $template_file;

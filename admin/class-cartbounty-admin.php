@@ -629,7 +629,7 @@ class CartBounty_Admin{
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_MAILCHIMP_LINK,
-					'description'		=> __("<p>MailChimp offers a forever free plan and allows to create both single and series of reminder emails (e.g. first email in the 1st hour of cart abandonment, 2nd after 24 hours etc.).</p><p>MailChimp will only send the 1st email in the series unless a user becomes a subscriber.</p>", CARTBOUNTY_TEXT_DOMAIN)
+					'description'		=> __("<p>MailChimp offers a forever free plan and allows to create both single and series of reminder emails (e.g., first email in the 1st hour of cart abandonment, 2nd after 24 hours etc.).</p><p>MailChimp will only send the 1st email in the series unless a user becomes a subscriber.</p>", CARTBOUNTY_TEXT_DOMAIN)
 				)
 			);
 		}
@@ -641,6 +641,12 @@ class CartBounty_Admin{
 					'connected'			=> esc_attr( get_option('cartbounty_exit_intent_status')) ? true : false,
 					'availability'		=> true,
 					'description'		=> __("<p>Save more recoverable abandoned carts by showcasing a popup message right before your customer tries to leave and offer an option to save his shopping cart by entering his email.</p>", CARTBOUNTY_TEXT_DOMAIN)
+				),
+				'early_capture'	=> array(
+					'name'				=> __('Early capture', CARTBOUNTY_TEXT_DOMAIN),
+					'connected'			=> false,
+					'availability'		=> true,
+					'description'		=> __("<p>Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked.</p>", CARTBOUNTY_TEXT_DOMAIN)
 				)
 			);
 		}
@@ -668,7 +674,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 __('With the help of Exit Intent you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once per hour after they have added an item to their cart and try to leave your shop. Learn <a href="%s" target="_blank" title="How to customize the contents of Exit Intent">how to customize the contents</a> of Exit Intent popup.', CARTBOUNTY_TEXT_DOMAIN), 'https://www.cartbounty.com/#modify-exit-intent-content');
+						 __('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn <a href="%s" target="_blank" title="How to customize the contents of Exit Intent">how to customize the contents</a> of Exit Intent popup.', CARTBOUNTY_TEXT_DOMAIN), 'https://www.cartbounty.com/#modify-exit-intent-content');
 					?>
 				</div>
 				<form method="post" action="options.php">
@@ -686,6 +692,9 @@ class CartBounty_Admin{
 					<div class="cartbounty-row">
 						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
 							<h4><?php echo __('General', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php echo __('Enable email or phone request before leaving your store.', CARTBOUNTY_TEXT_DOMAIN); ?>
+							</p>
 						</div>
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9<?php if($exit_intent_on){ echo ' cartbounty-checked-parent'; }?>">
 							<div class="cartbounty-settings-group cartbounty-toggle">
@@ -734,8 +743,8 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group">
 								<h4><?php echo __('Style', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
-								<div id="cartbounty-exit-intent-center" class="cartbounty-exit-intent-type <?php if($exit_intent_type == 1){ echo "cartbounty-radio-active";} ?>">
-									<label class="cartbounty-exit-intent-image" for="cartbounty-radiobutton-center">
+								<div id="cartbounty-exit-intent-center" class="cartbounty-type <?php if($exit_intent_type == 1){ echo "cartbounty-radio-active";} ?>">
+									<label class="cartbounty-image" for="cartbounty-radiobutton-center">
 										<em>
 											<i>
 												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
@@ -745,8 +754,8 @@ class CartBounty_Admin{
 										<?php echo __('Appear in center', CARTBOUNTY_TEXT_DOMAIN); ?>
 									</label>
 								</div>
-								<div id="cartbounty-exit-intent-left" class="cartbounty-exit-intent-type <?php if($exit_intent_type == 2){ echo "cartbounty-radio-active";} ?>">
-									<label class="cartbounty-exit-intent-image" for="cartbounty-radiobutton-left">
+								<div id="cartbounty-exit-intent-left" class="cartbounty-type <?php if($exit_intent_type == 2){ echo "cartbounty-radio-active";} ?>">
+									<label class="cartbounty-image" for="cartbounty-radiobutton-left">
 										<em>
 											<i>
 												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
@@ -759,8 +768,8 @@ class CartBounty_Admin{
 										<?php echo __('Slide in from left', CARTBOUNTY_TEXT_DOMAIN); ?>
 									</label>
 								</div>
-								<div id="cartbounty-exit-intent-fullscreen" class="cartbounty-exit-intent-type <?php if($exit_intent_type == 3){ echo "cartbounty-radio-active";} ?>">
-									<label class="cartbounty-exit-intent-image" for="cartbounty-radiobutton-fullscreen">
+								<div id="cartbounty-exit-intent-fullscreen" class="cartbounty-type <?php if($exit_intent_type == 3){ echo "cartbounty-radio-active";} ?>">
+									<label class="cartbounty-image" for="cartbounty-radiobutton-fullscreen">
 										<em>
 											<i>
 												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
@@ -779,13 +788,13 @@ class CartBounty_Admin{
 								<p class='cartbounty-additional-information'>
 									<?php echo __('If you leave the Inverse color empty, it will automatically use the inverse color of the main color you have picked. Clear both colors to use the default colors.', CARTBOUNTY_TEXT_DOMAIN); ?>
 								</p>
-								<div class="cartbounty-exit-intent-colors">
+								<div class="cartbounty-colors">
 									<label for="cartbounty-exit-intent-main-color"><?php echo __('Main:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
-									<input id="cartbounty-exit-intent-main-color" type="text" name="cartbounty_exit_intent_main_color" class="cartbounty-exit-intent-color-picker cartbounty-text" value="<?php echo $main_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+									<input id="cartbounty-exit-intent-main-color" type="text" name="cartbounty_exit_intent_main_color" class="cartbounty-color-picker cartbounty-text" value="<?php echo $main_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
 								</div>
-								<div class="cartbounty-exit-intent-colors">
+								<div class="cartbounty-colors">
 									<label for="cartbounty-exit-intent-inverse-color"><?php echo __('Inverse:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
-									<input id="cartbounty-exit-intent-inverse-color" type="text" name="cartbounty_exit_intent_inverse_color" class="cartbounty-exit-intent-color-picker cartbounty-text" value="<?php echo $inverse_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+									<input id="cartbounty-exit-intent-inverse-color" type="text" name="cartbounty_exit_intent_inverse_color" class="cartbounty-color-picker cartbounty-text" value="<?php echo $inverse_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
 								</div>
 							</div>
 							<div class="cartbounty-settings-group">
@@ -829,7 +838,7 @@ class CartBounty_Admin{
 								<label for="cartbounty-exit-intent-test-mode" class="cartbounty-control-visibility"><?php echo __('Enable test mode', CARTBOUNTY_TEXT_DOMAIN); ?></label>
 								<p class='cartbounty-additional-information'>
 									<i class='cartbounty-hidden'>
-										<?php echo __('Now open up your store, add a product to the cart and try leaving it. Please note that while this is enabled, only users with Admin rights will be able to see the Exit Intent and appearance limitations have been removed which means that you will see the popup each time you try to leave your store. Disable this after you have finished testing.', CARTBOUNTY_TEXT_DOMAIN); ?>
+										<?php echo __('Now open up your store, add a product to the cart and try leaving it. Please note that while this is enabled, only users with Admin rights will be able to see the Exit Intent and appearance limitations have been removed which means that you will see the popup each time you try to leave your store. Don’t forget to disable this after you have done testing.', CARTBOUNTY_TEXT_DOMAIN); ?>
 									</i>
 								</p>
 							</div>
@@ -839,6 +848,159 @@ class CartBounty_Admin{
 						<?php
 						if(current_user_can( 'manage_options' )){
 							echo "<button type='submit' class='cartbounty-button button-primary cartbounty-progress'>". __('Save settings', CARTBOUNTY_TEXT_DOMAIN) ."</button>";
+						}?>
+					</div>
+				</form>
+				<?php
+				break;
+
+			case 'early_capture':
+
+				if(!class_exists('WooCommerce')){ //If WooCommerce is not active
+					$this->missing_woocommerce_notice( $active_section ); 
+					return;
+				}?>
+
+				<div class="cartbounty-section-intro">
+					<?php echo sprintf(
+						/* translators: %s - Link */
+						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', CARTBOUNTY_TEXT_DOMAIN), 'https://www.cartbounty.com/#modify-exit-intent-content');
+					?><br/><?php echo $this->display_unavailable_notice( 'early_capture' ); ?>
+				</div>
+				<form>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+							<h4><?php echo __('General', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php echo __('Enable email or phone request before adding an item to the cart.', CARTBOUNTY_TEXT_DOMAIN); ?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-early-capture-status" class="cartbounty-switch cartbounty-unavailable">
+									<input id="cartbounty-early-capture-status" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-early-capture-status" class="cartbounty-unavailable"><?php echo __('Enable Early capture', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								<p class='cartbounty-additional-information'>
+									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'early_capture_enable' ); ?></i>
+								</p>
+							</div>
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-early-capture-mandatory" class="cartbounty-switch cartbounty-control-visibility">
+									<input id="cartbounty-early-capture-mandatory" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-early-capture-mandatory" class="cartbounty-control-visibility"><?php echo __('Enable mandatory input', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								<p class='cartbounty-additional-information'>
+									<i class='cartbounty-hidden'>
+										<?php echo __('Your guest visitors will not be able to add anything to their carts until a valid email or phone is provided.', CARTBOUNTY_TEXT_DOMAIN); ?>
+									</i>
+								</p>
+							</div>
+							<div class="cartbounty-settings-group">
+								<h4><?php echo __('Field type', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+								<p class='cartbounty-additional-information'>
+									<?php echo __('Choose which input field should be collected in the request.', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</p>
+								<label for="cartbounty-early-capture-field-type-email" class="cartbounty-radiobutton-label">
+									<input id="cartbounty-early-capture-field-type-email" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+										<?php echo __('Email', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</label>
+								<label for="cartbounty-early-capture-field-type-phone" class="cartbounty-radiobutton-label">
+									<input id="cartbounty-early-capture-field-type-phone" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+										<?php echo __('Phone', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+							<h4><?php echo __('Appearance', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php echo __('Adjust the visual appearance of your Early capture request.', CARTBOUNTY_TEXT_DOMAIN); ?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group">
+								<h4><?php echo __('Style', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+								<div id="cartbounty-early-capture-near-button" class="cartbounty-type">
+									<label class="cartbounty-image" for="cartbounty-radiobutton-center">
+										<em>
+											<i>
+												<svg viewBox="0 0 61 35">
+													<g id="cartbounty-early-capture-popup-group">
+														<path id="cartbounty-near-button-1" d="M58,35H3a3,3,0,0,1-3-3V20a3,3,0,0,1,3-3H9l3-4,3,4H58a3,3,0,0,1,3,3V32A3,3,0,0,1,58,35Z"/>
+														<path id="cartbounty-near-button-2" d="M38.88,27.33H12a1.86,1.86,0,0,1-2-1.67V25.5a1.86,1.86,0,0,1,2-1.67H38.88Z"/>
+														<path id="cartbounty-near-button-3" d="M49.38,27.33H38.5v-3.5H49.38a1.86,1.86,0,0,1,2,1.67v.16A1.86,1.86,0,0,1,49.38,27.33Z"/>
+													</g>
+													<rect id="cartbounty-near-button-4" width="42" height="12" rx="3"/></svg>
+											</i>
+											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', CARTBOUNTY_TEXT_DOMAIN); ?>
+												<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+											</span>
+										</em>
+										<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+										<?php echo __('Next to button', CARTBOUNTY_TEXT_DOMAIN); ?>
+									</label>
+								</div>
+								<div id="cartbounty-early-capture-center" class="cartbounty-type">
+									<label class="cartbounty-image" for="cartbounty-radiobutton-left">
+										<em>
+											<i>
+												<img src="<?php echo plugins_url( 'assets/early-capture-form-popup.svg', __FILE__ ) ; ?>" title="" alt=""/>
+											</i>
+											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', CARTBOUNTY_TEXT_DOMAIN); ?>
+												<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+											</span>
+										</em>
+										<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+										<?php echo __('Popup overlay', CARTBOUNTY_TEXT_DOMAIN); ?>
+									</label>
+								</div>
+							</div>
+							<div class="cartbounty-settings-group">
+								<h4><?php echo __('Colors', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+								<p class='cartbounty-additional-information'>
+									<?php echo __('If you leave the Inverse color empty, it will automatically use the inverse color of the main color you have picked. Clear both colors to use the default colors.', CARTBOUNTY_TEXT_DOMAIN); ?>
+								</p>
+								<div class="cartbounty-colors">
+									<label for="cartbounty-early-capture-main-color"><?php echo __('Main:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+									<input id="cartbounty-early-capture-main-color" type="text" class="cartbounty-color-picker cartbounty-text" disabled autocomplete="off" />
+								</div>
+								<div class="cartbounty-colors">
+									<label for="cartbounty-early-capture-inverse-color"><?php echo __('Inverse:', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+									<input id="cartbounty-early-capture-inverse-color" type="text" class="cartbounty-color-picker cartbounty-text" disabled autocomplete="off" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+							<h4><?php echo __('Miscellaneous', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php echo __('Enable test mode to see how the Early capture looks like.', CARTBOUNTY_TEXT_DOMAIN);?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-early-capture-test-mode" class="cartbounty-switch cartbounty-control-visibility">
+									<input id="cartbounty-early-capture-test-mode" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-early-capture-test-mode" class="cartbounty-control-visibility"><?php echo __('Enable test mode', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+								<p class='cartbounty-additional-information'>
+									<i class='cartbounty-hidden'>
+										<?php echo __('Now open up your store and try adding a product to your cart. Please note that while this is enabled, only users with Admin rights will be able to see the Early capture request and appearance limitations have been removed which means that you will see the request each time you try to add an item to your cart. Don’t forget to disable this after you have done testing.', CARTBOUNTY_TEXT_DOMAIN); ?>
+									</i>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='cartbounty-button-row'>
+						<?php
+						if(current_user_can( 'manage_options' )){
+							echo "<button type='submit' class='cartbounty-button button-primary cartbounty-progress disabled' disabled>". __('Save settings', CARTBOUNTY_TEXT_DOMAIN) ."</button>";
 						}?>
 					</div>
 				</form>
@@ -1492,6 +1654,10 @@ class CartBounty_Admin{
 			$svg = '<svg style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.5 70"><path d="M29,7.23A7.23,7.23,0,1,1,21.75,0,7.23,7.23,0,0,1,29,7.23Z"/><path d="M17.32,70a5.73,5.73,0,0,1-4.78-2.6,4.85,4.85,0,0,1-.18-4.84q1-2.12,2-4.25c1.33-2.8,2.71-5.68,4.14-8.5,1.33-2.6,5-5.49,11.29-8.81-2.17-4.18-4.25-8-6.35-11.61a21.16,21.16,0,0,1-5.12.66C11.6,30.05,5.59,26.63,1,20.18a4.58,4.58,0,0,1-.48-4.86,5.76,5.76,0,0,1,5.06-3,5.28,5.28,0,0,1,4.39,2.29c2.32,3.26,5.1,4.92,8.26,4.92A13.46,13.46,0,0,0,25,17.43c.18-.12.63-.36,1.12-.64l.31-.17,1.36-.78a23.44,23.44,0,0,1,12-3.55c6.76,0,12.77,3.42,17.39,9.89A4.56,4.56,0,0,1,57.58,27,5.76,5.76,0,0,1,52.52,30a5.26,5.26,0,0,1-4.38-2.28c-2.33-3.26-5.11-4.91-8.27-4.91a10.63,10.63,0,0,0-1.66.14c2.44,4.4,6.53,12.22,7.08,13.58,2.23,4.07,4.78,7.82,8.25,7.82A7,7,0,0,0,57,43.23a5.68,5.68,0,0,1,2.85-.81,5.85,5.85,0,0,1,5.41,4.43A5.27,5.27,0,0,1,62.74,53a18,18,0,0,1-9.08,2.68c-5,0-9.91-2.61-14.08-7.55-2.93,1.44-8.65,4.38-11.3,6.65-.53.87-4.4,8.16-6.4,12.29A5,5,0,0,1,17.32,70Z"/></svg>';
 		}
 
+		elseif( $icon == 'early_capture' ){
+			$svg = '<svg style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38.87 70"><path d="M38.53,32.71,23,67.71A3.89,3.89,0,0,1,19.43,70a5.56,5.56,0,0,1-.81-.08,3.87,3.87,0,0,1-3.07-3.81V42.78H3.88A3.89,3.89,0,0,1,.34,37.3l15.55-35A3.88,3.88,0,0,1,23.32,3.9V27.23H35a3.9,3.9,0,0,1,3.54,5.48Zm0,0"/></svg>';
+		}
+
 		elseif( $icon == 'activecampaign' ){
 			$svg = '<svg style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.24 20"><path d="M12.52,8.69C12.23,8.45.76,0.44,0.24,0.12L0.08,0V2A1.32,1.32,0,0,0,.8,3.14l0.08,0L10.7,10c-1.09.76-9.38,6.52-9.9,6.84a1.16,1.16,0,0,0-.68,1.25V20s12.19-8.49,12.43-8.69h0a1.52,1.52,0,0,0,.68-1.25V9.82A1.4,1.4,0,0,0,12.52,8.69Z"/><path d="M5.35,10.91a1.61,1.61,0,0,0,1-.36L7.08,10,7.2,9.94,7.08,9.86s-5.39-3.74-6-4.1A0.7,0.7,0,0,0,.36,5.63,0.71,0.71,0,0,0,0,6.28V7.53l0,0s3.7,2.58,4.43,3.06A1.63,1.63,0,0,0,5.35,10.91Z"/></svg>';
 		}
@@ -1659,8 +1825,10 @@ class CartBounty_Admin{
 	 * @return   String    Message
 	 */
 	function display_unavailable_notice( $medium = false ) {
-		$message = __('Please upgrade to enable this feature.', CARTBOUNTY_TEXT_DOMAIN);
-		$message .= " <a href='". CARTBOUNTY_LICENSE_SERVER_URL ."?utm_source=". urlencode(get_bloginfo('url')) ."&utm_medium=". $medium ."&utm_campaign=cartbounty' target='_blank'>". __('Get Pro', CARTBOUNTY_TEXT_DOMAIN) ."</a>";
+		$message = sprintf(
+			/* translators: %s - URL link tags */
+			__('Please consider upgrading to %sCartBounty Pro%s to enable this feature.', CARTBOUNTY_TEXT_DOMAIN),
+			'<a href="'. CARTBOUNTY_LICENSE_SERVER_URL .'?utm_source='. urlencode(get_bloginfo("url")) .'&utm_medium='. $medium .'&utm_campaign=cartbounty" target="_blank">','</a>');
 		return $message;
 	}
 }

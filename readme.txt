@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.6
-Stable tag: 6.0
+Stable tag: 6.1
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -32,9 +32,10 @@ If you would like to send automated abandoned cart recovery emails to customers 
 
 * If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
 
-* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With the help of Exit Intent Technology you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart.
+* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With the help of Exit Intent Technology, you can capture even more abandoned carts by displaying a popup offering to save customer’s cart if he provides his email.
 Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
-Please note that Exit Intent popup will only be showed to unregistered users once per hour after they have added an item to their shopping cart.
+Please note that Exit Intent popup will only be showed to unregistered users once every 60 minutes after they have added an item to their shopping cart.
+Please do check out our Pro version if you are interested in Early email capture feature that will allow collecting customer’s email or phone right after the customer tries to add an item to the cart using "Add to cart" button.
 
 * If the user completes the payment and reaches WooCommerce "Thank you" page, he is removed from the abandoned cart table and the Checkout form fields will be cleared.
 
@@ -62,10 +63,10 @@ If WordPress changes the location of "admin-ajax.php" file, then will have to up
 
 == Installation ==
 
-1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the "Plugins" screen in WordPress.
 1. Look for the page "CartBounty Abandoned carts" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
-1. Optionally setup Exit Intent notice that will be displayed to unregistered users once per hour in case the user has added items to his shopping cart and tries to leave your shop.
+1. Optionally enable additional productivity Tools like Exit Intent which will allow you to increase the ratio of recoverable abandoned carts.
 
 == Frequently Asked Questions ==
 
@@ -97,7 +98,7 @@ Any customer who is unidentifiable and adds anything to his shopping cart instan
 There can be many different reasons why you would like to see ghost cart data, here are a couple of ideas:
 
 * Monitor live cart activity in your store and have a better overview of what is happening in your store
-* See which products are being placed into shopping carts to know which are products are trending and what your customers are interested in
+* See which products are being placed into shopping carts to know which products are trending and what your customers are interested in
 * Manually analyze which products are being placed into the cart, but not getting purchased
 * Knowledge about the potential revenue that is missed out
 
@@ -195,8 +196,7 @@ Filters:
 * cartbounty_exit_intent_image_html
 * cartbounty_exit_intent_title_html
 * cartbounty_exit_intent_description_html
-* cartbounty_exit_intent_email_label_html
-* cartbounty_exit_intent_email_field_html
+* cartbounty_exit_intent_field_html
 * cartbounty_exit_intent_button_html
 
 Here is an example how to add additional subtitle after the main title using our "cartbounty_exit_intent_after_title" action hook. Please add it to your theme's functions.php file:
@@ -231,7 +231,7 @@ Example how to change the description using a filter:
 
 = How to prevent bots from leaving ghost carts? =
 
-If you have noticed unusual amounts of multiple new ghost carts being left almost in the same time, from one country and consisting of a single product, it might be that they are left by bots who are visiting your store.
+If you have noticed unusual amounts of multiple new ghost carts being left almost at the same time, from one country and consisting of a single product, it might be that they are left by bots who are visiting your store.
 
 Bots can be divided into two groups – good ones and bad ones.
 
@@ -256,6 +256,12 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 4. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
+
+= 6.1 =
+* Exit Intent template labels replaced with placeholders
+* Replaced 2 previous hooks responsible for removing abandoned carts after order creation with a single hook
+* Fixed minor hiccup with saving Grouped products
+* Slight visual Exit Intent design improvements
 
 = 6.0 =
 * Overall design, UI / UX improvements
@@ -297,7 +303,7 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 * Introduced Compact abandoned Cart contents with product thumbnails
 * Added Postcode to location output
 * Fixed abandoned cart sorting by Name and added sorting by Email and Phone number
-* Improved Time column output in a more user friendly way (hover to see get the exact time)
+* Improved Time column output in a more user-friendly way (hover to see get the exact time)
 
 = 4.5.1 =
 * Improved abandoned cart removal after order completion

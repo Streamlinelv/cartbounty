@@ -3,9 +3,9 @@
 	 
 	 jQuery(document).ready(function(){
 
-	 	$('.cartbounty-exit-intent-color-picker').wpColorPicker(); //Activating color picker
+	 	$('.cartbounty-color-picker').wpColorPicker(); //Activating color picker
 
-	 	function addGetProClass(){ //Adding class when changing radio button to display Get Pro notice
+	 	function addActiveClass(){ //Adding class when changing radio button to display Get Pro notice
 			$(this).siblings().removeClass('cartbounty-radio-active');
 			$(this).addClass('cartbounty-radio-active');
 		}
@@ -65,7 +65,7 @@
 			e.preventDefault();
 		}
 
-		jQuery(".cartbounty-exit-intent-type").on("click", addGetProClass );
+		jQuery(".cartbounty-type").on("click", addActiveClass );
 		jQuery(".cartbounty-progress").on("click", addLoadingIndicator );
 		jQuery("#cartbounty-upload-image").on("click", replaceExitIntentImage );
 		jQuery("#cartbounty-remove-image").on("click", removeExitIntentImage );
