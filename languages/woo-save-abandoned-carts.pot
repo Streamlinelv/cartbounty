@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-01-27 21:05+0200\n"
+"POT-Creation-Date: 2021-01-28 15:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: Poedit 2.0.6\n"
 "X-Domain: woo-save-abandoned-carts\n"
@@ -188,7 +188,6 @@ msgid "This will only affect how abandoned cart contents are displayed in the Ab
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:444 admin/class-cartbounty-admin.php:850
-#: admin/class-cartbounty-admin.php:1003
 msgid "Save settings"
 msgstr ""
 
@@ -361,7 +360,7 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:764 admin/class-cartbounty-admin.php:778
 #: admin/class-cartbounty-admin.php:940 admin/class-cartbounty-admin.php:954
-#: admin/class-cartbounty-admin.php:1224 admin/class-cartbounty-admin.php:1368
+#: admin/class-cartbounty-admin.php:1221 admin/class-cartbounty-admin.php:1365
 msgid "Get Pro"
 msgstr ""
 
@@ -458,132 +457,136 @@ msgstr ""
 msgid "Now open up your store and try adding a product to your cart. Please note that while this is enabled, only users with Admin rights will be able to see the Early capture request and appearance limitations have been removed which means that you will see the request each time you try to add an item to your cart. Don’t forget to disable this after you have done testing."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1028
+#: admin/class-cartbounty-admin.php:1001
+msgid "Get Pro to enable"
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1025
 #, php-format
 msgid "Not so fast, sailor! You must enable WooCommerce before we can set sail or this %s boat gets us nowhere."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1044
+#: admin/class-cartbounty-admin.php:1041
 msgid "Enabled"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1047
+#: admin/class-cartbounty-admin.php:1044
 msgid "Connected"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1127
+#: admin/class-cartbounty-admin.php:1124
 #, php-format
 msgid "It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled."
 msgid_plural "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1129
+#: admin/class-cartbounty-admin.php:1126
 #, php-format
 msgid "Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1139
+#: admin/class-cartbounty-admin.php:1136
 msgid "WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1184
+#: admin/class-cartbounty-admin.php:1181
 msgid "New abandoned cart saved"
 msgid_plural "New abandoned carts saved"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1187
+#: admin/class-cartbounty-admin.php:1184
 #, php-format
 msgid "Great! You have saved %1$d new recoverable abandoned cart using %2$s. <br/>View them here: <a href=\"%3$s\">%4$s</a>"
 msgid_plural "Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s. <br/>View them here: <a href=\"%3$s\">%4$s</a>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1327
+#: admin/class-cartbounty-admin.php:1324
 msgid "Leave CartBounty - Save and recover abandoned carts for WooCommerce a 5-star rating"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1338
+#: admin/class-cartbounty-admin.php:1335
 #, php-format
 msgid "%s You have already captured %d abandoned cart!"
 msgid_plural "%s You have already captured %d abandoned carts!"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1339
+#: admin/class-cartbounty-admin.php:1336
 msgid "If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1343
+#: admin/class-cartbounty-admin.php:1340
 msgid "Leave a 5-star rating"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1344
+#: admin/class-cartbounty-admin.php:1341
 msgid "Done that"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1349
+#: admin/class-cartbounty-admin.php:1346
 msgid "Close"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1358
+#: admin/class-cartbounty-admin.php:1355
 msgid "Get CartBounty Pro - Save and recover abandoned carts for WooCommerce"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1365
+#: admin/class-cartbounty-admin.php:1362
 msgid "Automate your abandoned cart recovery workflow and get back to those lovely cat videos (:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1366
+#: admin/class-cartbounty-admin.php:1363
 msgid "Use your time wisely by enabling Pro features and increase your sales."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1369
+#: admin/class-cartbounty-admin.php:1366
 msgid "Not now"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1583
+#: admin/class-cartbounty-admin.php:1580
 msgid "Congrats!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1587
+#: admin/class-cartbounty-admin.php:1584
 msgid "Awesome!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1591
+#: admin/class-cartbounty-admin.php:1588
 msgid "Amazing!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1595
+#: admin/class-cartbounty-admin.php:1592
 msgid "Incredible!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1599
+#: admin/class-cartbounty-admin.php:1596
 msgid "Crazy!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1603
+#: admin/class-cartbounty-admin.php:1600
 msgid "Fantastic!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1607
+#: admin/class-cartbounty-admin.php:1604
 msgid "Insane!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1744
+#: admin/class-cartbounty-admin.php:1741
 msgid "All"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1745
+#: admin/class-cartbounty-admin.php:1742
 msgid "Recoverable"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1746
+#: admin/class-cartbounty-admin.php:1743
 msgid "Ghost"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1830
+#: admin/class-cartbounty-admin.php:1827
 #, php-format
 msgid "Please consider upgrading to %sCartBounty Pro%s to enable this feature."
 msgstr ""
