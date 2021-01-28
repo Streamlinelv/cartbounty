@@ -865,7 +865,7 @@ class CartBounty_Admin{
 					<?php echo sprintf(
 						/* translators: %s - Link */
 						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', CARTBOUNTY_TEXT_DOMAIN), 'https://www.cartbounty.com/#modify-exit-intent-content');
-					?><br/><?php echo $this->display_unavailable_notice( 'early_capture' ); ?>
+					?>
 				</div>
 				<form>
 					<div class="cartbounty-row">
@@ -998,10 +998,7 @@ class CartBounty_Admin{
 						</div>
 					</div>
 					<div class='cartbounty-button-row'>
-						<?php
-						if(current_user_can( 'manage_options' )){
-							echo "<button type='submit' class='cartbounty-button button-primary cartbounty-progress disabled' disabled>". __('Save settings', CARTBOUNTY_TEXT_DOMAIN) ."</button>";
-						}?>
+						<a class="button cartbounty-button button-primary" href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo("url")); ?>&utm_medium=early_capture_enable_button&utm_campaign=cartbounty" target="_blank"> <?php echo __('Get Pro to enable', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 					</div>
 				</form>
 				<?php
