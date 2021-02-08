@@ -236,6 +236,8 @@ Harmful bots are the ones that might be responsible for leaving new ghost carts 
 1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep ghost carts enabled to see what your customers are shopping for
 1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article [Block bad bots](https://perishablepress.com/block-bad-bots) which will provide in depth steps on doing this
 
+In addition, the Pro version allows you to select if guests from specific countries should be able to leave ghost carts thus making sure that bots coming from countries you do not sell to are not able to leave ghost carts.
+
 ### WooCommerce order "Failed", but no abandoned cart saved?
 
 Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
@@ -248,6 +250,10 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 ![How Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.gif "How Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
+
+##### 6.1.1
+
+* Fixed a minor bug when trying to Bulk delete a row without selecting any row
 
 ##### 6.1
 

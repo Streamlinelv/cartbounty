@@ -3,7 +3,8 @@
 	 
 	 jQuery(document).ready(function(){
 
-	 	$('.cartbounty-color-picker').wpColorPicker(); //Activating color picker
+	 	jQuery('.cartbounty-color-picker').wpColorPicker(); //Activating color picker
+	 	jQuery('.cartbounty-select, .bulkactions select').selectize(); //Activating custom dropdown for all select fields
 
 	 	function addActiveClass(){ //Adding class when changing radio button to display Get Pro notice
 			$(this).siblings().removeClass('cartbounty-radio-active');

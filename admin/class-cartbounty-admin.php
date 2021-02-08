@@ -74,6 +74,7 @@ class CartBounty_Admin{
 			return;
 		}
 
+		wp_enqueue_script( $this->plugin_name . '-selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-admin.js', array( 'wp-color-picker', 'jquery' ), $this->version, false );
 	}
 	
@@ -350,15 +351,24 @@ class CartBounty_Admin{
 											<?php echo __('Ghost carts are carts that can’t be identified since the visitor has not provided neither email nor phone number.', CARTBOUNTY_TEXT_DOMAIN); ?>
 										</p>
 									</div>
-									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
-										<div class="cartbounty-settings-group cartbounty-toggle">
-											<label for="cartbounty-exclude-ghost-carts" class="cartbounty-switch">
+									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9<?php if($exclude_ghost_carts){ echo ' cartbounty-checked-parent'; }?>">
+										<div class="cartbounty-settings-group cartbounty-toggle <?php if($exclude_ghost_carts){ echo ' cartbounty-checked'; }?>">
+											<label for="cartbounty-exclude-ghost-carts" class="cartbounty-switch cartbounty-control-visibility">
 												<input id="cartbounty-exclude-ghost-carts" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exclude_ghost_carts" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_ghost_carts, false ); ?> autocomplete="off" />
 												<span class="cartbounty-slider round"></span>
 											</label>
-											<label for="cartbounty-exclude-ghost-carts">
+											<label for="cartbounty-exclude-ghost-carts" class="cartbounty-control-visibility">
 												<?php echo __('Exclude ghost carts', CARTBOUNTY_TEXT_DOMAIN); ?>
 											</label>
+										</div>
+										<div class="cartbounty-settings-group cartbounty-hidden">
+											<label for="cartbounty_allowed_countries" class="cartbounty-unavailable"><?php echo __('Exclude from all countries except these', CARTBOUNTY_TEXT_DOMAIN); ?></label>
+											<select id="cartbounty-allowed-countries" class="cartbounty-select cartbounty-unavailable" placeholder="<?php echo __('Choose countries / regions…', CARTBOUNTY_TEXT_DOMAIN); ?>" autocomplete="off"></select>
+											<button id="cartbounty-add-all-countries" class="cartbounty-button button button-secondary cartbounty-unavailable hidden" type="button"><?php echo __('Select all', CARTBOUNTY_TEXT_DOMAIN); ?></button>
+											<button id="cartbounty-remove-all-countries" class="cartbounty-button button button-secondary cartbounty-unavailable hidden" type="button"><?php echo __('Select none', CARTBOUNTY_TEXT_DOMAIN); ?></button>
+											<p class='cartbounty-additional-information'>
+												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'ghost_countries' ); ?></i>
+											</p>
 										</div>
 									</div>
 								</div>
@@ -458,16 +468,18 @@ class CartBounty_Admin{
 						//Output table contents
 						$message = '';
 						if ('delete' === $table->current_action()) {
-							if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
-								$deleted_row_count = esc_html(count($_REQUEST['id']));
+							if(!empty($_REQUEST['id'])){ //In case we have a row selected for deletion, process the message otput
+								if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
+									$deleted_row_count = esc_html(count($_REQUEST['id']));
+								}
+								else{ //If a single row is deleted
+									$deleted_row_count = 1;
+								}
+								$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
+									/* translators: %d - Item count */
+									__('Items deleted: %d', CARTBOUNTY_TEXT_DOMAIN ), $deleted_row_count
+								) . '</p></div>';
 							}
-							else{ //If a single row is deleted
-								$deleted_row_count = 1;
-							}
-							$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
-								/* translators: %d - Item count */
-								__('Items deleted: %d', CARTBOUNTY_TEXT_DOMAIN ), $deleted_row_count
-							) . '</p></div>';
 						}
 
 						$cart_status = 'all';
@@ -590,7 +602,7 @@ class CartBounty_Admin{
     		'0' 	=> __('Disable notifications', CARTBOUNTY_TEXT_DOMAIN)
     	);
 
-    	echo '<select id="cartbounty_notification_frequency" class="cartbounty-select" name="cartbounty_notification_frequency[hours]">';
+    	echo '<select id="cartbounty_notification_frequency" class="cartbounty-select" name="cartbounty_notification_frequency[hours]" '. $this->disable_field() .'>';
 	    	foreach( $intervals as $key => $interval ){
 		    	echo "<option value='$key' ". selected( $active_frequency['hours'], $key, false ) .">$interval</option>";
 	    	}
@@ -1616,7 +1628,7 @@ class CartBounty_Admin{
 	 * @param    $icon 		Icon to get - string
 	 * @param    $current 	Current active tab - string
 	 * @param    $section 	Wheather the icon is located in sections - boolean
-	 * @param    $grid 		Wheather the icon is located section items grid
+	 * @param    $grid 		Wheather the icon is located section items grid - boolean
 	 */
 	public function get_icon( $icon, $current, $section, $grid ){
 

@@ -338,8 +338,10 @@ class CartBounty_Table extends WP_List_Table{
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
         if ('delete' === $this->current_action()) {
+            if(empty($_REQUEST['id'])){ //Exit in case no row selected
+                return;
+            }
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-
             if (!empty($ids)){
                 if(is_array($ids)){ //Bulk abandoned cart deletion
                     foreach ($ids as $key => $id){
