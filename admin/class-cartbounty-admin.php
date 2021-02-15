@@ -49,14 +49,14 @@ class CartBounty_Admin{
 	public function enqueue_styles(){
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
-		
-		//Do not continue if we are not on CartBounty plugin page
+
 		if(!is_object($screen)){
 			return;
 		}
 
-		if($screen->id == $cartbounty_admin_menu_page || $screen->id == 'plugins'){
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cartbounty-admin.css', array('wp-color-picker'), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '-global', plugin_dir_url( __FILE__ ) . 'css/cartbounty-admin-global.css', $this->version ); //Global styles
+		if($screen->id == $cartbounty_admin_menu_page ){
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cartbounty-admin.css', array('wp-color-picker'), $this->version );
 		}
 	}
 
@@ -74,8 +74,13 @@ class CartBounty_Admin{
 			return;
 		}
 
+		$data = array(
+		    'ajaxurl' => admin_url( 'admin-ajax.php' )
+		);
+
 		wp_enqueue_script( $this->plugin_name . '-selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-admin.js', array( 'wp-color-picker', 'jquery' ), $this->version, false );
+		wp_localize_script( $this->plugin_name, 'cartbounty_admin_data', $data ); //Sending data over to JS file
 	}
 	
 	/**
@@ -128,13 +133,15 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Adds Screen options tab
+	 * Adds Screen options tab and Help tab to plugin
 	 *
 	 * @since    5.0
 	 */
-	function register_admin_screen_options_tab(){
+	function register_admin_tabs(){
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
+
+		$status = new CartBounty_System_Status(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 
 		// Check if we are on CartBounty page
 		if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
@@ -157,6 +164,38 @@ class CartBounty_Admin{
 			}elseif(!isset($_GET['tab'])){
 				add_screen_option( $option, $args );
 			}
+
+			$nonce = wp_create_nonce( 'get_system_status' );
+			//Ads Help tab sections
+			$cartbounty_carts_help_support_content = '
+				<h2>'. __('Need help or support?', CARTBOUNTY_TEXT_DOMAIN) .'</h2>
+				<p>'. sprintf(
+					/* translators: %1$s - Plugin name */
+					__('%1$s plugin saves all activity in the WooCommerce checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them. You can also make use of the new Exit Intent popup technology to capture users email and later remind about his shopping cart.', CARTBOUNTY_TEXT_DOMAIN), CARTBOUNTY_PLUGIN_NAME) .'</p>
+				<p>'. __('You will receive regular email notifications about newly abandoned shopping carts and will be able to manually remind about these abandoned carts. You could offer them an additional discount on the cart by sending them a coupon in order to persuade them.', CARTBOUNTY_TEXT_DOMAIN) .'</p>
+				<p>'. sprintf(
+					/* translators: %1$s - Link start, %2$s - Link end */
+					__('If you have additional questions, please see the readme file or take a look at %1$sfrequently asked questions%2$s.', CARTBOUNTY_TEXT_DOMAIN), '<a href="'. CARTBOUNTY_FAQ_LINK .'" target="_blank">', '</a>') .'</p>
+				<div class="cartbounty-button-row"><a href="'. CARTBOUNTY_FAQ_LINK .'" class="cartbounty-button" target="_blank">'. __('View FAQ', CARTBOUNTY_TEXT_DOMAIN) .'</a><a href="#" id="cartbounty-copy-system-status" class="cartbounty-button cartbounty-progress" data-nonce="' . $nonce . '">'. __('Copy system report', CARTBOUNTY_TEXT_DOMAIN) .'</a><a href="'. CARTBOUNTY_SUPPORT_LINK .'" class="cartbounty-button" target="_blank">'. __('Get support', CARTBOUNTY_TEXT_DOMAIN) .'</a></div>';
+
+			$screen->add_help_tab( array(
+				'id'       =>	'cartbounty_carts_help_support',
+				'title'    =>	__('Need help?', CARTBOUNTY_TEXT_DOMAIN),
+				'content'  =>	$cartbounty_carts_help_support_content
+			));
+
+			$cartbounty_carts_help_request_feature = '
+				<h2>'. __("Have a new feature in mind? That's awesome!", CARTBOUNTY_TEXT_DOMAIN) .'</h2>
+				<p>'. sprintf(
+					/* translators: %s - Plugin name */
+					__('We always welcome suggestions from our users and will evaluate each new idea to improve %s. In fact, many of the features you are currently using have arrived from users like yourself.', CARTBOUNTY_TEXT_DOMAIN), CARTBOUNTY_ABREVIATION) .'</p>
+				<div class="cartbounty-button-row"><a href="'. $this->get_trackable_link(CARTBOUNTY_FEATURE_LINK, 'help_tab_suggest_feature') .'" class="cartbounty-button" target="_blank">'. __('Suggest a new feature', CARTBOUNTY_TEXT_DOMAIN) .'</a>
+				</div>';
+			$screen->add_help_tab( array(
+				'id'       =>	'cartbounty_carts_request_feature',
+				'title'    =>	__('Suggest a feature', CARTBOUNTY_TEXT_DOMAIN),
+				'content'  =>	$cartbounty_carts_help_request_feature
+			));
 		}
 	}
 
@@ -172,7 +211,7 @@ class CartBounty_Admin{
 			global $cartbounty_admin_menu_page;
 			$screen = get_current_screen();
 
-			//Do not continue if we are not on CartBounty Pro plugin page
+			//Do not continue if we are not on CartBounty plugin page
 			if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
 				return;
 			}
@@ -257,7 +296,7 @@ class CartBounty_Admin{
 								<div class="cartbounty-section-intro"><?php echo sprintf(
 									/* translators: %s - URL link tags */
 									__('Automate your abandoned cart recovery by sending automated recovery emails to your visitors.<br/>Please consider upgrading to %sCartBounty Pro%s to connect one of the professional automation services listed below.', CARTBOUNTY_TEXT_DOMAIN),
-										'<a href="'. CARTBOUNTY_LICENSE_SERVER_URL.'?utm_source='. urlencode(get_bloginfo('url')) .'&utm_medium=recovery&utm_campaign=cartbounty" target="_blank">',
+										'<a href="'. $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'recovery' ) .'" target="_blank">',
 										'</a>'
 									); ?>
 									
@@ -278,16 +317,16 @@ class CartBounty_Admin{
 												<?php if($item['availability']){
 													$link = '?page='. CARTBOUNTY .'&tab='. $tab .'&section='. $key;
 												}else{
-													$link = CARTBOUNTY_LICENSE_SERVER_URL;
+													$link = $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'recovery_'. $key );
 												}?>
 												<div class="cartbounty-section-image">
 													<?php echo $this->get_connection( $item['connected'], true, $tab ); ?>
-													<a href="<?php echo $link; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=recovery_<?php echo "$key"; ?>&utm_campaign=cartbounty" title="<?php echo $item['name']; ?>"><?php echo $this->get_icon( $key, false, false, true ); ?></a>
+													<a href="<?php echo $link; ?>" title="<?php echo $item['name']; ?>"><?php echo $this->get_icon( $key, false, false, true ); ?></a>
 												</div>
 												<div class="cartbounty-section-content">
 													<h3><a href="<?php echo $item['info_link']; ?>" title="<?php echo $item['name']; ?>" target="_blank"><?php echo $item['name']; ?></a></h3>
 													<?php echo $item['description']; ?>
-													<a class="button cartbounty-button<?php if(!$item['availability']){echo " button-primary";}?>" href="<?php echo $link; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=recovery_<?php echo "$key"; ?>&utm_campaign=cartbounty"<?php if(!$item['availability']){echo ' target="_blank"'; }?>><?php echo $button; ?></a>
+													<a class="button cartbounty-button<?php if(!$item['availability']){echo " button-primary";}?>" href="<?php echo $link; ?>"<?php if(!$item['availability']){echo ' target="_blank"'; }?>><?php echo $button; ?></a>
 												</div>
 											</div>
 										</div>
@@ -398,7 +437,7 @@ class CartBounty_Admin{
 										<h4><?php echo __('Protection', CARTBOUNTY_TEXT_DOMAIN); ?></h4>
 										<p class="cartbounty-titles-column-description">
 											<?php echo sprintf(
-											/* translators: %s - URL link */ __('In case you feel that bots might be leaving recoverable abandoned carts. Please <a href="%s" title="Prevent bots from leaving ghost carts" target="_blank">see this</a> to learn how to prevent bots from leaving ghost carts.', CARTBOUNTY_TEXT_DOMAIN), BOTS_FAQ_LINK ); ?>
+											/* translators: %s - URL link */ __('In case you feel that bots might be leaving recoverable abandoned carts. Please <a href="%s" title="Prevent bots from leaving ghost carts" target="_blank">see this</a> to learn how to prevent bots from leaving ghost carts.', CARTBOUNTY_TEXT_DOMAIN), $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL, 'ghost_bots', '#ghost-bots') ); ?>
 										</p>
 									</div>
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
@@ -686,7 +725,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 __('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn <a href="%s" target="_blank" title="How to customize the contents of Exit Intent">how to customize the contents</a> of Exit Intent popup.', CARTBOUNTY_TEXT_DOMAIN), 'https://www.cartbounty.com/#modify-exit-intent-content');
+						 __('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn <a href="%s" target="_blank" title="How to customize the contents of Exit Intent">how to customize the contents</a> of Exit Intent popup.', CARTBOUNTY_TEXT_DOMAIN), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_modify_content', '#modify-exit-intent-content' ) );
 					?>
 				</div>
 				<form method="post" action="options.php">
@@ -773,7 +812,7 @@ class CartBounty_Admin{
 												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
 											</i>
 											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', CARTBOUNTY_TEXT_DOMAIN); ?>
-												<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_style_left' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 											</span>
 										</em>
 										<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" disabled autocomplete="off" />
@@ -787,7 +826,7 @@ class CartBounty_Admin{
 												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
 											</i>
 											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', CARTBOUNTY_TEXT_DOMAIN); ?>
-												<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_style_fullscreen' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 											</span>
 										</em>
 										<input id="cartbounty-radiobutton-fullscreen" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" disabled autocomplete="off" />
@@ -876,7 +915,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', CARTBOUNTY_TEXT_DOMAIN), 'https://www.cartbounty.com/#modify-exit-intent-content');
+						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', CARTBOUNTY_TEXT_DOMAIN), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_modify_content', '#modify-exit-intent-content' ) );
 					?>
 				</div>
 				<form>
@@ -949,7 +988,7 @@ class CartBounty_Admin{
 													<rect id="cartbounty-near-button-4" width="42" height="12" rx="3"/></svg>
 											</i>
 											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', CARTBOUNTY_TEXT_DOMAIN); ?>
-												<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_style_button' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 											</span>
 										</em>
 										<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
@@ -963,7 +1002,7 @@ class CartBounty_Admin{
 												<img src="<?php echo plugins_url( 'assets/early-capture-form-popup.svg', __FILE__ ) ; ?>" title="" alt=""/>
 											</i>
 											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', CARTBOUNTY_TEXT_DOMAIN); ?>
-												<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=ei_style&utm_campaign=cartbounty" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_style_popup' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 											</span>
 										</em>
 										<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
@@ -1010,7 +1049,7 @@ class CartBounty_Admin{
 						</div>
 					</div>
 					<div class='cartbounty-button-row'>
-						<a class="button cartbounty-button button-primary" href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo("url")); ?>&utm_medium=early_capture_enable_button&utm_campaign=cartbounty" target="_blank"> <?php echo __('Get Pro to enable', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+						<a class="button cartbounty-button button-primary" href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'early_capture_enable_button' ); ?>" target="_blank"> <?php echo __('Get Pro to enable', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 					</div>
 				</form>
 				<?php
@@ -1100,57 +1139,78 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Method shows warnings if any of the WP Cron events required for MailChimp or ActiveCampaign are not scheduled (either sending notifications or pushing carts) or if the WP Cron has been disabled
+	 * Output admin notices
+	 *
+	 * @since    6.1.2
+	 */
+	function display_notices(){
+		$this->display_wp_cron_warnings();
+	}
+
+	/**
+	 * Method shows warnings if any of the WP Cron events not scheduled or if the WP Cron has been disabled
 	 *
 	 * @since    4.3
 	 */
 	function display_wp_cron_warnings(){
-		global $pagenow;
+		$missing_hooks = array();
+		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
 
-		//Checking if we are on open plugin page
-		if ($pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY){
-			//Checking if WP Cron hooks are scheduled
-			$missing_hooks = array();
-			$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
-
-			if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
-				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
-			}
-			if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
-				$hooks = '';
-				$current = 1;
-				$total = count($missing_hooks);
-				foreach($missing_hooks as $missing_hook){
-					$hooks .= $missing_hook;
-					if ($current != $total){
-						$hooks .= ', ';
-					}
-					$current++;
+		if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
+			$missing_hooks[] = 'cartbounty_notification_sendout_hook';
+		}
+		if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
+			$hooks = '';
+			$current = 1;
+			$total = count($missing_hooks);
+			foreach($missing_hooks as $missing_hook){
+				$hooks .= $missing_hook;
+				if ($current != $total){
+					$hooks .= ', ';
 				}
-				?>
-				<div id="cartbounty-cron-schedules" class="cartbounty-notification warning notice updated">
-					<p class="left-part">
-						<?php
-							echo sprintf(
-								/* translators: %s - Cron event name */
-								_n("It seems that WP Cron event <strong>%s</strong> required for plugin automation is not scheduled.", "It seems that WP Cron events <strong>%s</strong> required for plugin automations are not scheduled.", $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks); ?> <?php echo sprintf(
-								/* translators: %s - Plugin name */
-								__("Please try disabling and enabling %s plugin. If this notice does not go away after that, please get in touch with your hosting provider and make sure to enable WP Cron. Without it you will not be able to receive automated email notifications about newly abandoned shopping carts.", CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION ); ?>
-					</p>
-				</div>
-				<?php 
+				$current++;
 			}
-
-			//Checking if WP Cron is enabled
-			if(defined('DISABLE_WP_CRON')){
-				if(DISABLE_WP_CRON == true){ ?>
-					<div id="cartbounty-cron-schedules" class="cartbounty-notification warning notice updated">
-						<p class="left-part"><?php echo __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", CARTBOUNTY_TEXT_DOMAIN ); ?></p>
-					</div>
-				<?php
-				}
+			$message = sprintf(
+				/* translators: %s - Cron event name */
+				_n('It seems that WP Cron event <strong>%s</strong> required for automation is not scheduled.', 'It seems that WP Cron events <strong>%s</strong> required for automation are not scheduled.', $total, CARTBOUNTY_TEXT_DOMAIN ), $hooks) . ' ' . 
+				sprintf(
+				/* translators: %1$s - Plugin name, %2$s - Link */
+				__('Please try disabling and enabling %1$s plugin. If this notice does not go away after that, please <a href="%2$s" target="_blank">get in touch with us</a>.', CARTBOUNTY_TEXT_DOMAIN ), CARTBOUNTY_ABREVIATION, CARTBOUNTY_SUPPORT_LINK);
+			echo $this->get_notice_output($message, $handle = '', 'warning');
+		}
+		//Checking if WP Cron is enabled
+		if(defined('DISABLE_WP_CRON')){
+			if(DISABLE_WP_CRON == true){
+				$message = __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", CARTBOUNTY_TEXT_DOMAIN );
+				echo $this->get_notice_output($message, $handle = '', 'warning');
 			}
 		}
+	}
+
+	/**
+	 * Handling notice output
+	 *
+	 * @since    6.1.2
+	 * @return   string
+	 * @param    string   	$message   		Content of the message
+	 * @param    string   	$handle   		Unique ID for the notice. Default empty
+	 * @param    string   	$class   		Additional classes required for the notice. Default empty
+	 * @param    boolean   	$submit   		Should a submit button be added or not. Default false
+	 * @param    string   	$$button_type   Type of the button (done or close). Default done
+	 */
+	function get_notice_output( $message, $handle = '', $class = '', $submit = false, $button_type = 'done'){
+		$button = false;
+		$button_text = esc_html( __("Done", CARTBOUNTY_TEXT_DOMAIN) );
+		if($button_type == 'close'){
+			$button_text = esc_html( __("Close", CARTBOUNTY_TEXT_DOMAIN) );
+		}
+		if($submit){
+			$button = '<span class="cartbounty-button-container"><a class="cartbounty-close-notice cartbounty-button button button-secondary cartbounty-progress" href="'. esc_url( wp_nonce_url( add_query_arg( 'handle', $handle ), 'cartbounty-notice-nonce', $handle ) ) .'">'. $button_text .'</a></span>';
+		}
+		$output = '<div class="cartbounty-notification notice updated '. $class .'">
+			<p>'. $message .'</p>'. $button .'
+		</div>';
+		return $output;
 	}
 
 	/**
@@ -1231,7 +1291,7 @@ class CartBounty_Admin{
 		$action_links = array();
 		$action_links['cartbounty_get_pro'] = array(
 			'label' => __('Get Pro', CARTBOUNTY_TEXT_DOMAIN),
-			'url'   => CARTBOUNTY_LICENSE_SERVER_URL . '?utm_source=' . urlencode(get_bloginfo('url')) . '&utm_medium=plugin_link&utm_campaign=cartbounty'
+			'url'   => $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'plugin_link' )
 		);
 
 		return $this->add_display_plugin_action_links( $actions, $plugin_file, $action_links, 'before' );
@@ -1364,7 +1424,7 @@ class CartBounty_Admin{
 			<?php endif; ?>
 			<div id="cartbounty-go-pro" class="cartbounty-bubble">
 				<div class="cartbounty-header-image">
-					<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=cartbounty" title="<?php __('Get CartBounty Pro - Save and recover abandoned carts for WooCommerce', CARTBOUNTY_TEXT_DOMAIN); ?>" target="_blank">
+					<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ); ?>" title="<?php __('Get CartBounty Pro - Save and recover abandoned carts for WooCommerce', CARTBOUNTY_TEXT_DOMAIN); ?>" target="_blank">
 						<img src="<?php echo plugins_url( 'assets/notification-email.gif', __FILE__ ) ; ?>" alt="" title=""/>
 					</a>
 				</div>
@@ -1374,7 +1434,7 @@ class CartBounty_Admin{
 						<h2><?php echo __('Automate your abandoned cart recovery workflow and get back to those lovely cat videos (:', CARTBOUNTY_TEXT_DOMAIN ); ?></h2>
 						<p><?php echo __('Use your time wisely by enabling Pro features and increase your sales.', CARTBOUNTY_TEXT_DOMAIN ); ?></p>
 						<div class="cartbounty-button-row">
-							<a href="<?php echo CARTBOUNTY_LICENSE_SERVER_URL; ?>?utm_source=<?php echo urlencode(get_bloginfo('url')); ?>&utm_medium=bubble&utm_campaign=cartbounty" class="button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
+							<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ); ?>" class="button" target="_blank"><?php echo __('Get Pro', CARTBOUNTY_TEXT_DOMAIN); ?></a>
 							<?php submit_button(__('Not now', CARTBOUNTY_TEXT_DOMAIN), 'cartbounty-close', false, false); ?>
 						</div>
 						<input id="cartbounty_last_time_bubble_displayed" type="hidden" name="cartbounty_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
@@ -1812,8 +1872,8 @@ class CartBounty_Admin{
 	 * Adds one or more classes to the body tag in the dashboard
 	 *
 	 * @since    6.0
-	 * @param    String    $classes    Current body classes
 	 * @return   String    Altered body classes
+	 * @param    String    $classes    Current body classes
 	 */
 	function add_cartbounty_body_class( $classes ) {
 		global $cartbounty_admin_menu_page;
@@ -1823,7 +1883,20 @@ class CartBounty_Admin{
 			return;
 		}
 
-	    return "$classes cartbounty";
+	    return "$classes " . CARTBOUNTY_PLUGIN_NAME_SLUG;
+	}
+
+	/**
+	 * Returns a link with tracking information
+	 *
+	 * @since    6.1.2
+	 * @return   String
+	 * @param    String    $url        URL
+	 * @param    String    $medium     Determines where the button was clicked from. Default none
+	 * @param    String    $tag        Hashtag to a specific section in the document. Default none
+	 */
+	function get_trackable_link( $url, $medium = '', $tag = '' ) {
+		return $url .'?utm_source='. urlencode(get_bloginfo("url")) .'&utm_medium='. $medium .'&utm_campaign='. CARTBOUNTY . $tag;
 	}
 
 	/**
@@ -1837,7 +1910,7 @@ class CartBounty_Admin{
 		$message = sprintf(
 			/* translators: %s - URL link tags */
 			__('Please consider upgrading to %sCartBounty Pro%s to enable this feature.', CARTBOUNTY_TEXT_DOMAIN),
-			'<a href="'. CARTBOUNTY_LICENSE_SERVER_URL .'?utm_source='. urlencode(get_bloginfo("url")) .'&utm_medium='. $medium .'&utm_campaign=cartbounty" target="_blank">','</a>');
+			'<a href="'. $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL, $medium) .'" target="_blank">','</a>');
 		return $message;
 	}
 }

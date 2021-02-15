@@ -1,0 +1,17 @@
+/**
+ * All of the CSS for your global admin-specific functionality should be
+ * included in this file.
+ */
+
+.cartbounty_get_pro a{
+	color: #46b450;
+	font-weight: 600;
+}
+
+.cartbounty-notification{
+	border-left-color: #46b450;
+}
+
+.cartbounty-notification.warning{
+	border-left-color: #ff5d00;
+}

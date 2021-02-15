@@ -171,51 +171,51 @@ class CartBounty_Activator{
 		//Since version 4.0 due to plugin naming changes - making sure that during the update process old options are transfered to new ones and the old ones are removed from database
 		if (get_option( 'wclcfc_last_time_bubble_displayed' )){
 			update_option( 'cartbounty_last_time_bubble_displayed', get_option( 'wclcfc_last_time_bubble_displayed' ));
+			delete_option( 'wclcfc_last_time_bubble_displayed' );
 		}
-		delete_option( 'wclcfc_last_time_bubble_displayed' );
 		if (get_option( 'wclcfc_review_submitted' )){
 			update_option( 'cartbounty_review_submitted', get_option( 'wclcfc_review_submitted' ));
+			delete_option( 'wclcfc_review_submitted' );
 		}
-		delete_option( 'wclcfc_review_submitted' );
 		if (get_option( 'wclcfc_version_number' )){
 			update_option( 'cartbounty_version_number', get_option( 'wclcfc_version_number' ));
+			delete_option( 'wclcfc_version_number' );
 		}
-		delete_option( 'wclcfc_version_number' );
 		if (get_option( 'wclcfc_captured_abandoned_cart_count' )){
 			update_option( 'cartbounty_captured_abandoned_cart_count', get_option( 'wclcfc_captured_abandoned_cart_count' ));
+			delete_option( 'wclcfc_captured_abandoned_cart_count' );
 		}
-		delete_option( 'wclcfc_captured_abandoned_cart_count' );
 		if (get_option( 'wclcfc_times_review_declined' )){
 			update_option( 'cartbounty_times_review_declined', get_option( 'wclcfc_times_review_declined' ));
+			delete_option( 'wclcfc_times_review_declined' );
 		}
-		delete_option( 'wclcfc_times_review_declined' );
 		if (get_option( 'wclcfc_exit_intent_status' )){
 			update_option( 'cartbounty_exit_intent_status', get_option( 'wclcfc_exit_intent_status' ));
+			delete_option( 'wclcfc_exit_intent_status' );
 		}
-		delete_option( 'wclcfc_exit_intent_status' );
 		if (get_option( 'wclcfc_exit_intent_test_mode' )){
 			update_option( 'cartbounty_exit_intent_test_mode', get_option( 'wclcfc_exit_intent_test_mode' ));
+			delete_option( 'wclcfc_exit_intent_test_mode' );
 		}
-		delete_option( 'wclcfc_exit_intent_test_mode' );
 		if (get_option( 'wclcfc_exit_intent_type' )){
 			update_option( 'cartbounty_exit_intent_type', get_option( 'wclcfc_exit_intent_type' ));
+			delete_option( 'wclcfc_exit_intent_type' );
 		}
-		delete_option( 'wclcfc_exit_intent_type' );
 		if (get_option( 'wclcfc_exit_intent_main_color' )){
 			update_option( 'cartbounty_exit_intent_main_color', get_option( 'wclcfc_exit_intent_main_color' ));
+			delete_option( 'wclcfc_exit_intent_main_color' );
 		}
-		delete_option( 'wclcfc_exit_intent_main_color' );
 		if (get_option( 'wclcfc_exit_intent_inverse_color' )){
 			update_option( 'cartbounty_exit_intent_inverse_color', get_option( 'wclcfc_exit_intent_inverse_color' ));
+			delete_option( 'wclcfc_exit_intent_inverse_color' );
 		}
-		delete_option( 'wclcfc_exit_intent_inverse_color' );
 
 		//Since version 5.0 this option updated
 		if (get_option( 'cartbounty_captured_abandoned_cart_count' )){
 			update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_captured_abandoned_cart_count' ));
+			delete_option( 'cartbounty_captured_abandoned_cart_count' );
 		}
-		delete_option( 'cartbounty_captured_abandoned_cart_count' );
-
+		
 		/**
 		 * Starting WordPress cron function in order to send out emails on a set interval
 		 *

@@ -251,6 +251,12 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
+##### 6.1.2
+
+* Added option to export System status report
+* Admin notification refactoring
+* Fixed a minor bug counting recoverable carts
+
 ##### 6.1.1
 
 * Fixed a minor bug when trying to Bulk delete a row without selecting any row

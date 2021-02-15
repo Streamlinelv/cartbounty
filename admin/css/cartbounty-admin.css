@@ -59,8 +59,9 @@
 	margin: 0;
 }
 
-.cartbounty p,
-.cartbounty-section-intro{
+#contextual-help-wrap p,
+.cartbounty-section-intro,
+.cartbounty-section-content p{
 	font-size: 14px;
 	line-height: 22px;
 }
@@ -171,14 +172,6 @@ input.cartbounty-radiobutton:checked:before{
 	width: 8px;
 	height: 8px;
 	margin: 5px;
-}
-
-.cartbounty-notification{
-	border-left-color: #46b450;
-}
-
-.cartbounty-notification.warning{
-	border-left-color: #ff5d00;
 }
 
 .cartbounty-bubble{
@@ -304,11 +297,6 @@ input.cartbounty-radiobutton:checked:before{
 #cartbounty-bubbles .button.cartbounty-close:hover{
 	color: #d2b4b4;
 	background: none;
-}
-
-.cartbounty_get_pro a{
-	color: #46b450;
-	font-weight: 600;
 }
 
 #cartbounty-bubbles form{

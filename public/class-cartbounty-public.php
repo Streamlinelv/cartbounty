@@ -231,7 +231,6 @@ class CartBounty_Public{
 				$this->update_cart_and_user_data($cart, $user_data);
 			}
 		}
-		
 		$this->set_cartbounty_session($cart['session_id']);
 	}
 
@@ -299,6 +298,7 @@ class CartBounty_Public{
 			)
 		);
 		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
+		$this->increase_recoverable_cart_count();
 	}
 
 	/**
@@ -801,7 +801,18 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function increase_recoverable_cart_count(){
+		if(!WC()->session){ //If session does not exist, exit function
+			return;
+		}
+		if(WC()->session->get('cartbounty_recoverable_count_increased')){ //Exit fnction in case we already have run this once
+			return;
+		}
 		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') + 1);
+		WC()->session->set('cartbounty_recoverable_count_increased', 1);
+
+		if(WC()->session->get('cartbounty_ghost_count_increased')){ //In case we previously increased ghost cart count, we must now reduce it as it has been turned to recoverable
+			$this->decrease_ghost_cart_count( 1 );
+		}
 	}
 
 	/**
@@ -810,7 +821,14 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function increase_ghost_cart_count(){
+		if(!WC()->session){ //If session does not exist, exit function
+			return;
+		}
+		if(WC()->session->get('cartbounty_ghost_count_increased')){ //Exit fnction in case we already have run this once
+			return;
+		}
 		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') + 1);
+		WC()->session->set('cartbounty_ghost_count_increased', 1);
 	}
 
 	/**

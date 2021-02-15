@@ -96,6 +96,11 @@ class CartBounty{
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cartbounty-public.php';
 
+		/**
+		 * The class responsible for defining all methods for getting System status
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-status.php';
+
 		$this->loader = new CartBounty_Loader();
 
 	}
@@ -110,11 +115,13 @@ class CartBounty{
 	private function define_admin_hooks(){
 
 		$admin = new CartBounty_Admin( $this->get_plugin_name(), $this->get_version() );
+		$status = new CartBounty_System_Status( $this->get_plugin_name(), $this->get_version() );
+
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $admin, 'cartbounty_menu', 10 ); //Creates admin menu
 		$this->loader->add_action( 'admin_head', $admin, 'menu_abandoned_count' );
-		$this->loader->add_action( 'admin_head', $admin, 'register_admin_screen_options_tab' );
+		$this->loader->add_action( 'admin_head', $admin, 'register_admin_tabs' );
 		$this->loader->add_action( 'admin_head', $admin, 'save_page_options' ); //Saving Screen options
 		$this->loader->add_action( 'plugins_loaded', $admin, 'check_current_plugin_version' );
 		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 ); //Adds additional links on Plugin page
@@ -123,12 +130,13 @@ class CartBounty{
 		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
 		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' ); //Ads a filter to set new interval for Wordpress cron function
 		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $admin, 'notification_sendout_interval_update' );
-		$this->loader->add_action( 'admin_notices', $admin, 'display_wp_cron_warnings' ); //Outputing warnings if any of the WP Cron events are note scheduled or if WP Cron is disabled
+		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' ); //Output admin notices if necessary
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' ); //Hooks into Wordpress cron event to launch function for sending out emails
 		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_email_field', 10, 1 ); //Moves email field in the checkout higher to capture more abandoned carts
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 ); //Handling order once it has been processed
 		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' ); //Handles clearing of abandoned cart in case a registered user changes his account data like Name, Surname, Location etc.
 		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' ); //Adding CartBounty class to the body tag
+		$this->loader->add_action( 'wp_ajax_get_system_status', $status, 'get_system_status' );
 	}
 
 	/**
