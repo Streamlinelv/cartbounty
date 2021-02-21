@@ -39,14 +39,14 @@ class CartBounty_Table extends WP_List_Table{
 	function get_columns(){
         return $columns = array(
             'cb'            => 		'<input type="checkbox" />',
-            'id'            =>		__('ID', CARTBOUNTY_TEXT_DOMAIN),
-            'name'          =>		__('Name, Surname', CARTBOUNTY_TEXT_DOMAIN),
-            'email'         =>		__('Email', CARTBOUNTY_TEXT_DOMAIN),
-            'phone'			=>		__('Phone', CARTBOUNTY_TEXT_DOMAIN),
-            'location'      =>      __('Location', CARTBOUNTY_TEXT_DOMAIN),
-            'cart_contents' =>		__('Cart contents', CARTBOUNTY_TEXT_DOMAIN),
-            'cart_total'    =>		__('Cart total', CARTBOUNTY_TEXT_DOMAIN),
-            'time'          =>		__('Time', CARTBOUNTY_TEXT_DOMAIN)
+            'id'            =>		__('ID', 'woo-save-abandoned-carts'),
+            'name'          =>		__('Name, Surname', 'woo-save-abandoned-carts'),
+            'email'         =>		__('Email', 'woo-save-abandoned-carts'),
+            'phone'			=>		__('Phone', 'woo-save-abandoned-carts'),
+            'location'      =>      __('Location', 'woo-save-abandoned-carts'),
+            'cart_contents' =>		__('Cart contents', 'woo-save-abandoned-carts'),
+            'cart_total'    =>		__('Cart total', 'woo-save-abandoned-carts'),
+            'time'          =>		__('Time', 'woo-save-abandoned-carts')
         );
 	}
 	
@@ -95,7 +95,7 @@ class CartBounty_Table extends WP_List_Table{
         }
 
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'CARTBOUNTY_TEXT_DOMAIN')),
+            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'woo-save-abandoned-carts')),
         );
 
         $name_array = array();
@@ -111,7 +111,7 @@ class CartBounty_Table extends WP_List_Table{
         $name = implode(' ', $name_array);
 
         if(get_user_by('id', $item['session_id'])){ //If the user is registered, add link to his profile page
-            $name = '<a href="' . add_query_arg( 'user_id', $item['session_id'], self_admin_url( 'user-edit.php')) . '" title="' . __( 'View user profile', CARTBOUNTY_TEXT_DOMAIN ) . '">'. $name .'</a>';
+            $name = '<a href="' . add_query_arg( 'user_id', $item['session_id'], self_admin_url( 'user-edit.php')) . '" title="' . __( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. $name .'</a>';
         }
 
         return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
@@ -248,9 +248,9 @@ class CartBounty_Table extends WP_List_Table{
                                 $price = ', ' . $product['product_variation_price'] . ' ' . esc_html($item['currency']);
                             }
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="tooltiptext">'. $product_title . $price . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank"><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></a></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. $product_title . $price . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank"><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></a></div>';
                             }else{
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="tooltiptext">'. $product_title . $price . $quantity .'</span><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. $product_title . $price . $quantity .'</span><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></div>';
                             }
                         }
                     }
@@ -290,7 +290,7 @@ class CartBounty_Table extends WP_List_Table{
         if($utc_time > strtotime( '-1 day', current_time( 'timestamp' ))){ //In case the abandoned cart is newly captued
              $friendly_time = sprintf( 
                 /* translators: %1$s - Time, e.g. 1 minute, 5 hours */
-                __( '%1$s ago', CARTBOUNTY_TEXT_DOMAIN ),
+                __( '%1$s ago', 'woo-save-abandoned-carts' ),
                 human_time_diff( $utc_time,
                 current_time( 'timestamp' ))
             );
@@ -323,7 +323,7 @@ class CartBounty_Table extends WP_List_Table{
      */
 	 function get_bulk_actions(){
         $actions = array(
-            'delete' => __('Delete', CARTBOUNTY_TEXT_DOMAIN)
+            'delete' => __('Delete', 'woo-save-abandoned-carts')
         );
         return $actions;
     }

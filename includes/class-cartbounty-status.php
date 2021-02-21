@@ -50,7 +50,7 @@ class CartBounty_System_Status{
 	 */
 	public function get_system_status(){
 		if ( check_ajax_referer( 'get_system_status', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the import
-	        wp_send_json_error(__( 'Looks like you are not allowed to do this.', CARTBOUNTY_TEXT_DOMAIN ));
+	        wp_send_json_error(__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 	    }
 
 		global $wpdb;
@@ -62,33 +62,33 @@ class CartBounty_System_Status{
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		
 		if(get_option('cartbounty_recoverable_cart_count')){
-			$carts[] = esc_html( __('Recoverable', CARTBOUNTY_TEXT_DOMAIN ) .': '. get_option('cartbounty_recoverable_cart_count') );
+			$carts[] = esc_html( __('Recoverable', 'woo-save-abandoned-carts' ) .': '. get_option('cartbounty_recoverable_cart_count') );
 		}
 		if(get_option('cartbounty_ghost_cart_count')){
-			$carts[] = esc_html( __('Ghost', CARTBOUNTY_TEXT_DOMAIN ) .': '. get_option('cartbounty_ghost_cart_count') );
+			$carts[] = esc_html( __('Ghost', 'woo-save-abandoned-carts' ) .': '. get_option('cartbounty_ghost_cart_count') );
 		}
 
 		if(get_option('cartbounty_exit_intent_status')){
-			$exit_intent_options[] = esc_html( __('Enabled', CARTBOUNTY_TEXT_DOMAIN ) );
+			$exit_intent_options[] = esc_html( __('Enabled', 'woo-save-abandoned-carts' ) );
 		}
 		if(get_option('cartbounty_exit_intent_test_mode')){
-			$exit_intent_options[] = esc_html( __('Test mode', CARTBOUNTY_TEXT_DOMAIN ) );
+			$exit_intent_options[] = esc_html( __('Test mode', 'woo-save-abandoned-carts' ) );
 		}
 
 		if(get_option('cartbounty_exclude_ghost_carts')){
-			$settings[] = esc_html( __('Exclude ghost carts', CARTBOUNTY_TEXT_DOMAIN ) );
+			$settings[] = esc_html( __('Exclude ghost carts', 'woo-save-abandoned-carts' ) );
 		}
 		if(get_option('cartbounty_notification_frequency')){
 			$frequency = get_option('cartbounty_notification_frequency');
 			if(isset($frequency['hours'])){
-				$settings[] = esc_html( __('Notification frequency', CARTBOUNTY_TEXT_DOMAIN ) .': '. $frequency['hours'] );
+				$settings[] = esc_html( __('Notification frequency', 'woo-save-abandoned-carts' ) .': '. $frequency['hours'] );
 			}
 		}
 		if(get_option('cartbounty_notification_email')){
-			$settings[] = esc_html( __('Email', CARTBOUNTY_TEXT_DOMAIN ) .' ('. get_option('cartbounty_notification_email') .')' );
+			$settings[] = esc_html( __('Email', 'woo-save-abandoned-carts' ) .' ('. get_option('cartbounty_notification_email') .')' );
 		}
 		if(get_option('cartbounty_lift_email')){
-			$settings[] = esc_html( __('Lift email field', CARTBOUNTY_TEXT_DOMAIN ) );
+			$settings[] = esc_html( __('Lift email field', 'woo-save-abandoned-carts' ) );
 		}
 
 		if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false){
@@ -110,7 +110,7 @@ class CartBounty_System_Status{
 			if ( ! empty( $plugin_data['Name'] ) ) {
 				// link the plugin name to the plugin url if available
 				$plugin_name = $plugin_data['Name'];
-				$all_plugins[] = $plugin_name . ' ' . esc_html( __( 'by', CARTBOUNTY_TEXT_DOMAIN ) ) . ' ' . $plugin_data['Author'] . ' ' . esc_html( __( 'version', CARTBOUNTY_TEXT_DOMAIN ) ) . ' ' . $plugin_data['Version'] . $version_string;
+				$all_plugins[] = $plugin_name . ' ' . esc_html( __( 'by', 'woo-save-abandoned-carts' ) ) . ' ' . $plugin_data['Author'] . ' ' . esc_html( __( 'version', 'woo-save-abandoned-carts' ) ) . ' ' . $plugin_data['Version'] . $version_string;
 			}
 		}
 
@@ -121,32 +121,32 @@ class CartBounty_System_Status{
 		}
 
 		$environment = array(
-			esc_html( __('WordPress address (URL)', CARTBOUNTY_TEXT_DOMAIN ) ) => home_url(),
-			esc_html( __('Site address (URL)', CARTBOUNTY_TEXT_DOMAIN ) ) => site_url(),
-			esc_html( __('WordPress version', CARTBOUNTY_TEXT_DOMAIN ) ) => get_bloginfo( 'version' ),
-			esc_html( __('WordPress multisite', CARTBOUNTY_TEXT_DOMAIN ) ) => (is_multisite()) ? esc_html( __('Yes', CARTBOUNTY_TEXT_DOMAIN ) ) : '-',
-			esc_html( __('WooCommerce version', CARTBOUNTY_TEXT_DOMAIN ) ) => class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',
-			esc_html( __('Server info', CARTBOUNTY_TEXT_DOMAIN ) ) => isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '',
-			esc_html( __('PHP version', CARTBOUNTY_TEXT_DOMAIN ) ) => phpversion(),
-			esc_html( __('MySQL Version', CARTBOUNTY_TEXT_DOMAIN ) ) => $wpdb->db_version(),
-			esc_html( __('WordPress debug mode', CARTBOUNTY_TEXT_DOMAIN ) ) => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? esc_html( __('On', CARTBOUNTY_TEXT_DOMAIN ) ) : '-',
-			esc_html( __('WordPress cron', CARTBOUNTY_TEXT_DOMAIN ) ) => !( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ? esc_html( __('On', CARTBOUNTY_TEXT_DOMAIN ) ) : '-',
-			esc_html( __('Language', CARTBOUNTY_TEXT_DOMAIN ) ) => get_locale(),
-			esc_html( __('Default server timezone', CARTBOUNTY_TEXT_DOMAIN ) ) => date_default_timezone_get()
+			esc_html( __('WordPress address (URL)', 'woo-save-abandoned-carts' ) ) => home_url(),
+			esc_html( __('Site address (URL)', 'woo-save-abandoned-carts' ) ) => site_url(),
+			esc_html( __('WordPress version', 'woo-save-abandoned-carts' ) ) => get_bloginfo( 'version' ),
+			esc_html( __('WordPress multisite', 'woo-save-abandoned-carts' ) ) => (is_multisite()) ? esc_html( __('Yes', 'woo-save-abandoned-carts' ) ) : '-',
+			esc_html( __('WooCommerce version', 'woo-save-abandoned-carts' ) ) => class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',
+			esc_html( __('Server info', 'woo-save-abandoned-carts' ) ) => isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '',
+			esc_html( __('PHP version', 'woo-save-abandoned-carts' ) ) => phpversion(),
+			esc_html( __('MySQL Version', 'woo-save-abandoned-carts' ) ) => $wpdb->db_version(),
+			esc_html( __('WordPress debug mode', 'woo-save-abandoned-carts' ) ) => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? esc_html( __('On', 'woo-save-abandoned-carts' ) ) : '-',
+			esc_html( __('WordPress cron', 'woo-save-abandoned-carts' ) ) => !( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ? esc_html( __('On', 'woo-save-abandoned-carts' ) ) : '-',
+			esc_html( __('Language', 'woo-save-abandoned-carts' ) ) => get_locale(),
+			esc_html( __('Default server timezone', 'woo-save-abandoned-carts' ) ) => date_default_timezone_get()
 		);
 
 		$cartbounty_settings = array(
-			esc_html( __('CartBounty version', CARTBOUNTY_TEXT_DOMAIN ) ) => esc_html( $this->version ),
-			esc_html( __('Saved carts', CARTBOUNTY_TEXT_DOMAIN ) ) => ($carts) ? implode(", ", $carts) : '-',
-			esc_html( __('Exit Intent', CARTBOUNTY_TEXT_DOMAIN ) ) => ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
-			esc_html( __('Settings', CARTBOUNTY_TEXT_DOMAIN ) ) => ($settings) ? implode(", ", $settings) : '-',
-			esc_html( __('Missing hooks', CARTBOUNTY_TEXT_DOMAIN ) ) => ($missing_hooks) ? implode(", ", $missing_hooks) : '-'
+			esc_html( __('CartBounty version', 'woo-save-abandoned-carts' ) ) => esc_html( $this->version ),
+			esc_html( __('Saved carts', 'woo-save-abandoned-carts' ) ) => ($carts) ? implode(", ", $carts) : '-',
+			esc_html( __('Exit Intent', 'woo-save-abandoned-carts' ) ) => ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
+			esc_html( __('Settings', 'woo-save-abandoned-carts' ) ) => ($settings) ? implode(", ", $settings) : '-',
+			esc_html( __('Missing hooks', 'woo-save-abandoned-carts' ) ) => ($missing_hooks) ? implode(", ", $missing_hooks) : '-'
 		);
 
 		$output = '<table id="cartbounty-system-report-table">';
 		$output .= '<tbody>
 						<tr>
-							<td class="section-title">###'. esc_html__( 'Environment', CARTBOUNTY_TEXT_DOMAIN ) .'###</td>
+							<td class="section-title">###'. esc_html__( 'Environment', 'woo-save-abandoned-carts' ) .'###</td>
 						</tr>';
 					foreach( $environment as $key => $value ){
 						$output .= '
@@ -161,7 +161,7 @@ class CartBounty_System_Status{
 							<td class="section-title"></td>
 						</tr>
 						<tr>
-							<td class="section-title">###'. esc_html__( CARTBOUNTY_ABREVIATION, CARTBOUNTY_TEXT_DOMAIN ) .'###</td>
+							<td class="section-title">###'. esc_html__( CARTBOUNTY_ABREVIATION, 'woo-save-abandoned-carts' ) .'###</td>
 						</tr>';
 					foreach( $cartbounty_settings as $key => $value ){
 						$output .= '
@@ -176,10 +176,10 @@ class CartBounty_System_Status{
 							<td class="section-title"></td>
 						</tr>
 						<tr>
-							<td class="section-title">###'. esc_html__( 'Plugins', CARTBOUNTY_TEXT_DOMAIN ) .'###</td>
+							<td class="section-title">###'. esc_html__( 'Plugins', 'woo-save-abandoned-carts' ) .'###</td>
 						</tr>
 						<tr>
-							<td>'. esc_html( __('Active plugins', CARTBOUNTY_TEXT_DOMAIN ) ) .':</td>
+							<td>'. esc_html( __('Active plugins', 'woo-save-abandoned-carts' ) ) .':</td>
 							<td>'. $site_wide_plugins .'</td>
 						</tr>
 					</tbody>';

@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.6
-Stable tag: 6.1.2
+Stable tag: 6.1.3
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -171,6 +171,7 @@ CartBounty comes with different hooks that make it possible to change some parts
 Filters:
 
 * cartbounty_from_email
+* cartbounty_waiting_time
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
 
@@ -178,6 +179,13 @@ Here is an example how to change the From email that sends out notification emai
 		return 'your@email.com';
 	}
 	add_filter( 'cartbounty_from_email', 'change_from_email' );
+
+Example how to customize default waiting time after which the cart is considered abandoned using "cartbounty_waiting_time" filter from 60 minutes (default time) to 30 minutes. Add it to your theme's functions.php file:
+
+	function change_waiting_time( $minutes ){
+		return 30; //Minimum allowed time is 20 minutes
+	}
+	add_filter( 'cartbounty_waiting_time', 'change_waiting_time' );
 
 **Exit Intent hooks**
 
@@ -259,92 +267,9 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 == Changelog ==
 
-= 6.1.2 =
-* Added option to export System status report
-* Admin notification refactoring
-* Fixed a minor bug counting recoverable carts
+= 6.1.3 =
+* Improved compatibility with translation plugins
+* Added filter "cartbounty_pro_waiting_time" to customize default waiting time after which the cart is considered abandoned
+* Improved Copy system report button UX
 
-= 6.1.1 =
-* Fixed a minor bug when trying to Bulk delete a row without selecting any row
-
-= 6.1 =
-* Exit Intent template labels replaced with placeholders
-* Replaced 2 previous hooks responsible for removing abandoned carts after order creation with a single hook
-* Fixed minor hiccup with saving Grouped products
-* Slight visual Exit Intent design improvements
-
-= 6.0 =
-* Overall design, UI / UX improvements
-* Moved CartBounty menu closer to WooCommerce Orders section
-* Fixed issue with saving abandoned carts without an email field present in the checkout form
-* Fixed issue with abandoned cart count next to CartBounty menu with disabled ghost carts
-
-= 5.0.4 =
-* Code cleanup
-
-= 5.0.3 =
-* Added individual product prices in the Cart contents column
-* Improved "Remember user input" function for authorized users who edit their account details
-
-= 5.0.2 =
-* Added filter "cartbounty_from_email" to change the From email address that sends out notifications about abandoned carts
-* Added country name to country code in Location column. Hover over country code to view its name
-* Added link to user's profile page for registered abandoned cart users in the "Name, Surname" column
-* Fixed issue with adding a manual WooCommerce order
-* Code cleanup
-
-= 5.0.1 =
-* CartBounty database table name renamed from "captured_wc_fields" to "cartbounty"
-
-= 5.0 =
-* Added option to save and view ghost carts
-* Added option to filter between ghost and recoverable carts
-* Added screen options tab
-
-= 4.7 =
-* Added option to replace the default Exit Intent image via admin panel
-* Minor visual design updates
-* Other minor fixes
-
-= 4.6.1 =
-* Fixed conflict issue with WP Cron schedules
-
-= 4.6 =
-* Introduced Compact abandoned Cart contents with product thumbnails
-* Added Postcode to location output
-* Fixed abandoned cart sorting by Name and added sorting by Email and Phone number
-* Improved Time column output in a more user-friendly way (hover to see get the exact time)
-
-= 4.5.1 =
-* Improved abandoned cart removal after order completion
-* Abandoned cart time calculations changed to local time
-* Removed link to product in the Cart contents column in case the product no longer exists
-
-= 4.5 =
-* Added option to move email field higher in the checkout form
-* Changed the script loading hook from "woocommerce_after_checkout_form" to "woocommerce_before_checkout_form"
-
-= 4.4.1 =
-* Translation files updated
-
-= 4.4 =
-* Fixed issue when an additional abandoned cart was left after a user logged in
-* Added a function that removes duplicate abandoned carts of registered users
-
-= 4.3.1 =
-* Fixed issue when restoring state field for logged in users
-
-= 4.3 =
-* Added email notifications about newly abandoned carts
-* Added option to set notification frequency or disable notifications
-* Added option to set custom email address for notifications
-
-= 4.2 =
-* Improved function that restores checkout fields after user logged in
-
-= 4.1 =
-* Fixed cart content saving if product's title contains HTML tags
-
-= 4.0 =
-* Baby's got a new name - please welcome CartBounty :) (ex. WooCommerce Live Checkout Field Capture)
-* All class names and hooks changed
+[See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

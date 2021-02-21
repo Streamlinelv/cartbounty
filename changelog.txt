@@ -1,0 +1,181 @@
+== Changelog ==
+
+= 6.1.3 =
+* Improved compatibility with translation plugins
+* Added filter "cartbounty_pro_waiting_time" to customize default waiting time after which the cart is considered abandoned
+* Improved Copy system report button UX
+
+
+= 6.1.2 =
+* Added option to export System status report
+* Admin notification refactoring
+* Fixed a minor bug counting recoverable carts
+
+= 6.1.1 =
+* Fixed a minor bug when trying to Bulk delete a row without selecting any row
+
+= 6.1 =
+* Exit Intent template labels replaced with placeholders
+* Replaced 2 previous hooks responsible for removing abandoned carts after order creation with a single hook
+* Fixed minor hiccup with saving Grouped products
+* Slight visual Exit Intent design improvements
+
+= 6.0 =
+* Overall design, UI / UX improvements
+* Moved CartBounty menu closer to WooCommerce Orders section
+* Fixed issue with saving abandoned carts without an email field present in the checkout form
+* Fixed issue with abandoned cart count next to CartBounty menu with disabled ghost carts
+
+= 5.0.4 =
+* Code cleanup
+
+= 5.0.3 =
+* Added individual product prices in the Cart contents column
+* Improved "Remember user input" function for authorized users who edit their account details
+
+= 5.0.2 =
+* Added filter "cartbounty_from_email" to change the From email address that sends out notifications about abandoned carts
+* Added country name to country code in Location column. Hover over country code to view its name
+* Added link to user's profile page for registered abandoned cart users in the "Name, Surname" column
+* Fixed issue with adding a manual WooCommerce order
+* Code cleanup
+
+= 5.0.1 =
+* CartBounty database table name renamed from "captured_wc_fields" to "cartbounty"
+
+= 5.0 =
+* Added option to save and view ghost carts
+* Added option to filter between ghost and recoverable carts
+* Added screen options tab
+
+= 4.7 =
+* Added option to replace the default Exit Intent image via admin panel
+* Minor visual design updates
+* Other minor fixes
+
+= 4.6.1 =
+* Fixed conflict issue with WP Cron schedules
+
+= 4.6 =
+* Introduced Compact abandoned Cart contents with product thumbnails
+* Added Postcode to location output
+* Fixed abandoned cart sorting by Name and added sorting by Email and Phone number
+* Improved Time column output in a more user-friendly way (hover to see get the exact time)
+
+= 4.5.1 =
+* Improved abandoned cart removal after order completion
+* Abandoned cart time calculations changed to local time
+* Removed link to product in the Cart contents column in case the product no longer exists
+
+= 4.5 =
+* Added option to move email field higher in the checkout form
+* Changed the script loading hook from "woocommerce_after_checkout_form" to "woocommerce_before_checkout_form"
+
+= 4.4.1 =
+* Translation files updated
+
+= 4.4 =
+* Fixed issue when an additional abandoned cart was left after a user logged in
+* Added a function that removes duplicate abandoned carts of registered users
+
+= 4.3.1 =
+* Fixed issue when restoring state field for logged in users
+
+= 4.3 =
+* Added email notifications about newly abandoned carts
+* Added option to set notification frequency or disable notifications
+* Added option to set custom email address for notifications
+
+= 4.2 =
+* Improved function that restores checkout fields after user logged in
+
+= 4.1 =
+* Fixed cart content saving if product's title contains HTML tags
+
+= 4.0 =
+* Baby's got a new name - please welcome CartBounty :) (ex. WooCommerce Live Checkout Field Capture)
+* All class names and hooks changed
+
+= 3.3 =
+* Improved database query security
+* Optimized plugin load time
+* Minor content updates
+
+= 3.2.1 =
+* Minor content updates
+
+= 3.2 =
+* Fixed issue when saving City data for logged in users
+* Fixed PHP notices if checkboxes were not defined
+
+= 3.1 =
+* Added support for Checkout form checkboxes
+
+= 3.0 =
+* Added Exit Intent popup
+* Added Instant shopping cart capture for logged in users
+* Fixed total captured abandoned cart counter
+
+= 2.1 =
+* Added language support
+* Improved review bubble
+
+= 2.0.6 =
+* Improved review bubble
+
+= 2.0.5 =
+* Improved bubble display timing function
+
+= 2.0.4 =
+* Fixed PHP notice and a bug when working with WooCommerce orders within admin panel
+
+= 2.0.3 =
+* Updated Bubble timing function
+
+= 2.0.2 =
+* Fixed bug with Checkout form textarea field
+
+= 2.0.1 =
+* Modified "Remember user input" function. All Checkout form input fields are now triggering save data action
+
+= 2.0 =
+* Added "Remember user input" function that keeps user input in Checkout form until the Session has expired or user completes the Checkout
+* PHP default sessions functionality replaced by WooCommerce sessions
+
+= 1.5.2 =
+* Added additional hook for removing abandoned cart from the table once a corresponding WooCommerce order is created
+
+= 1.5.1 =
+* Added ability for Shop managers to access Abandoned carts
+
+= 1.5 =
+* Added ability to save abandoned carts via phone number input
+* Added function that collects and saves input field data if input fields already filled on Checkout page load
+
+= 1.4.3 =
+* Fixed bug when in some cases abandoned carts not being removed from table after reaching WooCommerce "Thank you" page
+
+= 1.4.2 =
+* Fixed bug related to notification output
+
+= 1.4.1 =
+* Fixed database update issue when upgrading to 1.4
+
+= 1.4 =
+* Added notification near menu about newly abandoned carts (last 2 hours)
+* Added location registration (Country and City)
+* Added links on product titles in Cart content column
+* Added additional output for product variations
+
+= 1.3 =
+* Fixed issue when in some cases single abandoned cart was saved multiple times creating duplicate entries in the table
+
+= 1.2 =
+* Fixed minor database warnings and notices
+
+= 1.1 =
+* Fixed PHP and MySQL warnings and notices
+* Updated security requirements that were introduced in WooCommerce 3.0
+
+= 1.0 =
+* Birthday

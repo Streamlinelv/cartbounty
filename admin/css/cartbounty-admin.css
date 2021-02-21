@@ -16,7 +16,7 @@
 #cartbounty-go-pro-header-image a,
 .cartbounty .submit:after,
 .cartbounty-type .button,
-.cartbounty-abandoned-product .tooltiptext,
+.cartbounty-tooltip,
 .cartbounty td.cart_contents img,
 #cartbounty-remove-image,
 #cartbounty-upload-image img,
@@ -579,7 +579,11 @@ input.cartbounty-radiobutton:checked:before{
 	display: inline-block;
 }
 
-.cartbounty-abandoned-product .tooltiptext{
+.cartbounty-tooltip-container{
+	position: relative;
+}
+
+.cartbounty-tooltip{
 	visibility: hidden;
 	width: 120px;
 	color: #fff;
@@ -592,28 +596,36 @@ input.cartbounty-radiobutton:checked:before{
 	z-index: 1;
 	bottom: 122%;
 	left: 50%;
-	margin-left: -68px;
 	font-size: 12px;
 	line-height: 1.5em;
 	background: #343434;
 	opacity: 0;
+	-ms-transform: translateX(-50%);
+	transform: translateX(-50%);
+	margin-left: -3%;
 }
 
-.cartbounty-abandoned-product .tooltiptext:after{
+.cartbounty-tooltip:after{
 	content: "";
 	position: absolute;
 	top: 100%;
 	left: 50%;
-	margin-left: -5px;
+	-ms-transform: translateX(-50%);
+	transform: translateX(-50%);
 	border-width: 5px;
 	border-style: solid;
 	border-color: #343434 transparent transparent transparent;
 }
 
-.cartbounty-abandoned-product:hover .tooltiptext{
+.cartbounty-abandoned-product:hover .cartbounty-tooltip,
+.cartbounty-pro-container-active .cartbounty-tooltip{
 	visibility: visible;
 	opacity: 1;
 	bottom: 115%;
+}
+
+#contextual-help-wrap .cartbounty-pro-container-active .cartbounty-tooltip{
+	bottom: 160%;
 }
 
 #cartbounty-table tr:hover img{
