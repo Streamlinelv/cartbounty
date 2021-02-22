@@ -82,7 +82,7 @@
 		function copySystemReport(){
             var button = $(this);
             var container = button.parent();
-            container.removeClass('cartbounty-pro-container-active');
+            container.removeClass('cartbounty-container-active');
 
 			var data = {
 				nonce		: button.data('nonce'),
@@ -118,13 +118,13 @@
 						textarea.val( system_report ).select();
 						document.execCommand("copy");
 						textarea.remove();
-						container.addClass('cartbounty-pro-container-active');
+						container.addClass('cartbounty-container-active');
 					}catch(e) {
 						console.log(e);
 					}
 
 					setTimeout(function(){
-						container.removeClass('cartbounty-pro-container-active');
+						container.removeClass('cartbounty-container-active');
 					}, 3000);
 
 					button.removeClass('cartbounty-loading');

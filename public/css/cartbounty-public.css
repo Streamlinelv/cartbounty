@@ -95,7 +95,7 @@
 
 #cartbounty-exit-intent-submit{
 	display: inline-block;
-	width: 30%;
+	width: 36%;
 	padding: 10px 5%;
 	position: relative;
 	margin: 0;
@@ -111,7 +111,7 @@
 }
 
 #cartbounty-exit-intent-form input{
-	width: 66%;
+	width: 62%;
 	min-width: unset;
 	display: inline-block;
 	height: 50px;

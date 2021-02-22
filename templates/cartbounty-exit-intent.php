@@ -52,7 +52,7 @@ if($image_id){
 				<form>
 					<?php do_action('cartbounty_exit_intent_before_form_fields');
 					echo apply_filters( 'cartbounty_exit_intent_field_html', '<input type="email" id="cartbounty-exit-intent-email" required placeholder="'. __('Enter your email', 'woo-save-abandoned-carts') .'">' );
-					echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_button_html', sprintf('<button type="submit" name="cartbounty-exit-intent-submit" id="cartbounty-exit-intent-submit" class="button" value="submit" style="background-color: %s; color: %s">%s</button>', $args['inverse_color'], $args['main_color'], __('Save cart', 'woo-save-abandoned-carts') ) ) ); ?>
+					echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_button_html', sprintf('<button type="submit" name="cartbounty-exit-intent-submit" id="cartbounty-exit-intent-submit" class="button" value="submit" style="background-color: %s; color: %s">%s</button>', $args['inverse_color'], $args['main_color'], __('Save', 'woo-save-abandoned-carts') ) ) ); ?>
 				</form>
 			</div>
 			<?php do_action('cartbounty_exit_intent_end'); ?>

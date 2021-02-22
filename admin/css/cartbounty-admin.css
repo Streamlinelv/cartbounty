@@ -618,13 +618,13 @@ input.cartbounty-radiobutton:checked:before{
 }
 
 .cartbounty-abandoned-product:hover .cartbounty-tooltip,
-.cartbounty-pro-container-active .cartbounty-tooltip{
+.cartbounty-container-active .cartbounty-tooltip{
 	visibility: visible;
 	opacity: 1;
 	bottom: 115%;
 }
 
-#contextual-help-wrap .cartbounty-pro-container-active .cartbounty-tooltip{
+#contextual-help-wrap .cartbounty-container-active .cartbounty-tooltip{
 	bottom: 160%;
 }
 
