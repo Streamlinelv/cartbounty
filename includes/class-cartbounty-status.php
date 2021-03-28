@@ -56,16 +56,26 @@ class CartBounty_System_Status{
 		global $wpdb;
 		$carts = array();
 		$all_plugins = array();
+		$active_recovery = array();
 		$exit_intent_options = array();
 		$settings = array();
 		$missing_hooks = array();
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$wordpress = new CartBounty_WordPress();
 		
 		if(get_option('cartbounty_recoverable_cart_count')){
 			$carts[] = esc_html( __('Recoverable', 'woo-save-abandoned-carts' ) .': '. get_option('cartbounty_recoverable_cart_count') );
 		}
 		if(get_option('cartbounty_ghost_cart_count')){
 			$carts[] = esc_html( __('Ghost', 'woo-save-abandoned-carts' ) .': '. get_option('cartbounty_ghost_cart_count') );
+		}
+		if(get_option('cartbounty_recovered_cart_count')){
+			$carts[] = esc_html( __('Recovered', 'woo-save-abandoned-carts' ) .': '. get_option('cartbounty_recovered_cart_count') );
+		}
+
+		if($wordpress->automation_enabled()){
+			$active_recovery[] = esc_html( __('WordPress', 'woo-save-abandoned-carts' ) );
+			$active_recovery[] = esc_html( __('Total emails sent', 'woo-save-abandoned-carts' ) .': '. $wordpress->get_sends() );
 		}
 
 		if(get_option('cartbounty_exit_intent_status')){
@@ -93,6 +103,9 @@ class CartBounty_System_Status{
 
 		if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false){
 			$missing_hooks[] = 'cartbounty_notification_sendout_hook';
+		}
+		if(wp_next_scheduled('cartbounty_sync_hook') === false){
+			$missing_hooks[] = 'cartbounty_sync_hook';
 		}
 		if (wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook') === false) {
 			$missing_hooks[] = 'cartbounty_remove_empty_carts_hook';
@@ -138,6 +151,7 @@ class CartBounty_System_Status{
 		$cartbounty_settings = array(
 			esc_html( __('CartBounty version', 'woo-save-abandoned-carts' ) ) => esc_html( $this->version ),
 			esc_html( __('Saved carts', 'woo-save-abandoned-carts' ) ) => ($carts) ? implode(", ", $carts) : '-',
+			esc_html( __('Automation', 'woo-save-abandoned-carts' ) ) => ($active_recovery) ? implode(", ", $active_recovery) : '-',
 			esc_html( __('Exit Intent', 'woo-save-abandoned-carts' ) ) => ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
 			esc_html( __('Settings', 'woo-save-abandoned-carts' ) ) => ($settings) ? implode(", ", $settings) : '-',
 			esc_html( __('Missing hooks', 'woo-save-abandoned-carts' ) ) => ($missing_hooks) ? implode(", ", $missing_hooks) : '-'

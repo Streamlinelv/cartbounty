@@ -14,8 +14,10 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' )){
 //Deletes database table and all it's data on uninstall
 global $wpdb;
 $cart_table = $wpdb->prefix . "cartbounty";
+$email_table = $wpdb->prefix . "cartbounty_emails";
 
 $wpdb->query( "DROP TABLE IF EXISTS $cart_table" );
+$wpdb->query( "DROP TABLE IF EXISTS $email_table" );
 
 //Removing Custom options created with the plugin
 delete_option( 'cartbounty_notification_email' );
@@ -26,6 +28,7 @@ delete_option( 'cartbounty_review_submitted' );
 delete_option( 'cartbounty_version_number' );
 delete_option( 'cartbounty_recoverable_cart_count' );
 delete_option( 'cartbounty_ghost_cart_count' );
+delete_option( 'cartbounty_recovered_cart_count' );
 delete_option( 'cartbounty_times_review_declined' );
 delete_option( 'cartbounty_exit_intent_status' );
 delete_option( 'cartbounty_exit_intent_test_mode' );
@@ -35,7 +38,14 @@ delete_option( 'cartbounty_exit_intent_inverse_color' );
 delete_option( 'cartbounty_exit_intent_image' );
 delete_option( 'cartbounty_lift_email' );
 delete_option( 'cartbounty_hide_images' );
+delete_option( 'cartbounty_exclude_recovered' );
 delete_option( 'cartbounty_carts_per_page' );
 delete_option( 'cartbounty_transferred_table' ); //Temporary option since version 5.0.1
+delete_option( 'cartbounty_automation_steps' );
+delete_option( 'cartbounty_automation_from_name' );
+delete_option( 'cartbounty_automation_from_email' );
+delete_option( 'cartbounty_automation_reply_email' );
+delete_option( 'cartbounty_automation_sent_emails' );
+delete_option( 'cartbounty_email_table_exists' );
 
 delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true ); //Removes cartbounty_carts_per_page from wp_usermeta table on plugin uninstall

@@ -107,6 +107,9 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function save_cart(){
+		if (isset( $_GET['cartbounty'])){
+			return;
+		}
 		if(!WC()->cart){ //Exit if Woocommerce cart has not been initialized
 			return;
 		}
@@ -596,6 +599,10 @@ class CartBounty_Public{
 		//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
 		$session_id = WC()->session->get_customer_id();
 
+		if(WC()->session->get('cartbounty_from_link') && WC()->session->get('cartbounty_session_id')){
+			$session_id = WC()->session->get('cartbounty_session_id');
+		}
+
 		//Retrieving cart
 		$products = WC()->cart->get_cart_contents();
 		$product_array = array();
@@ -801,10 +808,10 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function increase_recoverable_cart_count(){
-		if(!WC()->session){ //If session does not exist, exit function
+		if(!WC()->session){ //If session does not exist, exit function 
 			return;
 		}
-		if(WC()->session->get('cartbounty_recoverable_count_increased')){ //Exit fnction in case we already have run this once
+		if(WC()->session->get('cartbounty_recoverable_count_increased') || WC()->session->get('cartbounty_from_link')){//Exit function in case we already have run this once or user has returned form a recovery link
 			return;
 		}
 		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') + 1);
@@ -829,6 +836,22 @@ class CartBounty_Public{
 		}
 		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') + 1);
 		WC()->session->set('cartbounty_ghost_count_increased', 1);
+	}
+
+	/**
+	 * Method saves and updates total count of recovered carts
+	 *
+	 * @since    7.0
+	 */
+	function increase_recovered_cart_count(){
+		if(!WC()->session){ //If session does not exist, exit function
+			return;
+		}
+		if(WC()->session->get('cartbounty_recovered_count_increased')){ //Exit fnction in case we already have run this once
+			return;
+		}
+		update_option('cartbounty_recovered_cart_count', get_option('cartbounty_recovered_cart_count') + 1);
+		WC()->session->set('cartbounty_recovered_count_increased', 1);
 	}
 
 	/**
@@ -1004,9 +1027,10 @@ class CartBounty_Public{
 	 * Method returns the path to the template
 	 *
 	 * Search Order:
-	 * 1. /themes/theme/cartbounty-templates/$template_name
-	 * 2. /themes/theme/$template_name
-	 * 3. /plugins/woocommerce-plugin-templates/templates/$template_name.
+	 * 1. /themes/theme/templates/emails/$template_name
+	 * 2. /themes/theme/templates/$template_name
+	 * 3. /themes/theme/$template_name
+	 * 4. /plugins/woo-save-abandoned-carts/templates/$template_name
 	 *
 	 * @since    3.0
 	 * @return   string
@@ -1015,21 +1039,25 @@ class CartBounty_Public{
 	 * @param    string    $default_path - default path to template files.
 	 */
 	function get_template_path( $template_name, $template_path = '', $default_path = '' ){
-		// Set variable to search in woocommerce-plugin-templates folder of theme.
+		$search_array = array();
+
+		// Set variable to search folder of theme.
 		if ( ! $template_path ) :
 			$template_path = 'templates/';
 		endif;
+
+		//Add paths to look for template files
+		$search_array[] = $template_path . 'emails/' . $template_name; 
+		$search_array[] = $template_path . $template_name;
+		$search_array[] = $template_name;
+
+		// Search template file in theme folder.
+		$template = locate_template( $search_array );
 
 		// Set default plugin templates path.
 		if ( ! $default_path ) :
 			$default_path = plugin_dir_path( __FILE__ ) . '../templates/'; // Path to the template folder
 		endif;
-
-		// Search template file in theme folder.
-		$template = locate_template( array(
-			$template_path . $template_name,
-			$template_name
-		));
 
 		// Get plugins template file.
 		if ( ! $template ) :

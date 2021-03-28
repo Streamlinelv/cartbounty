@@ -48,6 +48,10 @@ class CartBounty_Activator{
 			session_id VARCHAR(60),
 			mail_sent TINYINT NOT NULL DEFAULT 0,
 			other_fields LONGTEXT,
+			wp_unsubscribed TINYINT DEFAULT 0,
+			wp_steps_completed INT(3) DEFAULT 0,
+			wp_complete TINYINT DEFAULT 0,
+			type VARCHAR(10) DEFAULT 0,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
@@ -164,10 +168,6 @@ class CartBounty_Activator{
 		//Setting default Exit Intent type if it has not been previously set
 		add_option('cartbounty_exit_intent_type', 1);
 
-		if (! wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook' )) {
-			wp_schedule_event(time(), 'cartbounty_remove_empty_carts_interval', 'cartbounty_remove_empty_carts_hook');
-		}
-
 		//Since version 4.0 due to plugin naming changes - making sure that during the update process old options are transfered to new ones and the old ones are removed from database
 		if (get_option( 'wclcfc_last_time_bubble_displayed' )){
 			update_option( 'cartbounty_last_time_bubble_displayed', get_option( 'wclcfc_last_time_bubble_displayed' ));
@@ -215,6 +215,9 @@ class CartBounty_Activator{
 			update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_captured_abandoned_cart_count' ));
 			delete_option( 'cartbounty_captured_abandoned_cart_count' );
 		}
+
+		//Setting default WordPress automation workflow array so we would have three emails. Also making sure that images are enabled by default
+		add_option('cartbounty_automation_steps', array(1, 1, 1));
 		
 		/**
 		 * Starting WordPress cron function in order to send out emails on a set interval
@@ -228,6 +231,12 @@ class CartBounty_Activator{
 			if (! wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
 				wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
 			}
+		}
+		if (! wp_next_scheduled ( 'cartbounty_sync_hook' )) {
+			wp_schedule_event(time(), 'cartbounty_sync_interval', 'cartbounty_sync_hook'); //Schedules a hook which will be executed by the WordPress actions core on a specific interval
+		}
+		if (! wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook' )) {
+			wp_schedule_event(time(), 'cartbounty_remove_empty_carts_interval', 'cartbounty_remove_empty_carts_hook');
 		}
 	}
 }

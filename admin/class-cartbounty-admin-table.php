@@ -46,7 +46,8 @@ class CartBounty_Table extends WP_List_Table{
             'location'      =>      __('Location', 'woo-save-abandoned-carts'),
             'cart_contents' =>		__('Cart contents', 'woo-save-abandoned-carts'),
             'cart_total'    =>		__('Cart total', 'woo-save-abandoned-carts'),
-            'time'          =>		__('Time', 'woo-save-abandoned-carts')
+            'time'          =>		__('Time', 'woo-save-abandoned-carts'),
+            'status'            =>      __('Status', 'woo-save-abandoned-carts')
         );
 	}
 	
@@ -300,6 +301,43 @@ class CartBounty_Table extends WP_List_Table{
 
 		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%s" title="%s">%s</time>', esc_html($date_iso), esc_html($date_title), esc_html($friendly_time));
 	}
+
+    /**
+     * Rendering Status column
+     *
+     * @since    7.0
+     * @return   HTML
+     * @param    $item - row (key, value array)
+     */
+    function column_status( $item ){
+        $admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+        $cart_time = strtotime($item['time']);
+        $date = date_create(current_time( 'mysql', false ));
+        $current_time = strtotime(date_format($date, 'Y-m-d H:i:s'));
+        $status = '';
+
+        if($item['type'] == 1){
+            $status .= sprintf('<span class="status recovered">%s</span>', __('Recovered', 'woo-save-abandoned-carts'));
+        }
+
+        if($cart_time > $current_time - $admin->get_waiting_time() * 60 && $item['type'] != 1){ //Checking time if user is still shopping or might return - we add shopping label
+            $status .= sprintf('<span class="status shopping">%s</span>', __('Shopping', 'woo-save-abandoned-carts'));
+
+        }else{
+            if($cart_time > ($current_time - CARTBOUNTY_NEW_NOTICE * 60 )){ //Checking time if user has not gone through with the checkout after the specified time we add new label
+                $status .= sprintf('<span class="status new">%s</span>', __('New', 'woo-save-abandoned-carts'));
+            }
+
+            if($item['type'] != 1){ //In case if the cart has not been recovered - output synced information
+                if($item['wp_steps_completed']){
+                    $wordpress = new CartBounty_WordPress();
+                    $email_history = $wordpress->display_email_history( $item['id'] ); //Getting email history of current cart
+                    $status .= sprintf('<div class="status-item-container email-history"><span class="cartbounty-tooltip">%s%s</span><span class="status synced wordpress">%s</span></div>', __('Sent via WordPress', 'woo-save-abandoned-carts'), $email_history, __('WP', 'woo-save-abandoned-carts'));
+                }
+            }
+        }
+        return $status;
+    }
 
 	/**
      * Rendering checkbox column

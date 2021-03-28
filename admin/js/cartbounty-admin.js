@@ -11,15 +11,33 @@
 			$(this).addClass('cartbounty-radio-active');
 		}
 
+		function addActiveStepClass(){ //Adding active class when clicking on a stairway item
+			var step = $(this).closest('.cartbounty-step');
+			if(!step.hasClass('cartbounty-step-disabled')){ //In case current step has not deactivated, open it
+				step.toggleClass('cartbounty-step-active');
+			}
+		}
+
+		function removeActiveStepClassUpgradeNotice(e){ //Removing active class if the user click the open upgrade notice window
+			var step = $(this).closest('.cartbounty-step');
+			if($(e.target).is('a')){
+	            return;
+	        }else{
+				if(!step.hasClass('cartbounty-step-disabled')){ //In case current step has not deactivated, open it
+					step.toggleClass('cartbounty-step-active');
+				}
+	        }
+		}
+
 		function addLoadingIndicator(){ //Adding loading indicator once Submit button pressed
 			$(this).addClass('cartbounty-loading');
 		}
 
-		function replaceExitIntentImage(e){ //Replacing Exit Intent image
+		function addCustomImage(e){ //Adding a custom image
 			e.preventDefault();
 			var button = $(this),
 			custom_uploader = wp.media({
-				title: 'Add custom Exit Intent image',
+				title: 'Add a custom image',
 				library : {
 					type : 'image'
 				},
@@ -30,22 +48,107 @@
 			}).on('select', function(){ //It also has "open" and "close" events
 				var attachment = custom_uploader.state().get('selection').first().toJSON();
 				var image_url = attachment.url;
+
  				if(typeof attachment.sizes.thumbnail !== "undefined"){ //Checking if the selected image has a thumbnail image size
  					var thumbnail = attachment.sizes.thumbnail.url;
  					image_url = thumbnail;
  				}
 				button.html('<img src="' + image_url + '">');
-				$('#cartbounty_exit_intent_image').val(attachment.id);
-				$('#cartbounty-remove-image').show();
+				var input_field = $('#cartbounty-custom-image');
+				var remove_button = $('#cartbounty-remove-custom-image');
+				
+				input_field.val(attachment.id);
+				remove_button.show();
+
 			}).open();
 		}
 
-		function removeExitIntentImage(e){ //Removing Exit Intent image
+		function removeCustomImage(e){ //Removing Custom image
 			e.preventDefault();
 			var button = $(this).hide();
-			$('#cartbounty_exit_intent_image').val('');
-			$('#cartbounty-upload-image').html('<input type="button" class="cartbounty-button button-secondary button" value="Add custom image">');
+			var input_field = $('#cartbounty-custom-image');
+			var add_button = $('#cartbounty-upload-custom-image');
+
+			input_field.val('');
+			add_button.html('<input type="button" class="cartbounty-button button-secondary button" value="Add a custom image">');
 		};
+
+		function getPreviewData( button, action ){
+			var data = {
+				nonce				: button.data('nonce'),
+				action				: action,
+				email				: $('#cartbounty-send-test').val(),
+				subject				: $('#cartbounty-automation-subject').val(),
+				main_title			: $('#cartbounty-automation-heading').val(),
+				content				: $('#cartbounty-automation-content').val(),
+				main_color			: $('#cartbounty-template-main-color').val(),
+				button_color		: $('#cartbounty-template-button-color').val(),
+				text_color			: $('#cartbounty-template-text-color').val(),
+				background_color	: $('#cartbounty-template-background-color').val()
+			};
+			return data;
+		}
+
+		function previewEmail(e){
+			e.preventDefault();
+			var button = $(this)
+			var data = getPreviewData( button, "email_preview" );
+
+			jQuery.post(cartbounty_admin_data.ajaxurl, data,
+			function(response){
+				var content = $('#cartbounty-modal-content');
+				var modal = $('#cartbounty-modal');
+				modal.addClass('content-loaded');
+				content.html(response.data);
+				MicroModal.show('cartbounty-modal', {
+					onClose(){ 
+						content.empty(); //Removing email preview once preview closed
+					}
+				});
+				button.removeClass('cartbounty-loading');
+			});
+		}
+
+		function sendTestEmail(e){
+			e.preventDefault();
+			var button = $(this);
+			var email_data = $('#cartbounty-send-test').val();
+			var label = button.closest('.cartbounty-settings-group').find('label');
+			var data = getPreviewData( button, "send_test" );
+			label.find('.license-status').remove();
+			
+			jQuery.post(cartbounty_admin_data.ajaxurl, data,
+			function(response){
+				label.append(response.data);
+				button.removeClass('cartbounty-loading');
+			});
+		}
+
+		function force_sync(e){
+			e.preventDefault();
+            var button = $(this);
+            button.addClass('cartbounty-loading');
+
+			var data = {
+				nonce		: button.data('nonce'),
+				integration : button.data('integration'),
+				action		: "force_sync"
+			};
+
+			jQuery.post(cartbounty_admin_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+			function(response){
+				if ( response.success == true ){
+			        button.removeClass('cartbounty-loading');
+
+			    }else{
+			    	button.removeClass('cartbounty-loading');
+			    }
+			});
+		}
+
+		function disableSubmitOnEnter(e){ //Disable form submit using enter on a specific input field
+			return e.which !== 13;
+		}
 
 		function addCheckedClass(){ //Adding checked state to the parent in case if the Toggle checkbox is turned on
 			if( $(this).find('input').prop('checked') ){
@@ -135,14 +238,41 @@
 			});
 		}
 
+		function closeBubble(e){
+			e.preventDefault();
+			var button = $(this);
+			var bubble = button.closest('.cartbounty-bubble');
+			var data = {
+				nonce		: button.data('nonce'),
+				action		: 'handle_bubble',
+				operation	: button.data('operation'),
+				type		: button.data('type')
+			};
+			
+			jQuery.post(cartbounty_admin_data.ajaxurl, data,
+			function(response){
+				bubble.css({top:"-600px", right: "50px"}); //Hide the bubble from screen
+				if ( response.success != true ){
+					console.log(response.data);
+				}
+			});
+		}
+
 		jQuery(".cartbounty-type").on("click", addActiveClass );
 		jQuery(".cartbounty-progress").on("click", addLoadingIndicator );
-		jQuery("#cartbounty-upload-image").on("click", replaceExitIntentImage );
-		jQuery("#cartbounty-remove-image").on("click", removeExitIntentImage );
+		jQuery(".cartbounty-upload-image").on("click", addCustomImage );
+		jQuery(".cartbounty-remove-image").on("click", removeCustomImage );
+		jQuery(".cartbounty-preview-email").on("click", previewEmail );
+		jQuery(".cartbounty-send-email").on("click", sendTestEmail );
+		jQuery(".cartbounty-disable-submit").on("keypress", disableSubmitOnEnter );
+		jQuery("#force_sync").on("click", force_sync );
 		jQuery(".cartbounty-toggle .cartbounty-control-visibility").on("click", addCheckedClass );
 		jQuery(".cartbounty-unavailable").on("click", addUnavailableClass );
 		jQuery(".cartbounty-unavailable .cartbounty-section-image, #cartbounty-sections .cartbounty-unavailable a").on("click", disableLink );
 		jQuery('#cartbounty-copy-system-status').on("click", copySystemReport );
+		jQuery('.cartbounty-step-opener').on("click", addActiveStepClass );
+		jQuery('.cartbounty-wordpress-get-additional-step').on("click", removeActiveStepClassUpgradeNotice );
+		jQuery(".cartbounty-bubble-close").on("click", closeBubble );
 	});
 
 })( jQuery );

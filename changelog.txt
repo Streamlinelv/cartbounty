@@ -1,10 +1,14 @@
 == Changelog ==
 
+= 7.0 =
+* Added WordPress recovery option for sending simple abandoned cart recovery emails
+* Added abandoned cart statuses (Shopping, New, Recovered and WP)
+* Added option for users with Shop manager role to close bubble window
+
 = 6.1.3 =
 * Improved compatibility with translation plugins
-* Added filter "cartbounty_pro_waiting_time" to customize default waiting time after which the cart is considered abandoned
+* Added filter "cartbounty_waiting_time" to customize default waiting time after which the cart is considered abandoned
 * Improved Copy system report button UX
-
 
 = 6.1.2 =
 * Added option to export System status report

@@ -1,6 +1,6 @@
 <?php
 /**
- * The template for displaying CartBounty - Save and recover abandoned carts for WooCommerce Exit Intent form
+ * The template for displaying CartBounty Exit Intent form
  *
  * This template can be overridden by copying it to 
  * yourtheme/templates/cartbounty-exit-intent.php or
@@ -9,8 +9,8 @@
  * Please do not change the ID "cartbounty-exit-intent-email".
  * If changed, the abandoned cart will not be captured
  *
- * If CartBounty - Save and recover abandoned carts for WooCommerce plugin will need to update template files, you
- * might need to copy the new files to your theme to maintain compatibility.
+ * If a new CartBounty version is released with an updated template file, you
+ * may need to replace the old template file with the new one to maintain compatibility.
  * 
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce/Templates
  * @author     Streamline.lv

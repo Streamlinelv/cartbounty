@@ -97,6 +97,11 @@ class CartBounty{
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cartbounty-public.php';
 
 		/**
+		 * The class responsible for defining all actions that occur in the WordPress recovery area
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-wordpress.php';
+
+		/**
 		 * The class responsible for defining all methods for getting System status
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-status.php';
@@ -116,6 +121,7 @@ class CartBounty{
 
 		$admin = new CartBounty_Admin( $this->get_plugin_name(), $this->get_version() );
 		$status = new CartBounty_System_Status( $this->get_plugin_name(), $this->get_version() );
+		$wordpress = new CartBounty_WordPress();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
@@ -129,6 +135,7 @@ class CartBounty{
 		$this->loader->add_action( 'init', $admin, 'cartbounty_text_domain' ); //Adding language support
 		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
 		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' ); //Ads a filter to set new interval for Wordpress cron function
+		$this->loader->add_filter( 'cartbounty_sync_hook', $wordpress, 'auto_send' );
 		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $admin, 'notification_sendout_interval_update' );
 		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' ); //Output admin notices if necessary
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' ); //Hooks into Wordpress cron event to launch function for sending out emails
@@ -136,7 +143,12 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 ); //Handling order once it has been processed
 		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' ); //Handles clearing of abandoned cart in case a registered user changes his account data like Name, Surname, Location etc.
 		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' ); //Adding CartBounty class to the body tag
+		$this->loader->add_action( 'wp_loaded', $admin, 'restore_cart' ); //Restoring abandoned cart if a user returns back from an abandoned cart email link
+		$this->loader->add_action( 'wp_ajax_force_sync', $admin, 'force_sync' ); //Handles Force Sync button Ajax action for logged in users
 		$this->loader->add_action( 'wp_ajax_get_system_status', $status, 'get_system_status' );
+		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
+		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
+		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' ); //Handle bubble buttons
 	}
 
 	/**
@@ -149,6 +161,7 @@ class CartBounty{
 	private function define_public_hooks(){
 
 		$public = new CartBounty_Public( $this->get_plugin_name(), $this->get_version() );
+		$wordpress = new CartBounty_WordPress();
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
@@ -164,6 +177,7 @@ class CartBounty{
 		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is logged in
 		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action
 		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action if the user is logged in
+		$this->loader->add_action( 'cartbounty_automation_footer_end', $wordpress, 'add_email_badge', 100 ); //Restoring previous user input in Checkout form
 	}
 
 	/**

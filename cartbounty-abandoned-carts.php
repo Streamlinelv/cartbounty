@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 6.1.3
+ * Version: 7.0
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -12,7 +12,7 @@
  * Developer URI: http://www.majas-lapu-izstrade.lv/en
  * 
  * WC requires at least: 2.2
- * WC tested up to: 5.0
+ * WC tested up to: 5.1
  *
  * Copyright: © 2018-2020 CartBounty
  * License: GPLv3
@@ -33,10 +33,11 @@ if($user_settings_notification_frequency == '' || $user_settings_notification_fr
 }
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '6.1.3' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.0' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
+if (!defined('CARTBOUNTY_TABLE_NAME_EMAILS')) define( 'CARTBOUNTY_TABLE_NAME_EMAILS', 'cartbounty_emails' );
 if (!defined('CARTBOUNTY_BASENAME')) define( 'CARTBOUNTY_BASENAME', plugin_basename( __FILE__ ) );
 if (!defined('CARTBOUNTY_TABLE_NAME')) define( 'CARTBOUNTY_TABLE_NAME', 'cartbounty' );
 if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER_URL', 'https://www.cartbounty.com' );
@@ -45,6 +46,8 @@ if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-s
 if (!defined('CARTBOUNTY_ABREVIATION')) define( 'CARTBOUNTY_ABREVIATION', 'CartBounty' );
 if (!defined('CARTBOUNTY_EMAIL_INTERVAL')) define( 'CARTBOUNTY_EMAIL_INTERVAL', $frequency ); //In minutes. Defines the interval at which email function is fired
 if (!defined('CARTBOUNTY_NEW_NOTICE')) define( 'CARTBOUNTY_NEW_NOTICE', 240 ); //Defining time in minutes how long New status is shown in the table
+if (!defined('CARTBOUNTY_MAX_SYNC_PERIOD')) define( 'CARTBOUNTY_MAX_SYNC_PERIOD', 30 ); //Defining maximum period in days that is up for recovery. We do not want to remind about very old abandoned carts
+if (!defined('CARTBOUNTY_ENCRYPTION_KEY')) define('CARTBOUNTY_ENCRYPTION_KEY', '6c7f0ff3c5b607b0762gbsEwuqSb5c0e5461611791f2ff8d4d45009853795c' ); //Defines encryption key used for creating checkout URL hash part of the link
 if (!defined('CARTBOUNTY_ACTIVECAMPAIGN_TRIAL_LINK')) define('CARTBOUNTY_ACTIVECAMPAIGN_TRIAL_LINK', 'https://www.activecampaign.com/?_r=5347LGDC' ); //ActiveCampaign trial link
 if (!defined('CARTBOUNTY_GETRESPONSE_TRIAL_LINK')) define('CARTBOUNTY_GETRESPONSE_TRIAL_LINK', 'https://www.getresponse.com/features/marketing-automation?a=vPJGRchyVX&c=integrate_cartbounty' ); //GetResponse free trial link
 if (!defined('CARTBOUNTY_MAILCHIMP_LINK')) define('CARTBOUNTY_MAILCHIMP_LINK', 'https://mailchimp.com/' ); //MailChimp link
@@ -58,15 +61,17 @@ register_setting( 'cartbounty-settings', 'cartbounty_notification_frequency' );
 register_setting( 'cartbounty-settings', 'cartbounty_lift_email' );
 register_setting( 'cartbounty-settings', 'cartbounty_hide_images' );
 register_setting( 'cartbounty-settings', 'cartbounty_exclude_ghost_carts' );
-register_setting( 'cartbounty-settings-review', 'cartbounty_review_submitted' );
-register_setting( 'cartbounty-settings-declined', 'cartbounty_times_review_declined' );
-register_setting( 'cartbounty-settings-time', 'cartbounty_last_time_bubble_displayed' );
+register_setting( 'cartbounty-settings', 'cartbounty_exclude_recovered' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_status' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_test_mode' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_type' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_main_color' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_inverse_color' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_image' );
+register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_steps' );
+register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_from_name' );
+register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_from_email' );
+register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_reply_email' );
 
 /**
  * The code that runs during plugin activation.

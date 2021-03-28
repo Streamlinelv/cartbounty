@@ -78,6 +78,12 @@ class CartBounty_Admin{
 		    'ajaxurl' => admin_url( 'admin-ajax.php' )
 		);
 
+		if (isset($_GET['section'])){ //Adding additional script on WordPress recovery page
+			if($_GET['section'] == 'wordpress'){
+				wp_enqueue_script( $this->plugin_name . '-micromodal', plugin_dir_url( __FILE__ ) . 'js/micromodal.min.js', array( 'jquery' ), $this->version, false );
+			}
+		}
+
 		wp_enqueue_script( $this->plugin_name . '-selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-admin.js', array( 'wp-color-picker', 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'cartbounty_admin_data', $data ); //Sending data over to JS file
@@ -141,6 +147,7 @@ class CartBounty_Admin{
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
 
+		$wordpress = new CartBounty_WordPress();
 		$status = new CartBounty_System_Status(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 
 		// Check if we are on CartBounty page
@@ -305,7 +312,7 @@ class CartBounty_Admin{
 									<?php
 									$recovery_items = $this->get_sections( $tab );
 									foreach( $recovery_items as $key => $item ): ?>
-										<?php $button = __('Connect', 'woo-save-abandoned-carts'); 
+										<?php $button = __('Connect', 'woo-save-abandoned-carts');
 											if($item['connected']){
 												$button = __('Edit', 'woo-save-abandoned-carts');
 											}elseif(!$item['availability']){
@@ -316,6 +323,7 @@ class CartBounty_Admin{
 											<div class="cartbounty-section-item<?php if($item['connected']){echo ' cartbounty-connected'; }?><?php if(!$item['availability']){echo ' cartbounty-unavailable'; }?>">
 												<?php if($item['availability']){
 													$link = '?page='. CARTBOUNTY .'&tab='. $tab .'&section='. $key;
+													$item['info_link'] = $link;
 												}else{
 													$link = $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'recovery_'. $key );
 												}?>
@@ -324,7 +332,7 @@ class CartBounty_Admin{
 													<a href="<?php echo $link; ?>" title="<?php echo $item['name']; ?>"><?php echo $this->get_icon( $key, false, false, true ); ?></a>
 												</div>
 												<div class="cartbounty-section-content">
-													<h3><a href="<?php echo $item['info_link']; ?>" title="<?php echo $item['name']; ?>" target="_blank"><?php echo $item['name']; ?></a></h3>
+													<h3><a href="<?php echo $item['info_link']; ?>" title="<?php echo $item['name']; ?>" <?php if(!$item['availability']){echo ' target="_blank"'; }?>><?php echo $item['name']; ?></a></h3>
 													<?php echo $item['description']; ?>
 													<a class="button cartbounty-button<?php if(!$item['availability']){echo " button-primary";}?>" href="<?php echo $link; ?>"<?php if(!$item['availability']){echo ' target="_blank"'; }?>><?php echo $button; ?></a>
 												</div>
@@ -382,6 +390,7 @@ class CartBounty_Admin{
 									$lift_email_on = esc_attr( get_option('cartbounty_lift_email') );
 									$hide_images_on = esc_attr( get_option('cartbounty_hide_images') );
 									$exclude_ghost_carts = esc_attr( get_option('cartbounty_exclude_ghost_carts') );
+									$exclude_recovered_cart_notifications = esc_attr( get_option('cartbounty_exclude_recovered') );
 								?>
 								<div class="cartbounty-row">
 									<div class="cartbounty-titles-column cartbounty-col-sm-4 cartbounty-col-lg-3">
@@ -429,6 +438,15 @@ class CartBounty_Admin{
 										<div class="cartbounty-settings-group">
 											<label for="cartbounty_notification_frequency"><?php echo __('Check for new abandoned carts', 'woo-save-abandoned-carts'); ?></label>
 											<?php $this->display_frequencies(); ?>
+										</div>
+										<div class="cartbounty-settings-group cartbounty-toggle">
+											<label for="cartbounty-exclude-recovered" class="cartbounty-switch">
+												<input id="cartbounty-exclude-recovered" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exclude_recovered" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_recovered_cart_notifications, false ); ?> autocomplete="off" />
+												<span class="cartbounty-slider round"></span>
+											</label>
+											<label for="cartbounty-exclude-recovered">
+												<?php echo __('Exclude recovered carts from notifications', 'woo-save-abandoned-carts'); ?>
+											</label>
 										</div>
 									</div>
 								</div>
@@ -602,7 +620,7 @@ class CartBounty_Admin{
     	echo '</ul>';
 
     	//Generating sections for small screens
-    	echo '<select id="cartbounty-mobile-sections" class="cartbounty-select cartbounty-visible-xs" onchange="window.location.href=this.value" style="display: none;">';
+    	echo '<select id="cartbounty-mobile-sections" class="cartbounty-select" onchange="window.location.href=this.value" style="display: none;">';
     		echo "<option value='?page=". CARTBOUNTY ."&tab=$tab'>". $all_title ."</option>";
 	    	foreach( $sections as $key => $section ){
 	    		$link = "?page=". CARTBOUNTY ."&tab=$tab&section=$key";
@@ -641,7 +659,7 @@ class CartBounty_Admin{
     		'0' 	=> __('Disable notifications', 'woo-save-abandoned-carts')
     	);
 
-    	echo '<select id="cartbounty_notification_frequency" class="cartbounty-select" name="cartbounty_notification_frequency[hours]" '. $this->disable_field() .'>';
+    	echo '<select id="cartbounty_notification_frequency" class="cartbounty-select" name="cartbounty_notification_frequency[hours]" autocomplete="off" '. $this->disable_field() .'>';
 	    	foreach( $intervals as $key => $interval ){
 		    	echo "<option value='$key' ". selected( $active_frequency['hours'], $key, false ) .">$interval</option>";
 	    	}
@@ -659,6 +677,8 @@ class CartBounty_Admin{
 		$sections = array();
 
 		if($tab == 'recovery'){
+
+			$wordpress = new CartBounty_WordPress();
 
 			$sections = array(
 				'activecampaign'	=> array(
@@ -681,6 +701,13 @@ class CartBounty_Admin{
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_MAILCHIMP_LINK,
 					'description'		=> __("<p>MailChimp offers a forever free plan and allows to create both single and series of reminder emails (e.g., first email in the 1st hour of cart abandonment, 2nd after 24 hours etc.).</p><p>MailChimp will only send the 1st email in the series unless a user becomes a subscriber.</p>", 'woo-save-abandoned-carts')
+				),
+				'wordpress'	=> array(
+					'name'				=> __('WordPress', 'woo-save-abandoned-carts'),
+					'connected'			=> $wordpress->automation_enabled() ? true : false,
+					'availability'		=> true,
+					'info_link'			=> '',
+					'description'		=> __("<p>A simple solution for sending abandoned cart recovery emails using the default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts.</p><p>If you are looking for something more advanced and powerful, please consider connecting with ActiveCampaign, GetResponse or MailChimp.</p>", 'woo-save-abandoned-carts')
 				)
 			);
 		}
@@ -697,7 +724,7 @@ class CartBounty_Admin{
 					'name'				=> __('Early capture', 'woo-save-abandoned-carts'),
 					'connected'			=> false,
 					'availability'		=> true,
-					'description'		=> __("<p>Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked.</p>", 'woo-save-abandoned-carts')
+					'description'		=> __('<p>Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked.</p>', 'woo-save-abandoned-carts')
 				)
 			);
 		}
@@ -714,6 +741,379 @@ class CartBounty_Admin{
 	 */
 	function section_contents( $active_section ){
 		switch ( $active_section ) {
+
+			case 'wordpress':
+
+				if(!class_exists('WooCommerce')){ //If WooCommerce is not active
+					$this->missing_woocommerce_notice( $active_section ); 
+					return;
+				}?>
+
+				<div class="cartbounty-section-intro">
+					<?php echo sprintf(
+					/* translators: %s - URL link tags */
+					__('A simple solution for sending abandoned cart recovery emails using the default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts. If you are looking for something more advanced and powerful, please consider upgrading to %sCartBounty Pro%s.', 'woo-save-abandoned-carts'), '<a href="'. $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL, 'wp_section_intro') .'" target="_blank">','</a>' );?>
+				</div>
+
+				<form method="post" action="options.php">
+					<?php
+						settings_fields( 'cartbounty-wordpress-settings' );
+						do_settings_sections( 'cartbounty-wordpress-settings' );
+						$wordpress = new CartBounty_WordPress();
+						$automation_steps = get_option('cartbounty_automation_steps');
+					?>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-full-width cartbounty-col-sm-12 cartbounty-col-md-12 cartbounty-col-lg-12">
+							<h4><?php echo __('Automation workflow', 'woo-save-abandoned-carts'); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php echo __('Configure your abandoned cart reminder emails, how they look, when to send them, include coupons, etc. You can choose to enable just one or all of them creating a 3-step automation workflow. The countdown of the next step starts right after the previous one is finished.', 'woo-save-abandoned-carts'); ?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-full-width cartbounty-col-sm-12 cartbounty-col-md-12 cartbounty-col-lg-12">
+							<div class="cartbounty-settings-group">
+								<div class="cartbounty-stairway">
+									<?php if(!empty($automation_steps)){
+											$step = $automation_steps[0];
+											$step = (object)$step;
+											$enabled = ( isset($step->enabled) ) ? $step->enabled : false;
+											$subject = ( isset($step->subject) ) ? $step->subject : '';
+											$heading = ( isset($step->heading) ) ? $step->heading : '';
+											$content = ( isset($step->content) ) ? $step->content : '';
+											$main_color = ( isset($step->main_color) ) ? $step->main_color : false;
+											$button_color = ( isset($step->button_color) ) ? $step->button_color : false;
+											$text_color = ( isset($step->text_color) ) ? $step->text_color : false;
+											$background_color = ( isset($step->background_color) ) ? $step->background_color : false;
+											$time_interval_name = $wordpress->get_intervals( 0, $selected_name = true );
+											$preview_email_nonce = wp_create_nonce( 'preview_email' );
+											$test_email_nonce = wp_create_nonce( 'test_email' ); ?>
+
+											<div class="cartbounty-step">
+												<div class="cartbounty-step-opener">
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<div class="cartbounty-automation-number">1</div>
+															<div class="cartbounty-automation-name">
+																<h3><?php echo $wordpress->get_defaults( 'name', 0 ); ?></h3>
+																<p><?php echo sprintf(
+																	/* translators: %s - Time, e.g. 10 minutes */
+																	 __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
+																<div class="cartbounty-step-trigger"></div>
+															</div>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-row">
+																<div class="cartbounty-stats-container cartbounty-col-sm-6 cartbounty-col-md-6 cartbounty-col-lg-8">
+																	<div class="cartbounty-stats">
+																		<i><?php echo __('Queue', 'woo-save-abandoned-carts'); ?></i>
+																		<p><?php echo $wordpress->get_queue(); ?></p>
+																	</div>
+																	<div class="cartbounty-stats">
+																		<i><?php echo __('Sends', 'woo-save-abandoned-carts'); ?></i>
+																		<p><?php echo $wordpress->get_sends(); ?></p>
+																	</div>
+																</div>
+																<div class="cartbounty-trigger-container cartbounty-col-sm-6 cartbounty-col-md-6 cartbounty-col-lg-4">
+																	<div class="cartbounty-automation-status">
+																		<?php $wordpress->display_automation_status( $enabled );?>
+																	</div><div class="cartbounty-step-trigger"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="cartbounty-step-contents">
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<h4><?php echo __('General', 'woo-save-abandoned-carts'); ?></h4>
+															<p class="cartbounty-titles-column-description">
+																<?php echo __('Enable email sending to start this automated abandoned cart recovery step.', 'woo-save-abandoned-carts'); ?>
+															</p>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9<?php if($enabled){ echo ' cartbounty-checked-parent'; }?>">
+															<div class="cartbounty-settings-group cartbounty-toggle">
+																<label for="cartbounty-automation-status" class="cartbounty-switch cartbounty-control-visibility cartbounty-step-controller">
+																	<input id="cartbounty-automation-status" class="cartbounty-checkbox" type="checkbox" name="cartbounty_automation_steps[0][enabled]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $enabled, false ); ?> autocomplete="off" />
+																	<span class="cartbounty-slider round"></span>
+																</label>
+																<label for="cartbounty-automation-status" class="cartbounty-control-visibility cartbounty-step-controller"><?php echo __('Enable email', 'woo-save-abandoned-carts'); ?></label>
+															</div>
+															<div class="cartbounty-settings-group cartbounty-hidden">
+																<label for="cartbounty-automation-interval"><?php echo __('Send email after', 'woo-save-abandoned-carts'); ?></label>
+																<?php $wordpress->display_intervals(0); ?>
+															</div>
+															<div class="cartbounty-settings-group">
+																<label for="cartbounty-automation-subject"><?php echo __('Email subject', 'woo-save-abandoned-carts'); ?></label>
+																<input id="cartbounty-automation-subject" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][subject]" value="<?php echo sanitize_text_field($subject); ?>" placeholder="<?php echo $wordpress->get_defaults('subject', 0); ?>" />
+																<p class='cartbounty-additional-information'>
+																	<?php echo __('Subject line has a huge impact on email open rate.', 'woo-save-abandoned-carts'); ?>
+																</p>
+															</div>
+															<div class="cartbounty-settings-group">
+																<label for="cartbounty-automation-heading"><?php echo __('Main title', 'woo-save-abandoned-carts'); ?></label>
+																<input id="cartbounty-automation-heading" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][heading]" value="<?php echo sanitize_text_field($heading); ?>" placeholder="<?php echo $wordpress->get_defaults('heading', 0); ?>" />
+															</div>
+															<div class="cartbounty-settings-group">
+																<label for="cartbounty-automation-content"><?php echo __('Additional content', 'woo-save-abandoned-carts'); ?></label>
+																<input id="cartbounty-automation-content" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][content]" value="<?php echo sanitize_text_field($content); ?>" placeholder="<?php echo $wordpress->get_defaults('content', 0); ?>" />
+															</div>
+														</div>
+													</div>
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<h4><?php echo __('Appearance', 'woo-save-abandoned-carts'); ?></h4>
+															<p class="cartbounty-titles-column-description">
+																<?php echo sprintf(
+																	/* translators: %s - Link tags */
+																	 __('Choose a template that will be used to display the abandoned cart reminder email. Take a look %shere%s to see advanced theme customization options', 'woo-save-abandoned-carts'), '<a href="https://www.cartbounty.com/#modify-exit-intent-content" target="_blank">', '</a>');?>
+															</p>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-settings-group">
+																<h4><?php echo __('Template', 'woo-save-abandoned-carts'); ?></h4>
+																<div class="cartbounty-flex-container">
+																	<div id="cartbounty-automation-template-light" class="cartbounty-type cartbounty-email-template cartbounty-email-template-light cartbounty-radio-active">
+																		<label class="cartbounty-image" for="cartbounty-template-light">
+																			<em>
+																				<i>
+																					<span class="cartbounty-template-top-image"></span>
+																					<img src="<?php echo plugins_url( 'assets/template-light.svg', __FILE__ ) ; ?>" title="" alt=""/>
+																				</i>
+																			</em>
+																			<input id="cartbounty-template-light" class="cartbounty-radiobutton" type="radio" name="cartbounty_automation_steps[0][template]" value="1" <?php echo $this->disable_field(); ?> checked="" autocomplete="off" />
+																			<?php echo __('Light', 'woo-save-abandoned-carts'); ?>
+																		</label>
+																	</div>
+																	<div id="cartbounty-automation-template-rows" class="cartbounty-type cartbounty-email-template cartbounty-email-template-rows">
+																		<label class="cartbounty-image" for="cartbounty-template-rows">
+																			<em>
+																				<i>
+																					<span class="cartbounty-template-top-image"></span>
+																					<img src="<?php echo plugins_url( 'assets/template-rows.svg', __FILE__ ) ; ?>" title="" alt=""/>
+																				</i>
+																				<span class="cartbounty-wordpress-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
+																					<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_style_rows' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+																				</span>
+																			</em>
+																			<input id="cartbounty-template-rows" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+																			<?php echo __('With cart contents', 'woo-save-abandoned-carts'); ?>
+																		</label>
+																	</div>
+																	<div id="cartbounty-automation-template-columns" class="cartbounty-type cartbounty-email-template cartbounty-email-template-columns">
+																		<label class="cartbounty-image" for="cartbounty-template-columns">
+																			<em>
+																				<i>
+																					<span class="cartbounty-template-top-image"></span>
+																					<img src="<?php echo plugins_url( 'assets/template-columns.svg', __FILE__ ) ; ?>" title="" alt=""/>
+																				</i>
+																				<span class="cartbounty-wordpress-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
+																					<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_style_columns' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+																				</span>
+																			</em>
+																			<input id="cartbounty-template-columns" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+																			<?php echo __('With cart contents in columns', 'woo-save-abandoned-carts'); ?>
+																		</label>
+																	</div>
+																</div>
+															</div>
+															<div class="cartbounty-settings-group">
+																<h4><?php echo __('Colors', 'woo-save-abandoned-carts'); ?></h4>
+																<p class='cartbounty-additional-information'>
+																	<?php echo __('Take a look at the default email colors and adjust them to fit your design requirements.', 'woo-save-abandoned-carts'); ?>
+																</p>
+																<div class="cartbounty-colors">
+																	<label for="cartbounty-template-main-color"><?php echo __('Main:', 'woo-save-abandoned-carts'); ?></label>
+																	<input id="cartbounty-template-main-color" type="text" name="cartbounty_automation_steps[0][main_color]" class="cartbounty-color-picker cartbounty-text" value="<?php echo $main_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+																</div>
+																<div class="cartbounty-colors">
+																	<label for="cartbounty-template-inverse-color"><?php echo __('Button:', 'woo-save-abandoned-carts'); ?></label>
+																	<input id="cartbounty-template-button-color" type="text" name="cartbounty_automation_steps[0][button_color]" class="cartbounty-color-picker cartbounty-text" value="<?php echo $button_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+																</div>
+																<div class="cartbounty-colors">
+																	<label for="cartbounty-template-text-color"><?php echo __('Text:', 'woo-save-abandoned-carts'); ?></label>
+																	<input id="cartbounty-template-text-color" type="text" name="cartbounty_automation_steps[0][text_color]" class="cartbounty-color-picker cartbounty-text" value="<?php echo $text_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+																</div>
+																<div class="cartbounty-colors">
+																	<label for="cartbounty-template-background-color"><?php echo __('Backdrop:', 'woo-save-abandoned-carts'); ?></label>
+																	<input id="cartbounty-template-background-color" type="text" name="cartbounty_automation_steps[0][background_color]" class="cartbounty-color-picker cartbounty-text" value="<?php echo $background_color; ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+																</div>
+															</div>
+															<div class="cartbounty-settings-group cartbounty-toggle">
+																<label for="cartbounty-automation-include-image" class="cartbounty-switch cartbounty-unavailable">
+																	<input id="cartbounty-automation-include-image" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+																	<span class="cartbounty-slider round"></span>
+																</label>
+																<label for="cartbounty-automation-include-image" class="cartbounty-unavailable"><?php echo __('Include image', 'woo-save-abandoned-carts'); ?></label>
+																<p class='cartbounty-additional-information'>
+																	<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'wp_include_image' ); ?></i>
+																</p>
+															</div>
+														</div>
+													</div>
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<h4><?php echo __('Test email', 'woo-save-abandoned-carts'); ?></h4>
+															<p class="cartbounty-titles-column-description">
+																<?php echo __('Before activating this automation, you might want to test your email.', 'woo-save-abandoned-carts'); ?>
+															</p>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-settings-group">
+																<h4><?php echo __('Preview', 'woo-save-abandoned-carts'); ?></h4>
+																<button type="button" class='cartbounty-button button-secondary cartbounty-progress cartbounty-preview-email' data-nonce='<?php echo $preview_email_nonce; ?>' <?php echo $this->disable_field(); ?>><?php echo __('Preview email', 'woo-save-abandoned-carts'); ?></button>
+																<?php echo $wordpress->output_modal_container(); ?>
+															</div>
+															<div class="cartbounty-settings-group">
+																<label for="cartbounty-send-test"><?php echo __('Send a test email to', 'woo-save-abandoned-carts'); ?></label>
+																<div class="cartbounty-input-with-button">
+																	<input id="cartbounty-send-test" class="cartbounty-text cartbounty-disable-submit" type="email"  placeholder="<?php echo get_option( 'admin_email' );?>" <?php echo $this->disable_field(); ?> />
+																	<button type="button" class='cartbounty-button button-secondary cartbounty-progress cartbounty-send-email' data-nonce='<?php echo $test_email_nonce; ?>' <?php echo $this->disable_field(); ?>><?php echo __('Send', 'woo-save-abandoned-carts'); ?></button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="cartbounty-step cartbounty-step-unavailable">
+												<div class="cartbounty-step-opener">
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<div class="cartbounty-automation-number">2</div>
+															<div class="cartbounty-automation-name">
+																<h3><?php echo $wordpress->get_defaults( 'name', 1 ); ?></h3>
+																<p><?php $time_interval_name = $wordpress->get_intervals( 1, $selected_name = true );
+																	echo sprintf(
+																	/* translators: %s - Time, e.g. 10 minutes */
+																	 __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
+																<div class="cartbounty-step-trigger"></div>
+															</div>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-row">
+																<div class="cartbounty-stats-container cartbounty-col-sm-6 cartbounty-col-md-6 cartbounty-col-lg-8">
+																	<div class="cartbounty-stats">
+																		<i><?php echo __('Queue', 'woo-save-abandoned-carts'); ?></i>
+																		<p>0</p>
+																	</div>
+																	<div class="cartbounty-stats">
+																		<i><?php echo __('Sends', 'woo-save-abandoned-carts'); ?></i>
+																		<p>0</p>
+																	</div>
+																</div>
+																<div class="cartbounty-trigger-container cartbounty-col-sm-6 cartbounty-col-md-6 cartbounty-col-lg-4">
+																	<div class="cartbounty-automation-status">
+																		<span class="status inactive"><?php echo __('Disabled', 'woo-save-abandoned-carts'); ?></span>
+																	</div><div class="cartbounty-step-trigger"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="cartbounty-wordpress-get-additional-step">
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<div class="cartbounty-automation-name">
+																<h3><?php echo __('Upgrade to enable this email', 'woo-save-abandoned-carts'); ?></h3>
+															</div>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-stats">
+																<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_add_automation_step' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="cartbounty-step cartbounty-step-unavailable">
+												<div class="cartbounty-step-opener">
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<div class="cartbounty-automation-number">3</div>
+															<div class="cartbounty-automation-name">
+																<h3><?php echo $wordpress->get_defaults( 'name', 2 ); ?></h3>
+																<p><?php $time_interval_name = $wordpress->get_intervals( 2, $selected_name = true );
+																	echo sprintf(
+																	/* translators: %s - Time, e.g. 10 minutes */
+																	 __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
+																<div class="cartbounty-step-trigger"></div>
+															</div>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-row">
+																<div class="cartbounty-stats-container cartbounty-col-sm-6 cartbounty-col-md-6 cartbounty-col-lg-8">
+																	<div class="cartbounty-stats">
+																		<i><?php echo __('Queue', 'woo-save-abandoned-carts'); ?></i>
+																		<p>0</p>
+																	</div>
+																	<div class="cartbounty-stats">
+																		<i><?php echo __('Sends', 'woo-save-abandoned-carts'); ?></i>
+																		<p>0</p>
+																	</div>
+																</div>
+																<div class="cartbounty-trigger-container cartbounty-col-sm-6 cartbounty-col-md-6 cartbounty-col-lg-4">
+																	<div class="cartbounty-automation-status">
+																		<span class="status inactive"><?php echo __('Disabled', 'woo-save-abandoned-carts'); ?></span>
+																	</div><div class="cartbounty-step-trigger"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="cartbounty-wordpress-get-additional-step">
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<div class="cartbounty-automation-name">
+																<h3><?php echo __('Upgrade to enable this email', 'woo-save-abandoned-carts'); ?></h3>
+															</div>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-stats">
+																<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_add_automation_step' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										<?php } ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-4 cartbounty-col-lg-3">
+							<h4><?php echo __('General email settings', 'woo-save-abandoned-carts'); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php echo __('"From" name tells your recipients who sent them the message. It is just as important as your subject line and can impact whether your email is opened, or not.', 'woo-save-abandoned-carts'); ?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-automation-from-name"><?php echo __('"From" name', 'woo-save-abandoned-carts'); ?></label>
+								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_from_name" value="<?php echo sanitize_text_field( get_option('cartbounty_automation_from_name') ); ?>" placeholder="<?php echo get_option( 'blogname' );?>" <?php echo $this->disable_field(); ?> />
+							</div>
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-automation-from-email"><?php echo __('"From" email', 'woo-save-abandoned-carts'); ?></label>
+								<input id="cartbounty-automation-from-email" class="cartbounty-text" type="email" name="cartbounty_automation_from_email" value="<?php echo sanitize_email( get_option('cartbounty_automation_from_email') ); ?>" placeholder="<?php echo get_option( 'admin_email' );?>" <?php echo $this->disable_field(); ?> />
+							</div>
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-automation-reply-email"><?php echo __('Reply-to address', 'woo-save-abandoned-carts'); ?></label>
+								<input id="cartbounty-automation-reply-email" class="cartbounty-text" type="email" name="cartbounty_automation_reply_email" value="<?php echo sanitize_email( get_option('cartbounty_automation_reply_email') ); ?>" <?php echo $this->disable_field(); ?> />
+							</div>
+						</div>
+					</div>
+					<div class='cartbounty-button-row'>
+						<?php
+						if(current_user_can( 'manage_options' )){
+							echo "<button type='submit' class='cartbounty-button button-primary cartbounty-progress'>". __('Save settings', 'woo-save-abandoned-carts') ."</button>";
+						}
+						if($wordpress->automation_enabled()){
+							echo $this->display_force_sync_button( $active_section );
+						}
+						?>
+					</div>
+				</form>
+
+				<?php
+				break;
 
 			case 'exit_intent':
 
@@ -794,44 +1194,46 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group">
 								<h4><?php echo __('Style', 'woo-save-abandoned-carts'); ?></h4>
-								<div id="cartbounty-exit-intent-center" class="cartbounty-type <?php if($exit_intent_type == 1){ echo "cartbounty-radio-active";} ?>">
-									<label class="cartbounty-image" for="cartbounty-radiobutton-center">
-										<em>
-											<i>
-												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
-											</i>
-										</em>
-										<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exit_intent_type, false ); ?> autocomplete="off" />
-										<?php echo __('Appear in center', 'woo-save-abandoned-carts'); ?>
-									</label>
-								</div>
-								<div id="cartbounty-exit-intent-left" class="cartbounty-type <?php if($exit_intent_type == 2){ echo "cartbounty-radio-active";} ?>">
-									<label class="cartbounty-image" for="cartbounty-radiobutton-left">
-										<em>
-											<i>
-												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
-											</i>
-											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
-												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_style_left' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-											</span>
-										</em>
-										<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" disabled autocomplete="off" />
-										<?php echo __('Slide in from left', 'woo-save-abandoned-carts'); ?>
-									</label>
-								</div>
-								<div id="cartbounty-exit-intent-fullscreen" class="cartbounty-type <?php if($exit_intent_type == 3){ echo "cartbounty-radio-active";} ?>">
-									<label class="cartbounty-image" for="cartbounty-radiobutton-fullscreen">
-										<em>
-											<i>
-												<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
-											</i>
-											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
-												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_style_fullscreen' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-											</span>
-										</em>
-										<input id="cartbounty-radiobutton-fullscreen" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" disabled autocomplete="off" />
-										<?php echo __('Fullscreen', 'woo-save-abandoned-carts'); ?>
-									</label>
+								<div class="cartbounty-flex-container">
+									<div id="cartbounty-exit-intent-center" class="cartbounty-type <?php if($exit_intent_type == 1){ echo "cartbounty-radio-active";} ?>">
+										<label class="cartbounty-image" for="cartbounty-radiobutton-center">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+											</em>
+											<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exit_intent_type, false ); ?> autocomplete="off" />
+											<?php echo __('Appear in center', 'woo-save-abandoned-carts'); ?>
+										</label>
+									</div>
+									<div id="cartbounty-exit-intent-left" class="cartbounty-type">
+										<label class="cartbounty-image" for="cartbounty-radiobutton-left">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+												<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
+													<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_style_left' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+												</span>
+											</em>
+											<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+											<?php echo __('Slide in from left', 'woo-save-abandoned-carts'); ?>
+										</label>
+									</div>
+									<div id="cartbounty-exit-intent-fullscreen" class="cartbounty-type">
+										<label class="cartbounty-image" for="cartbounty-radiobutton-fullscreen">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+												<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
+													<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_style_fullscreen' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+												</span>
+											</em>
+											<input id="cartbounty-radiobutton-fullscreen" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+											<?php echo __('Fullscreen', 'woo-save-abandoned-carts'); ?>
+										</label>
+									</div>
 								</div>
 							</div>
 							<div class="cartbounty-settings-group">
@@ -859,17 +1261,17 @@ class CartBounty_Admin{
 								<p class='cartbounty-additional-information'>
 									<?php echo __('Recommended dimensions:', 'woo-save-abandoned-carts'); ?> 1024 x 600 px.
 								</p>
-								<div id="cartbounty-exit-intent-image-container">
-									<p id="cartbounty-upload-image">
+								<div class="cartbounty-upload-image-container">
+									<p id="cartbounty-upload-custom-image" class="cartbounty-upload-image">
 										<?php if($image):?>
 											<img src="<?php echo $image[0]; ?>" />
 										<?php else: ?>
 											<input type="button" value="<?php echo __('Add a custom image', 'woo-save-abandoned-carts'); ?>" class="cartbounty-button button-secondary button" <?php echo $this->disable_field(); ?> />
 										<?php endif;?>
 									</p>
-									<a href="#" id="cartbounty-remove-image" <?php if(!$image){echo 'style="display:none"';}?>></a>
+									<a href="#" id="cartbounty-remove-custom-image" class="cartbounty-remove-image" <?php if(!$image){echo 'style="display:none"';}?>></a>
 								</div>
-								<input id="cartbounty_exit_intent_image" type="hidden" name="cartbounty_exit_intent_image" value="<?php if($main_image){echo $main_image;}?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+								<input id="cartbounty-custom-image" type="hidden" name="cartbounty_exit_intent_image" value="<?php if($main_image){echo $main_image;}?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
 							</div>
 						</div>
 					</div>
@@ -915,7 +1317,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the “Add to cart” button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', 'woo-save-abandoned-carts'), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_modify_content', '#modify-exit-intent-content' ) );
+						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', 'woo-save-abandoned-carts'), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_modify_content', '#modify-exit-intent-content' ) );
 					?>
 				</div>
 				<form>
@@ -975,39 +1377,41 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group">
 								<h4><?php echo __('Style', 'woo-save-abandoned-carts'); ?></h4>
-								<div id="cartbounty-early-capture-near-button" class="cartbounty-type">
-									<label class="cartbounty-image" for="cartbounty-radiobutton-center">
-										<em>
-											<i>
-												<svg viewBox="0 0 61 35">
-													<g id="cartbounty-early-capture-popup-group">
-														<path id="cartbounty-near-button-1" d="M58,35H3a3,3,0,0,1-3-3V20a3,3,0,0,1,3-3H9l3-4,3,4H58a3,3,0,0,1,3,3V32A3,3,0,0,1,58,35Z"/>
-														<path id="cartbounty-near-button-2" d="M38.88,27.33H12a1.86,1.86,0,0,1-2-1.67V25.5a1.86,1.86,0,0,1,2-1.67H38.88Z"/>
-														<path id="cartbounty-near-button-3" d="M49.38,27.33H38.5v-3.5H49.38a1.86,1.86,0,0,1,2,1.67v.16A1.86,1.86,0,0,1,49.38,27.33Z"/>
-													</g>
-													<rect id="cartbounty-near-button-4" width="42" height="12" rx="3"/></svg>
-											</i>
-											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
-												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_style_button' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-											</span>
-										</em>
-										<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
-										<?php echo __('Next to button', 'woo-save-abandoned-carts'); ?>
-									</label>
-								</div>
-								<div id="cartbounty-early-capture-center" class="cartbounty-type">
-									<label class="cartbounty-image" for="cartbounty-radiobutton-left">
-										<em>
-											<i>
-												<img src="<?php echo plugins_url( 'assets/early-capture-form-popup.svg', __FILE__ ) ; ?>" title="" alt=""/>
-											</i>
-											<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
-												<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_style_popup' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-											</span>
-										</em>
-										<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
-										<?php echo __('Popup overlay', 'woo-save-abandoned-carts'); ?>
-									</label>
+								<div class="cartbounty-flex-container">
+									<div id="cartbounty-early-capture-near-button" class="cartbounty-type">
+										<label class="cartbounty-image" for="cartbounty-radiobutton-center">
+											<em>
+												<i>
+													<svg viewBox="0 0 61 35">
+														<g id="cartbounty-early-capture-popup-group">
+															<path id="cartbounty-near-button-1" d="M58,35H3a3,3,0,0,1-3-3V20a3,3,0,0,1,3-3H9l3-4,3,4H58a3,3,0,0,1,3,3V32A3,3,0,0,1,58,35Z"/>
+															<path id="cartbounty-near-button-2" d="M38.88,27.33H12a1.86,1.86,0,0,1-2-1.67V25.5a1.86,1.86,0,0,1,2-1.67H38.88Z"/>
+															<path id="cartbounty-near-button-3" d="M49.38,27.33H38.5v-3.5H49.38a1.86,1.86,0,0,1,2,1.67v.16A1.86,1.86,0,0,1,49.38,27.33Z"/>
+														</g>
+														<rect id="cartbounty-near-button-4" width="42" height="12" rx="3"/></svg>
+												</i>
+												<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
+													<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_style_button' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+												</span>
+											</em>
+											<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+											<?php echo __('Next to button', 'woo-save-abandoned-carts'); ?>
+										</label>
+									</div>
+									<div id="cartbounty-early-capture-center" class="cartbounty-type">
+										<label class="cartbounty-image" for="cartbounty-radiobutton-left">
+											<em>
+												<i>
+													<img src="<?php echo plugins_url( 'assets/early-capture-form-popup.svg', __FILE__ ) ; ?>" title="" alt=""/>
+												</i>
+												<span class="cartbounty-exit-intent-additional-style"><?php echo __('Upgrade to enable this style', 'woo-save-abandoned-carts'); ?>
+													<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_style_popup' ); ?>" class="button cartbounty-button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+												</span>
+											</em>
+											<input id="cartbounty-radiobutton-left" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+											<?php echo __('Popup overlay', 'woo-save-abandoned-carts'); ?>
+										</label>
+									</div>
 								</div>
 							</div>
 							<div class="cartbounty-settings-group">
@@ -1112,6 +1516,10 @@ class CartBounty_Admin{
 			'interval' => CARTBOUNTY_EMAIL_INTERVAL * 60,
 			'display' => 'Every '. CARTBOUNTY_EMAIL_INTERVAL .' minutes'
 		);
+		$intervals['cartbounty_sync_interval'] = array( //Defining cron Interval for sending out abandoned carts
+			'interval' => 5 * 60,
+			'display' => 'Every 5 minutes'
+		);
 		$intervals['cartbounty_remove_empty_carts_interval'] = array( //Defining cron Interval for removing abandoned carts that do not have products
 			'interval' => 12 * 60 * 60,
 			'display' => 'Twice a day'
@@ -1153,30 +1561,37 @@ class CartBounty_Admin{
 	 * @since    4.3
 	 */
 	function display_wp_cron_warnings(){
-		$missing_hooks = array();
-		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+		$wordpress = new CartBounty_WordPress();
 
-		if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
-			$missing_hooks[] = 'cartbounty_notification_sendout_hook';
-		}
-		if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
-			$hooks = '';
-			$current = 1;
-			$total = count($missing_hooks);
-			foreach($missing_hooks as $missing_hook){
-				$hooks .= $missing_hook;
-				if ($current != $total){
-					$hooks .= ', ';
-				}
-				$current++;
+		if( $wordpress->automation_enabled() ){ //Check if we have connected to WordPress automation
+			$missing_hooks = array();
+			$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+
+			if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
+				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
 			}
-			$message = sprintf(
-				/* translators: %s - Cron event name */
-				_n('It seems that WP Cron event <strong>%s</strong> required for automation is not scheduled.', 'It seems that WP Cron events <strong>%s</strong> required for automation are not scheduled.', $total, 'woo-save-abandoned-carts' ), $hooks) . ' ' . 
-				sprintf(
-				/* translators: %1$s - Plugin name, %2$s - Link */
-				__('Please try disabling and enabling %1$s plugin. If this notice does not go away after that, please <a href="%2$s" target="_blank">get in touch with us</a>.', 'woo-save-abandoned-carts' ), CARTBOUNTY_ABREVIATION, CARTBOUNTY_SUPPORT_LINK);
-			echo $this->get_notice_output($message, $handle = '', 'warning');
+			if(wp_next_scheduled('cartbounty_sync_hook') === false){
+				$missing_hooks[] = 'cartbounty_sync_hook';
+			}
+			if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
+				$hooks = '';
+				$current = 1;
+				$total = count($missing_hooks);
+				foreach($missing_hooks as $missing_hook){
+					$hooks .= $missing_hook;
+					if ($current != $total){
+						$hooks .= ', ';
+					}
+					$current++;
+				}
+				$message = sprintf(
+					/* translators: %s - Cron event name */
+					_n('It seems that WP Cron event <strong>%s</strong> required for automation is not scheduled.', 'It seems that WP Cron events <strong>%s</strong> required for automation are not scheduled.', $total, 'woo-save-abandoned-carts' ), $hooks) . ' ' . 
+					sprintf(
+					/* translators: %1$s - Plugin name, %2$s - Link */
+					__('Please try disabling and enabling %1$s plugin. If this notice does not go away after that, please <a href="%2$s" target="_blank">get in touch with us</a>.', 'woo-save-abandoned-carts' ), CARTBOUNTY_ABREVIATION, CARTBOUNTY_SUPPORT_LINK);
+				echo $this->get_notice_output($message, $handle = '', 'warning');
+			}
 		}
 		//Checking if WP Cron is enabled
 		if(defined('DISABLE_WP_CRON')){
@@ -1214,19 +1629,37 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Method for sending out email notification in order to notify about new abandoned carts
+	 * Method for sending out email notification in order to notify about new abandoned carts and recovered
 	 *
-	 * @since    4.3
+	 * @since    7.0
 	 */
 	function send_email(){
+		$exclude_recovered_carts = get_option('cartbounty_exclude_recovered');
+		$this->prepare_email( 'recoverable' );
+		if(!$exclude_recovered_carts){ //If we do not exclude recovered carts from emails
+			$this->prepare_email( 'recovered' );
+		}
+	}
+
+	/**
+	 * Method prepares and sends the email
+	 *
+	 * @since    7.0
+	 * @param    string   	$type   	The type of notification email
+	 */
+	private function prepare_email( $type ){
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$time = $this->get_time_intervals();
-		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$where_sentence = $this->get_where_sentence( 'recoverable' );
-		$to = get_option( 'admin_email' );
+		$time_intervals = $this->get_time_intervals();
+		$time = $time_intervals['cart_abandoned'];
+		$where_sentence = $this->get_where_sentence( $type );
+		$cart_count = false;
 
-		// Retrieve from database rows that have not been emailed and are older than 60 minutes
+		if($type == 'recovered'){
+			$time = $time_intervals['cart_recovered'];
+		}
+
+		//Retrieve from database rows that have not been emailed and are older than 60 minutes
 		$cart_count = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(id)
@@ -1236,44 +1669,58 @@ class CartBounty_Admin{
 				cart_contents != '' AND
 				time < %s",
 				0,
-				$time['cart_abandoned']
+				$time
 			)
 		);
 		
-		if ($cart_count){ //If we have new rows in the database
-			$user_settings_email = get_option('cartbounty_notification_email'); //Retrieving email address if the user has entered one
-			if(!empty($user_settings_email)){
-				$to = $user_settings_email;
-			}
-			
-			$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
-			$from = "From: WordPress <" . apply_filters( 'cartbounty_from_email', $sender ) . ">";
-			$blog_name = get_option( 'blogname' );
-			$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
-			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved', 'New abandoned carts saved', $cart_count, 'woo-save-abandoned-carts');
-			$message = sprintf(
-				/* translators: %1$d - Abandoned cart count, %2$s - Plugin name, %3$s - Link, %4$s - Link */
-				_n('Great! You have saved %1$d new recoverable abandoned cart using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', 'Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
-			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
-			
-			//Sending out email
-			wp_mail( esc_html($to), esc_html($subject), $message, $headers );
-			
-			//Update mail_sent status to true with mail_status = 0 and are older than 60 minutes
-			$wpdb->query(
-				$wpdb->prepare(
-					"UPDATE $cart_table
-					SET mail_sent = %d
-					WHERE mail_sent = %d 
-					$where_sentence AND
-					cart_contents != '' AND
-					time < %s",
-					1,
-					0,
-					$time['cart_abandoned']
-				)
-			);
+		if(!$cart_count){
+			return;
 		}
+
+		$to = esc_html(get_option( 'admin_email' ));
+		$user_settings_email = get_option('cartbounty_notification_email'); //Retrieving email address if the user has entered one
+		if(!empty($user_settings_email)){
+			$to = esc_html($user_settings_email);
+			$to_without_spaces = str_replace(' ', '', $to);
+			$to = explode(',', $to_without_spaces);
+		}
+		
+		$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
+		$from = "From: WordPress <" . apply_filters( 'cartbounty_from_email', $sender ) . ">";
+		$blog_name = get_option( 'blogname' );
+		$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
+
+		if($type == 'recovered'){ //In case if we are sending notification email about newly recovered carts
+			$subject = '['.$blog_name.'] '. _n('Bounty! Cart recovered! 🤟', 'Bounty! Carts recovered! 🤑', $cart_count, 'woo-save-abandoned-carts');
+			$message = sprintf(
+			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name, %3$s - Link, %4$s - Link */
+			_n('Excellent! You have recovered %1$d abandoned cart using %2$s. <br/>View it here: <a href="%3$s">%4$s</a>', 'Amazing, you have recovered %1$d abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+
+		}else{
+			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved! 🛒', 'New abandoned carts saved! 🛒', $cart_count, 'woo-save-abandoned-carts');
+			$message = sprintf(
+			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name, %3$s - Link, %4$s - Link */
+			_n('Great! You have saved %1$d new recoverable abandoned cart using %2$s. <br/>View it here: <a href="%3$s">%4$s</a>', 'Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+		}
+
+		$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+		//Sending out email
+		wp_mail( $to, esc_html($subject), $message, $headers );
+
+		//Update mail_sent status to true with mail_status = 0 and are older than 60 minutes
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $cart_table
+				SET mail_sent = %d 
+				WHERE mail_sent = %d
+				$where_sentence AND
+				cart_contents != '' AND
+				time < %s",
+				1,
+				0,
+				$time
+			)
+		);
 	}
 
 	/**
@@ -1373,14 +1820,16 @@ class CartBounty_Admin{
 	 * @param    $options    Options
 	 */
 	function disable_field( $options = array() ){
+		$status = '';
 		if($options){
 			if($options['forced'] == true){
-				return 'disabled=""';
+				$status = 'disabled=""';
 			}
 		}
 		elseif(!current_user_can( 'manage_options' )){
-			return 'disabled=""';
+			$status = 'disabled=""';
 		}
+		return $status;
 	}
 
 	/**
@@ -1389,6 +1838,7 @@ class CartBounty_Admin{
 	 * @since    1.4.2
 	 */
 	function output_bubble_content(){ ?>
+		<?php $bubble_nonce = wp_create_nonce( 'bubble_security' ); ?>
 		<div id="cartbounty-bubbles">
 			<?php if(!get_option('cartbounty_review_submitted')): //Don't output Review bubble if review has been left ?>
 				<div id="cartbounty-review" class="cartbounty-bubble">
@@ -1407,17 +1857,9 @@ class CartBounty_Admin{
 							_n('%s You have already captured %d abandoned cart!', '%s You have already captured %d abandoned carts!', $saved_cart_count , 'woo-save-abandoned-carts' ), $expression['exclamation'], $saved_cart_count ); ?></h2>
 						<p><?php echo __('If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', 'woo-save-abandoned-carts' ); ?></p>
 						<div class="cartbounty-button-row">
-							<form method="post" action="options.php">
-								<?php settings_fields( 'cartbounty-settings-review' ); ?>
-								<a href="<?php echo CARTBOUNTY_REVIEW_LINK; ?>" class="button" target="_blank"><?php echo __("Leave a 5-star rating", 'woo-save-abandoned-carts' ); ?></a>
-								<?php submit_button(__('Done that', 'woo-save-abandoned-carts'), 'cartbounty-review-submitted', false, false); ?>
-								<input id="cartbounty_review_submitted" type="hidden" name="cartbounty_review_submitted" value="1" />
-							</form>
-							<form method="post" action="options.php">
-								<?php settings_fields( 'cartbounty-settings-declined' ); ?>
-								<?php submit_button(__('Close', 'woo-save-abandoned-carts'), 'cartbounty-close', false, false); ?>
-								<input id="cartbounty_times_review_declined" type="hidden" name="cartbounty_times_review_declined" value="<?php echo get_option('cartbounty_times_review_declined') + 1; // Retrieving how many times review has been declined and updates the count in database by one ?>" />
-							</form>
+							<a href="<?php echo CARTBOUNTY_REVIEW_LINK; ?>" class="button" target="_blank"><?php echo __("Leave a 5-star rating", 'woo-save-abandoned-carts'); ?></a>
+							<button type="button" class='button cartbounty-review-submitted cartbounty-bubble-close' data-operation='submitted' data-type='review' data-nonce='<?php echo $bubble_nonce; ?>'><?php echo __('Done that', 'woo-save-abandoned-carts'); ?></button>
+							<button type="button" class='button cartbounty-close cartbounty-bubble-close' data-operation='declined' data-type='review' data-nonce='<?php echo $bubble_nonce; ?>'><?php echo __('Close', 'woo-save-abandoned-carts'); ?></button>
 						</div>
 					</div>
 				</div>
@@ -1429,16 +1871,12 @@ class CartBounty_Admin{
 					</a>
 				</div>
 				<div id="cartbounty-go-pro-content">
-					<form method="post" action="options.php">
-						<?php settings_fields( 'cartbounty-settings-time' ); ?>
-						<h2><?php echo __('Automate your abandoned cart recovery workflow and get back to those lovely cat videos (:', 'woo-save-abandoned-carts' ); ?></h2>
-						<p><?php echo __('Use your time wisely by enabling Pro features and increase your sales.', 'woo-save-abandoned-carts' ); ?></p>
-						<div class="cartbounty-button-row">
-							<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ); ?>" class="button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-							<?php submit_button(__('Not now', 'woo-save-abandoned-carts'), 'cartbounty-close', false, false); ?>
-						</div>
-						<input id="cartbounty_last_time_bubble_displayed" type="hidden" name="cartbounty_last_time_bubble_displayed" value="<?php echo current_time('mysql'); //Set activation time when we last displayed the bubble to current time so that next time it would display after a specified period of time ?>" />
-					</form>
+					<h2><?php echo __('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos (:', 'woo-save-abandoned-carts' ); ?></h2>
+					<p><?php echo __('Use your time wisely by enabling Pro features and increase your sales.', 'woo-save-abandoned-carts' ); ?></p>
+					<div class="cartbounty-button-row">
+						<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ); ?>" class="button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+						<button type="button" class='button cartbounty-close cartbounty-bubble-close' data-operation='declined' data-type='upgrade' data-nonce='<?php echo $bubble_nonce; ?>'><?php echo __('Not now', 'woo-save-abandoned-carts'); ?></button>
+					</div>
 				</div>
 			</div>
 			<?php echo $this->draw_bubble(); ?>
@@ -1452,7 +1890,8 @@ class CartBounty_Admin{
 	 * @since 	1.3
 	 */
 	function draw_bubble(){
-
+		$display_bubble = false;
+		$bubble_type = false;
 		//Checking if we should display the Review bubble or Get Pro bubble
 		//Displaying review bubble after 10, 30, 100, 300, 500 and 1000 abandoned carts have been captured and if the review has not been submitted
 		if(
@@ -1468,8 +1907,6 @@ class CartBounty_Admin{
 		}elseif($this->total_cartbounty_recoverable_cart_count() > 5 && $this->days_have_passed('cartbounty_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the user has deleted more than 10 abandoned carts the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
 			$bubble_type = '#cartbounty-go-pro';
 			$display_bubble = true; //Show the bubble
-		}else{
-			$display_bubble = false; //Don't show the bubble just yet
 		}
 		
 		if($display_bubble){ //Check ff we should display the bubble ?>
@@ -1482,11 +1919,6 @@ class CartBounty_Admin{
 					setTimeout(function() {
 						bubble.css({top:"60px", right: "50px"});
 					}, 2500);
-						
-					//Handles close button action
-					close.click(function(){
-						bubble.css({top:"-600px", right: "50px"});
-					});
 				});
 			</script>
 			<?php
@@ -1494,6 +1926,38 @@ class CartBounty_Admin{
 			//Do nothing
 			return;
 		}
+	}
+
+	/**
+	 * Handles bubble button actions
+	 *
+	 * @since    7.0
+	 */
+	function handle_bubble(){
+		if ( check_ajax_referer( 'bubble_security', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing function
+			wp_send_json_error(__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
+		}
+		if(isset($_POST['type'])){
+			if($_POST['type'] == 'review'){ //If we are handling review bubble
+				//Check what button has been pressed and what should we do next
+				if(isset($_POST['operation'])){
+					if($_POST['operation'] == 'submitted'){
+						update_option( 'cartbounty_review_submitted', 1 ); //Update option that the review has been added
+						wp_send_json_success();
+					}elseif($_POST['operation'] == 'declined'){
+						update_option( 'cartbounty_times_review_declined', get_option('cartbounty_times_review_declined') + 1 ); //Update declined count by one
+						wp_send_json_success();
+					}
+				}
+			}
+			if($_POST['type'] == 'upgrade'){ //If we are handling upgrade bubble
+				if($_POST['operation'] == 'declined'){
+					update_option( 'cartbounty_last_time_bubble_displayed', current_time('mysql') ); //Update option that the upgrade bubble has been declined
+					wp_send_json_success();
+				}
+			}
+		}
+		wp_send_json_error(__( 'Something is wrong.', 'woo-save-abandoned-carts' ));
 	}
 
 	/**
@@ -1507,7 +1971,6 @@ class CartBounty_Admin{
 			$captured_abandoned_cart_count = get_option('cartbounty_recoverable_cart_count');
 			set_transient( 'cartbounty_recoverable_cart_count', $captured_abandoned_cart_count, 60 * 10 ); //Temporary cache will expire in 10 minutes
 		}
-		
 		return $captured_abandoned_cart_count;
 	}
 
@@ -1581,7 +2044,10 @@ class CartBounty_Admin{
 							'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
 							'time'			=>	sanitize_text_field( $cart['current_time'] )
 						),
-						array('session_id' => $cart['session_id']),
+						array(
+							'session_id' => $cart['session_id'],
+							'type' 		 => NULL
+						),
 						array('%s', '%s'),
 						array('%s')
 					)
@@ -1739,8 +2205,98 @@ class CartBounty_Admin{
 			$svg = '<svg style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.96 70"><path d="M49.61,33.08a5.41,5.41,0,0,1,1.45,0,4.92,4.92,0,0,0,.07-2.75c-.34-1.66-.82-2.67-1.79-2.52s-1,1.37-.66,3a5.7,5.7,0,0,0,.93,2.24Z"/><path d="M41.26,34.4c.69.3,1.12.5,1.29.33s.07-.32-.09-.59a4,4,0,0,0-1.8-1.45,4.88,4.88,0,0,0-4.78.57c-.47.34-.91.81-.84,1.1,0,.09.09.16.25.19a27.75,27.75,0,0,1,3.27-.73,5.65,5.65,0,0,1,2.7.58Z"/><path d="M39.85,35.2a3.23,3.23,0,0,0-1.72.72,1.1,1.1,0,0,0-.45.69.19.19,0,0,0,.07.16.2.2,0,0,0,.15.06,2.81,2.81,0,0,0,.67-.18,5.74,5.74,0,0,1,2.92-.31c.45,0,.67.08.77-.07a.26.26,0,0,0,0-.29,2.62,2.62,0,0,0-2.38-.78Z"/><path d="M46.79,38.13a1.13,1.13,0,0,0,1.52-.26c.22-.45-.1-1.06-.72-1.37a1.13,1.13,0,0,0-1.52.27,1.11,1.11,0,0,0,.72,1.36Z"/><path d="M50.75,34.67c-.5,0-.92.54-.93,1.23s.39,1.25.89,1.26.91-.55.93-1.23-.39-1.25-.89-1.26Z"/><path d="M17.14,47c-.12-.15-.33-.1-.53-.06a2.11,2.11,0,0,1-.46.07,1,1,0,0,1-.86-.44,1.59,1.59,0,0,1,0-1.47,2,2,0,0,1,.12-.26c.4-.9,1.07-2.41.31-3.85a3.38,3.38,0,0,0-2.6-1.89,3.34,3.34,0,0,0-2.87,1,4.14,4.14,0,0,0-1.07,3.47c.08.22.2.28.29.29s.47-.11.64-.58a.86.86,0,0,0,0-.15,5,5,0,0,1,.46-1.08,2,2,0,0,1,1.26-.87,2,2,0,0,1,1.53.29,2,2,0,0,1,.74,2.36A5.58,5.58,0,0,0,13.8,46a2.11,2.11,0,0,0,1.87,2.16,1.59,1.59,0,0,0,1.5-.75.31.31,0,0,0,0-.37Z"/><path d="M24.76,19.66a31,31,0,0,1,8.71-7.12.11.11,0,0,1,.15.15,8.56,8.56,0,0,0-.81,2,.12.12,0,0,0,.18.12,17,17,0,0,1,7.65-2.7.13.13,0,0,1,.08.22,6.6,6.6,0,0,0-1.21,1.21.12.12,0,0,0,.1.18A15.09,15.09,0,0,1,46,15.38c.12.06,0,.3-.1.27a25.86,25.86,0,0,0-11.58,0,26.57,26.57,0,0,0-9.41,4.15.11.11,0,0,1-.15-.17Zm13,29.25Zm10.78,1.27a.21.21,0,0,0,.12-.2.2.2,0,0,0-.22-.18,24.86,24.86,0,0,1-10.84-1.1c.57-1.87,2.1-1.19,4.4-1a32.17,32.17,0,0,0,10.64-1.15,24.28,24.28,0,0,0,8-3.95,16,16,0,0,1,1.11,3.78,1.86,1.86,0,0,1,1.17.22c.5.31.87.95.62,2.61a14.39,14.39,0,0,1-4,7.93,16.67,16.67,0,0,1-4.86,3.63,20,20,0,0,1-3.17,1.34c-8.35,2.73-16.9-.27-19.65-6.71a9.46,9.46,0,0,1-.55-1.52,13.36,13.36,0,0,1,2.93-12.54h0a1.09,1.09,0,0,0,.39-.75,1.27,1.27,0,0,0-.3-.7c-1.09-1.59-4.86-4.28-4.11-9.49C30.68,26.64,34,24,37,24.16l.77,0c1.33.08,2.48.25,3.57.3a7.19,7.19,0,0,0,5.41-1.81,4.13,4.13,0,0,1,2.07-1.17,2.71,2.71,0,0,1,.79-.08,2.68,2.68,0,0,1,1.33.43c1.56,1,1.78,3.55,1.86,5.38,0,1.05.17,3.58.21,4.31.1,1.67.54,1.9,1.42,2.19.5.17,1,.29,1.65.48a9.31,9.31,0,0,1,4,1.92,2.56,2.56,0,0,1,.74,1.45c.24,1.77-1.38,4-5.67,5.95a28.69,28.69,0,0,1-14.3,2.29l-1.37-.15c-3.15-.43-4.94,3.63-3,6.42,1.21,1.79,4.52,3,7.84,3,7.59,0,13.43-3.24,15.6-6l.17-.24c.11-.16,0-.25-.11-.16-1.77,1.21-9.66,6-18.08,4.58a11.38,11.38,0,0,1-2-.53c-.75-.29-2.3-1-2.49-2.6,6.8,2.1,11.09.11,11.09.11ZM11.18,34a9.06,9.06,0,0,0-5.72,3.65A15.45,15.45,0,0,1,3,35.33C1,31.46,5.24,24,8.22,19.7c7.35-10.49,18.86-18.43,24.19-17,.86.25,3.73,3.58,3.73,3.58a74.88,74.88,0,0,0-10.26,7.07A46.63,46.63,0,0,0,11.18,34Zm4,17.73a5,5,0,0,1-1.09.08c-3.56-.09-7.41-3.3-7.79-7.1-.42-4.2,1.72-7.43,5.52-8.2a6.67,6.67,0,0,1,1.6-.11c2.13.11,5.27,1.75,6,6.39.64,4.11-.37,8.29-4.22,8.94Zm48.22-7.43c0-.11-.23-.84-.51-1.71a13.28,13.28,0,0,0-.55-1.49,5.47,5.47,0,0,0,1-3.94,5,5,0,0,0-1.45-2.81,11.64,11.64,0,0,0-5.11-2.53l-1.3-.36c0-.06-.07-3.07-.13-4.37a15,15,0,0,0-.57-3.84,10.35,10.35,0,0,0-2.66-4.74c3.24-3.36,5.27-7.06,5.26-10.24,0-6.11-7.51-8-16.76-4.13l-2,.83L35,1.47c-10.54-9.2-43.51,27.44-33,36.34l2.31,1.95A11.32,11.32,0,0,0,3.71,45,10.3,10.3,0,0,0,7.27,51.6a10.86,10.86,0,0,0,7,2.81C18.35,63.86,27.72,69.66,38.71,70c11.78.35,21.68-5.18,25.82-15.11A20.84,20.84,0,0,0,66,48.26c0-2.79-1.58-3.94-2.58-3.94Z"/></svg>';
 		}
 
+		elseif( $icon == 'wordpress' ){
+			$svg = '<svg style="fill: '. $color .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><path d="M35,0A35,35,0,1,0,70,35,35,35,0,0,0,35,0M3.53,35A31.33,31.33,0,0,1,6.26,22.19l15,41.13A31.48,31.48,0,0,1,3.53,35M35,66.47a31.42,31.42,0,0,1-8.89-1.28l9.44-27.44,9.67,26.5a3.45,3.45,0,0,0,.23.43A31.21,31.21,0,0,1,35,66.47m4.34-46.22c1.89-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-3.09,0-8.29-.4-8.29-.4a1.3,1.3,0,0,0-.2,2.6s1.61.2,3.3.3l4.91,13.43L27.18,54.33,15.72,20.25c1.9-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-.59,0-1.28,0-2,0a31.46,31.46,0,0,1,47.54-5.92l-.41,0a5.44,5.44,0,0,0-5.28,5.58c0,2.6,1.49,4.79,3.09,7.38a16.66,16.66,0,0,1,2.59,8.68c0,2.69-1,5.82-2.39,10.17L50.71,54.07Zm23.27-.35A31.46,31.46,0,0,1,50.82,62.2l9.61-27.79a29.62,29.62,0,0,0,2.39-11.27,23.42,23.42,0,0,0-.21-3.24"/></svg>';
+		}
+
 		return "<span class='cartbounty-icon-container cartbounty-icon-$icon'><img src='data:image/svg+xml;base64," . base64_encode($svg) . "' alt='" . $icon . "' /></span>";
     }
+
+    /**
+	 * Method reads GET parameter from the link to restore the cart
+	 * At first all products from the cart are removed and then populated with those that were previously saved
+	 *
+	 * @since    7.0
+	 */
+	function restore_cart(){
+		global $wpdb;
+
+		//Checking if GET argument is present in the link. If not, exit function
+		if (empty( $_GET['cartbounty'])){
+			return;
+		}
+		
+		//Processing GET parameter from the link
+		$hash_id = sanitize_text_field($_GET['cartbounty']); //Getting and sanitizing GET value from the link
+		$parts = explode('-', $hash_id); //Splitting GET value into hash and ID
+		$hash = $parts[0];
+		$id = $parts[1];
+
+		//Retrieve row from the abandoned cart table in order to check if hashes match
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$row = $wpdb->get_row($wpdb->prepare(
+			"SELECT id, email, cart_contents, session_id
+			FROM $cart_table
+			WHERE id = %d AND
+			type = 0",
+			$id)
+		);
+
+		if(empty($row)){ //Exit function if no row found
+			return;
+		}
+
+		//Checking if hashes match
+		$row_hash = hash_hmac('sha256', $row->email . $row->session_id, CARTBOUNTY_ENCRYPTION_KEY); //Building encrypted hash from the row
+		if(!hash_equals($hash, $row_hash)){ //If hashes do not match, exit function
+			return;
+		}
+
+		//If we have received an Unsubscribe request - stop restoring cart and unsubscribe user instead
+		if (isset( $_GET['cartbounty-unsubscribe'])){
+			$wordpress = new CartBounty_WordPress();
+			$wordpress->unsubscribe_user( $id );
+			wp_die( __('You have successfully unsubscribed from further emails about your shopping cart.', 'woo-save-abandoned-carts'), __( 'Successfully unsubscribed', 'woo-save-abandoned-carts'), $args = array( 'link_url' => get_site_url(), 'link_text' => __( 'Return to store', 'woo-save-abandoned-carts') ) );
+		}
+		
+		//Restore our cart with previous products
+		if( WC()->cart ){ //Checking if WooCommerce has loaded
+			WC()->cart->empty_cart();//Removing any products that might have be added in the cart
+			
+			$products = @unserialize($row->cart_contents);
+			if(!$products){ //If missing products
+				return;
+			}
+
+			foreach($products as $product){ //Looping through cart products
+				$product_exists = wc_get_product($product['product_id']); //Checking if the product exists
+				if($product_exists){
+					//Get product variation attributes if present
+					if($product['product_variation_id']){
+						$single_variation = new WC_Product_Variation($product['product_variation_id']);
+						$single_variation_data = $single_variation->get_data();
+					
+						//Handling variable product title output with attributes
+						$variation_attributes = $single_variation->get_variation_attributes();
+					}else{
+						$variation_attributes = '';
+					}
+					
+					$restore = WC()->cart->add_to_cart( $product['product_id'], $product['quantity'], $product['product_variation_id'], $variation_attributes); //Adding previous products back to cart
+				}
+			}
+
+			//Restore previous session id because we want the user abandoned cart data to be in sync
+			//Starting session in order to check if we have to insert or update database row with the data from input boxes
+			WC()->session->set('cartbounty_session_id', $row->session_id); //Putting previous customer ID back to WooCommerce session
+			WC()->session->set('cartbounty_from_link', true); //Setting a marker that current user arrived from email
+		}
+		
+		//Redirecting user to Checkout page
+		$checkout_url = wc_get_checkout_url();
+		wp_redirect( $checkout_url, '303' );
+		exit();
+	}
 
     /**
 	 * Method tries to move the email field higher in the checkout form
@@ -1762,16 +2318,25 @@ class CartBounty_Admin{
 	 *
 	 * @since    4.6
 	 * @return 	 Array
+	 * @param    integer     $interval    		  	  Time interval that has to be waited for in minues
+	 * @param    boolean     $first_step    		  Wheather function requested during the first step of WordPress automation. Default false
 	 */
-	public function get_time_intervals(){
+	public function get_time_intervals( $interval = false, $first_step = false ){
 		$waiting_time = $this->get_waiting_time();
+
+		if($first_step){ //In case if we need to get WordPress first automation step time interval, we must add additional time the cart was waiting to be recognized as abandoned
+			$interval = $interval + $waiting_time;
+		}
 
 		//Calculating time intervals
 		$datetime = current_time( 'mysql' );
 		return array(
 			'cart_abandoned' 	=> date( 'Y-m-d H:i:s', strtotime( '-' . $waiting_time . ' minutes', strtotime( $datetime ) ) ),
+			'cart_recovered' 	=> date( 'Y-m-d H:i:s', strtotime( '-30 seconds', strtotime( $datetime ) ) ),
 			'old_cart' 			=> date( 'Y-m-d H:i:s', strtotime( '-' . CARTBOUNTY_NEW_NOTICE . ' minutes', strtotime( $datetime ) ) ),
-			'day' 				=> date( 'Y-m-d H:i:s', strtotime( '-1 day', strtotime( $datetime ) ) )
+			'day' 				=> date( 'Y-m-d H:i:s', strtotime( '-1 day', strtotime( $datetime ) ) ),
+			'wp_step_send_period' 		=> date( 'Y-m-d H:i:s', strtotime( '-' . $interval . ' minutes', strtotime( $datetime ) ) ),
+			'maximum_sync_period'		=> date( 'Y-m-d H:i:s', strtotime( '-' . CARTBOUNTY_MAX_SYNC_PERIOD . ' days', strtotime( $datetime ) ) )
 		);
 	}
 
@@ -1829,7 +2394,8 @@ class CartBounty_Admin{
     	$cart_types = array(
     		'all' 			=> __('All', 'woo-save-abandoned-carts'),
     		'recoverable' 	=> __('Recoverable', 'woo-save-abandoned-carts'),
-    		'ghost' 		=> __('Ghost', 'woo-save-abandoned-carts')
+    		'ghost' 		=> __('Ghost', 'woo-save-abandoned-carts'),
+    		'recovered' 	=> __('Recovered', 'woo-save-abandoned-carts')
     	);
     	$total_items = count($cart_types);
     	if(count($cart_types) <= 3 && $exclude){ //Do not output the filter if we are excluding Ghost carts and we have only 3 cart types
@@ -1861,10 +2427,13 @@ class CartBounty_Admin{
 		$where_sentence = '';
 
 		if($cart_status == 'recoverable'){
-			$where_sentence = "AND (email != '' OR phone != '')";
+			$where_sentence = "AND (email != '' OR phone != '') AND type != 1";
 
 		}elseif($cart_status == 'ghost'){
-			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = ''))";
+			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != 1";
+
+		}elseif($cart_status == 'recovered'){
+			$where_sentence = "AND type = 1";
 
 		}elseif(get_option('cartbounty_exclude_ghost_carts')){ //In case Ghost carts have been excluded
 			$where_sentence = "AND (email != '' OR phone != '')";
@@ -1872,6 +2441,102 @@ class CartBounty_Admin{
 
 		return $where_sentence;
     }
+
+    /**
+	 * Method handles "Force sync" button functionality
+	 *
+	 * @since    7.0
+	 * @return 	 Boolean
+	 */
+	public function force_sync(){
+		$data = $_POST;
+		if ( check_ajax_referer( 'force_sync', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the import
+	        wp_send_json_error(__( 'Sync failed. Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
+	    }
+
+	    if($data['integration'] == 'wordpress'){
+	    	$wordpress = new CartBounty_WordPress();
+			$wordpress->auto_send();
+	    }
+		wp_send_json_success( __("Sync finished", 'woo-save-abandoned-carts' ));
+	}
+
+	/**
+	 * Method displays the Force sync button
+	 *
+	 * @since    7.0
+	 * @return 	 String
+	 */
+	public function display_force_sync_button( $integration ){
+		if( !$integration ){
+			return;
+		}
+
+		$button_name = __('Force send', 'woo-save-abandoned-carts');
+		$nonce = wp_create_nonce( 'force_sync' );
+		$button = "<a id='force_sync' class='cartbounty-button button button-secondary' href='#' data-integration='". $integration ."' data-nonce='". $nonce ."'>". $button_name ."</a>";
+		return $button;
+	}
+
+	/**
+	 * Method creates abandoned cart URL that is used to restore the shopping cart
+	 *
+	 * @since    7.0
+	 * @return   string
+	 */
+	public function create_cart_url( $email, $session_id, $cart_id ){
+		$cart_url = wc_get_cart_url();
+		$hash = hash_hmac('sha256', $email . $session_id, CARTBOUNTY_ENCRYPTION_KEY) . '-' . $cart_id; //Creating encrypted hash with abandoned cart row ID in the end
+		return $checkout_url = $cart_url . '?cartbounty=' . $hash;
+	}
+
+	/**
+	 * Method updates cart type accoringly
+	 * In future might add additional statuses e.g. 2, 3, 4 etc.
+	 *
+	 * @since    7.0
+	 * @param    string    	$session_id		Session ID
+	 * @param    integer   	$type			Cart status type 0 = default, 1 = recovered
+	 */
+	function update_cart_type( $session_id, $type ){
+		if($session_id){
+			if($type == 1){ //If order should be marked as recovered
+				$this->update_cart_recovered($session_id, $type);
+			}
+		}
+	}
+
+	/**
+	 * Method updates recovered cart so that it would no longer be synced
+	 * Increasing a total number of recovered carts
+	 *
+	 * @since    7.0
+	 * @param    string		$session_id		Session ID
+	 * @param    array   	$cart			Cart values
+	 */
+	function update_cart_recovered( $session_id, $type ){
+		global $wpdb;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+
+		//Update cart row according to what the cart has been synced to before
+		$wpdb->prepare('%s',
+			$wpdb->update(
+				$cart_table,
+				array(
+					'type'		=> sanitize_text_field($type)
+				),
+				array(
+					'session_id'	=> $session_id
+				),
+				array('%d'),
+				array('%s')
+			)
+		);
+
+		//Increase total
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$public->increase_recovered_cart_count();
+	}
 
     /**
 	 * Handling abandoned carts in case of a new order is placed
@@ -1882,6 +2547,14 @@ class CartBounty_Admin{
 	function handle_order( $order_id ){
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$public->update_logged_customer_id(); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
+		if(WC()->session){ //If session exists
+			if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
+				$cart = $public->read_cart();
+				if(isset($cart['session_id'])){
+					$this->update_cart_type($cart['session_id'], 1); //Update cart type to recovered
+				}
+			}
+		}
 		$this->clear_cart_data(); //Clearing abandoned cart after it has been synced
 	}
 
@@ -1899,7 +2572,6 @@ class CartBounty_Admin{
 		if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
 			return;
 		}
-
 	    return "$classes " . CARTBOUNTY_PLUGIN_NAME_SLUG;
 	}
 
