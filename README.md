@@ -315,10 +315,13 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Screenshots
 
-![Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "Location of the CartBounty - Save and recover abandoned carts for WooCommerce plugin after activation")
-![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.jpg "Exit Intent popup settings tab")
-![Email notification settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.jpg "Email notification settings tab")
-![How Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.gif "How Exit Intent popup looks like once the user tries to leave the shop")
+![Location of CartBounty after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "Location of CartBounty after activation")
+![Automated abandoned cart recovery using WordPress email reminders](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.jpg "Automated abandoned cart recovery using WordPress email reminders")
+![WordPress recovery email settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.jpg "WordPress recovery email settings")
+![WordPress recovery email preview](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.jpg "WordPress recovery email preview")
+![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-5.jpg "Exit Intent popup settings tab")
+![General settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-6.jpg "General settings tab")
+![How Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-7.gif "How Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
 
