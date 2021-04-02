@@ -7,7 +7,6 @@
 #cartbounty-exit-intent-close,
 #cartbounty-exit-intent-submit{
 	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
-	-webkit-transition: 	all .3s cubic-bezier(.38,1.09,.5,.98);
 	-moz-transition: 		all .3s cubic-bezier(.38,1.09,.5,.98);
 	-o-transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
 	transition: 			all .3s cubic-bezier(.38,1.09,.5,.98);
@@ -36,7 +35,6 @@
 	display: block;
 	visibility: hidden;
 	cursor: pointer;
-	-webkit-transition: 	all .6s cubic-bezier(.38,1.09,.5,.98);
 	-webkit-transition: 	all .6s cubic-bezier(.38,1.09,.5,.98);
 	-moz-transition: 		all .6s cubic-bezier(.38,1.09,.5,.98);
 	-o-transition: 			all .6s cubic-bezier(.38,1.09,.5,.98);

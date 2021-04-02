@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 7.0.1 =
+* Fixed cart removal bug after a new order created
+
 = 7.0 =
 * Added WordPress recovery option for sending simple abandoned cart recovery emails
 * Added abandoned cart statuses (Shopping, New, Recovered and WP)

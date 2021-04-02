@@ -325,10 +325,8 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0
+##### 7.0.1
 
-* Added WordPress recovery option for sending simple abandoned cart recovery emails
-* Added abandoned cart statuses (Shopping, New, Recovered and WP)
-* Added option for users with Shop manager role to close bubble window
+* Fixed cart removal bug after a new order created
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

@@ -2046,7 +2046,7 @@ class CartBounty_Admin{
 						),
 						array(
 							'session_id' => $cart['session_id'],
-							'type' 		 => NULL
+							'type' 		 => 0
 						),
 						array('%s', '%s'),
 						array('%s')
