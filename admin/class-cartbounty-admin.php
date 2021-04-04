@@ -615,7 +615,7 @@ class CartBounty_Admin{
     			$link = '#';
     		}
 
-	    	echo "<li $availability_class><a href='$link' title='". $section['name']. "' $class>". $this->get_icon( $key, $active_section, true, false) ." <span class='cartbounty-section-name'>". $section['name']. "</span>". $this->get_connection( $section['connected'], false, false ) ."</a></li>";
+	    	echo "<li $availability_class><a href='$link' title='". $section['name']. "' $class>". $this->get_icon( $key, $active_section, true, false) ." <span class='cartbounty-section-name'>". $section['name']. "</span>". $this->get_connection( $section['connected'], $text = false, false ) ."</a></li>";
     	}
     	echo '</ul>';
 

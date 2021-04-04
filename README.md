@@ -325,8 +325,8 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.1
+##### 7.0.1.1
 
-* Fixed cart removal bug after a new order created
+* Improved abandoned cart capture compatibility with various WordPress themes
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

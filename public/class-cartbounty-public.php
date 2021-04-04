@@ -224,16 +224,17 @@ class CartBounty_Public{
 			$this->update_cart_data($cart);
 
 		}else{
-			if(is_user_logged_in() && !$this->cart_identifiable()){ //In cases when a user is signed in and he has no cart saved that can be identified
-				$this->update_cart_and_user_data($cart, $user_data);
-
-			}elseif(!isset($_POST["action"])){ //In case the update is not coming from input fields, update just cart related data
-				$this->update_cart_data($cart);
-
+			if(isset($_POST["action"])){
+				if($_POST["action"] == 'cartbounty_save'){ //In case update is coming from input form, update both cart and user data
+					$this->update_cart_and_user_data($cart, $user_data);
+				}else{
+					$this->update_cart_data($cart);
+				}
 			}else{
-				$this->update_cart_and_user_data($cart, $user_data);
+				$this->update_cart_data($cart);
 			}
 		}
+
 		$this->set_cartbounty_session($cart['session_id']);
 	}
 
