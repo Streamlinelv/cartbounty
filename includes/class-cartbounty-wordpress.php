@@ -859,6 +859,7 @@ class CartBounty_WordPress{
 	* @param    string    $field    		  Field that should be sanitized
 	*/
 	public function sanitize_field( $field ){
+		$field = str_replace('"', '', $field);
 		return wp_specialchars_decode( sanitize_text_field( wp_unslash( $field ) ), ENT_NOQUOTES );
 	}
 
