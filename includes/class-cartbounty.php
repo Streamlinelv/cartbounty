@@ -125,30 +125,32 @@ class CartBounty{
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $admin, 'cartbounty_menu', 10 ); //Creates admin menu
+		$this->loader->add_action( 'admin_menu', $admin, 'cartbounty_menu', 10 );
 		$this->loader->add_action( 'admin_head', $admin, 'menu_abandoned_count' );
 		$this->loader->add_action( 'admin_head', $admin, 'register_admin_tabs' );
-		$this->loader->add_action( 'admin_head', $admin, 'save_page_options' ); //Saving Screen options
+		$this->loader->add_action( 'admin_head', $admin, 'save_page_options' );
 		$this->loader->add_action( 'plugins_loaded', $admin, 'check_current_plugin_version' );
-		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 ); //Adds additional links on Plugin page
-		$this->loader->add_action( 'cartbounty_after_page_title', $admin, 'output_bubble_content' ); //Hooks into hook in order to output bubbles
-		$this->loader->add_action( 'init', $admin, 'cartbounty_text_domain' ); //Adding language support
+		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 );
+		$this->loader->add_action( 'cartbounty_after_page_title', $admin, 'output_bubble_content' );
+		$this->loader->add_action( 'init', $admin, 'cartbounty_text_domain' );
 		$this->loader->add_filter( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
-		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' ); //Ads a filter to set new interval for Wordpress cron function
+		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' );
 		$this->loader->add_filter( 'cartbounty_sync_hook', $wordpress, 'auto_send' );
 		$this->loader->add_filter( 'update_option_cartbounty_notification_frequency', $admin, 'notification_sendout_interval_update' );
-		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' ); //Output admin notices if necessary
-		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' ); //Hooks into Wordpress cron event to launch function for sending out emails
-		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_email_field', 10, 1 ); //Moves email field in the checkout higher to capture more abandoned carts
-		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 ); //Handling order once it has been processed
-		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' ); //Handles clearing of abandoned cart in case a registered user changes his account data like Name, Surname, Location etc.
-		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' ); //Adding CartBounty class to the body tag
-		$this->loader->add_action( 'wp_loaded', $admin, 'restore_cart' ); //Restoring abandoned cart if a user returns back from an abandoned cart email link
-		$this->loader->add_action( 'wp_ajax_force_sync', $admin, 'force_sync' ); //Handles Force Sync button Ajax action for logged in users
+		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' );
+		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' );
+		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_email_field', 10, 1 );
+		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 );
+		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' );
+		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' );
+		$this->loader->add_action( 'wp_loaded', $admin, 'restore_cart' );
+		$this->loader->add_action( 'wp_ajax_force_sync', $admin, 'force_sync' );
 		$this->loader->add_action( 'wp_ajax_get_system_status', $status, 'get_system_status' );
+		$this->loader->add_action( 'update_option_cartbounty_automation_steps', $wordpress, 'validate_automation_steps', 50);
+		$this->loader->add_action( 'update_option_cartbounty_automation_from_name', $wordpress, 'sanitize_from_field', 50);
 		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
 		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
-		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' ); //Handle bubble buttons
+		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' );
 	}
 
 	/**
@@ -165,19 +167,19 @@ class CartBounty{
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
-		$this->loader->add_action( 'woocommerce_before_checkout_form', $public, 'add_additional_scripts_on_checkout' ); //Adds additional functionality only to Checkout page
-		$this->loader->add_action( 'wp_ajax_nopriv_cartbounty_save', $public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the email or Phone field in Checkout form
-		$this->loader->add_action( 'wp_ajax_cartbounty_save', $public, 'save_cart' ); //Handles data saving using Ajax after any changes made by the user on the email field for Logged in users
-		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 ); //Handles data saving if an item is added to shopping cart, 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 ); //Handles data updating if a cart is updated. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 ); //Handles data updating if an item is removed from cart. 200 = priority set to run the function last after all other functions are finished
-		$this->loader->add_filter( 'woocommerce_checkout_fields', $public, 'restore_input_data', 1 ); //Restoring previous user input in Checkout form
-		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in the footer of the page
-		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is not logged in
-		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' ); //Outputing the exit intent form in case if Ajax Add to Cart button pressed if the user is logged in
-		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action
-		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' ); //Checking if we have an empty cart in case of Ajax action if the user is logged in
-		$this->loader->add_action( 'cartbounty_automation_footer_end', $wordpress, 'add_email_badge', 100 ); //Restoring previous user input in Checkout form
+		$this->loader->add_action( 'woocommerce_before_checkout_form', $public, 'add_additional_scripts_on_checkout' );
+		$this->loader->add_action( 'wp_ajax_nopriv_cartbounty_save', $public, 'save_cart' );
+		$this->loader->add_action( 'wp_ajax_cartbounty_save', $public, 'save_cart' );
+		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 );
+		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 );
+		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 );
+		$this->loader->add_filter( 'woocommerce_checkout_fields', $public, 'restore_input_data', 1 );
+		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' );
+		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $public, 'display_exit_intent_form' );
+		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' );
+		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' );
+		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' );
+		$this->loader->add_action( 'cartbounty_automation_footer_end', $wordpress, 'add_email_badge', 100 );
 	}
 
 	/**

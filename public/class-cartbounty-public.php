@@ -225,7 +225,7 @@ class CartBounty_Public{
 
 		}else{
 			if(isset($_POST["action"])){
-				if($_POST["action"] == 'cartbounty_save'){ //In case update is coming from input form, update both cart and user data
+				if($_POST["action"] == 'cartbounty_save'){
 					$this->update_cart_and_user_data($cart, $user_data);
 				}else{
 					$this->update_cart_data($cart);
@@ -614,8 +614,12 @@ class CartBounty_Public{
 			$product_title = $item->get_title();
 			$product_quantity = $values['quantity'];
 			$product_variation_price = '';
+			$product_tax = '';
 			if(isset($values['line_total'])){
 				$product_variation_price = $values['line_total'];
+			}
+			if(isset($values['line_tax'])){ //If we have taxes, add them to the price
+				$product_tax = $values['line_tax'];
 			}
 			
 			// Handling product variations
@@ -636,7 +640,8 @@ class CartBounty_Public{
 				'quantity' => $product_quantity,
 				'product_id' => $values['product_id'],
 				'product_variation_id' => $product_variation_id,
-				'product_variation_price' => $product_variation_price
+				'product_variation_price' => $product_variation_price,
+				'product_tax' => $product_tax
 			);
 		}
 

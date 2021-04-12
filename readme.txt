@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.7
-Stable tag: 7.0.1.1
+Stable tag: 7.0.2
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -179,6 +179,7 @@ Filters:
 
 * cartbounty_from_email
 * cartbounty_waiting_time
+* cartbounty_include_tax
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
 
@@ -193,6 +194,10 @@ Example how to customize default waiting time after which the cart is considered
 		return 30; //Minimum allowed time is 20 minutes
 	}
 	add_filter( 'cartbounty_waiting_time', 'change_waiting_time' );
+
+Example how to display abandoned cart product prices excluding taxes:
+
+	add_filter( 'cartbounty_include_tax', '__return_false' );
 
 **Exit Intent hooks**
 
@@ -333,7 +338,8 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 == Changelog ==
 
-= 7.0.1.1 =
-* Improved abandoned cart capture compatibility with various WordPress themes
+= 7.0.2 =
+* Abandoned cart contents will now display prices including taxes. Use "cartbounty_include_tax" filter to disable it
+* Improved WordPress recovery input field content options
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

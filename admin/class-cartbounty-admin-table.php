@@ -197,6 +197,7 @@ class CartBounty_Table extends WP_List_Table{
             return;
         }
 
+        $admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
         $product_array = @unserialize($item['cart_contents']); //Retrieving array from database column cart_contents
         $output = '';
         
@@ -209,10 +210,8 @@ class CartBounty_Table extends WP_List_Table{
                             $product_title = esc_html($product['product_title']);
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
-                            $price = '';
-                            if($product['product_variation_price']){
-                                $price = ', ' . $product['product_variation_price'] . ' ' . esc_html($item['currency']);
-                            }
+                            $product_price = $admin->get_product_price( $product );
+                            $price = ', ' . $product_price . ' ' . esc_html($item['currency']);
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
                                 $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $price . $quantity .'</a></li>';
                             }else{
@@ -244,10 +243,8 @@ class CartBounty_Table extends WP_List_Table{
                             $product_title = esc_html($product['product_title']);
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
-                            $price = '';
-                            if($product['product_variation_price']){
-                                $price = ', ' . $product['product_variation_price'] . ' ' . esc_html($item['currency']);
-                            }
+                            $product_price = $admin->get_product_price( $product );
+                            $price = ', ' . $product_price . ' ' . esc_html($item['currency']);
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
                                 $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. $product_title . $price . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank"><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></a></div>';
                             }else{

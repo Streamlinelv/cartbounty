@@ -152,12 +152,12 @@ class CartBounty_WordPress{
 			'Content-Type: text/html',
 			'charset='. get_option('blog_charset')
 		);
-		$headers[] = "From: ". sanitize_text_field($from_name) ." <". sanitize_email($from_email)  .">";
+		$headers[] = "From: ". $this->sanitize_field($from_name) ." <". sanitize_email($from_email)  .">";
 		if($reply_to){
 			$headers[] = "Reply-To: <". sanitize_email($reply_to)  .">";
 		}
 		
-		$result = wp_mail( sanitize_email($to), sanitize_text_field($subject), $message, $headers );
+		$result = wp_mail( sanitize_email($to), $this->sanitize_field($subject), $message, $headers );
 		if($result){ //In case if the email was successfuly sent out
 			if(!$test){ //If this is not a test email
 				$current_time = current_time( 'mysql', false );
@@ -318,12 +318,12 @@ class CartBounty_WordPress{
 		}
 		if(isset($step['heading'])){
 			if(!empty($step['heading'])){
-				$heading = $step['heading'];
+				$heading = $this->sanitize_field($step['heading']);
 			}
 		}
 		if(isset($step['content'])){
 			if(!empty($step['content'])){
-				$content = $step['content'];
+				$content = $this->sanitize_field($step['content']);
 			}
 		}
 
@@ -780,6 +780,36 @@ class CartBounty_WordPress{
 	}
 
 	/**
+	* Method validates WordPress automation step data
+	*
+	* @since    7.0.2
+	*/
+	public function validate_automation_steps(){
+		if(!isset($_POST['cartbounty_automation_steps'])){ //Exit in case the automation step data is not present
+			return;
+		}
+		$steps = $_POST['cartbounty_automation_steps'];
+
+		foreach ($steps as $key => $step) {
+
+			//Sanitizing Subject
+			if(isset($step['subject'])){
+				$steps[$key]['subject'] = $this->sanitize_field($step['subject']);
+			}
+			//Sanitizing Heading
+			if(isset($step['heading'])){
+				$steps[$key]['heading'] = $this->sanitize_field($step['heading']);
+			}
+			//Sanitizing Content
+			if(isset($step['content'])){
+				$steps[$key]['content'] = $this->sanitize_field($step['content']);
+			}
+		}
+
+		update_option('cartbounty_automation_steps', $steps);
+	}
+
+	/**
 	 * Creating database table to save email history of emails delivered by WordPress automation
 	 *
 	 * @since    7.0
@@ -819,5 +849,28 @@ class CartBounty_WordPress{
 		}else{
 			return true;
 		}
+	}
+
+	/**
+	* Method sanitizes field
+	*
+	* @since    7.0.2
+	* @return   string
+	* @param    string    $field    		  Field that should be sanitized
+	*/
+	public function sanitize_field( $field ){
+		return wp_specialchars_decode( sanitize_text_field( wp_unslash( $field ) ), ENT_NOQUOTES );
+	}
+
+	/**
+	* Method sanitizes "From" field
+	*
+	* @since    7.0.2
+	*/
+	public function sanitize_from_field(){
+		if(!isset($_POST['cartbounty_automation_from_name'])){ //Exit in case the field is not present in the request
+			return;
+		}
+		update_option('cartbounty_automation_from_name', $this->sanitize_field($_POST['cartbounty_automation_from_name']));
 	}
 }

@@ -843,18 +843,18 @@ class CartBounty_Admin{
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-subject"><?php echo __('Email subject', 'woo-save-abandoned-carts'); ?></label>
-																<input id="cartbounty-automation-subject" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][subject]" value="<?php echo sanitize_text_field($subject); ?>" placeholder="<?php echo $wordpress->get_defaults('subject', 0); ?>" />
+																<input id="cartbounty-automation-subject" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][subject]" value="<?php echo $wordpress->sanitize_field($subject); ?>" placeholder="<?php echo $wordpress->get_defaults('subject', 0); ?>" />
 																<p class='cartbounty-additional-information'>
 																	<?php echo __('Subject line has a huge impact on email open rate.', 'woo-save-abandoned-carts'); ?>
 																</p>
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-heading"><?php echo __('Main title', 'woo-save-abandoned-carts'); ?></label>
-																<input id="cartbounty-automation-heading" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][heading]" value="<?php echo sanitize_text_field($heading); ?>" placeholder="<?php echo $wordpress->get_defaults('heading', 0); ?>" />
+																<input id="cartbounty-automation-heading" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][heading]" value="<?php echo $wordpress->sanitize_field($heading); ?>" placeholder="<?php echo $wordpress->get_defaults('heading', 0); ?>" />
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-content"><?php echo __('Additional content', 'woo-save-abandoned-carts'); ?></label>
-																<input id="cartbounty-automation-content" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][content]" value="<?php echo sanitize_text_field($content); ?>" placeholder="<?php echo $wordpress->get_defaults('content', 0); ?>" />
+																<input id="cartbounty-automation-content" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][content]" value="<?php echo $wordpress->sanitize_field($content); ?>" placeholder="<?php echo $wordpress->get_defaults('content', 0); ?>" />
 															</div>
 														</div>
 													</div>
@@ -1088,7 +1088,7 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-from-name"><?php echo __('"From" name', 'woo-save-abandoned-carts'); ?></label>
-								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_from_name" value="<?php echo sanitize_text_field( get_option('cartbounty_automation_from_name') ); ?>" placeholder="<?php echo get_option( 'blogname' );?>" <?php echo $this->disable_field(); ?> />
+								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_from_name" value="<?php echo $wordpress->sanitize_field(get_option('cartbounty_automation_from_name')); ?>" placeholder="<?php echo get_option( 'blogname' );?>" <?php echo $this->disable_field(); ?> />
 							</div>
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-from-email"><?php echo __('"From" email', 'woo-save-abandoned-carts'); ?></label>
@@ -2601,5 +2601,54 @@ class CartBounty_Admin{
 			__('Please consider upgrading to %sCartBounty Pro%s to enable this feature.', 'woo-save-abandoned-carts'),
 			'<a href="'. $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL, $medium) .'" target="_blank">','</a>');
 		return $message;
+	}
+
+	/**
+	 * Returns abandoned cart product price with or without VAT
+	 *
+	 * @since    7.0.2
+	 * @return   Number
+	 * @param    Array or Object    $product          		Cart line item (array) or WooCommerce Product (object)
+	 * @param    Boolean  			$force_tax     			Should we bypass all filters and display price with VAT. Default false
+	 * @param    Boolean  			$force_exclude_tax     	Weather we should bypass all filters and exclude taxes in the price. Default false
+	 */
+	function get_product_price( $product, $force_tax = false, $force_exclude_tax = false ) {
+		$tax = 0;
+		$price = 0;
+
+		if(is_array($product)){ //In case we are working with CartBounty line item
+			$price = $product['product_variation_price'];
+			if(empty($price)){
+				$price = 0;
+			}
+			if(isset($product['product_tax'])){ //If tax data exists
+				$tax = $product['product_tax'];
+			}
+
+		}elseif(is_object($product)){ //In case we are working with WooCommerce product
+			$price_with_tax = wc_get_price_including_tax( $product );
+			$price = $product->get_price();
+			if(empty($price_with_tax)){
+				$price_with_tax = 0;
+			}
+			if(empty($price)){
+				$price = 0;
+			}
+			$tax = $price_with_tax - $price;
+		}
+
+		if($force_exclude_tax){ //If we do not wat to include taxes. E.g., in GetResponse sync
+			$tax = 0;
+		}
+
+		if(!empty($tax) && ( apply_filters( 'cartbounty_include_tax', true ) || $force_tax == true )){ //If the tax value is set, the filter is set to true or the taxes are forced to display
+			$price = $price + $tax;
+		}
+
+		if(empty($price)){ //In case the price is empty
+			$price = 0;
+		}
+
+		return $price;
 	}
 }
