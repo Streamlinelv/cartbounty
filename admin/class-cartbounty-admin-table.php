@@ -322,7 +322,11 @@ class CartBounty_Table extends WP_List_Table{
 
         }else{
             if($cart_time > ($current_time - CARTBOUNTY_NEW_NOTICE * 60 )){ //Checking time if user has not gone through with the checkout after the specified time we add new label
-                $status .= sprintf('<span class="status new">%s</span>', __('New', 'woo-save-abandoned-carts'));
+                $status_description = __('Recently abandoned', 'woo-save-abandoned-carts');
+                if($item['type'] == 1){
+                     $status_description = __('Recently recovered', 'woo-save-abandoned-carts');
+                }
+                $status .= sprintf('<div class="status-item-container"><span class="cartbounty-tooltip">%s</span><span class="status new">%s</span></div>', $status_description, __('New', 'woo-save-abandoned-carts'));
             }
 
             if($item['type'] != 1){ //In case if the cart has not been recovered - output synced information

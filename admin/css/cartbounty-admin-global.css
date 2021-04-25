@@ -10,8 +10,29 @@
 
 .cartbounty-notification{
 	border-left-color: #46b450;
+	display: flex;
 }
 
 .cartbounty-notification.warning{
 	border-left-color: #ff5d00;
+}
+
+.cartbounty-notification p,
+.cartbounty-button-container{
+	display: inline-block;
+	width: 90%;
+	text-align: left;
+}
+
+.cartbounty-button-container{
+	width: 10%;
+	text-align: right;
+	margin: .5em 0;
+	padding-left: 15px;
+}
+
+.cartbounty .cartbounty-notification .cartbounty-close-notice,
+.cartbounty-close-notice{
+	text-align: right;
+	margin: 0;
 }

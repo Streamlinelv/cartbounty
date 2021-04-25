@@ -325,9 +325,9 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.2
+##### 7.0.2.1
 
-* Abandoned cart contents will now display prices including taxes. Use "cartbounty_include_tax" filter to disable it
-* Improved WordPress recovery input field content options
+* Added additional description for status "New"
+* Added option to dismiss disabled WP Cron notice
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

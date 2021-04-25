@@ -1596,8 +1596,16 @@ class CartBounty_Admin{
 		//Checking if WP Cron is enabled
 		if(defined('DISABLE_WP_CRON')){
 			if(DISABLE_WP_CRON == true){
-				$message = __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", 'woo-save-abandoned-carts' );
-				echo $this->get_notice_output($message, $handle = '', 'warning');
+				$handle = 'cartbounty_cron_warning';
+				if(isset( $_GET[$handle])){ //Check if we should update the option and close the notice
+					check_admin_referer( 'cartbounty-notice-nonce', $handle ); //Exit in case security check is not passed
+					update_option($handle, 1);
+				}
+				$closed = get_option($handle);
+				if(!$closed){ //In case user has not previously closed the notice
+					$message = __("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", 'woo-save-abandoned-carts' );
+					echo $this->get_notice_output($message, $handle, $class = 'warning', true, 'close' );
+				}
 			}
 		}
 	}

@@ -47,5 +47,6 @@ delete_option( 'cartbounty_automation_from_email' );
 delete_option( 'cartbounty_automation_reply_email' );
 delete_option( 'cartbounty_automation_sent_emails' );
 delete_option( 'cartbounty_email_table_exists' );
+delete_option( 'cartbounty_cron_warning' );
 
 delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true ); //Removes cartbounty_carts_per_page from wp_usermeta table on plugin uninstall
