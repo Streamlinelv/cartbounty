@@ -325,9 +325,9 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.2.1
+##### 7.0.3
 
-* Added additional description for status "New"
-* Added option to dismiss disabled WP Cron notice
+* Improved order handling function
+* Refactored all update functions
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

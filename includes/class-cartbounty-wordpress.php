@@ -79,10 +79,10 @@ class CartBounty_WordPress{
 				"SELECT id, email, session_id, time, wp_steps_completed
 				FROM {$cart_table}
 				WHERE type = 0 AND
-				email <> '' AND
-				cart_contents <> '' AND
-				wp_unsubscribed <> 1 AND
-				wp_complete <> 1 AND
+				email != '' AND
+				cart_contents != '' AND
+				wp_unsubscribed != 1 AND
+				wp_complete != 1 AND
 				time < %s AND
 				time > %s",
 				$time['cart_abandoned'],
@@ -567,10 +567,10 @@ class CartBounty_WordPress{
 				"SELECT id, email, session_id, time, wp_steps_completed
 				FROM {$cart_table}
 				WHERE type = 0 AND
-				email <> '' AND
-				cart_contents <> '' AND
-				wp_unsubscribed <> 1 AND
-				wp_complete <> 1 AND
+				email != '' AND
+				cart_contents != '' AND
+				wp_unsubscribed != 1 AND
+				wp_complete != 1 AND
 				wp_steps_completed = %d AND
 				time < %s AND
 				time > %s",

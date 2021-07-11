@@ -453,7 +453,8 @@ class CartBounty_Table extends WP_List_Table{
         $where_sentence = $admin->get_where_sentence($cart_status);
         $this->items = $wpdb->get_results($wpdb->prepare("
             SELECT * FROM $cart_table
-            WHERE cart_contents != ''
+            WHERE cart_contents != '' AND
+            type != 2
             $where_sentence
             ORDER BY $orderby $order
             LIMIT %d OFFSET %d",

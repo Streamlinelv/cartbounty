@@ -247,20 +247,18 @@ class CartBounty_Public{
 	function update_cart_data($cart){
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$updated_rows = $wpdb->prepare('%s',
-			$wpdb->update(
-				$cart_table,
-				array(
-					'cart_contents'	=>	serialize( $cart['product_array'] ),
-					'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
-					'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-					'time'			=>	sanitize_text_field( $cart['current_time'] ),
-					'mail_sent'		=>	0
-				),
-				array('session_id' => $cart['session_id']),
-				array('%s', '%0.2f', '%s', '%s'),
-				array('%s')
-			)
+		$updated_rows = $wpdb->update(
+			$cart_table,
+			array(
+				'cart_contents'	=>	serialize( $cart['product_array'] ),
+				'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
+				'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
+				'time'			=>	sanitize_text_field( $cart['current_time'] ),
+				'mail_sent'		=>	0
+			),
+			array('session_id' => $cart['session_id']),
+			array('%s', '%0.2f', '%s', '%s'),
+			array('%s')
 		);
 		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
 	}
@@ -280,26 +278,24 @@ class CartBounty_Public{
 			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 		}
 
-		$updated_rows = $wpdb->prepare('%s',
-			$wpdb->update(
-				$cart_table,
-				array(
-					'name'			=>	sanitize_text_field( $user_data['name'] ),
-					'surname'		=>	sanitize_text_field( $user_data['surname'] ),
-					'email'			=>	sanitize_email( $user_data['email'] ),
-					'phone'			=>	filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
-					'location'		=>	sanitize_text_field( serialize( $user_data['location'] ) ),
-					'cart_contents'	=>	serialize( $cart['product_array'] ),
-					'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
-					'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-					'time'			=>	sanitize_text_field( $cart['current_time'] ),
-					'other_fields'	=>	$other_fields,
-					'mail_sent'		=>	0
-				),
-				array('session_id' => $cart['session_id']),
-				array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
-				array('%s')
-			)
+		$updated_rows = $wpdb->update(
+			$cart_table,
+			array(
+				'name'			=>	sanitize_text_field( $user_data['name'] ),
+				'surname'		=>	sanitize_text_field( $user_data['surname'] ),
+				'email'			=>	sanitize_email( $user_data['email'] ),
+				'phone'			=>	filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
+				'location'		=>	sanitize_text_field( serialize( $user_data['location'] ) ),
+				'cart_contents'	=>	serialize( $cart['product_array'] ),
+				'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
+				'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
+				'time'			=>	sanitize_text_field( $cart['current_time'] ),
+				'other_fields'	=>	$other_fields,
+				'mail_sent'		=>	0
+			),
+			array('session_id' => $cart['session_id']),
+			array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
+			array('%s')
 		);
 		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
 		$this->increase_recoverable_cart_count();
@@ -515,12 +511,10 @@ class CartBounty_Public{
 				$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 				//Updating session ID to match the one of a logged in user
-				$wpdb->prepare('%s',
-					$wpdb->update(
-						$cart_table,
-						array('session_id' => $customer_id),
-						array('session_id' => WC()->session->get('cartbounty_session_id'))
-					)
+				$wpdb->update(
+					$cart_table,
+					array('session_id' => $customer_id),
+					array('session_id' => WC()->session->get('cartbounty_session_id'))
 				);
 
 				WC()->session->set('cartbounty_session_id', $customer_id);
@@ -549,7 +543,6 @@ class CartBounty_Public{
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 		if($duplicate_count){ //If we have updated at least one row
-			$duplicate_count = str_replace("'", "", $duplicate_count); //Removing quotes from the number of updated rows
 			if($duplicate_count > 1){ //Checking if we have updated more than a single row to know if there were duplicates
 				$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 				$where_sentence = $admin->get_where_sentence('ghost');

@@ -1088,6 +1088,7 @@ a.cartbounty-tab{
 
 .cartbounty .cartbounty-button:hover,
 .wp-picker-container .wp-color-result.button:hover .wp-color-result-text,
+.wp-picker-container .wp-color-result.button:focus .wp-color-result-text,
 .wp-picker-input-wrap .button.wp-picker-clear:hover,
 .cartbounty .bulkactions .button:hover,
 .cartbounty .pagination-links .button:hover{

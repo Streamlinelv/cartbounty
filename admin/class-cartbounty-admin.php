@@ -114,15 +114,14 @@ class CartBounty_Admin{
 
 		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
 			$time = $this->get_time_intervals();
-			$where_sentence = $this->get_where_sentence( 'all' );
 			// Retrieve from database rows that have not been emailed and are older than 60 minutes
 			$cart_count = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(id)
 					FROM $cart_table
 					WHERE
-					cart_contents != ''
-					$where_sentence AND
+					cart_contents != '' AND
+					type != 2 AND
 					time < %s AND 
 					time > %s ",
 					$time['cart_abandoned'],
@@ -1675,6 +1674,7 @@ class CartBounty_Admin{
 				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
+				type != 2 AND
 				time < %s",
 				0,
 				$time
@@ -1723,6 +1723,7 @@ class CartBounty_Admin{
 				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
+				type != 2 AND
 				time < %s",
 				1,
 				0,
@@ -1992,7 +1993,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Method removes empty abandoned carts that do not have any products and are older than 1 day
+	 * Method removes empty abandoned carts that do not have any products and are older than the set cart abandonment time (Default 1 hour)
 	 *
 	 * @since    3.0
 	 */
@@ -2010,20 +2011,21 @@ class CartBounty_Admin{
 				WHERE cart_contents = ''
 				$where_sentence AND
 				time < %s",
-				$time['day']
+				$time['cart_abandoned']
 			)
 		);
 		$public->decrease_ghost_cart_count( $ghost_row_count );
 
-		//Deleting rest of the abandoned carts without products
+		//Deleting rest of the abandoned carts without products or ones that have been turned into orders
 		$rest_count = $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $cart_table
-				WHERE cart_contents = '' AND
+				WHERE (cart_contents = '' OR type = 2) AND
 				time < %s",
-				$time['day']
+				$time['cart_abandoned']
 			)
 		);
+
 		$public->decrease_recoverable_cart_count( $rest_count );
 	}
 
@@ -2043,22 +2045,20 @@ class CartBounty_Admin{
 
 			if(isset($cart['session_id'])){
 				//Cleaning Cart data
-				$wpdb->prepare('%s',
-					$wpdb->update(
-						$cart_table,
-						array(
-							'cart_contents'	=>	'',
-							'cart_total'	=>	0,
-							'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-							'time'			=>	sanitize_text_field( $cart['current_time'] )
-						),
-						array(
-							'session_id' => $cart['session_id'],
-							'type' 		 => 0
-						),
-						array('%s', '%s'),
-						array('%s')
-					)
+				$update_result = $wpdb->update(
+					$cart_table,
+					array(
+						'cart_contents'	=>	'',
+						'cart_total'	=>	0,
+						'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
+						'time'			=>	sanitize_text_field( $cart['current_time'] )
+					),
+					array(
+						'session_id' => $cart['session_id'],
+						'type' 		 => 0
+					),
+					array('%s', '%s'),
+					array('%s')
 				);
 			}
 		}
@@ -2091,25 +2091,23 @@ class CartBounty_Admin{
 		
 		if($public->cart_saved($user_id)){ //If we have saved an abandoned cart for the user - go ahead and reset it
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-			$updated_rows = $wpdb->prepare('%s',
-				$wpdb->update(
-					$cart_table,
-					array(
-						'name'			=>	'',
-						'surname'		=>	'',
-						'email'			=>	'',
-						'phone'			=>	'',
-						'location'		=>	'',
-						'cart_contents'	=>	'',
-						'cart_total'	=>	'',
-						'currency'		=>	'',
-						'time'			=>	'',
-						'other_fields'	=>	''
-					),
-					array('session_id' => $user_id),
-					array(),
-					array('%s')
-				)
+			$updated_rows = $wpdb->update(
+				$cart_table,
+				array(
+					'name'			=>	'',
+					'surname'		=>	'',
+					'email'			=>	'',
+					'phone'			=>	'',
+					'location'		=>	'',
+					'cart_contents'	=>	'',
+					'cart_total'	=>	'',
+					'currency'		=>	'',
+					'time'			=>	'',
+					'other_fields'	=>	''
+				),
+				array('session_id' => $user_id),
+				array(),
+				array('%s')
 			);
 		}
 	}
@@ -2378,7 +2376,8 @@ class CartBounty_Admin{
         $total_items = $wpdb->get_var("
             SELECT COUNT(id)
             FROM $cart_table
-            WHERE cart_contents != ''
+            WHERE cart_contents != '' AND
+	        type != 2
             $where_sentence
         ");
 
@@ -2435,10 +2434,10 @@ class CartBounty_Admin{
 		$where_sentence = '';
 
 		if($cart_status == 'recoverable'){
-			$where_sentence = "AND (email != '' OR phone != '') AND type != 1";
+			$where_sentence = "AND (email != '' OR phone != '') AND type != 1 AND type != 2";
 
 		}elseif($cart_status == 'ghost'){
-			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != 1";
+			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != 1 AND type != 2";
 
 		}elseif($cart_status == 'recovered'){
 			$where_sentence = "AND type = 1";
@@ -2504,30 +2503,14 @@ class CartBounty_Admin{
 	 *
 	 * @since    7.0
 	 * @param    string    	$session_id		Session ID
-	 * @param    integer   	$type			Cart status type 0 = default, 1 = recovered
+	 * @param    integer   	$type			Cart status type 0 = default, 1 = recovered, 2 = order created
 	 */
 	function update_cart_type( $session_id, $type ){
 		if($session_id){
-			if($type == 1){ //If order should be marked as recovered
-				$this->update_cart_recovered($session_id, $type);
-			}
-		}
-	}
+			global $wpdb;
+			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
-	/**
-	 * Method updates recovered cart so that it would no longer be synced
-	 * Increasing a total number of recovered carts
-	 *
-	 * @since    7.0
-	 * @param    string		$session_id		Session ID
-	 * @param    array   	$cart			Cart values
-	 */
-	function update_cart_recovered( $session_id, $type ){
-		global $wpdb;
-		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-
-		//Update cart row according to what the cart has been synced to before
-		$wpdb->prepare('%s',
+			//Update cart row according to what the cart has been synced to before
 			$wpdb->update(
 				$cart_table,
 				array(
@@ -2538,29 +2521,34 @@ class CartBounty_Admin{
 				),
 				array('%d'),
 				array('%s')
-			)
-		);
+			);
 
-		//Increase total
-		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$public->increase_recovered_cart_count();
+			if($type == 1){ //If order should be marked as recovered
+				//Increase total
+				$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+				$public->increase_recovered_cart_count();
+			}
+		}
 	}
 
     /**
 	 * Handling abandoned carts in case of a new order is placed
 	 *
 	 * @since    5.0.2
-	 * @param    Integer    $order_id - ID of the order created by WooCommerce
+	 * @param    integer    $order_id - ID of the order created by WooCommerce
 	 */
 	function handle_order( $order_id ){
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$public->update_logged_customer_id(); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
 		if(WC()->session){ //If session exists
-			if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
-				$cart = $public->read_cart();
-				if(isset($cart['session_id'])){
-					$this->update_cart_type($cart['session_id'], 1); //Update cart type to recovered
+			$cart = $public->read_cart();
+			$type = 2; //Default type describing an order has been placed
+
+			if(isset($cart['session_id'])){
+				if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
+					$type = 1;
 				}
+				$this->update_cart_type($cart['session_id'], $type); //Update cart type to recovered
 			}
 		}
 		$this->clear_cart_data(); //Clearing abandoned cart after it has been synced
