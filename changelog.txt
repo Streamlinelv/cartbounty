@@ -1,5 +1,13 @@
 == Changelog ==
 
+= 7.0.4 =
+* Improved Exit Intent template
+* Improved translations
+
+= 7.0.3 =
+* Improved order handling function
+* Refactored all update functions
+
 = 7.0.2.1 =
 * Added additional description for status "New"
 * Added option to dismiss disabled WP Cron notice

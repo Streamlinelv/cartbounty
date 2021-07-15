@@ -129,7 +129,7 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_email( $item ){
-        return sprintf('<a href="mailto:%1$s" title="">%1$s</a>',
+        return sprintf('<a href="mailto:%1$s">%1$s</a>',
             esc_html($item['email'])
         );
     }

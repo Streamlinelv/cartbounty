@@ -952,14 +952,30 @@ class CartBounty_Public{
 		if($row && !$current_user_is_admin){ //Exit if cart already saved and the current user is not admin
 			return;
 		}
+		
+		//Prepare Exit Intent image
+		$image_id = esc_attr( get_option('cartbounty_exit_intent_image'));
+		$image_url = $this->get_plugin_url() . '/public/assets/abandoned-shopping-cart.gif';
+		if($image_id){
+			$image = wp_get_attachment_image_src( $image_id, 'full' );
+			if(is_array($image)){
+				$image_url = $image[0];
+			}
+		}
+
+		$args = array(
+			'image_url' => $image_url,
+			'main_color' => $main_color,
+			'inverse_color' => $inverse_color
+		);
 
 		//In case the function is called via Ajax Add to Cart button
 		//We must add wp_die() or otherwise the function does not return anything
 		if (isset( $_POST["cartbounty_insert"])){ 
-			$output = $this->get_template( 'cartbounty-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
+			$output = $this->get_template( 'cartbounty-exit-intent.php', $args );
 			die();
 		}else{
-			return $this->get_template( 'cartbounty-exit-intent.php', array('main_color' => $main_color, 'inverse_color' => $inverse_color));
+			return $this->get_template( 'cartbounty-exit-intent.php', $args );
 		}
 	}
 

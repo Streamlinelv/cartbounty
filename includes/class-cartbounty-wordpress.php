@@ -679,37 +679,34 @@ class CartBounty_WordPress{
 			$selected_interval = $this->get_defaults( 'interval', $automation );
 		}
 
-		$intervals = array(
-			'5' 	=> __('5 minutes', 'woo-save-abandoned-carts'),
-			'10' 	=> __('10 minutes', 'woo-save-abandoned-carts'),
-			'15' 	=> __('15 minutes', 'woo-save-abandoned-carts'),
-			'20' 	=> __('20 minutes', 'woo-save-abandoned-carts'),
-			'25' 	=> __('25 minutes', 'woo-save-abandoned-carts'),
-			'30' 	=> __('30 minutes', 'woo-save-abandoned-carts'),
-			'40' 	=> __('40 minutes', 'woo-save-abandoned-carts'),
-			'50' 	=> __('50 minutes', 'woo-save-abandoned-carts'),
-			'60' 	=> __('1 hour', 'woo-save-abandoned-carts'),
-			'120' 	=> __('2 hours', 'woo-save-abandoned-carts'),
-			'180' 	=> __('3 hours', 'woo-save-abandoned-carts'),
-			'240' 	=> __('4 hours', 'woo-save-abandoned-carts'),
-			'300' 	=> __('5 hours', 'woo-save-abandoned-carts'),
-			'360' 	=> __('6 hours', 'woo-save-abandoned-carts'),
-			'420' 	=> __('7 hours', 'woo-save-abandoned-carts'),
-			'480' 	=> __('8 hours', 'woo-save-abandoned-carts'),
-			'540' 	=> __('9 hours', 'woo-save-abandoned-carts'),
-			'600' 	=> __('10 hours', 'woo-save-abandoned-carts'),
-			'660' 	=> __('11 hours', 'woo-save-abandoned-carts'),
-			'720' 	=> __('12 hours', 'woo-save-abandoned-carts'),
-			'1080' 	=> __('18 hours', 'woo-save-abandoned-carts'),
-			'1440' 	=> __('1 day', 'woo-save-abandoned-carts'),
-			'2880' 	=> __('2 days', 'woo-save-abandoned-carts'),
-			'4320' 	=> __('3 days', 'woo-save-abandoned-carts'),
-			'5760' 	=> __('4 days', 'woo-save-abandoned-carts'),
-			'7200' 	=> __('5 days', 'woo-save-abandoned-carts'),
-			'8640' 	=> __('6 days', 'woo-save-abandoned-carts'),
-			'10080' => __('1 week', 'woo-save-abandoned-carts'),
-		);
+		$intervals = array();
+		$minutes = array(5, 10, 15, 20, 25, 30, 40, 50, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 1080, 1440, 2880, 4320, 5760, 7200, 8640, 10080); //Defining array of minutes
+		foreach ($minutes as $minute) {
+			if($minute < 60) { //Generate minutes
+				$intervals[$minute] = sprintf(
+					_n( '%s minute', '%s minutes', $minute, 'woo-save-abandoned-carts' ), $minute
+				);
 
+			}elseif($minute < 1440) { //Generate hours
+				$hours = $minute / 60; //Splitting with 60 minutes to get amount of hours
+				$intervals[$minute] = sprintf(
+					_n( '%s hour', '%s hours', $hours, 'woo-save-abandoned-carts' ), $hours
+				);
+
+			}elseif($minute < 10080) { //Generate days
+				$days = $minute / 1440; //Splitting with 1440 minutes to get amount of days
+				$intervals[$minute] = sprintf(
+					_n( '%s day', '%s days', $days, 'woo-save-abandoned-carts' ), $days
+				);
+
+			}else{ //Generate weeks
+				$weeks = $minute / 10080; //Splitting with 10080 minutes to get amount of weeks
+				$intervals[$minute] = sprintf(
+					_n( '%s week', '%s weeks', $weeks, 'woo-save-abandoned-carts' ), $weeks
+				);
+			}
+		}
+		
 		if($selected_name){ //In case just the selected name should be returned
 			return $intervals[$selected_interval];
 

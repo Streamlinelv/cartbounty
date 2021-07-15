@@ -325,9 +325,11 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.3
+##### 7.0.4
 
-* Improved order handling function
-* Refactored all update functions
+* Added a bubble on WordPress recovery page
+* Improved Exit Intent template
+* Improved translations
+* Code cleanup
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
