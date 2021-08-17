@@ -135,7 +135,7 @@ If you would like to test the visual appearance of Exit Intent, please check the
 
 In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
 
-### How to use CartBounty templates for Advanced customization?
+### How to use template files for Advanced customization?
 
 Public sections of the plugin can be quickly and easily styled using plugin settings. However, if you are looking for a more customized appearance, you can use template files that come along with CartBounty or take a look at [actions and filters](https://www.cartbounty.com/#actions-and-filters).
 
