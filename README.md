@@ -18,6 +18,8 @@ If you would like to send automated abandoned cart recovery emails to customers 
 
 * Save and view ghost shopping carts.
 
+* Send abandoned cart reminder email via WordPress or upgrade to [Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") and send automated recovery email series, integrate with ActiveCampaign, GetResponse or MailChimp and include unique coupon codes in your emails to increase recovery ratio and sales.
+
 * Receive notifications on newly abandoned shopping carts via email. You can set notification frequency or disable them in case you want to take some time off :)
 
 * The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form. Please note that this feature is enabled only for users who haven't logged in - WooCommerce takes care of this for authorized users.
@@ -33,25 +35,7 @@ Please do check out our Pro version if you are interested in Early email capture
 
 * Since we love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned cart data, table and options created by this plugin) leaving your project nice and clean.
 
-#### Plugin dependencies:
-
-1. Uses WordPress private WP_List_Table class
-1. WooCommerce hooks
-1. WooCommerce session
-
-Note: If the fields are added outside of Checkout page or Checkout page input field ID values are changed, the plugin will not be able to load data.
-Input field ID values should be default:
-
-* #billing_first_name
-* #billing_last_name
-* #billing_company
-* #billing_email
-* #billing_phone
-* etc.
-
-If WordPress changes the location of "admin-ajax.php" file, then will have to update it.
-
-* Please note that this link has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign or GetResponse customer.
+Please note that this link has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign or GetResponse customer.
 
 ### Installation
 
@@ -95,6 +79,10 @@ If you would like to [send your visitors automated abandoned cart recovery email
 And [MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
 
 If you would like to enable additional WordPress recovery email features and add multiple language support, please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
+
+### Can I send unique coupon codes?
+
+If you would like to add generated coupon codes to your abandoned cart recovery emails, please consider upgrading to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") which allows to easily include both static and one-time generated coupon codes in your abandoned cart reminder emails to increase the chances of abandoned cart recovery.
 
 ### What are ghost carts, how do they work and how to use them?
 
@@ -325,11 +313,10 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.4
+##### 7.0.5
 
-* Added a bubble on WordPress recovery page
-* Improved Exit Intent template
-* Improved translations
-* Code cleanup
+* Improved event schedule functions
+* Minor visual improvements
+* Fixed abandoned cart table footer Bulk delete feature
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

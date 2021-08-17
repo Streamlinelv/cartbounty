@@ -46,8 +46,8 @@ class CartBounty_Activator{
 			currency VARCHAR(10),
 			time DATETIME DEFAULT '0000-00-00 00:00:00',
 			session_id VARCHAR(60),
-			mail_sent TINYINT NOT NULL DEFAULT 0,
 			other_fields LONGTEXT,
+			mail_sent TINYINT NOT NULL DEFAULT 0,
 			wp_unsubscribed TINYINT DEFAULT 0,
 			wp_steps_completed INT(3) DEFAULT 0,
 			wp_complete TINYINT DEFAULT 0,
@@ -218,25 +218,5 @@ class CartBounty_Activator{
 
 		//Setting default WordPress automation workflow array so we would have three emails. Also making sure that images are enabled by default
 		add_option('cartbounty_automation_steps', array(1, 1, 1));
-		
-		/**
-		 * Starting WordPress cron function in order to send out emails on a set interval
-		 *
-		 * @since    4.3
-		 */
-		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
-		if(intval($user_settings_notification_frequency['hours']) == 0){ //If Email notifications have been disabled, we disable cron job
-			wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
-		}else{
-			if (! wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
-				wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
-			}
-		}
-		if (! wp_next_scheduled ( 'cartbounty_sync_hook' )) {
-			wp_schedule_event(time(), 'cartbounty_sync_interval', 'cartbounty_sync_hook'); //Schedules a hook which will be executed by the WordPress actions core on a specific interval
-		}
-		if (! wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook' )) {
-			wp_schedule_event(time(), 'cartbounty_remove_empty_carts_interval', 'cartbounty_remove_empty_carts_hook');
-		}
 	}
 }

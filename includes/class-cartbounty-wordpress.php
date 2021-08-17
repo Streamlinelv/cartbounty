@@ -127,22 +127,29 @@ class CartBounty_WordPress{
 	 * @param    array    	$preview_data         Automation step input data passed from frontend to allow template preview
 	 */
 	public function send_reminder( $cart, $test = false, $email = false, $preview_data = array() ){
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+
 		if($test){
 			$to = $email;
+
 		}else{
 			$to = $cart->email;
 		}
+
 		$subject = $this->get_defaults( 'subject', 0 );
 		$automation_steps = get_option('cartbounty_automation_steps');
 		$step = $automation_steps[0];
+
 		if($test){
 			$step = $preview_data;
 		}
+
 		if(isset($step['subject'])){ //In case we have a custom subject set, use it
 			if( !empty($step['subject']) ) {
 				$subject = $step['subject'];
 			}
 		}
+
 		$message = $this->get_reminder_contents( $cart, $test, $preview_data );
 		$from_name = ( !empty(get_option('cartbounty_automation_from_name')) ) ? get_option('cartbounty_automation_from_name') : get_option( 'blogname' );
 		$from_email = ( !empty(get_option('cartbounty_automation_from_email')) ) ? get_option('cartbounty_automation_from_email') : get_option( 'admin_email' );
@@ -152,12 +159,14 @@ class CartBounty_WordPress{
 			'Content-Type: text/html',
 			'charset='. get_option('blog_charset')
 		);
-		$headers[] = "From: ". $this->sanitize_field($from_name) ." <". sanitize_email($from_email)  .">";
+		$headers[] = "From: ". $admin->sanitize_field($from_name) ." <". sanitize_email($from_email)  .">";
+
 		if($reply_to){
 			$headers[] = "Reply-To: <". sanitize_email($reply_to)  .">";
 		}
 		
-		$result = wp_mail( sanitize_email($to), $this->sanitize_field($subject), $message, $headers );
+		$result = wp_mail( sanitize_email($to), $admin->sanitize_field($subject), $message, $headers );
+
 		if($result){ //In case if the email was successfuly sent out
 			if(!$test){ //If this is not a test email
 				$current_time = current_time( 'mysql', false );
@@ -215,11 +224,15 @@ class CartBounty_WordPress{
 		if ( check_ajax_referer( 'preview_email', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing function
 			wp_send_json_error(__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 		}
+
 		$step_nr = false;
+
 		if(isset($_POST['step'])){
 			$step_nr = $_POST['step'];
 		}
+
 		$preview_data = array();
+
 		if(isset($_POST)){
 			$preview_data = $this->get_preview_data($_POST);
 		}
@@ -236,14 +249,15 @@ class CartBounty_WordPress{
 	*/
 	public function get_preview_data( $data ){
 		$preview_data = array(
-			'subject' 		=> isset($data['subject']) ? $data['subject'] : '',
-			'heading' 		=> isset($data['main_title']) ? $data['main_title'] : '',
-			'content' 		=> isset($data['content']) ? $data['content'] : '',
-			'main_color' 	=> isset($data['main_color']) ? $data['main_color'] : '',
-			'button_color'	=> isset($data['button_color']) ? $data['button_color'] : '',
-			'text_color' 	=> isset($data['text_color']) ? $data['text_color'] : '',
-			'background_color' => isset($data['background_color']) ? $data['background_color'] : ''
+			'subject' 			=> isset($data['subject']) ? $data['subject'] : '',
+			'heading' 			=> isset($data['main_title']) ? $data['main_title'] : '',
+			'content' 			=> isset($data['content']) ? $data['content'] : '',
+			'main_color' 		=> isset($data['main_color']) ? $data['main_color'] : '',
+			'button_color'		=> isset($data['button_color']) ? $data['button_color'] : '',
+			'text_color' 		=> isset($data['text_color']) ? $data['text_color'] : '',
+			'background_color' 	=> isset($data['background_color']) ? $data['background_color'] : ''
 		);
+
 		return $preview_data;
 	}
 
@@ -265,7 +279,7 @@ class CartBounty_WordPress{
 	}
 
 	/**
-     * Retrieve apropirate template for the automation
+     * Retrieve appropriate template for the automation
      *
      * @since    7.0
      * @return   html
@@ -317,13 +331,13 @@ class CartBounty_WordPress{
 			}
 		}
 		if(isset($step['heading'])){
-			if(!empty($step['heading'])){
-				$heading = $this->sanitize_field($step['heading']);
+			if( trim($step['heading']) != '' ){ //If the value is not empty and does not contain only whitespaces
+				$heading = $admin->sanitize_field($step['heading']);
 			}
 		}
 		if(isset($step['content'])){
-			if(!empty($step['content'])){
-				$content = $this->sanitize_field($step['content']);
+			if( trim($step['content']) != '' ){ //If the value is not empty and does not contain only whitespaces
+				$content = $admin->sanitize_field($step['content']);
 			}
 		}
 
@@ -415,10 +429,13 @@ class CartBounty_WordPress{
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$wpdb->query(
-			$wpdb->prepare("UPDATE {$cart_table}
-			SET 
-			wp_unsubscribed = %d
-			WHERE id = %d", 1, $cart_id)
+			$wpdb->prepare(
+				"UPDATE {$cart_table}
+				SET wp_unsubscribed = %d
+				WHERE id = %d",
+				1,
+				$cart_id
+			)
 		);
 	}
 
@@ -668,44 +685,21 @@ class CartBounty_WordPress{
      * @param    boolean    $selected_name    	  Should just the name of the selected Interval be returned
      */
 	public function get_intervals( $automation = false, $selected_name = false ){
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$automation_steps = get_option('cartbounty_automation_steps');
+		$minutes = array(5, 10, 15, 20, 25, 30, 40, 50, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 1080, 1440, 2880, 4320, 5760, 7200, 8640, 10080); //Defining array of minutes
+
 		if(isset($automation_steps[$automation])){
 			$automation_step = $automation_steps[$automation];
 		}
 
-		if(isset($automation_step['interval'])){ //If custom interval is not set, fallback to default
+		if(!empty($automation_step['interval'])){ //If custom interval is not set, fallback to default
 			$selected_interval = $automation_step['interval'];
 		}else{
 			$selected_interval = $this->get_defaults( 'interval', $automation );
 		}
 
-		$intervals = array();
-		$minutes = array(5, 10, 15, 20, 25, 30, 40, 50, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 1080, 1440, 2880, 4320, 5760, 7200, 8640, 10080); //Defining array of minutes
-		foreach ($minutes as $minute) {
-			if($minute < 60) { //Generate minutes
-				$intervals[$minute] = sprintf(
-					_n( '%s minute', '%s minutes', $minute, 'woo-save-abandoned-carts' ), $minute
-				);
-
-			}elseif($minute < 1440) { //Generate hours
-				$hours = $minute / 60; //Splitting with 60 minutes to get amount of hours
-				$intervals[$minute] = sprintf(
-					_n( '%s hour', '%s hours', $hours, 'woo-save-abandoned-carts' ), $hours
-				);
-
-			}elseif($minute < 10080) { //Generate days
-				$days = $minute / 1440; //Splitting with 1440 minutes to get amount of days
-				$intervals[$minute] = sprintf(
-					_n( '%s day', '%s days', $days, 'woo-save-abandoned-carts' ), $days
-				);
-
-			}else{ //Generate weeks
-				$weeks = $minute / 10080; //Splitting with 10080 minutes to get amount of weeks
-				$intervals[$minute] = sprintf(
-					_n( '%s week', '%s weeks', $weeks, 'woo-save-abandoned-carts' ), $weeks
-				);
-			}
-		}
+		$intervals = $admin->prepare_time_intervals( $minutes );
 		
 		if($selected_name){ //In case just the selected name should be returned
 			return $intervals[$selected_interval];
@@ -785,21 +779,22 @@ class CartBounty_WordPress{
 		if(!isset($_POST['cartbounty_automation_steps'])){ //Exit in case the automation step data is not present
 			return;
 		}
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$steps = $_POST['cartbounty_automation_steps'];
 
 		foreach ($steps as $key => $step) {
 
 			//Sanitizing Subject
 			if(isset($step['subject'])){
-				$steps[$key]['subject'] = $this->sanitize_field($step['subject']);
+				$steps[$key]['subject'] = $admin->sanitize_field($step['subject']);
 			}
 			//Sanitizing Heading
 			if(isset($step['heading'])){
-				$steps[$key]['heading'] = $this->sanitize_field($step['heading']);
+				$steps[$key]['heading'] = $admin->sanitize_field($step['heading']);
 			}
 			//Sanitizing Content
 			if(isset($step['content'])){
-				$steps[$key]['content'] = $this->sanitize_field($step['content']);
+				$steps[$key]['content'] = $admin->sanitize_field($step['content']);
 			}
 		}
 
@@ -849,18 +844,6 @@ class CartBounty_WordPress{
 	}
 
 	/**
-	* Method sanitizes field
-	*
-	* @since    7.0.2
-	* @return   string
-	* @param    string    $field    		  Field that should be sanitized
-	*/
-	public function sanitize_field( $field ){
-		$field = str_replace('"', '', $field);
-		return wp_specialchars_decode( sanitize_text_field( wp_unslash( $field ) ), ENT_NOQUOTES );
-	}
-
-	/**
 	* Method sanitizes "From" field
 	*
 	* @since    7.0.2
@@ -869,6 +852,7 @@ class CartBounty_WordPress{
 		if(!isset($_POST['cartbounty_automation_from_name'])){ //Exit in case the field is not present in the request
 			return;
 		}
-		update_option('cartbounty_automation_from_name', $this->sanitize_field($_POST['cartbounty_automation_from_name']));
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		update_option('cartbounty_automation_from_name', $admin->sanitize_field($_POST['cartbounty_automation_from_name']));
 	}
 }

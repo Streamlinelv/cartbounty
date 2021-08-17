@@ -129,6 +129,7 @@ class CartBounty{
 		$this->loader->add_action( 'admin_head', $admin, 'menu_abandoned_count' );
 		$this->loader->add_action( 'admin_head', $admin, 'register_admin_tabs' );
 		$this->loader->add_action( 'admin_head', $admin, 'save_page_options' );
+		$this->loader->add_filter( 'admin_head', $admin, 'schedule_events' );
 		$this->loader->add_action( 'plugins_loaded', $admin, 'check_current_plugin_version' );
 		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 );
 		$this->loader->add_action( 'cartbounty_after_page_title', $admin, 'output_bubble_content' );

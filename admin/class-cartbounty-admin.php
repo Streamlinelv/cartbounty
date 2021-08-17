@@ -511,10 +511,15 @@ class CartBounty_Admin{
 						require_once plugin_dir_path( __FILE__ ) . 'class-cartbounty-admin-table.php';
 						$table = new CartBounty_Table();
 						$table->prepare_items();
+						$footer_bulk_delete = false;
+
+						if( isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if bottom Bulk delete action fired
+							$footer_bulk_delete = true;
+						}
 						
 						//Output table contents
 						$message = '';
-						if ('delete' === $table->current_action()) {
+						if ('delete' === $table->current_action() || $footer_bulk_delete) {
 							if(!empty($_REQUEST['id'])){ //In case we have a row selected for deletion, process the message otput
 								if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
 									$deleted_row_count = esc_html(count($_REQUEST['id']));
@@ -699,6 +704,47 @@ class CartBounty_Admin{
     }
 
     /**
+     * Prepare time intervals from minutes
+     *
+     * @since    7.0.5
+     * @return   array
+     * @param 	 array    $minutes    		Array of minutes
+     * @param 	 string   $zero_value    	Content for zero value
+     */
+    function prepare_time_intervals( $minutes = array(), $zero_value = '' ){
+    	$intervals = array();
+		foreach ($minutes as $minute) {
+			if($minute == 0) { //Generate minutes
+				$intervals[$minute] = $zero_value;
+			}
+			elseif($minute < 60) { //Generate minutes
+				$intervals[$minute] = sprintf(
+					_n( '%s minute', '%s minutes', $minute, 'woo-save-abandoned-carts' ), $minute
+				);
+
+			}elseif($minute < 1440) { //Generate hours
+				$hours = $minute / 60; //Splitting with 60 minutes to get amount of hours
+				$intervals[$minute] = sprintf(
+					_n( '%s hour', '%s hours', $hours, 'woo-save-abandoned-carts' ), $hours
+				);
+
+			}elseif($minute < 10080) { //Generate days
+				$days = $minute / 1440; //Splitting with 1440 minutes to get amount of days
+				$intervals[$minute] = sprintf(
+					_n( '%s day', '%s days', $days, 'woo-save-abandoned-carts' ), $days
+				);
+
+			}else{ //Generate weeks
+				$weeks = $minute / 10080; //Splitting with 10080 minutes to get amount of weeks
+				$intervals[$minute] = sprintf(
+					_n( '%s week', '%s weeks', $weeks, 'woo-save-abandoned-carts' ), $weeks
+				);
+			}
+		}
+		return $intervals;
+	}
+
+    /**
 	 * Method returns sections
 	 *
 	 * @since    6.0
@@ -875,18 +921,18 @@ class CartBounty_Admin{
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-subject"><?php echo __('Email subject', 'woo-save-abandoned-carts'); ?></label>
-																<input id="cartbounty-automation-subject" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][subject]" value="<?php echo $wordpress->sanitize_field($subject); ?>" placeholder="<?php echo $wordpress->get_defaults('subject', 0); ?>" />
+																<input id="cartbounty-automation-subject" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][subject]" value="<?php echo $this->sanitize_field($subject); ?>" placeholder="<?php echo $wordpress->get_defaults('subject', 0); ?>" />
 																<p class='cartbounty-additional-information'>
 																	<?php echo __('Subject line has a huge impact on email open rate.', 'woo-save-abandoned-carts'); ?>
 																</p>
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-heading"><?php echo __('Main title', 'woo-save-abandoned-carts'); ?></label>
-																<input id="cartbounty-automation-heading" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][heading]" value="<?php echo $wordpress->sanitize_field($heading); ?>" placeholder="<?php echo $wordpress->get_defaults('heading', 0); ?>" />
+																<input id="cartbounty-automation-heading" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][heading]" value="<?php echo $this->sanitize_field($heading); ?>" placeholder="<?php echo $wordpress->get_defaults('heading', 0); ?>" />
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-content"><?php echo __('Additional content', 'woo-save-abandoned-carts'); ?></label>
-																<input id="cartbounty-automation-content" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][content]" value="<?php echo $wordpress->sanitize_field($content); ?>" placeholder="<?php echo $wordpress->get_defaults('content', 0); ?>" />
+																<input id="cartbounty-automation-content" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][content]" value="<?php echo $this->sanitize_field($content); ?>" placeholder="<?php echo $wordpress->get_defaults('content', 0); ?>" />
 															</div>
 														</div>
 													</div>
@@ -978,6 +1024,31 @@ class CartBounty_Admin{
 																<p class='cartbounty-additional-information'>
 																	<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'wp_include_image' ); ?></i>
 																</p>
+															</div>
+														</div>
+													</div>
+													<div class="cartbounty-row">
+														<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+															<h4><?php echo __('Coupon', 'woo-save-abandoned-carts'); ?></h4>
+															<p class="cartbounty-titles-column-description">
+																<?php echo __('Add a coupon code to your recovery email as it might help to increase recovery ratio.', 'woo-save-abandoned-carts'); ?>
+															</p>
+														</div>
+														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+															<div class="cartbounty-settings-group cartbounty-toggle">
+																<label for="cartbounty-automation-generate-coupon" class="cartbounty-switch cartbounty-unavailable">
+																	<input id="cartbounty-automation-generate-coupon" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+																	<span class="cartbounty-slider round"></span>
+																</label>
+																<label for="cartbounty-automation-generate-coupon" class="cartbounty-unavailable"><?php echo __('Generate coupon', 'woo-save-abandoned-carts'); ?></label>
+																<p class='cartbounty-additional-information'>
+																	<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'generate_coupon' ); ?></i>
+																</p>
+															</div>
+															<div class="cartbounty-settings-group">
+																<label for="cartbounty-automation-existing-coupon"><?php echo __('Include an existing coupon', 'woo-save-abandoned-carts'); ?></label>
+																<select id="cartbounty-automation-existing-coupon" class="cartbounty-select" placeholder="<?php echo __('Search coupon...', 'woo-save-abandoned-carts'); ?>" disabled autocomplete="off">
+																</select>
 															</div>
 														</div>
 													</div>
@@ -1120,7 +1191,7 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-from-name"><?php echo __('"From" name', 'woo-save-abandoned-carts'); ?></label>
-								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_from_name" value="<?php echo $wordpress->sanitize_field(get_option('cartbounty_automation_from_name')); ?>" placeholder="<?php echo get_option( 'blogname' );?>" <?php echo $this->disable_field(); ?> />
+								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_from_name" value="<?php echo $this->sanitize_field(get_option('cartbounty_automation_from_name')); ?>" placeholder="<?php echo get_option( 'blogname' );?>" <?php echo $this->disable_field(); ?> />
 							</div>
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-from-email"><?php echo __('"From" email', 'woo-save-abandoned-carts'); ?></label>
@@ -1539,6 +1610,30 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Schedules Wordpress events
+	 * Moved outside of Plugin activation class in v.9.4 since there were many ocurances when events were not scheduled after plugin activation
+	 *
+	 * @since    4.3
+	 */
+	function schedule_events(){
+		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+
+		if(intval($user_settings_notification_frequency['hours']) == 0){ //If Email notifications have been disabled, we disable cron job
+			wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
+		}else{
+			if (! wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
+				wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
+			}
+		}
+		if (! wp_next_scheduled ( 'cartbounty_sync_hook' )) {
+			wp_schedule_event(time(), 'cartbounty_sync_interval', 'cartbounty_sync_hook'); //Schedules a hook which will be executed by the WordPress actions core on a specific interval
+		}
+		if (! wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook' )) {
+			wp_schedule_event(time(), 'cartbounty_remove_empty_carts_interval', 'cartbounty_remove_empty_carts_hook');
+		}
+	}
+
+	/**
 	 * Method adds additional intervals to default Wordpress cron intervals (hourly, twicedaily, daily). Interval provided in minutes
 	 *
 	 * @since    3.0
@@ -1603,9 +1698,11 @@ class CartBounty_Admin{
 			if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
 				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
 			}
+
 			if(wp_next_scheduled('cartbounty_sync_hook') === false){
 				$missing_hooks[] = 'cartbounty_sync_hook';
 			}
+
 			if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
 				$hooks = '';
 				$current = 1;
@@ -1767,6 +1864,17 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Method retrieves Settings tab url
+	 *
+	 * @since    1.1
+	 */
+	public static function get_settings_tab_url(){
+		$url = menu_page_url(CARTBOUNTY, false);
+		$url = $url.'&tab=settings'; //Adding settings tab manually
+		return $url;
+	}
+
+	/**
 	 * Adds custom action link on Plugin page under plugin name
 	 *
 	 * @since    1.2
@@ -1777,12 +1885,22 @@ class CartBounty_Admin{
 		if ( ! is_array( $actions ) ) {
 			return $actions;
 		}
+		$settings_tab = $this->get_settings_tab_url();
 		
 		$action_links = array();
+		$action_links['cartbounty_settings'] = array(
+			'label' => __('Settings', 'woo-save-abandoned-carts'),
+			'url'   => $settings_tab
+		);
+		$action_links['cartbounty_carts'] = array(
+			'label' => __('Carts', 'woo-save-abandoned-carts'),
+			'url'   => menu_page_url(CARTBOUNTY, false)
+		);
 		$action_links['cartbounty_get_pro'] = array(
 			'label' => __('Get Pro', 'woo-save-abandoned-carts'),
 			'url'   => $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'plugin_link' )
 		);
+		
 
 		return $this->add_display_plugin_action_links( $actions, $plugin_file, $action_links, 'before' );
 	}
@@ -2299,7 +2417,7 @@ class CartBounty_Admin{
 		global $wpdb;
 
 		//Checking if GET argument is present in the link. If not, exit function
-		if (empty( $_GET['cartbounty'])){
+		if (empty( $_GET['cartbounty'] )){
 			return;
 		}
 		
@@ -2311,12 +2429,14 @@ class CartBounty_Admin{
 
 		//Retrieve row from the abandoned cart table in order to check if hashes match
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$row = $wpdb->get_row($wpdb->prepare(
-			"SELECT id, email, cart_contents, session_id
-			FROM $cart_table
-			WHERE id = %d AND
-			type = 0",
-			$id)
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT id, email, cart_contents, session_id
+				FROM $cart_table
+				WHERE id = %d AND
+				type = 0",
+				$id
+			)
 		);
 
 		if(empty($row)){ //Exit function if no row found
@@ -2335,12 +2455,27 @@ class CartBounty_Admin{
 			$wordpress->unsubscribe_user( $id );
 			wp_die( __('You have successfully unsubscribed from further emails about your shopping cart.', 'woo-save-abandoned-carts'), __( 'Successfully unsubscribed', 'woo-save-abandoned-carts'), $args = array( 'link_url' => get_site_url(), 'link_text' => __( 'Return to store', 'woo-save-abandoned-carts') ) );
 		}
-		
-		//Restore our cart with previous products
+
+		$this->build_cart( $row ); //Restore cart with previous products
+
+		//Redirecting user to Checkout page
+		$checkout_url = wc_get_checkout_url();
+		wp_redirect( $checkout_url, '303' );
+		exit();
+	}
+
+	/**
+	 * Build cart
+	 *
+	 * @since    7.0.5
+	 * @return   boolean
+	 * @param    object     $cart   		    Cart data
+	 */
+	public function build_cart( $cart ){
 		if( WC()->cart ){ //Checking if WooCommerce has loaded
 			WC()->cart->empty_cart();//Removing any products that might have be added in the cart
 			
-			$products = @unserialize($row->cart_contents);
+			$products = @unserialize($cart->cart_contents);
 			if(!$products){ //If missing products
 				return;
 			}
@@ -2365,14 +2500,9 @@ class CartBounty_Admin{
 
 			//Restore previous session id because we want the user abandoned cart data to be in sync
 			//Starting session in order to check if we have to insert or update database row with the data from input boxes
-			WC()->session->set('cartbounty_session_id', $row->session_id); //Putting previous customer ID back to WooCommerce session
+			WC()->session->set('cartbounty_session_id', $cart->session_id); //Putting previous customer ID back to WooCommerce session
 			WC()->session->set('cartbounty_from_link', true); //Setting a marker that current user arrived from email
 		}
-		
-		//Redirecting user to Checkout page
-		$checkout_url = wc_get_checkout_url();
-		wp_redirect( $checkout_url, '303' );
-		exit();
 	}
 
     /**
@@ -2528,7 +2658,7 @@ class CartBounty_Admin{
 	 */
 	public function force_sync(){
 		$data = $_POST;
-		if ( check_ajax_referer( 'force_sync', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the import
+		if ( check_ajax_referer( 'force_sync', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the function
 	        wp_send_json_error(__( 'Sync failed. Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 	    }
 
@@ -2561,6 +2691,9 @@ class CartBounty_Admin{
 	 *
 	 * @since    7.0
 	 * @return   string
+	 * @param    string   	$email			Cart email
+	 * @param    string   	$session_id		Cart session ID
+	 * @param    integer   	$cart_id		Cart ID
 	 */
 	public function create_cart_url( $email, $session_id, $cart_id ){
 		$cart_url = wc_get_cart_url();
@@ -2717,5 +2850,17 @@ class CartBounty_Admin{
 		}
 
 		return $price;
+	}
+
+	/**
+	* Method sanitizes field
+	*
+	* @since    7.0.2
+	* @return   string
+	* @param    string    $field    		  Field that should be sanitized
+	*/
+	public function sanitize_field( $field ){
+		$field = str_replace('"', '', $field);
+		return wp_specialchars_decode( sanitize_text_field( wp_unslash( $field ) ), ENT_NOQUOTES );
 	}
 }

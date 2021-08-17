@@ -1097,11 +1097,16 @@ a.cartbounty-tab{
 	-webkit-animation: spin 2s linear infinite;
 	animation: spin 2s linear infinite;
 	content: '';
+	opacity: 1;
 }
 
 .button-primary.cartbounty-loading:after{
 	border-color: #d1beff;
 	border-top-color: #ffde00;
+}
+
+.cartbounty-loading .selectize-input:after{
+	opacity: 0;
 }
 
 .cartbounty .cartbounty-button:hover,
@@ -1483,7 +1488,11 @@ em.cartbounty-connection,
 }
 
 .cartbounty .tablenav .tablenav-pages{
-	line-height: 25px;
+	line-height: 35px;
+	margin: 0;
+}
+
+.tablenav .one-page .displaying-num{
 	margin: 0;
 }
 
@@ -2020,6 +2029,16 @@ em.cartbounty-connection,
 
 	.cartbounty-automation-name .cartbounty-step-trigger{
 		right: 0;
+	}
+
+	.cartbounty-automation-number{
+		left: 8px;
+	}
+
+	.cartbounty-step-opener,
+	.cartbounty-step-contents{
+		padding-left: 20px;
+		padding-right: 20px;
 	}
 }
 

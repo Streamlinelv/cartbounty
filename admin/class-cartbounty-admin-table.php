@@ -375,8 +375,13 @@ class CartBounty_Table extends WP_List_Table{
     function process_bulk_action(){
         global $wpdb;
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+        $footer_bulk_delete = false;
 
-        if ('delete' === $this->current_action()) {
+        if( isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if bottom Bulk delete action fired
+             $footer_bulk_delete = true;
+        }
+
+        if ('delete' === $this->current_action() || $footer_bulk_delete ) {
             if(empty($_REQUEST['id'])){ //Exit in case no row selected
                 return;
             }

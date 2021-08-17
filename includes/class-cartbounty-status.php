@@ -49,7 +49,7 @@ class CartBounty_System_Status{
 	 * @return   HTML
 	 */
 	public function get_system_status(){
-		if ( check_ajax_referer( 'get_system_status', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the import
+		if ( check_ajax_referer( 'get_system_status', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the function
 	        wp_send_json_error(__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 	    }
 
