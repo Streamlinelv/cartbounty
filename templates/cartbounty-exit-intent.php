@@ -34,11 +34,11 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 			<div id="cartbounty-exit-intent-form-content-r">
 				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_title_html', sprintf(
 					/* translators: %s - Color code */
-					__( '<h2 style="color: %s">You were not leaving your cart just like that, right?</h2>', 'woo-save-abandoned-carts' ), $args['inverse_color'] ) ) ); ?>
+					__( '<h2 style="color: %s">%s</h2>', 'woo-save-abandoned-carts' ), $args['inverse_color'], $args['heading'] ) ) ); ?>
 				<?php do_action('cartbounty_exit_intent_after_title'); ?>
 				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_description_html', sprintf(
 					/* translators: %s - Color code */
-					__( '<p style="color: %s">Enter your details below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)</p>', 'woo-save-abandoned-carts' ), $args['inverse_color'] ) ) );?>
+					__( '<p style="color: %s">%s</p>', 'woo-save-abandoned-carts' ), $args['inverse_color'], $args['content'] ) ) );?>
 				<form>
 					<?php do_action('cartbounty_exit_intent_before_form_fields');
 					echo apply_filters( 'cartbounty_exit_intent_field_html', '<input type="email" id="cartbounty-exit-intent-email" required placeholder="'. __('Enter your email', 'woo-save-abandoned-carts') .'">' );

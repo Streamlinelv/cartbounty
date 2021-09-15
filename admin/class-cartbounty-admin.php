@@ -195,7 +195,7 @@ class CartBounty_Admin{
 				<p>'. sprintf(
 					/* translators: %s - Plugin name */
 					__('We always welcome suggestions from our users and will evaluate each new idea to improve %s. In fact, many of the features you are currently using have arrived from users like yourself.', 'woo-save-abandoned-carts'), CARTBOUNTY_ABREVIATION) .'</p>
-				<div class="cartbounty-button-row"><a href="'. $this->get_trackable_link(CARTBOUNTY_FEATURE_LINK, 'help_tab_suggest_feature') .'" class="cartbounty-button" target="_blank">'. __('Suggest a new feature', 'woo-save-abandoned-carts') .'</a>
+				<div class="cartbounty-button-row"><a href="'. $this->get_trackable_link(CARTBOUNTY_FEATURE_LINK, 'help_tab_suggest_feature') .'" class="cartbounty-button" target="_blank">'. __('Suggest a feature', 'woo-save-abandoned-carts') .'</a>
 				</div>';
 			$screen->add_help_tab( array(
 				'id'       =>	'cartbounty_carts_request_feature',
@@ -445,7 +445,7 @@ class CartBounty_Admin{
 										<h4><?php echo __('Protection', 'woo-save-abandoned-carts'); ?></h4>
 										<p class="cartbounty-titles-column-description">
 											<?php echo sprintf(
-											/* translators: %s - URL link */ __('In case you feel that bots might be leaving recoverable abandoned carts. Please <a href="%s" title="Prevent bots from leaving ghost carts" target="_blank">see this</a> to learn how to prevent bots from leaving ghost carts.', 'woo-save-abandoned-carts'), $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL, 'ghost_bots', '#ghost-bots') ); ?>
+											/* translators: %s - URL link */ __('In case you feel that bots might be leaving recoverable abandoned carts. Please <a href="%s" title="Prevent bots from leaving ghost carts" target="_blank">see this</a> to learn how to prevent bots from leaving ghost carts.', 'woo-save-abandoned-carts'), $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL . '/abandoned-carts', 'ghost_bots', '#prevent-bots-from-leaving-abandoned-carts') ); ?>
 										</p>
 									</div>
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
@@ -931,7 +931,7 @@ class CartBounty_Admin{
 																<input id="cartbounty-automation-heading" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][heading]" value="<?php echo $this->sanitize_field($heading); ?>" placeholder="<?php echo $wordpress->get_defaults('heading', 0); ?>" />
 															</div>
 															<div class="cartbounty-settings-group">
-																<label for="cartbounty-automation-content"><?php echo __('Additional content', 'woo-save-abandoned-carts'); ?></label>
+																<label for="cartbounty-automation-content"><?php echo __('Content', 'woo-save-abandoned-carts'); ?></label>
 																<input id="cartbounty-automation-content" class="cartbounty-text" type="text" name="cartbounty_automation_steps[0][content]" value="<?php echo $this->sanitize_field($content); ?>" placeholder="<?php echo $wordpress->get_defaults('content', 0); ?>" />
 															</div>
 														</div>
@@ -942,7 +942,7 @@ class CartBounty_Admin{
 															<p class="cartbounty-titles-column-description">
 																<?php echo sprintf(
 																	/* translators: %s - Link tags */
-																	 __('Choose a template that will be used to display the abandoned cart reminder email. Take a look %shere%s to see advanced theme customization options', 'woo-save-abandoned-carts'), '<a href="https://www.cartbounty.com/#modify-exit-intent-content" target="_blank">', '</a>');?>
+																	 __('Choose a template that will be used to display the abandoned cart reminder email. Take a look %shere%s to see advanced template customization options', 'woo-save-abandoned-carts'), '<a href="'. $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/templates', 'wp_template_customization' ) .'" target="_blank">', '</a>');?>
 															</p>
 														</div>
 														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
@@ -1228,7 +1228,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 __('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn <a href="%s" target="_blank" title="How to customize the contents of Exit Intent">how to customize the contents</a> of Exit Intent popup.', 'woo-save-abandoned-carts'), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ei_modify_content', '#modify-exit-intent-content' ) );
+						 __('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn <a href="%s" target="_blank" title="How to customize the contents of Exit Intent">how to customize the contents</a> of Exit Intent popup.', 'woo-save-abandoned-carts'), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/exit-intent-popup-technology', 'ei_modify_content' ) );
 					?>
 				</div>
 				<form method="post" action="options.php">
@@ -1238,6 +1238,8 @@ class CartBounty_Admin{
 						$exit_intent_on = esc_attr( get_option('cartbounty_exit_intent_status'));
 						$test_mode_on = esc_attr( get_option('cartbounty_exit_intent_test_mode'));
 						$exit_intent_type = esc_attr( get_option('cartbounty_exit_intent_type'));
+						$exit_intent_heading = esc_attr( get_option('cartbounty_exit_intent_heading'));
+						$exit_intent_content = esc_attr( get_option('cartbounty_exit_intent_content'));
 						$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
 						$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
 						$main_image = esc_attr( get_option('cartbounty_exit_intent_image'));
@@ -1284,6 +1286,14 @@ class CartBounty_Admin{
 								<p class='cartbounty-additional-information'>
 									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'exit_intent_phone' ); ?></i>
 								</p>
+							</div>
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-exit-intent-heading"><?php echo __('Main title', 'woo-save-abandoned-carts'); ?></label>
+								<input id="cartbounty-exit-intent-heading" class="cartbounty-text" type="text" name="cartbounty_exit_intent_heading" value="<?php echo $this->sanitize_field($exit_intent_heading); ?>" placeholder="<?php echo $this->get_tools_defaults('heading', 'exit_intent'); ?>" />
+							</div>
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-exit-intent-content"><?php echo __('Content', 'woo-save-abandoned-carts'); ?></label>
+								<input id="cartbounty-exit-intent-content" class="cartbounty-text" type="text" name="cartbounty_exit_intent_content" value="<?php echo $this->sanitize_field($exit_intent_content); ?>" placeholder="<?php echo $this->get_tools_defaults('content', 'exit_intent'); ?>" />
 							</div>
 						</div>
 					</div>
@@ -1420,7 +1430,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', 'woo-save-abandoned-carts'), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'ec_modify_content', '#modify-exit-intent-content' ) );
+						 __('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked. You can also enable mandatory input to make sure guest visitors are not be able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn <a href="%s" target="_blank" title="How to customize the contents of Early capture">how to customize the contents</a> of Early capture request.', 'woo-save-abandoned-carts'), $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/early-capture-add-to-cart-popup', 'ec_modify_content' ) );
 					?>
 				</div>
 				<form>
@@ -1467,6 +1477,10 @@ class CartBounty_Admin{
 									<input id="cartbounty-early-capture-field-type-phone" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
 										<?php echo __('Phone', 'woo-save-abandoned-carts'); ?>
 								</label>
+							</div>
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-early-capture-heading"><?php echo __('Main title', 'woo-save-abandoned-carts'); ?></label>
+								<input id="cartbounty-early-capture-heading" class="cartbounty-text" type="text" placeholder="<?php echo $this->get_tools_defaults('heading', 'early_capture'); ?>" disabled />
 							</div>
 						</div>
 					</div>
@@ -2815,6 +2829,11 @@ class CartBounty_Admin{
 	function get_product_price( $product, $force_tax = false, $force_exclude_tax = false ) {
 		$tax = 0;
 		$price = 0;
+		$decimals = 0;
+
+		if(wc_get_price_decimals()){
+			$decimals = wc_get_price_decimals();
+		}
 
 		if(is_array($product)){ //In case we are working with CartBounty line item
 			$price = $product['product_variation_price'];
@@ -2849,7 +2868,7 @@ class CartBounty_Admin{
 			$price = 0;
 		}
 
-		return $price;
+		return round($price, $decimals);
 	}
 
 	/**
@@ -2862,5 +2881,72 @@ class CartBounty_Admin{
 	public function sanitize_field( $field ){
 		$field = str_replace('"', '', $field);
 		return wp_specialchars_decode( sanitize_text_field( wp_unslash( $field ) ), ENT_NOQUOTES );
+	}
+
+	/**
+     * Returning Tools defaults
+     *
+     * @since    7.0.6
+     * @return   array or string
+     * @param    string     $value    		  	  Value to return
+     * @param    integer    $tool    		      Tool name
+     */
+	public function get_tools_defaults( $value = false, $tool = false ){
+		switch ( $tool ) {
+			case 'exit_intent':
+
+				$defaults = array(
+					'heading'		=> __( 'You were not leaving your cart just like that, right?', 'woo-save-abandoned-carts' ),
+					'content'		=> __( 'Enter your details below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)', 'woo-save-abandoned-carts' )
+				);
+
+				break;
+
+			case 'early_capture':
+
+				$defaults = array(
+					'heading'		=> __( 'Please enter your details to add this item to your cart', 'woo-save-abandoned-carts' )
+				);
+			
+				break;
+		}
+
+		if($value){ //If a single value should be returned
+			if(isset($defaults[$value])){ //Checking if value exists
+				$defaults = $defaults[$value];
+			}
+		}
+
+		return $defaults;
+	}
+
+	/**
+	* Method for outputting price accordingly to the user's selected WooCommerce currency position
+	*
+	* @since    7.0.6
+	* @return   string
+	* @param    float      $price    		  	  Price value
+	* @param    string     $currency_code   	  Currency code, e.g. EUR, USD
+	*/
+	public function format_price( $price, $currency_code = false ){
+		$decimals = 0;
+		if(wc_get_price_decimals()){
+			$decimals = wc_get_price_decimals();
+		}
+
+		$price = number_format((float)$price, $decimals, '.', ''); //Format price so there would always be correct number of decimals after comma, e.g. 2.30 instead of 2.3
+		$woocommerce_price_format = get_woocommerce_price_format(); //Retrieve the pricing format the user has set
+		$currency = get_woocommerce_currency_symbol($currency_code);
+
+		if(apply_filters( 'cartbounty_display_currency_code', false )){ //If currency code display is enabled, display currency code instead of symbol. By default we display currency symbol
+			$currency = $currency_code;
+		}
+
+		if(empty($currency)){ //If the currency is empty, retrieve default WooCommerce currency ignoring the one saved in the abandoned cart
+			$currency = get_woocommerce_currency_symbol();
+		}
+
+		$price = sprintf( apply_filters( 'cartbounty_price_format', $woocommerce_price_format ), $currency, $price);
+		return $price;
 	}
 }

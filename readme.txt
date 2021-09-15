@@ -5,18 +5,18 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.8
-Stable tag: 7.0.5
+Stable tag: 7.0.6
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
 
 == Description ==
 
-CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all activity in the [WooCommerce](https://woocommerce.com) checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them.
+CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all activity in the [WooCommerce](https://woocommerce.com/?aff=40932&cid=4595734)* checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them.
 
 You will receive regular email notifications about newly abandoned shopping carts and will be able to remind about these carts either manually or using WordPress default mail server to send automated abandoned cart recovery emails.
 
-If you would like to send automated abandoned cart recovery emails to customers via [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* or [MailChimp](https://mailchimp.com), please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin page.
+If you would like to send automated abandoned cart recovery emails to customers via [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* or [MailChimp](http://eepurl.com/hHjfrX)*, please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin page.
 
 [youtube https://www.youtube.com/watch?v=Sb4DpkDilw0]
 
@@ -84,7 +84,7 @@ If you would like to [send your visitors automated abandoned cart recovery email
 
 [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
 [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* is a beautifully designed email marketing platform to save and recover online abandoned shopping carts.
-And [MailChimp](https://mailchimp.com) offers a forever Free plan that you can use to send abandoned cart recovery emails.
+And [MailChimp](http://eepurl.com/hHjfrX)* offers a forever Free plan that you can use to send abandoned cart recovery emails.
 
 If you would like to enable additional WordPress recovery email features and add multiple language support, please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
 
@@ -145,7 +145,7 @@ In case you would like to enable Exit Intent Technology on mobile phones and tab
 
 = How to use template files for Advanced customization? =
 
-Public sections of the plugin can be quickly and easily styled using plugin settings. However, if you are looking for a more customized appearance, you can use template files that come along with CartBounty or take a look at [actions and filters](https://www.cartbounty.com/#actions-and-filters).
+Public sections of the plugin can be quickly and easily styled using plugin settings. However, if you are looking for a more customized appearance, you can use template files that come along with CartBounty or take a look at [actions and filters](https://www.cartbounty.com/actions-and-filters).
 
 You can find all template files inside "/plugins/woo-save-abandoned-carts/templates". The template files contain markup required to present the data. Please copy this template to your active theme to keep your customizations intact after plugin updates.
 
@@ -168,6 +168,8 @@ Filters:
 * cartbounty_from_email
 * cartbounty_waiting_time
 * cartbounty_include_tax
+* cartbounty_price_format
+* cartbounty_display_currency_code
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
 
@@ -326,9 +328,9 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 == Changelog ==
 
-= 7.0.5 =
-* Improved event schedule functions
-* Minor visual improvements
-* Fixed abandoned cart table footer Bulk delete feature
+= 7.0.6 =
+* Added option to edit the contents of Exit Intent
+* Improved how prices are displayed - will match the default WooCommerce currency settings
+* Fixed tax rounding issue
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

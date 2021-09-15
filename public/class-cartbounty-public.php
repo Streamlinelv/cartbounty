@@ -128,9 +128,9 @@ class CartBounty_Public{
 		$cart_saved = $this->cart_saved($cart['session_id']);
 
 		if( $cart_saved ){ //If cart has already been saved
-			$this->update_cart( $ghost );
+			$this->update_cart( $cart, $ghost );
 		}else{
-			$this->create_new_cart( $ghost );
+			$this->create_new_cart( $cart, $ghost );
 		}
 	}
 
@@ -138,12 +138,12 @@ class CartBounty_Public{
 	 * Method creates a new cart
 	 *
 	 * @since    5.0
+	 * @param    array      $cart     Cart contents
 	 * @param    boolean    $ghost    If the cart is a ghost cart or not
 	 */
-	function create_new_cart( $ghost ){
+	function create_new_cart( $cart = array(), $ghost ){
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$cart = $this->read_cart();
 		$user_data = $this->get_user_data();
 
 		//In case if the cart has no items in it, we must delete the cart
@@ -207,10 +207,10 @@ class CartBounty_Public{
 	 * Method updates a cart
 	 *
 	 * @since    5.0
+	 * @param    array      $cart     Cart contents
 	 * @param    boolean    $ghost    If the cart is a ghost cart or not
 	 */
-	function update_cart( $ghost ){
-		$cart = $this->read_cart();
+	function update_cart( $cart = array(), $ghost ){
 		$user_data = $this->get_user_data();
 
 		//In case if the cart has no items in it, we must delete the cart
@@ -608,6 +608,7 @@ class CartBounty_Public{
 			$product_quantity = $values['quantity'];
 			$product_variation_price = '';
 			$product_tax = '';
+
 			if(isset($values['line_total'])){
 				$product_variation_price = $values['line_total'];
 			}
@@ -926,12 +927,22 @@ class CartBounty_Public{
 	 */
 	function build_exit_intent_output( $current_user_is_admin ){
 		global $wpdb;
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cart = $this->read_cart();
+		$heading = $admin->get_tools_defaults('heading', 'exit_intent');
+		$content = $admin->get_tools_defaults('content', 'exit_intent');
 		$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
 		$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$where_sentence = $admin->get_where_sentence('recoverable');
+
+		if( trim( esc_attr( get_option('cartbounty_exit_intent_heading'))) != '' ){ //If the value is not empty and does not contain only whitespaces
+			$heading = $admin->sanitize_field(get_option('cartbounty_exit_intent_heading'));
+		}
+
+		if( trim( esc_attr( get_option('cartbounty_exit_intent_content'))) != '' ){ //If the value is not empty and does not contain only whitespaces
+			$content = $admin->sanitize_field(get_option('cartbounty_exit_intent_content'));
+		}
 
 		if(!$main_color){
 			$main_color = '#e3e3e3';
@@ -965,6 +976,8 @@ class CartBounty_Public{
 
 		$args = array(
 			'image_url' => $image_url,
+			'heading' => $heading,
+			'content' => $content,
 			'main_color' => $main_color,
 			'inverse_color' => $inverse_color
 		);

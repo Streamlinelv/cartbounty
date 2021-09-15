@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 7.0.6 =
+* Added option to edit the contents of Exit Intent
+* Improved how prices are displayed - will match the default WooCommerce currency settings
+* Fixed tax rounding issue
+
 = 7.0.5 =
 * Improved event schedule functions
 * Minor visual improvements

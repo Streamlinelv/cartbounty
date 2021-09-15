@@ -211,7 +211,7 @@ class CartBounty_Table extends WP_List_Table{
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                             $product_price = $admin->get_product_price( $product );
-                            $price = ', ' . $product_price . ' ' . esc_html($item['currency']);
+                            $price = ', ' . $admin->format_price( $product_price, esc_html($item['currency']));
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
                                 $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $price . $quantity .'</a></li>';
                             }else{
@@ -244,7 +244,7 @@ class CartBounty_Table extends WP_List_Table{
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                             $product_price = $admin->get_product_price( $product );
-                            $price = ', ' . $product_price . ' ' . esc_html($item['currency']);
+                            $price = ', ' . $admin->format_price( $product_price, esc_html($item['currency']));
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
                                 $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. $product_title . $price . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank"><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></a></div>';
                             }else{

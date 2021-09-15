@@ -34,6 +34,8 @@ delete_option( 'cartbounty_times_review_declined' );
 delete_option( 'cartbounty_exit_intent_status' );
 delete_option( 'cartbounty_exit_intent_test_mode' );
 delete_option( 'cartbounty_exit_intent_type' );
+delete_option( 'cartbounty_exit_intent_heading' );
+delete_option( 'cartbounty_exit_intent_content' );
 delete_option( 'cartbounty_exit_intent_main_color' );
 delete_option( 'cartbounty_exit_intent_inverse_color' );
 delete_option( 'cartbounty_exit_intent_image' );
