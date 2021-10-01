@@ -62,6 +62,7 @@ class CartBounty_System_Status{
 		$missing_hooks = array();
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$wordpress = new CartBounty_WordPress();
+		$overrides = $admin->get_template_overrides();
 		
 		if(get_option('cartbounty_recoverable_cart_count')){
 			$carts[] = esc_html( __('Recoverable', 'woo-save-abandoned-carts' ) .': '. get_option('cartbounty_recoverable_cart_count') );
@@ -107,7 +108,7 @@ class CartBounty_System_Status{
 		if(wp_next_scheduled('cartbounty_sync_hook') === false){
 			$missing_hooks[] = 'cartbounty_sync_hook';
 		}
-		if (wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook') === false) {
+		if(wp_next_scheduled('cartbounty_remove_empty_carts_hook') === false) {
 			$missing_hooks[] = 'cartbounty_remove_empty_carts_hook';
 		}
 
@@ -154,7 +155,8 @@ class CartBounty_System_Status{
 			esc_html( __('Automation', 'woo-save-abandoned-carts' ) ) => ($active_recovery) ? implode(", ", $active_recovery) : '-',
 			esc_html( __('Exit Intent', 'woo-save-abandoned-carts' ) ) => ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
 			esc_html( __('Settings', 'woo-save-abandoned-carts' ) ) => ($settings) ? implode(", ", $settings) : '-',
-			esc_html( __('Missing hooks', 'woo-save-abandoned-carts' ) ) => ($missing_hooks) ? implode(", ", $missing_hooks) : '-'
+			esc_html( __('Missing hooks', 'woo-save-abandoned-carts' ) ) => ($missing_hooks) ? implode(", ", $missing_hooks) : '-',
+			esc_html( __('Template overrides', 'woo-save-abandoned-carts' ) ) => ($overrides) ? implode(", ", $overrides) : '-'
 		);
 
 		$output = '<table id="cartbounty-system-report-table">';

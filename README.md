@@ -316,10 +316,9 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.6
+##### 7.0.7
 
-* Added option to edit the contents of Exit Intent
-* Improved how prices are displayed - will match the default WooCommerce currency settings
-* Fixed tax rounding issue
+* Improved admin email notification design
+* Template override information included in system status report
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

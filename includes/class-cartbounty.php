@@ -152,6 +152,8 @@ class CartBounty{
 		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
 		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
 		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' );
+		$this->loader->add_action( 'cartbounty_automation_footer_end', $admin, 'add_email_badge', 100 );
+		$this->loader->add_action( 'cartbounty_admin_email_footer_end', $admin, 'add_email_badge', 100 );
 	}
 
 	/**
@@ -180,7 +182,6 @@ class CartBounty{
 		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' );
 		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' );
 		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' );
-		$this->loader->add_action( 'cartbounty_automation_footer_end', $wordpress, 'add_email_badge', 100 );
 	}
 
 	/**

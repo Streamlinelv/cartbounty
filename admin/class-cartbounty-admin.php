@@ -1801,6 +1801,7 @@ class CartBounty_Admin{
 	 */
 	private function prepare_email( $type ){
 		global $wpdb;
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time_intervals = $this->get_time_intervals();
 		$time = $time_intervals['cart_abandoned'];
@@ -1845,16 +1846,56 @@ class CartBounty_Admin{
 
 		if($type == 'recovered'){ //In case if we are sending notification email about newly recovered carts
 			$subject = '['.$blog_name.'] '. _n('Bounty! Cart recovered! 🤟', 'Bounty! Carts recovered! 🤑', $cart_count, 'woo-save-abandoned-carts');
-			$message = sprintf(
-			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name, %3$s - Link, %4$s - Link */
-			_n('Excellent! You have recovered %1$d abandoned cart using %2$s. <br/>View it here: <a href="%3$s">%4$s</a>', 'Amazing, you have recovered %1$d abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+			$heading = _n('Cart recovered! 🤟', 'Carts recovered! 🤑', $cart_count, 'woo-save-abandoned-carts');
+			$content = sprintf(
+			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name */
+			_n('Excellent, you have recovered an abandoned cart using %2$s.', 'Amazing, you have recovered %1$d abandoned carts using %2$s.', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION);
+			$content .= ' ' . sprintf(
+			/* translators: %s - Link tags */
+			__('Please use %sthis link%s to see full information about your carts.', 'woo-save-abandoned-carts'), '<a href="' . esc_url($admin_link) . '">', '</a>');
+			$button_color = '#20bca0';
 
 		}else{
 			$subject = '['.$blog_name.'] '. _n('New abandoned cart saved! 🛒', 'New abandoned carts saved! 🛒', $cart_count, 'woo-save-abandoned-carts');
-			$message = sprintf(
-			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name, %3$s - Link, %4$s - Link */
-			_n('Great! You have saved %1$d new recoverable abandoned cart using %2$s. <br/>View it here: <a href="%3$s">%4$s</a>', 'Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION, esc_html($admin_link), esc_html($admin_link));
+			$heading = _n('New abandoned cart!', 'New abandoned carts! ', $cart_count, 'woo-save-abandoned-carts');
+			$content = sprintf(
+			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name */
+			_n('Great, you have saved a new recoverable abandoned cart using %2$s.', 'Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s.', $cart_count, 'woo-save-abandoned-carts'), esc_html($cart_count), CARTBOUNTY_ABREVIATION);
+			$content .= ' ' . sprintf(
+			/* translators: %s - Link tags */
+			__('Please use %sthis link%s to see full information about your carts.', 'woo-save-abandoned-carts'), '<a href="' . esc_url($admin_link) . '">', '</a>');
+			$button_color = '#aa88fc';
 		}
+
+		$main_color = '#ffffff';
+		$text_color = '#000000';
+		$background_color = '#f2f2f2';
+		$footer_color = '#353535';
+		$border_color = '#e9e8e8';
+		$get_pro_text = sprintf(
+			/* translators: %s - Link tags */
+			__('Get %sCartBounty Pro%s to enable cart data preview above.', 'woo-save-abandoned-carts'), '<a href="'. esc_url($this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'enable_admin_email_contents' )) .'">', '</a>');
+
+		$args = array(
+			'main_color'			=> $main_color,
+			'button_color'			=> $button_color,
+			'text_color'			=> $text_color,
+			'background_color'		=> $background_color,
+			'footer_color'			=> $footer_color,
+			'border_color'			=> $border_color,
+			'heading'				=> $heading,
+			'content'				=> $content,
+			'total_1'				=> $this->format_price('320'),
+			'total_2'				=> $this->format_price('4820'),
+			'total_3'				=> $this->format_price('51'),
+			'carts_link'			=> $admin_link,
+			'get_pro_text'			=> $get_pro_text
+		);
+
+		ob_start();
+		echo $public->get_template( 'cartbounty-admin-email-notification.php', $args, false, plugin_dir_path( __FILE__ ) . '../templates/emails/');
+		$message = ob_get_contents();
+		ob_end_clean();
 
 		$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
 		//Sending out email
@@ -2948,5 +2989,106 @@ class CartBounty_Admin{
 
 		$price = sprintf( apply_filters( 'cartbounty_price_format', $woocommerce_price_format ), $currency, $price);
 		return $price;
+	}
+
+	/**
+	* Method scans all files inside CartBounty templates folder. 
+	* Returns an array of all found files.
+	*
+	* @since    7.0.7
+	* @return   array
+	* @param    string    $default_path			Default path to template files.
+	*/
+	function scan_files( $default_path ){
+		$files  = scandir($default_path);
+		$result = array();
+
+		if(!empty($files)){
+			foreach($files as $key => $value){
+				if(!in_array($value, array( '.', '..' ), true)){
+					if(is_dir($default_path . '/' . $value)){
+						$sub_files = $this->scan_files( $default_path . '/' . $value );
+						foreach($sub_files as $sub_file){
+							$result[] = $sub_file;
+						}
+						foreach ($sub_files as $sub_file){
+							$result[] = $value . '/' . $sub_file;
+						}
+
+					}else{
+						$result[] = $value;
+					}
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	* Get an array of templates that have been overriden
+	*
+	* @since    7.0.7
+	* @return   array
+	*/
+	function get_template_overrides(){
+		$template_path = 'templates/';
+		$default_path = plugin_dir_path( __FILE__ ) . '../templates/';
+		$override_files = array();
+		$scan_files = $this->scan_files( $default_path );
+
+		foreach($scan_files as $file){
+			if(file_exists(get_stylesheet_directory() . '/' . $file)){
+				$theme_file = get_stylesheet_directory() . '/' . $file;
+
+			}elseif(file_exists(get_stylesheet_directory() . '/' . $template_path . $file)){
+				$theme_file = get_stylesheet_directory() . '/' . $template_path . $file;
+
+			}elseif(file_exists(get_template_directory() . '/' . $file)){
+				$theme_file = get_template_directory() . '/' . $file;
+
+			}elseif(file_exists(get_template_directory() . '/' . $template_path . $file)){
+				$theme_file = get_template_directory() . '/' . $template_path . $file;
+
+			}else{
+				$theme_file = false;
+			}
+
+			if(!empty($theme_file)){
+				$override_files[] = str_replace(WP_CONTENT_DIR . '/themes/', '', $theme_file);
+			}
+		}
+		return $override_files;
+	}
+
+	/**
+	* Add email badge
+	*
+	* @since    7.0.7
+	* @return   html
+	*/
+	function add_email_badge(){
+		$tag = 'automation_email';
+		if( current_filter() == 'cartbounty_admin_email_footer_end' ){ //If the function triggered inside admin notification email
+			$tag = 'admin_notification_email';
+		}
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$image = $public->get_plugin_url() . '/public/assets/sent-via-cartbounty.png';
+		$output = '';
+		$output .= '<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+			<tr>
+				<td valign="top">
+					<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+						<tr>
+							<td valign="top" width="650"  align="center" style="text-align: center;">
+								<a href="'. $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL, $tag ) .'" style="display: block;">
+									<img src="'. $image .'" alt="Reminded using CartBounty" title="Reminded using CartBounty" width="130" height="auto" style="display:inline; text-align: center; margin: 20px 0 5px; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0;" />
+								</a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>';
+		echo $output;
 	}
 }

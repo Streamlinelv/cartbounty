@@ -748,28 +748,6 @@ class CartBounty_WordPress{
 		return $result;
 	}
 
-	function add_email_badge(){
-		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$image = $public->get_plugin_url() . '/public/assets/sent-via-cartbounty.png';
-		$output = '';
-		$output .= '<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-			<tr>
-				<td valign="top">
-					<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-						<tr>
-							<td valign="top" width="650"  align="center" style="text-align: center;">
-								<a href="'. CARTBOUNTY_LICENSE_SERVER_URL .'">
-									<img src="'. $image .'" alt="Reminded using CartBounty" title="Reminded using CartBounty" width="130" height="auto" style="display:inline; text-align: center; margin: 20px 0 5px; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0;" />
-								</a>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>';
-		echo $output;
-	}
-
 	/**
 	* Method validates WordPress automation step data
 	*
