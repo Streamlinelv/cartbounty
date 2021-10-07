@@ -450,11 +450,15 @@ class CartBounty_WordPress{
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$active_steps = $this->get_active_steps();
 		$wpdb->query(
-			$wpdb->prepare("UPDATE {$cart_table}
-			SET 
-			wp_steps_completed = %d,
-			wp_complete = %s
-			WHERE id = %d", $cart->wp_steps_completed + 1, true, $cart->id)
+			$wpdb->prepare(
+				"UPDATE {$cart_table}
+				SET wp_steps_completed = %d,
+				wp_complete = %s
+				WHERE id = %d",
+				$cart->wp_steps_completed + 1,
+				true,
+				$cart->id
+			)
 		);
 	}
 
@@ -493,13 +497,13 @@ class CartBounty_WordPress{
      * @since    7.0
      */
 	public function increase_sent_emails(){
-		$sent_emails = get_option('cartbounty_automation_sent_emails');
+		$sent_emails = get_option('cartbounty_automation_sends');
 		if(isset($sent_emails)){ //If we already have previous sent emails for the current step
 			$sent_emails = $sent_emails + 1;
 		}else{ //If this is the first email that is sent
 			$sent_emails = 1;
 		}
-		update_option('cartbounty_automation_sent_emails', $sent_emails);
+		update_option('cartbounty_automation_sends', $sent_emails);
 	}
 
 	/**
@@ -567,7 +571,7 @@ class CartBounty_WordPress{
 	}
 
 	/**
-	 * Return abandoned carts waiting in the given automation step queue
+	 * Return abandoned carts waiting in the given automation step queue.
 	 *
 	 * @since    7.0
 	 * @return   string
@@ -597,7 +601,7 @@ class CartBounty_WordPress{
 			)
 		);
 
-		$automation_steps = get_option('cartbounty_automation_steps');;
+		$automation_steps = get_option('cartbounty_automation_steps');
 		foreach ($automation_steps as $key => $step) { //Looping through automation steps
 			if(0 == $key){ //If current step must be complete
 				$count = count($carts);
@@ -611,9 +615,9 @@ class CartBounty_WordPress{
      *
      * @since    7.0
      */
-	public function get_sends(){
+	public function get_stats(){
 		$count = 0;
-		$sent_emails = get_option('cartbounty_automation_sent_emails');
+		$sent_emails = get_option('cartbounty_automation_sends');
 		if($sent_emails > 0){
 			$count = $sent_emails;
 		}
@@ -629,6 +633,7 @@ class CartBounty_WordPress{
      * @param    integer    $automation    		  Automation number
      */
 	public function get_defaults( $value = false, $automation = false ){
+		$defaults = array();
 		switch ( $automation ) {
 			case 0:
 

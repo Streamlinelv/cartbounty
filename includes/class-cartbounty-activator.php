@@ -218,5 +218,14 @@ class CartBounty_Activator{
 
 		//Setting default WordPress automation workflow array so we would have three emails. Also making sure that images are enabled by default
 		add_option('cartbounty_automation_steps', array(1, 1, 1));
+
+		/**
+		 * Since version 7.0.7.1
+		 * This code will be removed in later versions
+		 */
+		if(get_option('cartbounty_automation_sent_emails')){
+			update_option('cartbounty_automation_sends', get_option('cartbounty_automation_sent_emails'));
+			delete_option('cartbounty_automation_sent_emails');
+		}
 	}
 }

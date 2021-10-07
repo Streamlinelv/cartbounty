@@ -48,7 +48,7 @@ delete_option( 'cartbounty_automation_steps' );
 delete_option( 'cartbounty_automation_from_name' );
 delete_option( 'cartbounty_automation_from_email' );
 delete_option( 'cartbounty_automation_reply_email' );
-delete_option( 'cartbounty_automation_sent_emails' );
+delete_option( 'cartbounty_automation_sends' );
 delete_option( 'cartbounty_email_table_exists' );
 delete_option( 'cartbounty_cron_warning' );
 

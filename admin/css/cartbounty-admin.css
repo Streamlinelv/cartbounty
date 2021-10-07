@@ -39,7 +39,9 @@
 .cartbounty-step-contents,
 .cartbounty-step-trigger,
 .cartbounty-step,
-.cartbounty-step-opener{
+.cartbounty-step-opener,
+.cartbounty-stats-percentage,
+.cartbounty-stats-count{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
@@ -602,7 +604,7 @@ input.cartbounty-radiobutton:checked:before{
 	display: inline;
 }
 
-.cartbounty-upload-image-container{
+.cartbounty-action-container{
 	position: relative;
 	display: inline-block;
 	margin-top: 20px;
@@ -1633,6 +1635,10 @@ em.cartbounty-connection,
 	margin-top: 0;
 }
 
+.cartbounty-step-opener .cartbounty-titles-column{
+	margin-bottom: 20px;
+}
+
 .cartbounty-checked-parent .cartbounty-settings-group.cartbounty-hidden,
 .cartbounty-checked i.cartbounty-hidden,
 .cartbounty-step-active .cartbounty-step-contents{
@@ -1670,7 +1676,8 @@ em.cartbounty-connection,
 }
 
 .cartbounty-stats{
-	margin-right: 10%;
+	margin-right: 12%;
+	position: relative;
 }
 
 .cartbounty-stats i{
@@ -1684,9 +1691,38 @@ em.cartbounty-connection,
 	line-height: 25px;
 }
 
+.cartbounty-stats-count{
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.cartbounty-stats-count i,
+.cartbounty-stats-count p{
+	display: none;
+}
+
+.cartbounty-stats-count .button{
+	margin-top: 5px;
+}
+
+.cartbounty-stats:last-child .cartbounty-stats-percentage,
+.cartbounty-stats:last-child .cartbounty-stats-count{
+	transition-delay: 0.05s;
+}
+
+.cartbounty-step-opener:hover .cartbounty-stats-percentage{
+	opacity: 0;
+}
+
+.cartbounty-step-opener:hover .cartbounty-stats-count{
+	opacity: 1;
+}
+
 .cartbounty-automation-status{
 	text-align: right;
-	padding-right: 30px;
+	padding-right: 15px;
 	display: inline-block;
 }
 
@@ -1791,6 +1827,11 @@ em.cartbounty-connection,
 }
 
 @media screen and (max-width: 1500px) {
+	.cartbounty-stats-container{
+		justify-content: space-between;
+		margin-bottom: 5px;
+	}
+
 	.cartbounty-flex .cartbounty-section-item{
 		margin-right: 0;
 	}
@@ -1818,9 +1859,14 @@ em.cartbounty-connection,
 	.cartbounty-input-with-button .cartbounty-text{
 		width: 70%;
 	}
+
+	.cartbounty-stats{
+		width: 50%;
+		margin-right: 0;
+	}
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1199px) {
 	.cartbounty .column-time,
 	.cartbounty .column-cart_contents{
 		width: auto;
@@ -1832,6 +1878,24 @@ em.cartbounty-connection,
 
 	.cartbounty-automation-status{
 		padding-right: 15px;
+	}
+
+	.cartbounty-automation-name .cartbounty-step-trigger{
+		display: inline-block;
+	}
+
+	.cartbounty-step-trigger{
+		display: none;
+	}
+
+	.cartbounty-step-opener .cartbounty-titles-column{
+		margin-bottom: 10px;
+	}
+
+	.cartbounty-trigger-container{
+		text-align: left;
+		margin: 0 0 20px;
+		padding-top: 0;
 	}
 }
 
@@ -1852,7 +1916,6 @@ em.cartbounty-connection,
 		vertical-align: top;
 	}
 
-	.cartbounty-trigger-container .cartbounty-step-trigger,
 	.cartbounty .tablenav.top .tablenav-pages{
 		display: none;
 	}
@@ -1876,8 +1939,7 @@ em.cartbounty-connection,
 		margin-right: 0;
 	}
 
-	.cartbounty .cartbounty-sidebar .cartbounty-select,
-	.cartbounty-automation-name .cartbounty-step-trigger{
+	.cartbounty .cartbounty-sidebar .cartbounty-select{
 		display: block;
 	}
 
@@ -1889,12 +1951,13 @@ em.cartbounty-connection,
 		padding-right: 0;
 	}
 
-	.cartbounty-step-opener .cartbounty-titles-column{
-		margin-bottom: 10px;
+	.cartbounty-stats-container{
+		margin-bottom: 0;
 	}
 
-	.cartbounty-trigger-container{
-		padding-top: 5px;
+	.cartbounty-stats{
+		width: auto;
+		margin-right: 12%;
 	}
 }
 
@@ -1995,11 +2058,6 @@ em.cartbounty-connection,
 	.cartbounty table .status.column-status{
 		overflow: visible;
 	}
-
-	.cartbounty-trigger-container{
-		text-align: left;
-		margin: 0 0 20px
-	}
 }
 
 @media screen and (max-width: 600px) {
@@ -2027,10 +2085,6 @@ em.cartbounty-connection,
 		width: 100%;
 	}
 
-	.cartbounty-automation-name .cartbounty-step-trigger{
-		right: 0;
-	}
-
 	.cartbounty-automation-number{
 		left: 8px;
 	}
@@ -2039,6 +2093,11 @@ em.cartbounty-connection,
 	.cartbounty-step-contents{
 		padding-left: 20px;
 		padding-right: 20px;
+	}
+
+	.cartbounty-stats{
+		width: 50%;
+		margin-right: 0;
 	}
 }
 

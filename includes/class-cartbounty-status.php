@@ -76,7 +76,7 @@ class CartBounty_System_Status{
 
 		if($wordpress->automation_enabled()){
 			$active_recovery[] = esc_html( __('WordPress', 'woo-save-abandoned-carts' ) );
-			$active_recovery[] = esc_html( __('Total emails sent', 'woo-save-abandoned-carts' ) .': '. $wordpress->get_sends() );
+			$active_recovery[] = esc_html( __('Total emails sent', 'woo-save-abandoned-carts' ) .': '. $wordpress->get_stats() );
 		}
 
 		if(get_option('cartbounty_exit_intent_status')){

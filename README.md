@@ -316,9 +316,8 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.7
+##### 7.0.7.1
 
-* Improved admin email notification design
-* Template override information included in system status report
+* Code cleanup
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
