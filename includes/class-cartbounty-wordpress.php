@@ -78,13 +78,14 @@ class CartBounty_WordPress{
 			$wpdb->prepare(
 				"SELECT id, email, session_id, time, wp_steps_completed
 				FROM {$cart_table}
-				WHERE type = 0 AND
+				WHERE type = %d AND
 				email != '' AND
 				cart_contents != '' AND
 				wp_unsubscribed != 1 AND
 				wp_complete != 1 AND
 				time < %s AND
 				time > %s",
+				$admin->get_cart_type('abandoned'),
 				$time['cart_abandoned'],
 				$time['maximum_sync_period']
 			)
@@ -587,7 +588,7 @@ class CartBounty_WordPress{
 			$wpdb->prepare(
 				"SELECT id, email, session_id, time, wp_steps_completed
 				FROM {$cart_table}
-				WHERE type = 0 AND
+				WHERE type = %d AND
 				email != '' AND
 				cart_contents != '' AND
 				wp_unsubscribed != 1 AND
@@ -595,6 +596,7 @@ class CartBounty_WordPress{
 				wp_steps_completed = %d AND
 				time < %s AND
 				time > %s",
+				$admin->get_cart_type('abandoned'),
 				0,
 				$time['cart_abandoned'],
 				$time['maximum_sync_period']

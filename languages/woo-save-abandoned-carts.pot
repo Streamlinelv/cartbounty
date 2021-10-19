@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-10-07 11:49+0300\n"
+"POT-Creation-Date: 2021-10-19 11:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: Poedit 2.0.6\n"
 "X-Domain: woo-save-abandoned-carts\n"
@@ -61,46 +61,46 @@ msgid "Status"
 msgstr ""
 
 #: admin/class-cartbounty-admin-table.php:99
-#: admin/class-cartbounty-admin-table.php:365
+#: admin/class-cartbounty-admin-table.php:366
 msgid "Delete"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:115
+#: admin/class-cartbounty-admin-table.php:116
 msgid "View user profile"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:291
+#: admin/class-cartbounty-admin-table.php:292
 #, php-format
 msgid "%1$s ago"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:317
-#: admin/class-cartbounty-admin.php:2724
+#: admin/class-cartbounty-admin-table.php:318
+#: admin/class-cartbounty-admin.php:2732
 #: includes/class-cartbounty-status.php:74
 msgid "Recovered"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:321
+#: admin/class-cartbounty-admin-table.php:322
 msgid "Shopping"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:325
+#: admin/class-cartbounty-admin-table.php:326
 msgid "Recently abandoned"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:327
+#: admin/class-cartbounty-admin-table.php:328
 msgid "Recently recovered"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:329
+#: admin/class-cartbounty-admin-table.php:330
 msgid "New"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:336
+#: admin/class-cartbounty-admin-table.php:337
 msgid "Sent via WordPress"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:336
+#: admin/class-cartbounty-admin-table.php:337
 msgid "WP"
 msgstr ""
 
@@ -831,54 +831,54 @@ msgid "Done"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1835 admin/class-cartbounty-admin.php:2146
-#: includes/class-cartbounty-wordpress.php:565
+#: includes/class-cartbounty-wordpress.php:566
 msgid "Close"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1911
+#: admin/class-cartbounty-admin.php:1910
 msgid "Bounty! Cart recovered! 🤟"
 msgid_plural "Bounty! Carts recovered! 🤑"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1912
+#: admin/class-cartbounty-admin.php:1911
 msgid "Cart recovered! 🤟"
 msgid_plural "Carts recovered! 🤑"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1915
+#: admin/class-cartbounty-admin.php:1914
 #, php-format
 msgid "Excellent, you have recovered an abandoned cart using %2$s."
 msgid_plural "Amazing, you have recovered %1$d abandoned carts using %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1918 admin/class-cartbounty-admin.php:1929
+#: admin/class-cartbounty-admin.php:1917 admin/class-cartbounty-admin.php:1928
 #, php-format
 msgid "Please use %sthis link%s to see full information about your carts."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1922
+#: admin/class-cartbounty-admin.php:1921
 msgid "New abandoned cart saved! 🛒"
 msgid_plural "New abandoned carts saved! 🛒"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1923
+#: admin/class-cartbounty-admin.php:1922
 msgid "New abandoned cart!"
 msgid_plural "New abandoned carts! "
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1926
+#: admin/class-cartbounty-admin.php:1925
 #, php-format
 msgid "Great, you have saved a new recoverable abandoned cart using %2$s."
 msgid_plural "Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:1940
+#: admin/class-cartbounty-admin.php:1939
 #, php-format
 msgid "Get %sCartBounty Pro%s to enable cart data preview above."
 msgstr ""
@@ -928,8 +928,8 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:2248
 #: includes/class-cartbounty-status.php:53
-#: includes/class-cartbounty-wordpress.php:190
-#: includes/class-cartbounty-wordpress.php:225
+#: includes/class-cartbounty-wordpress.php:191
+#: includes/class-cartbounty-wordpress.php:226
 msgid "Looks like you are not allowed to do this."
 msgstr ""
 
@@ -937,86 +937,86 @@ msgstr ""
 msgid "Something is wrong."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2431
+#: admin/class-cartbounty-admin.php:2437
 msgid "Congrats!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2435
+#: admin/class-cartbounty-admin.php:2441
 msgid "Awesome!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2439
+#: admin/class-cartbounty-admin.php:2445
 msgid "Amazing!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2443
+#: admin/class-cartbounty-admin.php:2449
 msgid "Incredible!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2447
+#: admin/class-cartbounty-admin.php:2453
 msgid "Crazy!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2451
+#: admin/class-cartbounty-admin.php:2457
 msgid "Fantastic!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2455
+#: admin/class-cartbounty-admin.php:2461
 msgid "Insane!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2574
+#: admin/class-cartbounty-admin.php:2581
 msgid "You have successfully unsubscribed from further emails about your shopping cart."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2574
+#: admin/class-cartbounty-admin.php:2581
 msgid "Successfully unsubscribed"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2574
+#: admin/class-cartbounty-admin.php:2581
 msgid "Return to store"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2721
+#: admin/class-cartbounty-admin.php:2729
 msgid "All"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2722
+#: admin/class-cartbounty-admin.php:2730
 #: includes/class-cartbounty-status.php:68
 msgid "Recoverable"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2723
+#: admin/class-cartbounty-admin.php:2731
 #: includes/class-cartbounty-status.php:71
 msgid "Ghost"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2780
+#: admin/class-cartbounty-admin.php:2788
 msgid "Sync failed. Looks like you are not allowed to do this."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2787
+#: admin/class-cartbounty-admin.php:2795
 msgid "Sync finished"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2801
+#: admin/class-cartbounty-admin.php:2809
 msgid "Force send"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2919
+#: admin/class-cartbounty-admin.php:2970
 #, php-format
 msgid "Please consider upgrading to %sCartBounty Pro%s to enable this feature."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3007
+#: admin/class-cartbounty-admin.php:3058
 msgid "You were not leaving your cart just like that, right?"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3008
+#: admin/class-cartbounty-admin.php:3059
 msgid "Enter your details below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3016
+#: admin/class-cartbounty-admin.php:3067
 msgid "Please enter your details to add this item to your cart"
 msgstr ""
 
@@ -1133,59 +1133,59 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:207
+#: includes/class-cartbounty-wordpress.php:208
 msgid "Please enter a valid email"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:214
+#: includes/class-cartbounty-wordpress.php:215
 msgid "Email successfully sent"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:641
+#: includes/class-cartbounty-wordpress.php:643
 msgid "First email"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:642
+#: includes/class-cartbounty-wordpress.php:644
 msgid "Forgot something? 🙈"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:643
+#: includes/class-cartbounty-wordpress.php:645
 msgid "Forgot to complete your purchase? 🙈"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:644
+#: includes/class-cartbounty-wordpress.php:646
 msgid "We noticed that you placed some nice items in your cart. Would you like to complete your order?"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:653
+#: includes/class-cartbounty-wordpress.php:655
 msgid "Second email"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:654
+#: includes/class-cartbounty-wordpress.php:656
 msgid "Return to complete your checkout!"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:655
+#: includes/class-cartbounty-wordpress.php:657
 msgid "Still thinking it over?"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:656
+#: includes/class-cartbounty-wordpress.php:658
 msgid "We are keeping items in your cart reserved for you, but do not wait too long or they will expire 😇."
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:665
+#: includes/class-cartbounty-wordpress.php:667
 msgid "Third email"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:666
+#: includes/class-cartbounty-wordpress.php:668
 msgid "Your cart is about to expire! 🛒"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:667
+#: includes/class-cartbounty-wordpress.php:669
 msgid "Last chance to save your cart! 🛒"
 msgstr ""
 
-#: includes/class-cartbounty-wordpress.php:668
+#: includes/class-cartbounty-wordpress.php:670
 msgid "Goodbyes are never easy, but this is the last email. Products in your shopping cart will expire unless you take them home."
 msgstr ""
 

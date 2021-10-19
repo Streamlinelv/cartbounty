@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 7.0.8 =
+* General improvement of plugin actions and filters
+* Fixed issues caused by admin_body_class filter
+* Minor fix for admin email notifications
+
 = 7.0.7.1 =
 * Code cleanup
 

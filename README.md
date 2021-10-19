@@ -31,7 +31,7 @@ Exit Intent will be triggered as soon as the user tries to leave your shop with 
 Please note that Exit Intent popup will only be showed to unregistered users once every 60 minutes after they have added an item to their shopping cart.
 Please do check out our Pro version if you are interested in Early email capture feature that will allow collecting customer’s email or phone right after the customer tries to add an item to the cart using "Add to cart" button.
 
-* If the user completes the payment and reaches WooCommerce "Thank you" page, he is removed from the abandoned cart table and the Checkout form fields will be cleared. In case the user returns to his abandoned shopping cart via abandoned cart recovery email and places an order - the cart will be marked as "recovered" and will remain in the list of carts.
+* If the user completes the payment and reaches WooCommerce "Thank you" page, he is removed from the abandoned cart table and the Checkout form fields will be cleared. In case the user returns to his abandoned shopping cart via abandoned cart recovery email and places an order - the cart will be marked as "recovered" and will remain in the list of carts. If you would like to send automated abandoned cart recovery emails to orders that have not been paid for (orders with status "Pending payment", "On Hold", "Canceled"), please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
 
 * Since we love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned cart data, table and options created by this plugin) leaving your project nice and clean.
 
@@ -304,6 +304,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
 
+If you would like to send automated abandoned cart recovery emails to orders that have not been paid for (orders with status "Pending payment", "On Hold", "Canceled"), please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
+
 ## Screenshots
 
 ![Location of CartBounty after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "Location of CartBounty after activation")
@@ -316,8 +318,10 @@ Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automat
 
 ## Changelog
 
-##### 7.0.7.1
+##### 7.0.8
 
-* Code cleanup
+* General improvement of plugin actions and filters
+* Fixed issues caused by admin_body_class filter
+* Minor fix for admin email notifications
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

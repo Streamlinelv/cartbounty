@@ -119,12 +119,12 @@ class CartBounty_Admin{
 				$wpdb->prepare(
 					"SELECT COUNT(id)
 					FROM $cart_table
-					WHERE
-					cart_contents != '' AND
-					type != 2 AND
+					WHERE (email != '' OR phone != '') AND
+					type != %d AND
 					time < %s AND 
-					time > %s ",
-					$time['cart_abandoned'],
+					time > %s",
+					$this->get_cart_type('ordered'),
+					$time['cart_recovered'],
 					$time['old_cart']
 				)
 			);
@@ -1826,7 +1826,7 @@ class CartBounty_Admin{
 	 * @param    string   	$handle   		Unique ID for the notice. Default empty
 	 * @param    string   	$class   		Additional classes required for the notice. Default empty
 	 * @param    boolean   	$submit   		Should a submit button be added or not. Default false
-	 * @param    string   	$$button_type   Type of the button (done or close). Default done
+	 * @param    string   	$button_type   Type of the button (done or close). Default done
 	 */
 	function get_notice_output( $message, $handle = '', $class = '', $submit = false, $button_type = 'done'){
 		$button = false;
@@ -1883,7 +1883,6 @@ class CartBounty_Admin{
 				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
-				type != 2 AND
 				time < %s",
 				0,
 				$time
@@ -1972,10 +1971,11 @@ class CartBounty_Admin{
 				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
-				type != 2 AND
+				type != %d AND
 				time < %s",
 				1,
 				0,
+				$this->get_cart_type('ordered'),
 				$time
 			)
 		);
@@ -2327,8 +2327,9 @@ class CartBounty_Admin{
 		$rest_count = $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $cart_table
-				WHERE (cart_contents = '' OR type = 2) AND
+				WHERE (cart_contents = '' OR type = %d) AND
 				time < %s",
+				$this->get_cart_type('ordered'),
 				$time['cart_abandoned']
 			)
 		);
@@ -2342,33 +2343,37 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 */
 	function clear_cart_data(){
+		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
+		if( !isset(WC()->session ) ){
+			return;
+		}
+
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		
-		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
-		if(isset(WC()->session)){
-			$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-			$cart = $public->read_cart();
+		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$cart = $public->read_cart();
 
-			if(isset($cart['session_id'])){
-				//Cleaning Cart data
-				$update_result = $wpdb->update(
-					$cart_table,
-					array(
-						'cart_contents'	=>	'',
-						'cart_total'	=>	0,
-						'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-						'time'			=>	sanitize_text_field( $cart['current_time'] )
-					),
-					array(
-						'session_id' => $cart['session_id'],
-						'type' 		 => 0
-					),
-					array('%s', '%s'),
-					array('%s')
-				);
-			}
+		if( !isset( $cart['session_id'] ) ){
+			return;
 		}
+
+		//Cleaning Cart data
+		$update_result = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $cart_table
+				SET cart_contents = '',
+				cart_total = %d,
+				currency = %s,
+				time = %s
+				WHERE session_id = %s AND
+				type = %d",
+				0,
+				sanitize_text_field( $cart['cart_currency'] ),
+				sanitize_text_field( $cart['current_time'] ),
+				$cart['session_id'],
+				$this->get_cart_type('abandoned')
+			)
+		);
 	}
 
 	/**
@@ -2396,25 +2401,26 @@ class CartBounty_Admin{
 			return;
 		}
 		
-		if($public->cart_saved($user_id)){ //If we have saved an abandoned cart for the user - go ahead and reset it
+		if($public->cart_saved($user_id)){ //If we have saved an abandoned cart for the user - go ahead and reset in case it has been abandoned or payment is still pending
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-			$updated_rows = $wpdb->update(
-				$cart_table,
-				array(
-					'name'			=>	'',
-					'surname'		=>	'',
-					'email'			=>	'',
-					'phone'			=>	'',
-					'location'		=>	'',
-					'cart_contents'	=>	'',
-					'cart_total'	=>	'',
-					'currency'		=>	'',
-					'time'			=>	'',
-					'other_fields'	=>	''
-				),
-				array('session_id' => $user_id),
-				array(),
-				array('%s')
+			$updated_rows = $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $cart_table
+					SET name = '',
+					surname = '',
+					email = '',
+					phone = '',
+					location = '',
+					cart_contents = '',
+					cart_total = '',
+					currency = '',
+					time = '',
+					other_fields = ''
+					WHERE session_id = %s AND
+					type != %d",
+					$user_id,
+					$this->get_cart_type('recovered')
+				)
 			);
 		}
 	}
@@ -2552,8 +2558,9 @@ class CartBounty_Admin{
 				"SELECT id, email, cart_contents, session_id
 				FROM $cart_table
 				WHERE id = %d AND
-				type = 0",
-				$id
+				type != %d",
+				$id,
+				$this->get_cart_type('recovered')
 			)
 		);
 
@@ -2691,14 +2698,15 @@ class CartBounty_Admin{
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
         $total_items = 0;
         $where_sentence = $this->get_where_sentence($cart_status);
+        $ordered = $this->get_cart_type('ordered');
 
-        $total_items = $wpdb->get_var("
-            SELECT COUNT(id)
+        $total_items = $wpdb->get_var(
+        	"SELECT COUNT(id)
             FROM $cart_table
             WHERE cart_contents != '' AND
-	        type != 2
-            $where_sentence
-        ");
+	        type != $ordered
+            $where_sentence"
+        );
 
         return $total_items;
     }
@@ -2753,13 +2761,13 @@ class CartBounty_Admin{
 		$where_sentence = '';
 
 		if($cart_status == 'recoverable'){
-			$where_sentence = "AND (email != '' OR phone != '') AND type != 1 AND type != 2";
+			$where_sentence = "AND (email != '' OR phone != '') AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered');
 
 		}elseif($cart_status == 'ghost'){
-			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != 1 AND type != 2";
+			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered');
 
 		}elseif($cart_status == 'recovered'){
-			$where_sentence = "AND type = 1";
+			$where_sentence = "AND type = ". $this->get_cart_type('recovered');
 
 		}elseif(get_option('cartbounty_exclude_ghost_carts')){ //In case Ghost carts have been excluded
 			$where_sentence = "AND (email != '' OR phone != '')";
@@ -2820,6 +2828,40 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Return cart type from cart name
+	 *
+	 * @since    7.0.8
+	 * @return   integer
+	 * @param    string    	$status		    Cart status. 0 = default, 1 = recovered, 2 = order created
+	 */
+	function get_cart_type( $status ){
+		if( empty($status) ){
+			return;
+		}
+
+		$type = 0;
+
+		switch ( $status ) {
+			case 'abandoned':
+
+				$type = 0;
+				break;
+
+			case 'recovered':
+
+				$type = 1;
+				break;
+
+			case 'ordered':
+
+				$type = 2;
+				break;
+				
+		}
+		return $type;
+	}
+
+	/**
 	 * Method updates cart type accoringly
 	 * In future might add additional statuses e.g. 2, 3, 4 etc.
 	 *
@@ -2831,25 +2873,31 @@ class CartBounty_Admin{
 		if($session_id){
 			global $wpdb;
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-
-			//Update cart row according to what the cart has been synced to before
-			$wpdb->update(
-				$cart_table,
-				array(
-					'type'		=> sanitize_text_field($type)
-				),
-				array(
-					'session_id'	=> $session_id
-				),
-				array('%d'),
-				array('%s')
+			$field = 'session_id';
+			$where_value = $session_id;
+			$data = array(
+				'type = ' . sanitize_text_field($type)
 			);
 
-			if($type == 1){ //If order should be marked as recovered
+			if( $type == $this->get_cart_type('recovered') ){ //If order should be marked as recovered
 				//Increase total
+				$data[] = 'mail_sent = 0';
 				$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 				$public->increase_recovered_cart_count();
 			}
+
+			$data = implode(', ', $data);
+
+			$updated_rows = $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $cart_table
+					SET $data
+					WHERE $field = %s AND
+					type != %d",
+					$where_value,
+					$this->get_cart_type('recovered')
+				)
+			);
 		}
 	}
 
@@ -2860,15 +2908,19 @@ class CartBounty_Admin{
 	 * @param    integer    $order_id - ID of the order created by WooCommerce
 	 */
 	function handle_order( $order_id ){
+		if( !isset($order_id) ){ //Exit if Order ID is not present
+			return;
+		}
+
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$public->update_logged_customer_id(); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
-		if(WC()->session){ //If session exists
+		if( WC()->session ){ //If session exists
 			$cart = $public->read_cart();
-			$type = 2; //Default type describing an order has been placed
+			$type = $this->get_cart_type('ordered'); //Default type describing an order has been placed
 
 			if(isset($cart['session_id'])){
 				if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
-					$type = 1;
+					$type = $this->get_cart_type('recovered');
 				}
 				$this->update_cart_type($cart['session_id'], $type); //Update cart type to recovered
 			}
@@ -2886,11 +2938,10 @@ class CartBounty_Admin{
 	function add_cartbounty_body_class( $classes ) {
 		global $cartbounty_admin_menu_page;
 		$screen = get_current_screen();
-		// Check if we are on CartBounty page
-		if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
-			return;
+	    if(is_object($screen) && $screen->id == $cartbounty_admin_menu_page){ //If we are on CartBounty page
+			$classes = $classes .' '.  CARTBOUNTY_PLUGIN_NAME_SLUG .' ';
 		}
-	    return "$classes " . CARTBOUNTY_PLUGIN_NAME_SLUG;
+	    return $classes;
 	}
 
 	/**

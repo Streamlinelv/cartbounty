@@ -129,6 +129,7 @@ class CartBounty_Public{
 
 		if( $cart_saved ){ //If cart has already been saved
 			$this->update_cart( $cart, $ghost );
+
 		}else{
 			$this->create_new_cart( $cart, $ghost );
 		}
@@ -141,7 +142,7 @@ class CartBounty_Public{
 	 * @param    array      $cart     Cart contents
 	 * @param    boolean    $ghost    If the cart is a ghost cart or not
 	 */
-	function create_new_cart( $cart = array(), $ghost ){
+	function create_new_cart( $cart = array(), $ghost = false ){
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$user_data = $this->get_user_data();
@@ -246,20 +247,27 @@ class CartBounty_Public{
 	 */
 	function update_cart_data($cart){
 		global $wpdb;
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$updated_rows = $wpdb->update(
-			$cart_table,
-			array(
-				'cart_contents'	=>	serialize( $cart['product_array'] ),
-				'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
-				'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-				'time'			=>	sanitize_text_field( $cart['current_time'] ),
-				'mail_sent'		=>	0
-			),
-			array('session_id' => $cart['session_id']),
-			array('%s', '%0.2f', '%s', '%s'),
-			array('%s')
+		
+		$updated_rows = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $cart_table
+				SET cart_contents = %s,
+				cart_total = %0.2f,
+				currency = %s,
+				time = %s
+				WHERE session_id = %s AND
+				type = %d",
+				serialize( $cart['product_array'] ),
+				sanitize_text_field( $cart['cart_total'] ),
+				sanitize_text_field( $cart['cart_currency'] ),
+				sanitize_text_field( $cart['current_time'] ),
+				$cart['session_id'],
+				$admin->get_cart_type('abandoned')
+			)
 		);
+
 		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
 	}
 
@@ -272,31 +280,42 @@ class CartBounty_Public{
 	 */
 	function update_cart_and_user_data($cart, $user_data){
 		global $wpdb;
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$other_fields = NULL;
 		if(!empty($user_data['other_fields'])){
 			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 		}
 
-		$updated_rows = $wpdb->update(
-			$cart_table,
-			array(
-				'name'			=>	sanitize_text_field( $user_data['name'] ),
-				'surname'		=>	sanitize_text_field( $user_data['surname'] ),
-				'email'			=>	sanitize_email( $user_data['email'] ),
-				'phone'			=>	filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
-				'location'		=>	sanitize_text_field( serialize( $user_data['location'] ) ),
-				'cart_contents'	=>	serialize( $cart['product_array'] ),
-				'cart_total'	=>	sanitize_text_field( $cart['cart_total'] ),
-				'currency'		=>	sanitize_text_field( $cart['cart_currency'] ),
-				'time'			=>	sanitize_text_field( $cart['current_time'] ),
-				'other_fields'	=>	$other_fields,
-				'mail_sent'		=>	0
-			),
-			array('session_id' => $cart['session_id']),
-			array('%s', '%s', '%s', '%s', '%s', '%s', '%0.2f', '%s', '%s', '%s'),
-			array('%s')
+		$updated_rows = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $cart_table
+				SET name = %s,
+				surname = %s,
+				email = %s,
+				phone = %s,
+				location = %s,
+				cart_contents = %s,
+				cart_total = %0.2f,
+				currency = %s,
+				time = %s,
+				other_fields = '$other_fields'
+				WHERE session_id = %s AND
+				type = %d",
+				sanitize_text_field( $user_data['name'] ),
+				sanitize_text_field( $user_data['surname'] ),
+				sanitize_email( $user_data['email'] ),
+				filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
+				sanitize_text_field( serialize( $user_data['location'] ) ),
+				serialize( $cart['product_array'] ),
+				sanitize_text_field( $cart['cart_total'] ),
+				sanitize_text_field( $cart['cart_currency'] ),
+				sanitize_text_field( $cart['current_time'] ),
+				$cart['session_id'],
+				$admin->get_cart_type('abandoned')
+			)
 		);
+
 		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
 		$this->increase_recoverable_cart_count();
 	}
@@ -454,7 +473,7 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Method checks if current cart has been saved or not
+	 * Method checks if current user session ID also exists in the database and the cart has not been paid for (type = abandoned or recovered_pending)
 	 *
 	 * @since    3.0
 	 * @return   boolean
@@ -464,15 +483,20 @@ class CartBounty_Public{
 		$saved = false;
 		if( $session_id !== NULL ){
 			global $wpdb;
+			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
 			//Checking if we have this abandoned cart in our database already
-			$result = $wpdb->get_var($wpdb->prepare(
-				"SELECT session_id
-				FROM $cart_table
-				WHERE session_id = %s",
-				$session_id
-			));
+			$result = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT session_id
+					FROM $cart_table
+					WHERE session_id = %s AND
+					type = %d",
+					$session_id,
+					$admin->get_cart_type('abandoned')
+				)
+			);
 
 			if($result){
 				$saved = true;
@@ -506,7 +530,6 @@ class CartBounty_Public{
 			$customer_id = WC()->session->get_customer_id();
 
 			if( WC()->session->get('cartbounty_session_id') !== NULL && WC()->session->get('cartbounty_session_id') !== $customer_id){ //If session is set and it is different from the one that currently is assigned to the customer
-
 				global $wpdb;
 				$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
@@ -514,7 +537,9 @@ class CartBounty_Public{
 				$wpdb->update(
 					$cart_table,
 					array('session_id' => $customer_id),
-					array('session_id' => WC()->session->get('cartbounty_session_id'))
+					array('session_id' => WC()->session->get('cartbounty_session_id')),
+					array('%s'),
+					array('%s')
 				);
 
 				WC()->session->set('cartbounty_session_id', $customer_id);
@@ -564,10 +589,12 @@ class CartBounty_Public{
 				$wpdb->query( //Leaving one cart remaining that can be identified
 					$wpdb->prepare(
 						"DELETE FROM $cart_table
-						WHERE session_id = %s
+						WHERE session_id = %s AND
+						type != %d
 						ORDER BY id DESC
 						LIMIT %d",
 						$session_id,
+						$admin->get_cart_type('recovered'),
 						$limit
 					)
 				);
@@ -590,10 +617,12 @@ class CartBounty_Public{
 		$cart_currency = get_woocommerce_currency();
 		$current_time = current_time( 'mysql', false ); //Retrieving current time
 
-		//Retrieving customer ID from WooCommerce sessions variable in order to use it as a session_id value	
-		$session_id = WC()->session->get_customer_id();
+		$session_id = WC()->session->get('cartbounty_session_id'); //Check if the session is already set
+		if( empty( $session_id ) ){ //If session value does not exist - set one now
+			$session_id = WC()->session->get_customer_id(); //Retrieving customer ID from WooCommerce sessions variable
+		}
 
-		if(WC()->session->get('cartbounty_from_link') && WC()->session->get('cartbounty_session_id')){
+		if( WC()->session->get( 'cartbounty_from_link' ) && WC()->session->get( 'cartbounty_session_id' ) ){
 			$session_id = WC()->session->get('cartbounty_session_id');
 		}
 
@@ -602,7 +631,7 @@ class CartBounty_Public{
 		$product_array = array();
 				
 		foreach($products as $product => $values){
-			$item = wc_get_product( $values['data']->get_id());
+			$item = wc_get_product( $values['data']->get_id() );
 
 			$product_title = $item->get_title();
 			$product_quantity = $values['quantity'];
@@ -617,11 +646,11 @@ class CartBounty_Public{
 			}
 			
 			// Handling product variations
-			if($values['variation_id']){ //If user has chosen a variation
-				$single_variation = new WC_Product_Variation($values['variation_id']);
+			if( $values['variation_id'] ){ //If user has chosen a variation
+				$single_variation = new WC_Product_Variation( $values['variation_id'] );
 		
 				//Handling variable product title output with attributes
-				$product_attributes = $this->attribute_slug_to_title($single_variation->get_variation_attributes());
+				$product_attributes = $this->attribute_slug_to_title( $single_variation->get_variation_attributes() );
 				$product_variation_id = $values['variation_id'];
 			}else{
 				$product_attributes = false;
@@ -847,6 +876,7 @@ class CartBounty_Public{
 		if(!WC()->session){ //If session does not exist, exit function
 			return;
 		}
+
 		if(WC()->session->get('cartbounty_recovered_count_increased')){ //Exit fnction in case we already have run this once
 			return;
 		}

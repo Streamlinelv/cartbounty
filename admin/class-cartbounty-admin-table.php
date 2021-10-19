@@ -109,10 +109,11 @@ class CartBounty_Table extends WP_List_Table{
             $name_array[] = $item['surname'];
         }
 
-        $name = implode(' ', $name_array);
+        $name = implode( ' ', $name_array );
+        $user = get_user_by( 'email', $item['email'] );
 
-        if(get_user_by('id', $item['session_id'])){ //If the user is registered, add link to his profile page
-            $name = '<a href="' . add_query_arg( 'user_id', $item['session_id'], self_admin_url( 'user-edit.php')) . '" title="' . __( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. $name .'</a>';
+        if( $user ){ //If the user is registered, add link to his profile page
+            $name = '<a href="' . add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php')) . '" title="' . __( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. $name .'</a>';
         }
 
         return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
@@ -313,23 +314,23 @@ class CartBounty_Table extends WP_List_Table{
         $current_time = strtotime(date_format($date, 'Y-m-d H:i:s'));
         $status = '';
 
-        if($item['type'] == 1){
+        if($item['type'] == $admin->get_cart_type('recovered')){
             $status .= sprintf('<span class="status recovered">%s</span>', __('Recovered', 'woo-save-abandoned-carts'));
         }
 
-        if($cart_time > $current_time - $admin->get_waiting_time() * 60 && $item['type'] != 1){ //Checking time if user is still shopping or might return - we add shopping label
+        if($cart_time > $current_time - $admin->get_waiting_time() * 60 && $item['type'] != $admin->get_cart_type('recovered')){ //Checking time if user is still shopping or might return - we add shopping label
             $status .= sprintf('<span class="status shopping">%s</span>', __('Shopping', 'woo-save-abandoned-carts'));
 
         }else{
             if($cart_time > ($current_time - CARTBOUNTY_NEW_NOTICE * 60 )){ //Checking time if user has not gone through with the checkout after the specified time we add new label
                 $status_description = __('Recently abandoned', 'woo-save-abandoned-carts');
-                if($item['type'] == 1){
+                if($item['type'] == $admin->get_cart_type('recovered')){
                      $status_description = __('Recently recovered', 'woo-save-abandoned-carts');
                 }
                 $status .= sprintf('<div class="status-item-container"><span class="cartbounty-tooltip">%s</span><span class="status new">%s</span></div>', $status_description, __('New', 'woo-save-abandoned-carts'));
             }
 
-            if($item['type'] != 1){ //In case if the cart has not been recovered - output synced information
+            if($item['type'] != $admin->get_cart_type('recovered')){ //In case if the cart has not been recovered - output synced information
                 if($item['wp_steps_completed']){
                     $wordpress = new CartBounty_WordPress();
                     $email_history = $wordpress->display_email_history( $item['id'] ); //Getting email history of current cart
@@ -418,6 +419,7 @@ class CartBounty_Table extends WP_List_Table{
      */
 	function prepare_items(){
         global $wpdb;
+        $admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 
         $cart_status = 'all';
@@ -440,7 +442,6 @@ class CartBounty_Table extends WP_List_Table{
         $sortable = $this->get_sortable_columns();
         $this->_column_headers = array($columns, $hidden, $sortable); // here we configure table headers, defined in our methods
         $this->process_bulk_action(); // process bulk action if any
-        $admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
         $total_items = $admin->get_cart_count($cart_status);
 
         // prepare query params, as usual current page, order by and order direction
@@ -455,14 +456,19 @@ class CartBounty_Table extends WP_List_Table{
             'total_pages' => ceil($total_items / $per_page) // calculate pages count
         ));
 
+        $ordered = $admin->get_cart_type('ordered');
         $where_sentence = $admin->get_where_sentence($cart_status);
-        $this->items = $wpdb->get_results($wpdb->prepare("
-            SELECT * FROM $cart_table
-            WHERE cart_contents != '' AND
-            type != 2
-            $where_sentence
-            ORDER BY $orderby $order
-            LIMIT %d OFFSET %d",
-        $per_page, $paged * $per_page), ARRAY_A);
+        $this->items = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM $cart_table
+                WHERE cart_contents != '' AND
+                type != $ordered
+                $where_sentence
+                ORDER BY $orderby $order
+                LIMIT %d OFFSET %d",
+                $per_page,
+                $paged * $per_page
+            ), ARRAY_A
+        );
     }
 }
