@@ -1105,9 +1105,7 @@ class CartBounty_Admin{
 															<div class="cartbounty-automation-name">
 																<h3><?php echo $wordpress->get_defaults( 'name', 1 ); ?></h3>
 																<p><?php $time_interval_name = $wordpress->get_intervals( 1, $selected_name = true );
-																	echo sprintf(
-																	/* translators: %s - Time, e.g. 10 minutes */
-																	 __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
+																	echo sprintf( __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
 																<div class="cartbounty-step-trigger"></div>
 															</div>
 														</div>
@@ -1176,9 +1174,7 @@ class CartBounty_Admin{
 															<div class="cartbounty-automation-name">
 																<h3><?php echo $wordpress->get_defaults( 'name', 2 ); ?></h3>
 																<p><?php $time_interval_name = $wordpress->get_intervals( 2, $selected_name = true );
-																	echo sprintf(
-																	/* translators: %s - Time, e.g. 10 minutes */
-																	 __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
+																	echo sprintf( __('Sends after %s', 'woo-save-abandoned-carts'), $time_interval_name);?></p>
 																<div class="cartbounty-step-trigger"></div>
 															</div>
 														</div>
@@ -2175,7 +2171,7 @@ class CartBounty_Admin{
 					</div>
 					<div id="cartbounty-go-pro-content">
 						<h2><?php echo __('Make the most of your automation with a 3-step email series', 'woo-save-abandoned-carts' ); ?></h2>
-						<p><?php echo __('A single recovery email can raise your sales but sending 1 or 2 follow-up emails is proved to get the most juice out of your recovery campaigns.', 'woo-save-abandoned-carts' ); ?></p>
+						<p><?php echo __('A single recovery email can raise your sales but sending 2 or 3 follow-up emails is proved to get the most juice out of your recovery campaigns.', 'woo-save-abandoned-carts' ); ?></p>
 						<div class="cartbounty-button-row">
 							<a href="<?php echo $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble_steps' ); ?>" class="button" target="_blank"><?php echo __('Get Pro', 'woo-save-abandoned-carts'); ?></a>
 							<button type="button" class='button cartbounty-close cartbounty-bubble-close' data-operation='declined' data-type='upgrade_steps' data-nonce='<?php echo $bubble_nonce; ?>'><?php echo __('Not now', 'woo-save-abandoned-carts'); ?></button>

@@ -667,7 +667,7 @@ class CartBounty_WordPress{
 					'name'			=> __( 'Third email', 'woo-save-abandoned-carts' ),
 					'subject'		=> __( 'Your cart is about to expire! 🛒', 'woo-save-abandoned-carts' ),
 					'heading'		=> __( 'Last chance to save your cart! 🛒', 'woo-save-abandoned-carts' ),
-					'content'		=> __( 'Goodbyes are never easy, but this is the last email. Products in your shopping cart will expire unless you take them home.', 'woo-save-abandoned-carts' ),
+					'content'		=> __( 'Goodbyes are never easy, but this is our last reminder. Products in your shopping cart will expire unless you take them with you.', 'woo-save-abandoned-carts' ),
 					'interval'		=> 2880
 				);
 			
