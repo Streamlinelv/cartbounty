@@ -7,20 +7,20 @@
 	 	jQuery('.cartbounty-select, .bulkactions select').selectize(); //Activating custom dropdown for all select fields
 
 	 	function addActiveClass(){ //Adding class when changing radio button to display Get Pro notice
-			$(this).siblings().removeClass('cartbounty-radio-active');
-			$(this).addClass('cartbounty-radio-active');
+			jQuery(this).siblings().removeClass('cartbounty-radio-active');
+			jQuery(this).addClass('cartbounty-radio-active');
 		}
 
 		function addActiveStepClass(){ //Adding active class when clicking on a stairway item
-			var step = $(this).closest('.cartbounty-step');
+			var step = jQuery(this).closest('.cartbounty-step');
 			if(!step.hasClass('cartbounty-step-disabled')){ //In case current step has not deactivated, open it
 				step.toggleClass('cartbounty-step-active');
 			}
 		}
 
 		function removeActiveStepClassUpgradeNotice(e){ //Removing active class if the user click the open upgrade notice window
-			var step = $(this).closest('.cartbounty-step');
-			if($(e.target).is('a')){
+			var step = jQuery(this).closest('.cartbounty-step');
+			if(jQuery(e.target).is('a')){
 	            return;
 	        }else{
 				if(!step.hasClass('cartbounty-step-disabled')){ //In case current step has not deactivated, open it
@@ -30,12 +30,12 @@
 		}
 
 		function addLoadingIndicator(){ //Adding loading indicator once Submit button pressed
-			$(this).addClass('cartbounty-loading');
+			jQuery(this).addClass('cartbounty-loading');
 		}
 
 		function addCustomImage(e){ //Adding a custom image
 			e.preventDefault();
-			var button = $(this),
+			var button = jQuery(this),
 			custom_uploader = wp.media({
 				title: 'Add a custom image',
 				library : {
@@ -54,8 +54,8 @@
  					image_url = thumbnail;
  				}
 				button.html('<img src="' + image_url + '">');
-				var input_field = $('#cartbounty-custom-image');
-				var remove_button = $('#cartbounty-remove-custom-image');
+				var input_field = jQuery('#cartbounty-custom-image');
+				var remove_button = jQuery('#cartbounty-remove-custom-image');
 				
 				input_field.val(attachment.id);
 				remove_button.show();
@@ -65,9 +65,9 @@
 
 		function removeCustomImage(e){ //Removing Custom image
 			e.preventDefault();
-			var button = $(this).hide();
-			var input_field = $('#cartbounty-custom-image');
-			var add_button = $('#cartbounty-upload-custom-image');
+			var button = jQuery(this).hide();
+			var input_field = jQuery('#cartbounty-custom-image');
+			var add_button = jQuery('#cartbounty-upload-custom-image');
 
 			input_field.val('');
 			add_button.html('<input type="button" class="cartbounty-button button-secondary button" value="Add a custom image">');
@@ -77,27 +77,27 @@
 			var data = {
 				nonce				: button.data('nonce'),
 				action				: action,
-				email				: $('#cartbounty-send-test').val(),
-				subject				: $('#cartbounty-automation-subject').val(),
-				main_title			: $('#cartbounty-automation-heading').val(),
-				content				: $('#cartbounty-automation-content').val(),
-				main_color			: $('#cartbounty-template-main-color').val(),
-				button_color		: $('#cartbounty-template-button-color').val(),
-				text_color			: $('#cartbounty-template-text-color').val(),
-				background_color	: $('#cartbounty-template-background-color').val()
+				email				: jQuery('#cartbounty-send-test').val(),
+				subject				: jQuery('#cartbounty-automation-subject').val(),
+				main_title			: jQuery('#cartbounty-automation-heading').val(),
+				content				: jQuery('#cartbounty-automation-content').val(),
+				main_color			: jQuery('#cartbounty-template-main-color').val(),
+				button_color		: jQuery('#cartbounty-template-button-color').val(),
+				text_color			: jQuery('#cartbounty-template-text-color').val(),
+				background_color	: jQuery('#cartbounty-template-background-color').val()
 			};
 			return data;
 		}
 
 		function previewEmail(e){
 			e.preventDefault();
-			var button = $(this)
+			var button = jQuery(this)
 			var data = getPreviewData( button, "email_preview" );
 
 			jQuery.post(cartbounty_admin_data.ajaxurl, data,
 			function(response){
-				var content = $('#cartbounty-modal-content');
-				var modal = $('#cartbounty-modal');
+				var content = jQuery('#cartbounty-modal-content');
+				var modal = jQuery('#cartbounty-modal');
 				modal.addClass('content-loaded');
 				content.html(response.data);
 				MicroModal.show('cartbounty-modal', {
@@ -111,8 +111,8 @@
 
 		function sendTestEmail(e){
 			e.preventDefault();
-			var button = $(this);
-			var email_data = $('#cartbounty-send-test').val();
+			var button = jQuery(this);
+			var email_data = jQuery('#cartbounty-send-test').val();
 			var label = button.closest('.cartbounty-settings-group').find('label');
 			var data = getPreviewData( button, "send_test" );
 			label.find('.license-status').remove();
@@ -126,7 +126,7 @@
 
 		function force_sync(e){
 			e.preventDefault();
-            var button = $(this);
+            var button = jQuery(this);
             button.addClass('cartbounty-loading');
 
 			var data = {
@@ -151,17 +151,17 @@
 		}
 
 		function addCheckedClass(){ //Adding checked state to the parent in case if the Toggle checkbox is turned on
-			if( $(this).find('input').prop('checked') ){
-				$(this).parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
-				$(this).parent().parent().addClass('cartbounty-checked-parent');
+			if( jQuery(this).find('input').prop('checked') ){
+				jQuery(this).parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
+				jQuery(this).parent().parent().addClass('cartbounty-checked-parent');
 			}else{
-				$(this).parent().removeClass('cartbounty-checked'); //Necessary to show/hide small text additions
-				$(this).parent().parent().removeClass('cartbounty-checked-parent');
+				jQuery(this).parent().removeClass('cartbounty-checked'); //Necessary to show/hide small text additions
+				jQuery(this).parent().parent().removeClass('cartbounty-checked-parent');
 			}
 		}
 
 		function addUnavailableClass(){ //Adding unavailable class to display a message
-			var current = $(this);
+			var current = jQuery(this);
 			current.parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
 		}
 
@@ -183,7 +183,7 @@
 		};
 
 		function copySystemReport(){
-            var button = $(this);
+            var button = jQuery(this);
             var container = button.parent();
             container.removeClass('cartbounty-container-active');
 
@@ -240,7 +240,7 @@
 
 		function closeBubble(e){
 			e.preventDefault();
-			var button = $(this);
+			var button = jQuery(this);
 			var bubble = button.closest('.cartbounty-bubble');
 			var data = {
 				nonce		: button.data('nonce'),
@@ -258,6 +258,19 @@
 			});
 		}
 
+		function togglePreview(){ //Show or hide preview
+			var preview_parent = jQuery(this).parent();
+			var active_preview_class = 'cartbounty-preview-active';
+
+			if(!preview_parent.hasClass( active_preview_class )){ //Open preview
+				jQuery('.cartbounty-preview-container, .cartbounty-button-row').removeClass( active_preview_class );
+				preview_parent.addClass( active_preview_class );
+
+			}else{ //Close preview
+				preview_parent.removeClass( active_preview_class );
+			}
+		}
+
 		jQuery(".cartbounty-type").on("click", addActiveClass );
 		jQuery(".cartbounty-progress").on("click", addLoadingIndicator );
 		jQuery(".cartbounty-upload-image").on("click", addCustomImage );
@@ -273,6 +286,7 @@
 		jQuery('.cartbounty-step-opener').on("click", addActiveStepClass );
 		jQuery('.cartbounty-wordpress-get-additional-step').on("click", removeActiveStepClassUpgradeNotice );
 		jQuery(".cartbounty-bubble-close").on("click", closeBubble );
+		jQuery(".button-preview, .cartbounty-close-preview").on("click", togglePreview );
 	});
 
 })( jQuery );

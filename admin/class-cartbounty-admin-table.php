@@ -39,15 +39,15 @@ class CartBounty_Table extends WP_List_Table{
 	function get_columns(){
         return $columns = array(
             'cb'            => 		'<input type="checkbox" />',
-            'id'            =>		__('ID', 'woo-save-abandoned-carts'),
-            'name'          =>		__('Name, Surname', 'woo-save-abandoned-carts'),
-            'email'         =>		__('Email', 'woo-save-abandoned-carts'),
-            'phone'			=>		__('Phone', 'woo-save-abandoned-carts'),
-            'location'      =>      __('Location', 'woo-save-abandoned-carts'),
-            'cart_contents' =>		__('Cart contents', 'woo-save-abandoned-carts'),
-            'cart_total'    =>		__('Cart total', 'woo-save-abandoned-carts'),
-            'time'          =>		__('Time', 'woo-save-abandoned-carts'),
-            'status'            =>      __('Status', 'woo-save-abandoned-carts')
+            'id'            =>		esc_html__('ID', 'woo-save-abandoned-carts'),
+            'name'          =>		esc_html__('Name, Surname', 'woo-save-abandoned-carts'),
+            'email'         =>		esc_html__('Email', 'woo-save-abandoned-carts'),
+            'phone'			=>		esc_html__('Phone', 'woo-save-abandoned-carts'),
+            'location'      =>      esc_html__('Location', 'woo-save-abandoned-carts'),
+            'cart_contents' =>		esc_html__('Cart contents', 'woo-save-abandoned-carts'),
+            'cart_total'    =>		esc_html__('Cart total', 'woo-save-abandoned-carts'),
+            'time'          =>		esc_html__('Time', 'woo-save-abandoned-carts'),
+            'status'        =>      esc_html__('Status', 'woo-save-abandoned-carts')
         );
 	}
 	
@@ -95,8 +95,9 @@ class CartBounty_Table extends WP_List_Table{
             $cart_status = $_GET['cart-status'];
         }
 
+        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status );
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. $cart_status .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'woo-save-abandoned-carts')),
+            'delete' => sprintf('<a href="%s">%s</a>', esc_url( $delete_url ), esc_html__('Delete', 'woo-save-abandoned-carts')),
         );
 
         $name_array = array();
@@ -113,12 +114,12 @@ class CartBounty_Table extends WP_List_Table{
         $user = get_user_by( 'email', $item['email'] );
 
         if( $user ){ //If the user is registered, add link to his profile page
-            $name = '<a href="' . add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php')) . '" title="' . __( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. $name .'</a>';
+            $name = '<a href="' . esc_url( add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php') ) ) . '" title="' . esc_attr__( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. esc_html__( $name ) .'</a>';
         }
 
         return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
             $name,
-            $this->row_actions($actions)
+            $this->row_actions( $actions )
         );
     }
 	
@@ -130,8 +131,9 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_email( $item ){
-        return sprintf('<a href="mailto:%1$s">%1$s</a>',
-            esc_html($item['email'])
+        return sprintf('<a href="%s">%s</a>',
+            esc_url( 'mailto:' . $item['email'] ),
+            esc_html( $item['email'] )
         );
     }
 
@@ -170,7 +172,7 @@ class CartBounty_Table extends WP_List_Table{
         }
 
         if($country && class_exists('WooCommerce')){ //In case WooCommerce is active and we have Country data, we can add abbreviation to it with a full country name
-            $country = '<abbr class="cartbounty-country" title="' . WC()->countries->countries[ $country ] . '">' . esc_html($country) . '</abbr>';
+            $country = '<abbr class="cartbounty-country" title="' . esc_attr( WC()->countries->countries[ $country ] ) . '">' . esc_html($country) . '</abbr>';
         }
 
         $location = $country;
@@ -214,9 +216,9 @@ class CartBounty_Table extends WP_List_Table{
                             $product_price = $admin->get_product_price( $product );
                             $price = ', ' . $admin->format_price( $product_price, esc_html($item['currency']));
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<li><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank">'. $product_title . $price . $quantity .'</a></li>';
+                                $output .= '<li><a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</a></li>';
                             }else{
-                                $output .= '<li>'. $product_title . $price . $quantity .'</li>';
+                                $output .= '<li>'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</li>';
                             }
                         }
                     }
@@ -247,9 +249,9 @@ class CartBounty_Table extends WP_List_Table{
                             $product_price = $admin->get_product_price( $product );
                             $price = ', ' . $admin->format_price( $product_price, esc_html($item['currency']));
                             if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. $product_title . $price . $quantity .'</span><a href="'. $edit_product_link .'" title="'. $product_title .'" target="_blank"><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></a></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</span><a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank"><img src="'. esc_url( $image ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" /></a></div>';
                             }else{
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. $product_title . $price . $quantity .'</span><img src="'. $image .'" title="'. $product_title .'" alt ="'. $product_title .'" /></div>';
+                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</span><img src="'. esc_url( $image ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" /></div>';
                             }
                         }
                     }
@@ -268,8 +270,8 @@ class CartBounty_Table extends WP_List_Table{
      */
     function column_cart_total( $item ){
         return sprintf('%0.2f %s',
-            esc_html($item['cart_total']),
-            esc_html($item['currency'])
+            esc_html( $item['cart_total'] ),
+            esc_html( $item['currency'] )
         );
     }
 	
@@ -289,7 +291,7 @@ class CartBounty_Table extends WP_List_Table{
         if($utc_time > strtotime( '-1 day', current_time( 'timestamp' ))){ //In case the abandoned cart is newly captued
              $friendly_time = sprintf( 
                 /* translators: %1$s - Time, e.g. 1 minute, 5 hours */
-                __( '%1$s ago', 'woo-save-abandoned-carts' ),
+                esc_html__( '%1$s ago', 'woo-save-abandoned-carts' ),
                 human_time_diff( $utc_time,
                 current_time( 'timestamp' ))
             );
@@ -297,7 +299,7 @@ class CartBounty_Table extends WP_List_Table{
             $friendly_time = $time->format('M d, Y');
         }
 
-		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%s" title="%s">%s</time>', esc_html($date_iso), esc_html($date_title), esc_html($friendly_time));
+		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%s" title="%s">%s</time>', esc_attr( $date_iso ), esc_attr( $date_title ), esc_html( $friendly_time ) );
 	}
 
     /**
@@ -315,26 +317,26 @@ class CartBounty_Table extends WP_List_Table{
         $status = '';
 
         if($item['type'] == $admin->get_cart_type('recovered')){
-            $status .= sprintf('<span class="status recovered">%s</span>', __('Recovered', 'woo-save-abandoned-carts'));
+            $status .= sprintf('<span class="status recovered">%s</span>', esc_html__('Recovered', 'woo-save-abandoned-carts'));
         }
 
         if($cart_time > $current_time - $admin->get_waiting_time() * 60 && $item['type'] != $admin->get_cart_type('recovered')){ //Checking time if user is still shopping or might return - we add shopping label
-            $status .= sprintf('<span class="status shopping">%s</span>', __('Shopping', 'woo-save-abandoned-carts'));
+            $status .= sprintf('<span class="status shopping">%s</span>', esc_html__('Shopping', 'woo-save-abandoned-carts'));
 
         }else{
             if($cart_time > ($current_time - CARTBOUNTY_NEW_NOTICE * 60 )){ //Checking time if user has not gone through with the checkout after the specified time we add new label
-                $status_description = __('Recently abandoned', 'woo-save-abandoned-carts');
+                $status_description = esc_html__('Recently abandoned', 'woo-save-abandoned-carts');
                 if($item['type'] == $admin->get_cart_type('recovered')){
-                     $status_description = __('Recently recovered', 'woo-save-abandoned-carts');
+                     $status_description = esc_html__('Recently recovered', 'woo-save-abandoned-carts');
                 }
-                $status .= sprintf('<div class="status-item-container"><span class="cartbounty-tooltip">%s</span><span class="status new">%s</span></div>', $status_description, __('New', 'woo-save-abandoned-carts'));
+                $status .= sprintf('<div class="status-item-container"><span class="cartbounty-tooltip">%s</span><span class="status new">%s</span></div>', $status_description, esc_html__('New', 'woo-save-abandoned-carts'));
             }
 
             if($item['type'] != $admin->get_cart_type('recovered')){ //In case if the cart has not been recovered - output synced information
                 if($item['wp_steps_completed']){
                     $wordpress = new CartBounty_WordPress();
                     $email_history = $wordpress->display_email_history( $item['id'] ); //Getting email history of current cart
-                    $status .= sprintf('<div class="status-item-container email-history"><span class="cartbounty-tooltip">%s%s</span><span class="status synced wordpress">%s</span></div>', __('Sent via WordPress', 'woo-save-abandoned-carts'), $email_history, __('WP', 'woo-save-abandoned-carts'));
+                    $status .= sprintf('<div class="status-item-container email-history"><span class="cartbounty-tooltip">%s%s</span><span class="status synced wordpress">WP</span></div>', esc_html__('Sent via WordPress', 'woo-save-abandoned-carts'), $email_history );
                 }
             }
         }
@@ -351,7 +353,7 @@ class CartBounty_Table extends WP_List_Table{
 	function column_cb( $item ){
 		return sprintf(
 			'<input type="checkbox" name="id[]" value="%s" />',
-			esc_html($item['id'])
+			esc_attr( $item['id'] )
 		);
 	}
 	
@@ -363,7 +365,7 @@ class CartBounty_Table extends WP_List_Table{
      */
 	 function get_bulk_actions(){
         $actions = array(
-            'delete' => __('Delete', 'woo-save-abandoned-carts')
+            'delete' => esc_html__('Delete', 'woo-save-abandoned-carts')
         );
         return $actions;
     }

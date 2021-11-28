@@ -42,7 +42,6 @@ class CartBounty_Public{
 		global $wpdb;
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -962,15 +961,15 @@ class CartBounty_Public{
 		$cart = $this->read_cart();
 		$heading = $admin->get_tools_defaults('heading', 'exit_intent');
 		$content = $admin->get_tools_defaults('content', 'exit_intent');
-		$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
-		$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
+		$main_color = get_option('cartbounty_exit_intent_main_color');
+		$inverse_color = get_option('cartbounty_exit_intent_inverse_color');
 		$where_sentence = $admin->get_where_sentence('recoverable');
 
-		if( trim( esc_attr( get_option('cartbounty_exit_intent_heading'))) != '' ){ //If the value is not empty and does not contain only whitespaces
+		if( trim( get_option( 'cartbounty_exit_intent_heading' ) ) != '' ){ //If the value is not empty and does not contain only whitespaces
 			$heading = $admin->sanitize_field(get_option('cartbounty_exit_intent_heading'));
 		}
 
-		if( trim( esc_attr( get_option('cartbounty_exit_intent_content'))) != '' ){ //If the value is not empty and does not contain only whitespaces
+		if( trim( get_option( 'cartbounty_exit_intent_content' ) ) != '' ){ //If the value is not empty and does not contain only whitespaces
 			$content = $admin->sanitize_field(get_option('cartbounty_exit_intent_content'));
 		}
 
@@ -995,7 +994,7 @@ class CartBounty_Public{
 		}
 		
 		//Prepare Exit Intent image
-		$image_id = esc_attr( get_option('cartbounty_exit_intent_image'));
+		$image_id = get_option('cartbounty_exit_intent_image');
 		$image_url = $this->get_plugin_url() . '/public/assets/abandoned-shopping-cart.gif';
 		if($image_id){
 			$image = wp_get_attachment_image_src( $image_id, 'full' );
@@ -1140,7 +1139,7 @@ class CartBounty_Public{
 		}
 		$template_file = $this->get_template_path($template_name, $tempate_path, $default_path);
 		if ( ! file_exists( $template_file ) ){ //Handling error output in case template file does not exist
-			_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $template_file ), '6.1' );
+			_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_file ) ), '6.1' );
 			return;
 		}
 		include $template_file;

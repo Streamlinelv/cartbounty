@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 7.1 =
+* Improved data output security
+* Compatibility improvements with PHP8
+* Minor code cleanup
+
 = 7.0.8 =
 * General improvement of plugin actions and filters
 * Fixed issues caused by admin_body_class filter

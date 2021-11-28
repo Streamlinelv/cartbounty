@@ -318,10 +318,10 @@ If you would like to send automated abandoned cart recovery emails to orders tha
 
 ## Changelog
 
-##### 7.0.8
+##### 7.1
 
-* General improvement of plugin actions and filters
-* Fixed issues caused by admin_body_class filter
-* Minor fix for admin email notifications
+* Improved data output security
+* Compatibility improvements with PHP8
+* Minor code cleanup
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

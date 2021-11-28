@@ -53,9 +53,9 @@ class CartBounty_WordPress{
 	 */
 	public function display_automation_status( $enabled ) {
 		if($enabled){
-			$status = sprintf('<span class="status active">%s</span>', __('Active', 'woo-save-abandoned-carts'));
+			$status = sprintf('<span class="status active">%s</span>', esc_html__('Active', 'woo-save-abandoned-carts'));
 		}else{
-			$status = sprintf('<span class="status inactive">%s</span>', __('Disabled', 'woo-save-abandoned-carts'));
+			$status = sprintf('<span class="status inactive">%s</span>', esc_html__('Disabled', 'woo-save-abandoned-carts'));
 		}
 		echo $status;
 	}
@@ -188,7 +188,7 @@ class CartBounty_WordPress{
 	*/
 	public function send_test(){
 		if ( check_ajax_referer( 'test_email', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing function
-			wp_send_json_error(__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
+			wp_send_json_error(esc_html__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 		}
 		$step_nr = false;
 		if(isset($_POST['step'])){
@@ -205,14 +205,14 @@ class CartBounty_WordPress{
 				if(is_email($_POST['email'])){ //If email is valid
 					$email = $_POST['email'];
 				}else{ //If email is invalid
-					wp_send_json_error('<span class="license-status license-inactive fadeOutSlow"><i class="license-status-icon"><img src="'. plugin_dir_url( __DIR__ ) . 'admin/assets/invalid-icon.svg" /></i>'. __( 'Please enter a valid email', 'woo-save-abandoned-carts' ) .'</span>');
+					wp_send_json_error('<span class="license-status license-inactive fadeOutSlow"><i class="license-status-icon"><img src="'. esc_url( plugin_dir_url( __DIR__ ) ) . 'admin/assets/invalid-icon.svg" /></i>'. esc_html__( 'Please enter a valid email', 'woo-save-abandoned-carts' ) .'</span>');
 				}
 			}else{ //If email input field is empty, sending it to default Administrator email
 				$email = get_option( 'admin_email' );
 			}
 		}
 		$this->send_reminder( $cart = false, $test = true, $email, $preview_data );
-		wp_send_json_success('<span class="license-status license-active fadeOutSlow"><i class="license-status-icon"><img src="'. plugin_dir_url( __DIR__ ) . 'admin/assets/active-icon.svg" /></i>'. __( 'Email successfully sent', 'woo-save-abandoned-carts' ) .'</span>');
+		wp_send_json_success('<span class="license-status license-active fadeOutSlow"><i class="license-status-icon"><img src="'. esc_url( plugin_dir_url( __DIR__ ) ) . 'admin/assets/active-icon.svg" /></i>'. esc_html__( 'Email successfully sent', 'woo-save-abandoned-carts' ) .'</span>');
 	}
 
 	/**
@@ -223,7 +223,7 @@ class CartBounty_WordPress{
 	*/
 	public function email_preview(){
 		if ( check_ajax_referer( 'preview_email', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing function
-			wp_send_json_error(__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
+			wp_send_json_error(esc_html__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 		}
 
 		$step_nr = false;
@@ -545,7 +545,7 @@ class CartBounty_WordPress{
 			$output .= '<em class="cartbounty-email-history-list">';
 			foreach ($emails as $key => $email){
 				$time = new DateTime($email->time);
-				$output .= '<i class="cartbounty-email-history-item"><i class="cartbounty-automation-number">1</i>' . $time->format('M d, Y H:i') . '</i>';
+				$output .= '<i class="cartbounty-email-history-item"><i class="cartbounty-automation-number">1</i>' . esc_html( $time->format('M d, Y H:i') ) . '</i>';
 			}
 			$output .= '</em>';
 		}
@@ -563,7 +563,7 @@ class CartBounty_WordPress{
 		$output .= '<div class="cartbounty-modal" id="cartbounty-modal" aria-hidden="true">';
 			$output .= '<div class="cartbounty-modal-overlay" tabindex="-1" data-micromodal-close>';
 				$output .= '<div class="cartbounty-modal-content-container" role="dialog" aria-modal="true">';
-					$output .= '<button type="button" class="cartbounty-close-modal" aria-label="'. __("Close", 'woo-save-abandoned-carts') .'" data-micromodal-close></button>';
+					$output .= '<button type="button" class="cartbounty-close-modal" aria-label="'. esc_html__("Close", 'woo-save-abandoned-carts') .'" data-micromodal-close></button>';
 					$output .= '<div class="cartbounty-modal-content" id="cartbounty-modal-content"></div>';
 				$output .= '</div>';
 			$output .= '</div>';
@@ -640,10 +640,10 @@ class CartBounty_WordPress{
 			case 0:
 
 				$defaults = array(
-					'name'			=> __( 'First email', 'woo-save-abandoned-carts' ),
-					'subject'		=> __( 'Forgot something? 🙈', 'woo-save-abandoned-carts' ),
-					'heading'		=> __( 'Forgot to complete your purchase? 🙈', 'woo-save-abandoned-carts' ),
-					'content'		=> __( 'We noticed that you placed some nice items in your cart. Would you like to complete your order?', 'woo-save-abandoned-carts' ),
+					'name'			=> esc_html__( 'First email', 'woo-save-abandoned-carts' ),
+					'subject'		=> esc_attr__( 'Forgot something? 🙈', 'woo-save-abandoned-carts' ),
+					'heading'		=> esc_attr__( 'Forgot to complete your purchase? 🙈', 'woo-save-abandoned-carts' ),
+					'content'		=> esc_attr__( 'We noticed that you placed some nice items in your cart. Would you like to complete your order?', 'woo-save-abandoned-carts' ),
 					'interval'		=> 5
 				);
 
@@ -652,10 +652,10 @@ class CartBounty_WordPress{
 			case 1:
 
 				$defaults = array(
-					'name'			=> __( 'Second email', 'woo-save-abandoned-carts' ),
-					'subject'		=> __( 'Return to complete your checkout!', 'woo-save-abandoned-carts' ),
-					'heading'		=> __( 'Still thinking it over?', 'woo-save-abandoned-carts' ),
-					'content'		=> __( 'We are keeping items in your cart reserved for you, but do not wait too long or they will expire 😇.', 'woo-save-abandoned-carts' ),
+					'name'			=> esc_html__( 'Second email', 'woo-save-abandoned-carts' ),
+					'subject'		=> esc_attr__( 'Return to complete your checkout!', 'woo-save-abandoned-carts' ),
+					'heading'		=> esc_attr__( 'Still thinking it over?', 'woo-save-abandoned-carts' ),
+					'content'		=> esc_attr__( 'We are keeping items in your cart reserved for you, but do not wait too long or they will expire 😇.', 'woo-save-abandoned-carts' ),
 					'interval'		=> 1440
 				);
 			
@@ -664,10 +664,10 @@ class CartBounty_WordPress{
 			case 2:
 
 				$defaults = array(
-					'name'			=> __( 'Third email', 'woo-save-abandoned-carts' ),
-					'subject'		=> __( 'Your cart is about to expire! 🛒', 'woo-save-abandoned-carts' ),
-					'heading'		=> __( 'Last chance to save your cart! 🛒', 'woo-save-abandoned-carts' ),
-					'content'		=> __( 'Goodbyes are never easy, but this is our last reminder. Products in your shopping cart will expire unless you take them with you.', 'woo-save-abandoned-carts' ),
+					'name'			=> esc_html__( 'Third email', 'woo-save-abandoned-carts' ),
+					'subject'		=> esc_attr__( 'Your cart is about to expire! 🛒', 'woo-save-abandoned-carts' ),
+					'heading'		=> esc_attr__( 'Last chance to save your cart! 🛒', 'woo-save-abandoned-carts' ),
+					'content'		=> esc_attr__( 'Goodbyes are never easy, but this is our last reminder. Products in your shopping cart will expire unless you take them with you.', 'woo-save-abandoned-carts' ),
 					'interval'		=> 2880
 				);
 			
@@ -729,9 +729,9 @@ class CartBounty_WordPress{
 	public function display_intervals( $automation = false ){
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$array = $this->get_intervals( $automation );
-		echo '<select id="cartbounty-automation-interval-'. $automation .'" class="cartbounty-select" name="cartbounty_automation_steps['. $automation .'][interval]" autocomplete="off" '. $admin->disable_field() .'>';
+		echo '<select id="cartbounty-automation-interval-'. esc_attr( $automation ) .'" class="cartbounty-select" name="cartbounty_automation_steps['. esc_attr( $automation ) .'][interval]" autocomplete="off" '. $admin->disable_field() .'>';
 			foreach( $array['intervals'] as $key => $interval ){
-				echo "<option value='$key' ". selected( $array['selected'], $key, false ) .">$interval</option>";
+				echo "<option value='". esc_attr( $key ) ."' ". selected( $array['selected'], $key, false ) .">". esc_html( $interval ) ."</option>";
 			}
 		echo '</select>';
 	}
