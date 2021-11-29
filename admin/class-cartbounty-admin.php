@@ -3298,20 +3298,21 @@ class CartBounty_Admin{
 	*/
 	function display_preview_contents( $feature ){
 		$output = "<div class='cartbounty-preview-contents cartbounty-preview-". $feature ." cartbounty-bubble'>";
+		$tracking_label = 'preview_' . $feature;
 
 		switch ( $feature ) {
 			case 'emojis':
 
 				ob_start(); ?>
 				<div class="cartbounty-header-image">
-					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $feature ) ); ?>" title="<?php esc_attr_e('Upgrade to allow easy emoji insertion', 'woo-save-abandoned-carts'); ?>" target="_blank">
+					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $tracking_label ) ); ?>" title="<?php esc_attr_e('Upgrade to allow easy emoji insertion', 'woo-save-abandoned-carts'); ?>" target="_blank">
 						<img src="<?php echo esc_url( plugins_url( 'assets/emoji-preview.gif', __FILE__ ) ); ?>"/>
 					</a>
 				</div>
 				<div class="cartbounty-preview-text">
 					<h2><?php esc_html_e('Upgrade to allow easy emoji insertion', 'woo-save-abandoned-carts' ); ?></h2>
 					<div class="cartbounty-button-row cartbounty-close-preview">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $feature ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $tracking_label ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
 						<button type="button" class='button cartbounty-close'><?php esc_html_e('Close', 'woo-save-abandoned-carts'); ?></button>
 					</div>
 				</div>
@@ -3325,14 +3326,14 @@ class CartBounty_Admin{
 
 				ob_start(); ?>
 				<div class="cartbounty-header-image">
-					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/personalization-tags', $feature ) ); ?>" title="<?php esc_attr_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts'); ?>" target="_blank">
+					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/personalization-tags', $tracking_label ) ); ?>" title="<?php esc_attr_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts'); ?>" target="_blank">
 						<img src="<?php echo esc_url( plugins_url( 'assets/personalization-preview.gif', __FILE__ ) ); ?>"/>
 					</a>
 				</div>
 				<div class="cartbounty-preview-text">
 					<h2><?php esc_html_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts' ); ?></h2>
 					<div class="cartbounty-button-row cartbounty-close-preview">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $feature ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
+						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $tracking_label ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
 						<button type="button" class='button cartbounty-close'><?php esc_html_e('Close', 'woo-save-abandoned-carts'); ?></button>
 					</div>
 				</div>
