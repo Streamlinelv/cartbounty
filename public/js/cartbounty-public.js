@@ -90,7 +90,7 @@
 					}
 
 					timer = setTimeout(function(){
-						jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+						jQuery.post(cartbounty_co.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 						function(response) {
 							//console.log(response);
 							//If we have successfully captured abandoned cart, we do not have to display Exit intent form anymore
@@ -105,9 +105,9 @@
 		}
 
 		function removeExitIntentForm(){//Removing Exit Intent form
-			if($('#cartbounty-exit-intent-form').length > 0){ //If Exit intent HTML exists on page
-				$('#cartbounty-exit-intent-form').remove();
-				$('#cartbounty-exit-intent-form-backdrop').remove();
+			if(jQuery('#cartbounty-exit-intent-form').length > 0){ //If Exit intent HTML exists on page
+				jQuery('#cartbounty-exit-intent-form').remove();
+				jQuery('#cartbounty-exit-intent-form-backdrop').remove();
 			}
 		}
 

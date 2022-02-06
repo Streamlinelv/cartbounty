@@ -290,7 +290,7 @@ class CartBounty_Admin{
 							<div class="cartbounty-sidebar cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3"><?php $this->display_sections( $current_section, $tab ); ?></div>
 							<div class="cartbounty-content cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 								<h2 class="cartbounty-section-title"><?php esc_html_e('Recovery', 'woo-save-abandoned-carts'); ?></h2>
-								<div class="cartbounty-section-intro"><?php esc_html_e('Automate your abandoned cart recovery by sending automated recovery emails to your visitors.', 'woo-save-abandoned-carts')?><br/> <?php echo sprintf(
+								<div class="cartbounty-section-intro"><?php esc_html_e('Automate your abandoned cart recovery by sending automated recovery emails and SMS text messages to your visitors.', 'woo-save-abandoned-carts')?><br/> <?php echo sprintf(
 									/* translators: %s - URL link tags */
 									esc_html__('Please consider upgrading to %s%s Pro%s to connect one of the professional automation services listed below.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'recovery' ) ) .'" target="_blank">', esc_html( CARTBOUNTY_ABREVIATION ), '</a>'); ?></div>
 								<div class="cartbounty-row cartbounty-flex">
@@ -454,6 +454,28 @@ class CartBounty_Admin{
 											<p class='cartbounty-additional-information'>
 												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'recaptcha' ); ?></i>
 											</p>
+										</div>
+									</div>
+								</div>
+								<div class="cartbounty-row">
+									<div class="cartbounty-titles-column cartbounty-col-sm-4 cartbounty-col-lg-3">
+										<h4><?php esc_html_e('Text messages', 'woo-save-abandoned-carts'); ?></h4>
+										<p class="cartbounty-titles-column-description">
+											<?php esc_html_e('General settings that may come in handy when sending abandoned cart SMS text messages.', 'woo-save-abandoned-carts'); ?>
+										</p>
+									</div>
+									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
+										<div class="cartbounty-settings-group-container">
+											<div class="cartbounty-settings-group cartbounty-toggle">
+												<label for="cartbounty-international-phone" class="cartbounty-switch cartbounty-unavailable">
+													<input id="cartbounty-international-phone" class="cartbounty-checkbox" type="checkbox" value="1" disabled autocomplete="off" />
+													<span class="cartbounty-slider round"></span>
+												</label>
+												<label for="cartbounty-international-phone" class="cartbounty-unavailable"><?php esc_html_e( 'Enable easy international phone input', 'woo-save-abandoned-carts' ); ?></label>
+												<p class='cartbounty-additional-information'>
+													<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'easy_phone_input' ); ?></i>
+												</p>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -794,6 +816,13 @@ class CartBounty_Admin{
 					'availability'		=> true,
 					'info_link'			=> '',
 					'description'		=> '<p>' . esc_html__("A simple solution for sending abandoned cart recovery emails using the default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("If you are looking for something more advanced and powerful, please consider connecting with ActiveCampaign, GetResponse or MailChimp.", 'woo-save-abandoned-carts') . '</p>'
+				),
+				'bulkgate'	=> array(
+					'name'				=> 'BulkGate',
+					'connected'			=> false,
+					'availability'		=> false,
+					'info_link'			=> CARTBOUNTY_BULKGATE_TRIAL_LINK,
+					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized, time-sensitive SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Add an additional dimension to your existing abandoned cart email recovery workflow including a personal SMS about the abandoned cart.", 'woo-save-abandoned-carts') . '</p>'
 				)
 			);
 		}
@@ -1920,7 +1949,7 @@ class CartBounty_Admin{
 			$to = explode(',', $to_without_spaces);
 		}
 		
-		$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
+		$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower( isset( $_SERVER['SERVER_NAME'] ) ? $_SERVER['SERVER_NAME'] : 'Unknown' ) );
 		$from = "From: ". esc_html( CARTBOUNTY_ABREVIATION ) ." <" . apply_filters( 'cartbounty_from_email', esc_html( $sender ) ) . ">";
 		$blog_name = get_option( 'blogname' );
 		$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
@@ -2550,6 +2579,10 @@ class CartBounty_Admin{
 			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><path d="M35,0A35,35,0,1,0,70,35,35,35,0,0,0,35,0M3.53,35A31.33,31.33,0,0,1,6.26,22.19l15,41.13A31.48,31.48,0,0,1,3.53,35M35,66.47a31.42,31.42,0,0,1-8.89-1.28l9.44-27.44,9.67,26.5a3.45,3.45,0,0,0,.23.43A31.21,31.21,0,0,1,35,66.47m4.34-46.22c1.89-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-3.09,0-8.29-.4-8.29-.4a1.3,1.3,0,0,0-.2,2.6s1.61.2,3.3.3l4.91,13.43L27.18,54.33,15.72,20.25c1.9-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-.59,0-1.28,0-2,0a31.46,31.46,0,0,1,47.54-5.92l-.41,0a5.44,5.44,0,0,0-5.28,5.58c0,2.6,1.49,4.79,3.09,7.38a16.66,16.66,0,0,1,2.59,8.68c0,2.69-1,5.82-2.39,10.17L50.71,54.07Zm23.27-.35A31.46,31.46,0,0,1,50.82,62.2l9.61-27.79a29.62,29.62,0,0,0,2.39-11.27,23.42,23.42,0,0,0-.21-3.24"/></svg>';
 		}
 
+		elseif( $icon == 'bulkgate' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" class="cls-1" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
+		}
+
 		return "<span class='cartbounty-icon-container cartbounty-icon-$icon'><img src='data:image/svg+xml;base64," . esc_attr( base64_encode($svg) ) . "' alt='" . esc_attr( $icon ) . "' /></span>";
     }
 
@@ -2666,7 +2699,7 @@ class CartBounty_Admin{
 	public function lift_checkout_fields( $fields ) {
 		$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
 		if($lift_email_on){ //Changing the priority and moving the email higher
-			$fields['billing_email']['priority'] = 5;
+			$fields['billing_email']['priority'] = 4;
 		}
 		return $fields;
 	}

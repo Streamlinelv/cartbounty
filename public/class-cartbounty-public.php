@@ -83,7 +83,7 @@ class CartBounty_Public{
 			    'ajaxurl' => admin_url( 'admin-ajax.php' )
 			);
 			wp_enqueue_script( $this->plugin_name . '-exit-intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
-			wp_localize_script( $this->plugin_name . '-exit-intent', 'public_data', $data); //Sending variable over to JS file
+			wp_localize_script( $this->plugin_name . '-exit-intent', 'cartbounty_ei', $data); //Sending variable over to JS file
 		}
 	}
 	
@@ -97,7 +97,7 @@ class CartBounty_Public{
 		    'ajaxurl' => admin_url( 'admin-ajax.php' )
 		);
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-public.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script( $this->plugin_name, 'public_data', $data);
+		wp_localize_script( $this->plugin_name, 'cartbounty_co', $data);
 	}
 
 	/**
@@ -143,12 +143,12 @@ class CartBounty_Public{
 	 */
 	function create_new_cart( $cart = array(), $ghost = false ){
 		global $wpdb;
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$user_data = $this->get_user_data();
 
 		//In case if the cart has no items in it, we must delete the cart
 		if(empty( $cart['product_array'] )){
-			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 			$admin->clear_cart_data();
 			return;
 		}

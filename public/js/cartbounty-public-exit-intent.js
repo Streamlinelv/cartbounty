@@ -7,9 +7,9 @@
 
 	 	function showExitIntentForm(event){
 	 		var currentTime = new Date().getTime();
-			var timePeriod = public_data.hours; //Time period in hours
+			var timePeriod = cartbounty_ei.hours; //Time period in hours
 			var last_time_displayed = localStorage.getItem('cartbounty_ei_last_time');
-			var productCount = public_data.product_count; //Products in the shopping cart
+			var productCount = cartbounty_ei.product_count; //Products in the shopping cart
 
 			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field
 		        if(productCount == 0){
@@ -43,7 +43,7 @@
 				}
 
 				timer = setTimeout(function(){
-					jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+					jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 					function(response) {
 						//console.log(response);
 					});
@@ -61,7 +61,7 @@
 			}
 			
 			if($('#cartbounty-exit-intent-form').length <= 0){ //If Exit intent HTML does not exist on page
-				jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+				jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 				function(response){ //Response consists of HTML
 					var output = response;
 					$("body").append(output); //Adding Exit Intent form to the footer
@@ -71,7 +71,7 @@
 				});
 			}
 
-			public_data.product_count = parseInt(public_data.product_count) + 1; //Updating product count in cart data variable once Add to Cart button is pressed
+			cartbounty_ei.product_count = parseInt(cartbounty_ei.product_count) + 1; //Updating product count in cart data variable once Add to Cart button is pressed
 		
 		}
 
@@ -81,7 +81,7 @@
 				cartbounty_remove: 	true
 			}
 			if($('#cartbounty-exit-intent-form').length > 0){ //If Exit intent HTML exists on page
-				jQuery.post(public_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+				jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 				function(response){
 					if(response.data == 'true'){ //If the cart is empty - removing exit intent HTML
 						$('#cartbounty-exit-intent-form').remove();

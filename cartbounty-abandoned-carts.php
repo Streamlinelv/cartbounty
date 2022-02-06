@@ -4,17 +4,13 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 7.1
+ * Version: 7.1.1
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Developer: Streamline.lv
  * Developer URI: http://www.majas-lapu-izstrade.lv/en
- * 
- * WC requires at least: 2.2
- * WC tested up to: 5.8
- *
- * Copyright: © 2018-2020 CartBounty
+ * Copyright: © 2018-2022 CartBounty
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -33,7 +29,7 @@ if($user_settings_notification_frequency == '' || $user_settings_notification_fr
 }
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.1' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.1.1' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
@@ -54,6 +50,7 @@ if (!defined('CARTBOUNTY_MAILCHIMP_LINK')) define('CARTBOUNTY_MAILCHIMP_LINK', '
 if (!defined('CARTBOUNTY_FAQ_LINK')) define('CARTBOUNTY_FAQ_LINK', 'https://wordpress.org/plugins/woo-save-abandoned-carts/#faq' );
 if (!defined('CARTBOUNTY_FEATURE_LINK')) define('CARTBOUNTY_FEATURE_LINK', 'https://www.cartbounty.com/contact/' ); //This is the URL where users can provide new ideas and suggestions
 if (!defined('CARTBOUNTY_SUPPORT_LINK')) define('CARTBOUNTY_SUPPORT_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/#new-topic-0' ); //This is the URL where users can get support
+if (!defined('CARTBOUNTY_BULKGATE_TRIAL_LINK')) define('CARTBOUNTY_BULKGATE_TRIAL_LINK', 'https://portal.bulkgate.com/join/55713' );
 
 //Registering custom options
 register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );

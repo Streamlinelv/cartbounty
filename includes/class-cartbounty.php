@@ -59,7 +59,7 @@ class CartBounty{
 		$this->load_dependencies();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
+		$this->define_wordpress_hooks();
 	}
 
 	/**
@@ -80,8 +80,7 @@ class CartBounty{
 	private function load_dependencies(){
 
 		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
+		 * The class responsible for orchestrating the actions and filters of the core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-loader.php';
 
@@ -91,8 +90,7 @@ class CartBounty{
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cartbounty-admin.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
+		 * The class responsible for defining all actions that occur in the public-facing side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cartbounty-public.php';
 
@@ -111,18 +109,14 @@ class CartBounty{
 	}
 
 	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
+	 * Register all of the hooks related to the admin area functionality of the plugin.
 	 *
 	 * @since    1.0
 	 * @access   private
 	 */
 	private function define_admin_hooks(){
-
 		$admin = new CartBounty_Admin( $this->get_plugin_name(), $this->get_version() );
 		$status = new CartBounty_System_Status( $this->get_plugin_name(), $this->get_version() );
-		$wordpress = new CartBounty_WordPress();
-
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $admin, 'cartbounty_menu', 10 );
@@ -136,7 +130,6 @@ class CartBounty{
 		$this->loader->add_action( 'init', $admin, 'cartbounty_text_domain' );
 		$this->loader->add_action( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
 		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' );
-		$this->loader->add_action( 'cartbounty_sync_hook', $wordpress, 'auto_send' );
 		$this->loader->add_action( 'update_option_cartbounty_notification_frequency', $admin, 'notification_sendout_interval_update' );
 		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' );
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' );
@@ -147,27 +140,19 @@ class CartBounty{
 		$this->loader->add_action( 'wp_loaded', $admin, 'trigger_on_load' );
 		$this->loader->add_action( 'wp_ajax_force_sync', $admin, 'force_sync' );
 		$this->loader->add_action( 'wp_ajax_get_system_status', $status, 'get_system_status' );
-		$this->loader->add_action( 'update_option_cartbounty_automation_steps', $wordpress, 'validate_automation_steps', 50);
-		$this->loader->add_action( 'update_option_cartbounty_automation_from_name', $wordpress, 'sanitize_from_field', 50);
-		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
-		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
 		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' );
 		$this->loader->add_action( 'cartbounty_automation_footer_end', $admin, 'add_email_badge', 100 );
 		$this->loader->add_action( 'cartbounty_admin_email_footer_end', $admin, 'add_email_badge', 100 );
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
+	 * Register all of the hooks related to the public-facing functionality of the plugin.
 	 *
 	 * @since    1.0
 	 * @access   private
 	 */
 	private function define_public_hooks(){
-
 		$public = new CartBounty_Public( $this->get_plugin_name(), $this->get_version() );
-		$wordpress = new CartBounty_WordPress();
-
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
 		$this->loader->add_action( 'woocommerce_before_checkout_form', $public, 'add_additional_scripts_on_checkout' );
@@ -182,6 +167,21 @@ class CartBounty{
 		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' );
 		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' );
 		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' );
+	}
+
+	/**
+	 * Register all of the hooks related to the WordPress area functionality of the plugin.
+	 *
+	 * @since    7.1.1
+	 * @access   private
+	 */
+	private function define_wordpress_hooks(){
+		$wordpress = new CartBounty_WordPress();
+		$this->loader->add_action( 'cartbounty_sync_hook', $wordpress, 'auto_send' );
+		$this->loader->add_action( 'update_option_cartbounty_automation_steps', $wordpress, 'validate_automation_steps', 50);
+		$this->loader->add_action( 'update_option_cartbounty_automation_from_name', $wordpress, 'sanitize_from_field', 50);
+		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
+		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
 	}
 
 	/**
