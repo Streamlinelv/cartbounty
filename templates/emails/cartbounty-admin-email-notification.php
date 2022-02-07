@@ -12,15 +12,17 @@
 
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce/Templates
  * @author     Streamline.lv
- * @version    7.1
+ * @version    7.1.2
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access
 	exit;
-}?>
+}
+$position = is_rtl() ? 'right' : 'left';
+?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -93,29 +95,29 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 										<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 											<tr>
 												<td class="cartbounty-email-carts" width="650" valign="top" style="text-align: center; padding: 20px 50px 0;">
-													<table cellpadding="0" cellspacing="0" border="0" align="left" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; opacity: .3;">
+													<table cellpadding="0" cellspacing="0" border="0" align="<?php echo $position; ?>" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; opacity: .3;">
 														<tr>
-															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: left; padding: 13px 5px 13px 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Email', 'woo-save-abandoned-carts'); ?></strong></td>
-															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: left; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Phone', 'woo-save-abandoned-carts'); ?></strong></td>
-															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: left; padding: 13px 15px 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Total', 'woo-save-abandoned-carts'); ?></strong></td>
+															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Email', 'woo-save-abandoned-carts'); ?></strong></td>
+															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Phone', 'woo-save-abandoned-carts'); ?></strong></td>
+															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Total', 'woo-save-abandoned-carts'); ?></strong></td>
 														</tr>
 														<tr>
-															<td valign="top" style="text-align: left; padding: 13px 5px 13px 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">an*****@demo.com</a></td>
-															<td valign="top" style="text-align: left; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">+1378*****</td>
-															<td valign="top" style="text-align: left; padding: 13px 15px 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_1'] ); ?></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">an*****@demo.com</a></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">+1378*****</td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_1'] ); ?></td>
 														</tr>
 														<tr>
-															<td valign="top" style="text-align: left; padding: 13px 5px 13px 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color']); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">mu*****@demo.com</a></td>
-															<td valign="top" style="text-align: left; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">+1761*****</td>
-															<td valign="top" style="text-align: left; padding: 13px 15px 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_2'] ); ?></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color']); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">mu*****@demo.com</a></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">+1761*****</td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_2'] ); ?></td>
 														</tr>
 														<tr>
-															<td valign="top" style="text-align: left; padding: 13px 5px 13px 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">ja*****@demo.com</a></td>
-															<td valign="top" style="text-align: left; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">-</td>
-															<td valign="top" style="text-align: left; padding: 13px 15px 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_3'] ); ?></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">ja*****@demo.com</a></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">-</td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_3'] ); ?></td>
 														</tr>
 													</table>
-													<table cellpadding="0" cellspacing="0" border="0" align="left" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
+													<table cellpadding="0" cellspacing="0" border="0" align="<?php echo $position; ?>" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
 														<tr>
 															<td valign="top" style="text-align: center; padding: 30px 0 0; font-size: 16px;">
 																<?php echo apply_filters( 'cartbounty_admin_email_get_pro', sprintf('<p style="color: %s; font-size: 16px; line-height: 1.3; margin: 0; padding: 0; font-family: \'Open Sans\', Roboto, \'San Francisco\', Arial, Helvetica, sans-serif;">%s</p>', esc_attr( $args['text_color'] ), wp_kses_post( $args['get_pro_text'] ) ) );?>

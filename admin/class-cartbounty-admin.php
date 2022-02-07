@@ -55,8 +55,10 @@ class CartBounty_Admin{
 		}
 
 		wp_enqueue_style( $this->plugin_name . '-global', plugin_dir_url( __FILE__ ) . 'css/cartbounty-admin-global.css', $this->version ); //Global styles
+		wp_style_add_data( $this->plugin_name . '-global', 'rtl', 'replace' );
 		if($screen->id == $cartbounty_admin_menu_page ){
 			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cartbounty-admin.css', array('wp-color-picker'), $this->version );
+			wp_style_add_data( $this->plugin_name, 'rtl', 'replace' );
 		}
 	}
 
@@ -2241,7 +2243,9 @@ class CartBounty_Admin{
 	function draw_bubble(){
 		$display_bubble = false;
 		$bubble_type = false;
+		$position  = is_rtl() ? 'left' : 'right';
 		$wordpress = new CartBounty_WordPress();
+
 
 		//Checking if we should display the Review bubble or Get Pro bubble
 		//Displaying review bubble after 10, 30, 100, 300, 500 and 1000 abandoned carts have been captured and if the review has not been submitted
@@ -2273,7 +2277,7 @@ class CartBounty_Admin{
 					
 					//Function loads the bubble after a given time period in seconds	
 					setTimeout(function() {
-						bubble.css({top:"60px", right: "50px"});
+						bubble.css({top:"60px", <?php echo $position; ?>: "50px"});
 					}, 2500);
 				});
 			</script>

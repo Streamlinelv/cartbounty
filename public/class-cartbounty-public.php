@@ -52,6 +52,7 @@ class CartBounty_Public{
 	public function enqueue_styles(){
 		if($this->tool_enabled( 'exit_intent' )){ //If Exit Intent Enabled
 			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cartbounty-public.css', array(), $this->version, 'all' );
+			wp_style_add_data( $this->plugin_name, 'rtl', 'replace' );
 		}
 	}
 
