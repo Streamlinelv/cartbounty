@@ -23,7 +23,7 @@
 				
 				clearTimeout(timer);
 
-				if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length) || cartbounty_phone.length >= 1){ //Checking if the email field is valid or phone number is longer than 1 digit
+				if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length) || cartbounty_phone.length > 4){ //Checking if the email field is valid or phone number is longer than 4 digits
 					//If Email or Phone valid
 					var cartbounty_name = jQuery("#billing_first_name").val();
 					var cartbounty_surname = jQuery("#billing_last_name").val();

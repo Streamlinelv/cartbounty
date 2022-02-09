@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Requires PHP: 5.2.4
 Tested up to: 5.9
-Stable tag: 7.1.2
+Stable tag: 7.1.2.1
 License: GPLv3
 
 Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
@@ -331,7 +331,7 @@ If you would like to send automated abandoned cart recovery SMS text messages or
 
 == Changelog ==
 
-= 7.1.2 =
-* Added RTL support
+= 7.1.2.1 =
+* Compatibility improvements with PHP8
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

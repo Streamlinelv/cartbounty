@@ -319,8 +319,8 @@ If you would like to send automated abandoned cart recovery SMS text messages or
 
 ## Changelog
 
-##### 7.1.2
+##### 7.1.2.1
 
-* Added RTL support
+* Compatibility improvements with PHP8
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

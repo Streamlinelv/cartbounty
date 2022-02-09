@@ -211,7 +211,7 @@ class CartBounty_Public{
 	 * @param    array      $cart     Cart contents
 	 * @param    boolean    $ghost    If the cart is a ghost cart or not
 	 */
-	function update_cart( $cart = array(), $ghost ){
+	function update_cart( $cart = array(), $ghost = false ){
 		$user_data = $this->get_user_data();
 
 		//In case if the cart has no items in it, we must delete the cart

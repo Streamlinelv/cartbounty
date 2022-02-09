@@ -398,7 +398,7 @@ class CartBounty_Admin{
 										</div>
 										<div class="cartbounty-settings-group cartbounty-hidden">
 											<label for="cartbounty_allowed_countries" class="cartbounty-unavailable"><?php esc_html_e('Exclude from all countries except these', 'woo-save-abandoned-carts'); ?></label>
-											<select id="cartbounty-allowed-countries" class="cartbounty-select cartbounty-unavailable disabled" placeholder="<?php echo esc_attr('Choose countries / regions…', 'woo-save-abandoned-carts'); ?>" autocomplete="off"></select>
+											<select id="cartbounty-allowed-countries" class="cartbounty-select cartbounty-unavailable disabled" placeholder="<?php echo esc_attr('Choose countries / regions…', 'woo-save-abandoned-carts'); ?>"></select>
 											<button id="cartbounty-add-all-countries" class="cartbounty-button button button-secondary cartbounty-unavailable hidden" type="button"><?php esc_html_e('Select all', 'woo-save-abandoned-carts'); ?></button>
 											<button id="cartbounty-remove-all-countries" class="cartbounty-button button button-secondary cartbounty-unavailable hidden" type="button"><?php esc_html_e('Select none', 'woo-save-abandoned-carts'); ?></button>
 											<p class='cartbounty-additional-information'>
@@ -449,13 +449,35 @@ class CartBounty_Admin{
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
 										<div class="cartbounty-settings-group cartbounty-toggle">
 											<label for="cartbounty_recaptcha" class="cartbounty-switch cartbounty-unavailable">
-												<input id="cartbounty_recaptcha" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+												<input id="cartbounty_recaptcha" class="cartbounty-checkbox" type="checkbox" disabled />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty_recaptcha" class="cartbounty-unavailable"><?php esc_html_e('Enable reCAPTCHA v3', 'woo-save-abandoned-carts'); ?></label>
 											<p class='cartbounty-additional-information'>
 												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'recaptcha' ); ?></i>
 											</p>
+										</div>
+									</div>
+								</div>
+								<div class="cartbounty-row">
+									<div class="cartbounty-titles-column cartbounty-col-sm-4 cartbounty-col-lg-3">
+										<h4><?php esc_html_e('Unfinished orders', 'woo-save-abandoned-carts'); ?></h4>
+										<p class="cartbounty-titles-column-description">
+											<?php esc_html_e('Send abandoned cart reminders about WooCommerce orders that have been abandoned.', 'woo-save-abandoned-carts'); ?>
+										</p>
+									</div>
+									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
+										<div class="cartbounty-settings-group-container">
+											<div class="cartbounty-settings-group cartbounty-toggle">
+												<label for="cartbounty-order-recovery" class="cartbounty-switch cartbounty-unavailable">
+													<input id="cartbounty-order-recovery" class="cartbounty-checkbox" type="checkbox" disabled />
+													<span class="cartbounty-slider round"></span>
+												</label>
+												<label for="cartbounty-order-recovery" class="cartbounty-unavailable"><?php esc_html_e('Enable unfinished order recovery', 'woo-save-abandoned-carts'); ?></label>
+												<p class='cartbounty-additional-information'>
+													<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'unfinished_orders' ); ?></i>
+												</p>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -470,7 +492,7 @@ class CartBounty_Admin{
 										<div class="cartbounty-settings-group-container">
 											<div class="cartbounty-settings-group cartbounty-toggle">
 												<label for="cartbounty-international-phone" class="cartbounty-switch cartbounty-unavailable">
-													<input id="cartbounty-international-phone" class="cartbounty-checkbox" type="checkbox" value="1" disabled autocomplete="off" />
+													<input id="cartbounty-international-phone" class="cartbounty-checkbox" type="checkbox" disabled />
 													<span class="cartbounty-slider round"></span>
 												</label>
 												<label for="cartbounty-international-phone" class="cartbounty-unavailable"><?php esc_html_e( 'Enable easy international phone input', 'woo-save-abandoned-carts' ); ?></label>
@@ -503,7 +525,7 @@ class CartBounty_Admin{
 										</div>
 										<div class="cartbounty-settings-group cartbounty-toggle">
 											<label for="cartbounty-lift-phone" class="cartbounty-switch cartbounty-unavailable">
-												<input id="cartbounty-lift-phone" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+												<input id="cartbounty-lift-phone" class="cartbounty-checkbox" type="checkbox" disabled />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty-lift-phone" class="cartbounty-unavailable"><?php echo __('Lift phone field', 'woo-save-abandoned-carts'); ?></label>
