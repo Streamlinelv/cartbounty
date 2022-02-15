@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-16 00:53+0200\n"
+"POT-Creation-Date: 2022-02-16 01:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: Poedit 2.0.6\n"
 "X-Domain: woo-save-abandoned-carts\n"
@@ -552,7 +552,7 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:1009
 #, php-format
-msgid "Please %ssee this%s to learn how email sending works and when will it be delivered."
+msgid "Please %ssee this%s to learn how email sending works and when it will be delivered."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1013
