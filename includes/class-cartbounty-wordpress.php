@@ -745,6 +745,8 @@ class CartBounty_WordPress{
 	 */
 	public function get_active_steps( $automation = false ){
 		$result = false;
+		$option = 'cartbounty_automation_steps';
+		$this->restore_steps( $option );
 		$automation_steps = get_option('cartbounty_automation_steps');
 		$result = array();
 		foreach ($automation_steps as $key => $step) {
@@ -839,5 +841,28 @@ class CartBounty_WordPress{
 		}
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		update_option('cartbounty_automation_from_name', $admin->sanitize_field($_POST['cartbounty_automation_from_name']));
+	}
+
+	/**
+	* Method restores automation steps in case they are cleared, deleted or do not exist
+	*
+	* @since    7.1.2.2
+	* @param    string		$option   		    Option name
+	*/
+	public function restore_steps( $option ){
+		$automation_steps = get_option( $option );
+		if( empty( $automation_steps ) ){
+			update_option( $option,
+				array(
+					array(
+						'subject' => $this->get_defaults( 'subject', 0 ),
+						'heading' => $this->get_defaults( 'heading', 0 ),
+						'content' => $this->get_defaults( 'content', 0 )
+					),
+					1,
+					1
+				)
+			);
+		}
 	}
 }

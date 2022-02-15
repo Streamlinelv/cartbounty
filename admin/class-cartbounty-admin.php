@@ -1003,6 +1003,11 @@ class CartBounty_Admin{
 															<div class="cartbounty-settings-group cartbounty-hidden">
 																<label for="cartbounty-automation-interval"><?php esc_html_e('Send email after', 'woo-save-abandoned-carts'); ?></label>
 																<?php $wordpress->display_intervals(0); ?>
+																<p class='cartbounty-additional-information'>
+																	<?php echo sprintf(
+																	/* translators: %s - Link tags */
+																	 esc_html__( 'Please %ssee this%s to learn how email sending works and when will it be delivered.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/abandoned-carts', 'wp_is_it_abandoned', '#when-is-the-cart-abandoned' ) ) .'" target="_blank">', '</a>'); ?>
+																</p>
 															</div>
 															<div class="cartbounty-settings-group">
 																<label for="cartbounty-automation-subject"><?php esc_html_e('Email subject', 'woo-save-abandoned-carts'); ?></label>
