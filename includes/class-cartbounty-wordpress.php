@@ -747,7 +747,7 @@ class CartBounty_WordPress{
 		$result = false;
 		$option = 'cartbounty_automation_steps';
 		$this->restore_steps( $option );
-		$automation_steps = get_option('cartbounty_automation_steps');
+		$automation_steps = get_option( $option );
 		$result = array();
 		foreach ($automation_steps as $key => $step) {
 			if(isset($step['enabled'])){
@@ -849,7 +849,7 @@ class CartBounty_WordPress{
 	* @since    7.1.2.2
 	* @param    string		$option   		    Option name
 	*/
-	public function restore_steps( $option ){
+	private function restore_steps( $option ){
 		$automation_steps = get_option( $option );
 		if( empty( $automation_steps ) ){
 			update_option( $option,
