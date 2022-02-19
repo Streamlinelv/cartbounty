@@ -200,19 +200,21 @@ class CartBounty_WordPress{
 		}
 
 		$email = false;
+		$direction = is_rtl() ? 'rtl' : 'ltr';
+
 		if(isset($_POST['email'])){ //If we have received email field
 			if(!empty($_POST['email'])){ //If email field is not empty
 				if(is_email($_POST['email'])){ //If email is valid
 					$email = $_POST['email'];
 				}else{ //If email is invalid
-					wp_send_json_error('<span class="license-status license-inactive fadeOutSlow"><i class="license-status-icon"><img src="'. esc_url( plugin_dir_url( __DIR__ ) ) . 'admin/assets/invalid-icon.svg" /></i>'. esc_html__( 'Please enter a valid email', 'woo-save-abandoned-carts' ) .'</span>');
+					wp_send_json_error('<span class="license-status license-inactive fadeOutSlow" dir="'. $direction .'"><i class="license-status-icon"><img src="'. esc_url( plugin_dir_url( __DIR__ ) ) . 'admin/assets/invalid-icon.svg" /></i>'. esc_html__( 'Please enter a valid email', 'woo-save-abandoned-carts' ) .'</span>');
 				}
 			}else{ //If email input field is empty, sending it to default Administrator email
 				$email = get_option( 'admin_email' );
 			}
 		}
 		$this->send_reminder( $cart = false, $test = true, $email, $preview_data );
-		wp_send_json_success('<span class="license-status license-active fadeOutSlow"><i class="license-status-icon"><img src="'. esc_url( plugin_dir_url( __DIR__ ) ) . 'admin/assets/active-icon.svg" /></i>'. esc_html__( 'Email successfully sent', 'woo-save-abandoned-carts' ) .'</span>');
+		wp_send_json_success('<span class="license-status license-active fadeOutSlow" dir="'. $direction .'"><i class="license-status-icon"><img src="'. esc_url( plugin_dir_url( __DIR__ ) ) . 'admin/assets/active-icon.svg" /></i>'. esc_html__( 'Email successfully sent', 'woo-save-abandoned-carts' ) .'</span>');
 	}
 
 	/**

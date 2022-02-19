@@ -4,15 +4,12 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 7.1.2.2
+ * Version: 7.1.2.3
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
- * Developer: Streamline.lv
- * Developer URI: http://www.majas-lapu-izstrade.lv/en
- * Copyright: © 2018-2022 CartBounty
- * License: GPLv3
- * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * Requires at least: 4.6
+ * Requires PHP: 7.0
  */
 
 // If this file is called directly, abort.
@@ -29,7 +26,7 @@ if($user_settings_notification_frequency == '' || $user_settings_notification_fr
 }
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.1.2.2' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.1.2.3' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
