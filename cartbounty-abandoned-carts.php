@@ -47,7 +47,7 @@ if (!defined('CARTBOUNTY_MAILCHIMP_LINK')) define('CARTBOUNTY_MAILCHIMP_LINK', '
 if (!defined('CARTBOUNTY_FAQ_LINK')) define('CARTBOUNTY_FAQ_LINK', 'https://wordpress.org/plugins/woo-save-abandoned-carts/#faq' );
 if (!defined('CARTBOUNTY_FEATURE_LINK')) define('CARTBOUNTY_FEATURE_LINK', 'https://www.cartbounty.com/contact/' ); //This is the URL where users can provide new ideas and suggestions
 if (!defined('CARTBOUNTY_SUPPORT_LINK')) define('CARTBOUNTY_SUPPORT_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/#new-topic-0' ); //This is the URL where users can get support
-if (!defined('CARTBOUNTY_BULKGATE_TRIAL_LINK')) define('CARTBOUNTY_BULKGATE_TRIAL_LINK', 'https://portal.bulkgate.com/join/55713' );
+if (!defined('CARTBOUNTY_BULKGATE_TRIAL_LINK')) define('CARTBOUNTY_BULKGATE_TRIAL_LINK', 'https://portal.bulkgate.com/join/55713/en/solutions/sms-gateway' );
 
 //Registering custom options
 register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );
