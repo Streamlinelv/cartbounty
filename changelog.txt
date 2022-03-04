@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 7.1.2.4 =
+* Improved screen options
+
 = 7.1.2.3 =
 * Improvements for RTL languages
 

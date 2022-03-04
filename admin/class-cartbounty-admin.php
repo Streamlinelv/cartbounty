@@ -212,32 +212,8 @@ class CartBounty_Admin{
 	 *
 	 * @since    1.0
 	 */
-	function save_page_options(){
-		if ( isset( $_POST['wp_screen_options'] ) && is_array( $_POST['wp_screen_options'] ) ) {
-			check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
-
-			global $cartbounty_admin_menu_page;
-			$screen = get_current_screen();
-
-			//Do not continue if we are not on CartBounty plugin page
-			if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
-				return;
-			}
-
-			$user = wp_get_current_user();
-	        if ( ! $user ) {
-	            return;
-	        }
-
-	        $option = $_POST['wp_screen_options']['option'];
-	        $value  = $_POST['wp_screen_options']['value'];
-	 
-	        if ( sanitize_key( $option ) != $option ) {
-	            return;
-	        }
-
-	        update_user_meta( $user->ID, $option, $value );
-	    }
+	function save_page_options( $status, $option, $value ){
+		return $value;
 	}
 	
 	/**

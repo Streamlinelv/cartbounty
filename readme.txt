@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 7.1.2.3
+Stable tag: 7.1.2.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -332,7 +332,7 @@ If you would like to send automated abandoned cart recovery SMS text messages or
 
 == Changelog ==
 
-= 7.1.2.3 =
-* Improvements for RTL languages
+= 7.1.2.4 =
+* Improved screen options
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
