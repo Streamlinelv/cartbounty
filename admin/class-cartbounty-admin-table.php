@@ -145,47 +145,36 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_location( $item ){
-        if(is_serialized($item['location'])){ //Since version 4.6
-            $location_data = @unserialize($item['location']);
+        $location_array = array();
+        $city = '';
+        $postcode = '';
+        $country = '';
+
+        if( is_serialized( $item['location'] ) ){
+            $location_data = @unserialize( $item['location'] );
             $country = $location_data['country'];
             $city = $location_data['city'];
             $postcode = $location_data['postcode'];
-
-        }else{ //Prior version 4.6. Will be removed in future releases
-            $parts = explode(',', $item['location']); //Splits the Location field into parts where there are commas
-            if (count($parts) > 1) {
-                $country = $parts[0];
-                $city = trim($parts[1]); //Trim removes white space before and after the string
-            }
-            else{
-                $country = $parts[0];
-                $city = '';
-            }
-
-            $postcode = '';
-            if(is_serialized($item['other_fields'])){
-                $other_fields = @unserialize($item['other_fields']);
-                if(isset($other_fields['cartbounty_billing_postcode'])){
-                    $postcode = $other_fields['cartbounty_billing_postcode'];
-                }
-            }
         }
 
-        if($country && class_exists('WooCommerce')){ //In case WooCommerce is active and we have Country data, we can add abbreviation to it with a full country name
-            $country = '<abbr class="cartbounty-country" title="' . esc_attr( WC()->countries->countries[ $country ] ) . '">' . esc_html($country) . '</abbr>';
+        if( $country && class_exists( 'WooCommerce' ) ){ //In case WooCommerce is active and we have Country data, we can add abbreviation to it with a full country name
+            $country = '<abbr class="cartbounty-country" title="' . esc_attr( WC()->countries->countries[ $country ] ) . '">' . esc_html( $country ) . '</abbr>';
         }
 
-        $location = $country;
-        if(!empty($city)){
-             $location .= ', ' . $city;
-        }
-        if(!empty($postcode)){
-             $location .= ', ' . $postcode;
+        if( !empty( $city ) ){
+             $location_array[] = $city;
         }
 
-        return sprintf('%s',
-            $location
-        );
+        if( !empty( $postcode ) ){
+            $location_array[] = $postcode;
+        }
+
+        if( !empty( $country ) ){
+             $location_array[] = $country;
+        }
+
+        $location = implode( ', ', $location_array );
+        return sprintf( '%s', $location );
     }
 	
 	/**
@@ -196,69 +185,92 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_cart_contents( $item ){
-        if(!is_serialized($item['cart_contents'])){
+        if( !is_serialized( $item['cart_contents'] ) ){
             return;
         }
 
-        $admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-        $product_array = @unserialize($item['cart_contents']); //Retrieving array from database column cart_contents
+        $admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+        $product_array = @unserialize( $item['cart_contents'] ); //Retrieving array from database column cart_contents
         $output = '';
         
-        if($product_array){
-            if(get_option('cartbounty_hide_images')){ //Outputing Cart contents as a list
-                $output = '<ul class="cartbounty-product-list">';
-                foreach($product_array as $product){
-                    if(is_array($product)){
-                        if(isset($product['product_title'])){
-                            $product_title = esc_html($product['product_title']);
+        if( $product_array ){
+
+            if( get_option( 'cartbounty_hide_images' ) ){ //Outputing Cart contents as a list
+                $output = '<ol class="cartbounty-product-list">';
+
+                foreach( $product_array as $product ){
+                    
+                    if( is_array( $product ) ){
+
+                        if( isset( $product['product_title'] ) ){
+                            $product_title = esc_html( $product['product_title'] );
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                             $product_price = $admin->get_product_price( $product );
-                            $price = ', ' . $admin->format_price( $product_price, esc_html($item['currency']));
-                            if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<li><a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</a></li>';
+                            $price = ', ' . $admin->format_price( $product_price, esc_html( $item['currency'] ) );
+                            $product_title_line = $product_title . $price . $quantity;
+                            $output .= '<li>';
+                            
+                            if( $edit_product_link ){ //If link exists (meaning the product hasn't been deleted)
+                                $output .= '<a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank">'. esc_html( $product_title_line ) .'</a>';
+
                             }else{
-                                $output .= '<li>'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</li>';
+                                $output .= esc_html( $product_title_line );
                             }
+
+                            $output .= '</li>';
                         }
                     }
                 }
-                $output .= '</ul>';
+                $output .= '</ol>';
 
             }else{ //Displaying cart contents with thumbnails
-                foreach($product_array as $product){
-                    if(is_array($product)){
-                        if(isset($product['product_title'])){
+
+                foreach( $product_array as $product ){
+
+                    if( is_array( $product ) ){
+
+                        if( isset( $product['product_title'] ) ){
+
                             //Checking product image
-                            if(!empty($product['product_variation_id'])){ //In case of a variable product
-                                $image = get_the_post_thumbnail_url($product['product_variation_id'], 'thumbnail');
-                                if(empty($image)){ //If variation didn't have an image set
-                                    $image = get_the_post_thumbnail_url($product['product_id'], 'thumbnail');
+                            if( !empty( $product['product_variation_id'] ) ){ //In case of a variable product
+                                $image = get_the_post_thumbnail_url( $product['product_variation_id'], 'thumbnail' );
+                                
+                                if( empty( $image ) ){ //If variation didn't have an image set
+                                    $image = get_the_post_thumbnail_url( $product['product_id'], 'thumbnail' );
                                 }
+
                             }else{ //In case of a simple product
-                                 $image = get_the_post_thumbnail_url($product['product_id'], 'thumbnail');
+                                 $image = get_the_post_thumbnail_url( $product['product_id'], 'thumbnail' );
                             }
 
-                            if(empty($image) && class_exists('WooCommerce')){ //In case WooCommerce is active and product has no image, output default WooCommerce image
-                                $image = wc_placeholder_img_src('thumbnail');
+                            if( empty( $image ) && class_exists( 'WooCommerce' ) ){ //In case WooCommerce is active and product has no image, output default WooCommerce image
+                                $image = wc_placeholder_img_src( 'thumbnail' );
                             }
 
-                            $product_title = esc_html($product['product_title']);
+                            $product_title = esc_html( $product['product_title'] );
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                             $product_price = $admin->get_product_price( $product );
-                            $price = ', ' . $admin->format_price( $product_price, esc_html($item['currency']));
-                            if($edit_product_link){ //If link exists (meaning the product hasn't been deleted)
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</span><a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank"><img src="'. esc_url( $image ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" /></a></div>';
+                            $price = ', ' . $admin->format_price( $product_price, esc_html( $item['currency'] ) );
+                            $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</span>';
+                            $product_image = '<img src="'. esc_url( $image ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" />';
+
+                            if( $edit_product_link ){ //If link exists (meaning the product hasn't been deleted)
+                                $output .= '<a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank">' . $product_image . '</a>';
+
                             }else{
-                                $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</span><img src="'. esc_url( $image ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" /></div>';
+                                $output .= $product_image;
                             }
+
+                            $output .= '</div>';
                         }
                     }
                 }
             }
         }
-        return sprintf('%s', $output );
+
+        return sprintf( '%s', $output );
     }
 	
 	/**

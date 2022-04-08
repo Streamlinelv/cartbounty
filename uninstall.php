@@ -52,4 +52,5 @@ delete_option( 'cartbounty_automation_sends' );
 delete_option( 'cartbounty_email_table_exists' );
 delete_option( 'cartbounty_cron_warning' );
 
-delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true ); //Removes cartbounty_carts_per_page from wp_usermeta table on plugin uninstall
+delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true );
+delete_metadata( 'user', 0, 'cartbounty_unsupported_plugin_notice', '', true );

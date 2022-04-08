@@ -137,7 +137,7 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' );
 		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' );
-		$this->loader->add_action( 'wp_loaded', $admin, 'trigger_on_load' );
+		$this->loader->add_action( 'wp_loaded', $admin, 'trigger_on_load', 15 );
 		$this->loader->add_action( 'wp_ajax_force_sync', $admin, 'force_sync' );
 		$this->loader->add_action( 'wp_ajax_get_system_status', $status, 'get_system_status' );
 		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' );

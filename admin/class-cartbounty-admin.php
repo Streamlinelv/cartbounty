@@ -1811,6 +1811,7 @@ class CartBounty_Admin{
 	 */
 	function display_notices(){
 		$this->display_wp_cron_warnings();
+		$this->display_unsupported_plugin_notice();
 	}
 
 	/**
@@ -1823,23 +1824,25 @@ class CartBounty_Admin{
 
 		if( $wordpress->automation_enabled() ){ //Check if we have connected to WordPress automation
 			$missing_hooks = array();
-			$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
+			$user_settings_notification_frequency = get_option( 'cartbounty_notification_frequency' );
 
-			if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false && intval($user_settings_notification_frequency['hours']) != 0){ //If we havent scheduled email notifications and notifications have not been disabled
+			if( wp_next_scheduled( 'cartbounty_notification_sendout_hook' ) === false && intval( $user_settings_notification_frequency['hours'] ) != 0 ){ //If we havent scheduled email notifications and notifications have not been disabled
 				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
 			}
 
-			if(wp_next_scheduled('cartbounty_sync_hook') === false){
+			if( wp_next_scheduled( 'cartbounty_sync_hook' ) === false ){
 				$missing_hooks[] = 'cartbounty_sync_hook';
 			}
 
-			if (!empty($missing_hooks)) { //If we have hooks that are not scheduled
+			if ( !empty($missing_hooks ) ) { //If we have hooks that are not scheduled
 				$hooks = '';
 				$current = 1;
-				$total = count($missing_hooks);
-				foreach($missing_hooks as $missing_hook){
+				$total = count( $missing_hooks );
+				
+				foreach( $missing_hooks as $missing_hook ){
 					$hooks .= $missing_hook;
-					if ($current != $total){
+					
+					if ( $current != $total ){
 						$hooks .= ', ';
 					}
 					$current++;
@@ -1849,24 +1852,77 @@ class CartBounty_Admin{
 					wp_kses( _n( 'It seems that WP Cron event <strong>%s</strong> required for automation is not scheduled.', 'It seems that WP Cron events <strong>%s</strong> required for automation are not scheduled.', esc_html( $total ), 'woo-save-abandoned-carts' ), 'data' ), esc_html( $hooks ) ) . ' ' .
 					sprintf(
 					/* translators: %1$s - Plugin name, %2$s - Link start, %3$s - Link end */
-					esc_html__('Please try disabling and enabling %1$s plugin. If this notice does not go away after that, please %2$sget in touch with us%3$s.', 'woo-save-abandoned-carts' ), esc_html( CARTBOUNTY_ABREVIATION ), '<a href="'. esc_url( $this->get_trackable_link(CARTBOUNTY_SUPPORT_LINK, 'wp_cron_disabled') ) .'" target="_blank">', '</a>' );
-				echo $this->get_notice_output($message, $handle = '', 'warning');
+					esc_html__( 'Please try disabling and enabling %1$s plugin. If this notice does not go away after that, please %2$sget in touch with us%3$s.', 'woo-save-abandoned-carts' ), esc_html( CARTBOUNTY_ABREVIATION ), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_SUPPORT_LINK, 'wp_cron_disabled' ) ) .'" target="_blank">', '</a>' );
+				echo $this->get_notice_output( $message, $handle = '', 'warning' );
 			}
 		}
+
 		//Checking if WP Cron is enabled
-		if(defined('DISABLE_WP_CRON')){
-			if(DISABLE_WP_CRON == true){
+		if( defined( 'DISABLE_WP_CRON' ) ){
+			
+			if( DISABLE_WP_CRON == true ){
 				$handle = 'cartbounty_cron_warning';
-				if(isset( $_GET[$handle])){ //Check if we should update the option and close the notice
-					check_admin_referer( 'cartbounty-notice-nonce', $handle ); //Exit in case security check is not passed
-					update_option($handle, 1);
-				}
-				$closed = get_option($handle);
-				if(!$closed){ //In case user has not previously closed the notice
-					$message = esc_html__("WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", 'woo-save-abandoned-carts' );
-					echo $this->get_notice_output($message, $handle, $class = 'warning', true, 'close' );
-				}
+				$message = esc_html__( "WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", 'woo-save-abandoned-carts' );
+				echo $this->get_notice_output( $message, $handle, $class = 'warning', true, 'close' );
 			}
+		}
+	}
+
+	/**
+	 * Method shows notice in case there are active plugins which the free CartBounty version does not support
+	 *
+	 * @since    7.1.2.5
+	 */
+	function display_unsupported_plugin_notice(){
+		$active_unsupported_plugins = array();
+		$unsupported_plugins = array(
+			array( //Extra Product Options for WooCommerce (Free) by ThemeHigh
+				'path' => 'woo-extra-product-options/woo-extra-product-options.php',
+				'name' => 'Extra Product Options for WooCommerce'
+			),
+			array( //Extra Product Options for WooCommerce by ThemeHigh
+				'path' => 'woocommerce-extra-product-options-pro/woocommerce-extra-product-options-pro.php',
+				'name' => 'Extra Product Options for WooCommerce'
+			),
+			array( //WooCommerce Custom Product Addons (Free) by Acowebs
+				'path' => 'woo-custom-product-addons/start.php',
+				'name' => 'WooCommerce Custom Product Addons'
+			),
+			array( //WooCommerce Custom Product Addons by Acowebs
+				'path' => 'woo-custom-product-addons-pro/start.php',
+				'name' => 'WooCommerce Custom Product Addons'
+			),
+			array( //Advanced Product Fields for WooCommerce (Free) by StudioWombat
+				'path' => 'advanced-product-fields-for-woocommerce/advanced-product-fields-for-woocommerce.php',
+				'name' => 'Advanced Product Fields for WooCommerce'
+			),
+			array( //Advanced Product Fields for WooCommerce by StudioWombat
+				'path' => 'advanced-product-fields-for-woocommerce-pro\advanced-product-fields-for-woocommerce-pro.php',
+				'name' => 'Advanced Product Fields for WooCommerce'
+			),
+			array( //WooCommerce Product Bundles by SomewhereWarm
+				'path' => 'woocommerce-product-bundles/woocommerce-product-bundles.php',
+				'name' => 'WooCommerce Product Bundles'
+			)
+		);
+
+		foreach ( $unsupported_plugins as $key => $plugins ) {
+			
+			if( is_plugin_active( $plugins['path'] ) ){
+				$active_unsupported_plugins[] = '<strong>' . $plugins['name'] . '</strong>';
+			}
+		}
+
+		$active_unsupported_plugins = array_unique( $active_unsupported_plugins ); //Removing duplicate items from array
+
+		if( !empty( $active_unsupported_plugins ) ){
+			$handle = 'cartbounty_unsupported_plugin_notice';
+			$total = count( $active_unsupported_plugins );
+			$unsupported_plugins_list = implode( ' ' . __('and') . ' ', array_filter( array_merge( array( implode( ', ', array_slice( $active_unsupported_plugins, 0, -1 ) ) ), array_slice( $active_unsupported_plugins, -1 ) ), 'strlen')); //Join plugins with commas and the last two elements with "and"
+			$message = sprintf(
+				/* translators: %s - Cron event name */
+				wp_kses( _n( 'You are using %s. The Free version of %s does not support saving all options this plugin adds.', 'You are using %s. The Free version of %s does not support saving all options these plugins add.', esc_html( $total ), 'woo-save-abandoned-carts' ), 'data' ), $unsupported_plugins_list, esc_html( CARTBOUNTY_ABREVIATION ) ) . '<br/>' . $this->display_unavailable_notice( 'unsupported_plugins' );
+			echo $this->get_notice_output( $message, $handle, 'notice', true, 'close', $user_specific = true );
 		}
 	}
 
@@ -1880,19 +1936,47 @@ class CartBounty_Admin{
 	 * @param    string   	$class   		Additional classes required for the notice. Default empty
 	 * @param    boolean   	$submit   		Should a submit button be added or not. Default false
 	 * @param    string   	$button_type   Type of the button (done or close). Default done
+	 * @param    boolean   	$user_specific  Weather notice is saved in the user or global site level
 	 */
-	function get_notice_output( $message, $handle = '', $class = '', $submit = false, $button_type = 'done'){
-		$button = false;
-		$button_text = esc_html__("Done", 'woo-save-abandoned-carts');
-		if($button_type == 'close'){
-			$button_text = esc_html__("Close", 'woo-save-abandoned-carts');
+	function get_notice_output( $message, $handle = '', $class = '', $submit = false, $button_type = 'done', $user_specific = false ){
+		$closed = false;
+
+		if( $user_specific ){
+
+			if( isset( $_GET[$handle] ) ){ //Check if we should update the option and close the notice
+				check_admin_referer( 'cartbounty-notice-nonce', $handle ); //Exit in case security check is not passed
+				update_user_meta( get_current_user_id(), $handle, 1 );
+			}
+			$closed = get_user_meta( get_current_user_id(), $handle, false );
+
+		}else{
+
+			if( isset( $_GET[$handle] ) ){ //Check if we should update the option and close the notice
+				check_admin_referer( 'cartbounty-notice-nonce', $handle ); //Exit in case security check is not passed
+				update_option( $handle, 1 );
+			}
+			$closed = get_option( $handle );
 		}
-		if($submit){
+
+		if( $closed ){ //Exit if notice previously has been already closed
+			return;
+		}
+
+		$button = false;
+		$button_text = esc_html__( 'Done', 'woo-save-abandoned-carts' );
+		
+		if( $button_type == 'close' ){
+			$button_text = esc_html__( 'Close', 'woo-save-abandoned-carts' );
+		}
+
+		if( $submit ){
 			$button = '<span class="cartbounty-button-container"><a class="cartbounty-close-notice cartbounty-button button button-secondary cartbounty-progress" href="'. esc_url( wp_nonce_url( add_query_arg( 'handle', $handle ), 'cartbounty-notice-nonce', $handle ) ) .'">'. esc_html( $button_text ) .'</a></span>';
 		}
+
 		$output = '<div class="cartbounty-notification notice updated '. esc_attr( $class ) .'">
 			<p>'. $message .'</p>'. $button .'
 		</div>';
+
 		return $output;
 	}
 
@@ -2663,36 +2747,38 @@ class CartBounty_Admin{
 	 * @param    object     $cart   		    Cart data
 	 */
 	public function build_cart( $cart ){
+		
 		if( WC()->cart ){ //Checking if WooCommerce has loaded
 			WC()->cart->empty_cart();//Removing any products that might have be added in the cart
+			$products = @unserialize( $cart->cart_contents );
 			
-			$products = @unserialize($cart->cart_contents);
-			if(!$products){ //If missing products
+			if( !$products ){ //If missing products
 				return;
 			}
 
-			foreach($products as $product){ //Looping through cart products
-				$product_exists = wc_get_product($product['product_id']); //Checking if the product exists
-				if($product_exists){
-					//Get product variation attributes if present
-					if($product['product_variation_id']){
-						$single_variation = new WC_Product_Variation($product['product_variation_id']);
-						$single_variation_data = $single_variation->get_data();
+			foreach( $products as $product ){ //Looping through cart products
+				$product_exists = wc_get_product( $product['product_id'] ); //Checking if the product exists
+				
+				if( $product_exists ){
 					
-						//Handling variable product title output with attributes
-						$variation_attributes = $single_variation->get_variation_attributes();
+					//Get product variation attributes if present
+					if( $product['product_variation_id'] ){
+						$single_variation = new WC_Product_Variation( $product['product_variation_id'] );
+						$single_variation_data = $single_variation->get_data();
+						$variation_attributes = $single_variation->get_variation_attributes(); //Handling variable product title output with attributes
+
 					}else{
 						$variation_attributes = '';
 					}
 					
-					$restore = WC()->cart->add_to_cart( $product['product_id'], $product['quantity'], $product['product_variation_id'], $variation_attributes); //Adding previous products back to cart
+					$restore = WC()->cart->add_to_cart( $product['product_id'], $product['quantity'], $product['product_variation_id'], $variation_attributes ); //Adding previous products back to cart
 				}
 			}
 
 			//Restore previous session id because we want the user abandoned cart data to be in sync
 			//Starting session in order to check if we have to insert or update database row with the data from input boxes
-			WC()->session->set('cartbounty_session_id', $cart->session_id); //Putting previous customer ID back to WooCommerce session
-			WC()->session->set('cartbounty_from_link', true); //Setting a marker that current user arrived from email
+			WC()->session->set( 'cartbounty_session_id', $cart->session_id ); //Putting previous customer ID back to WooCommerce session
+			WC()->session->set( 'cartbounty_from_link', true ); //Setting a marker that current user arrived from email
 		}
 	}
 
@@ -3050,7 +3136,7 @@ class CartBounty_Admin{
 	 * @param    Boolean  			$force_exclude_tax     	Weather we should bypass all filters and exclude taxes in the price. Default false
 	 */
 	function get_product_price( $product, $force_tax = false, $force_exclude_tax = false ) {
-		if (!class_exists('WooCommerce')){ //If WooCommerce is not active
+		if ( !class_exists( 'WooCommerce' ) ){ //If WooCommerce is not active
 			return;
 		}
 
@@ -3058,44 +3144,48 @@ class CartBounty_Admin{
 		$price = 0;
 		$decimals = 0;
 
-		if(wc_get_price_decimals()){
+		if( wc_get_price_decimals() ){
 			$decimals = wc_get_price_decimals();
 		}
 
-		if(is_array($product)){ //In case we are working with CartBounty line item
+		if( is_array( $product ) ){ //In case we are working with CartBounty line item
 			$price = $product['product_variation_price'];
-			if(empty($price)){
+			
+			if( empty( $price ) ){
 				$price = 0;
 			}
-			if(isset($product['product_tax'])){ //If tax data exists
+
+			if( isset( $product['product_tax'] ) ){ //If tax data exists
 				$tax = $product['product_tax'];
 			}
 
-		}elseif(is_object($product)){ //In case we are working with WooCommerce product
+		}elseif( is_object( $product ) ){ //In case we are working with WooCommerce product
 			$price_with_tax = wc_get_price_including_tax( $product );
 			$price = $product->get_price();
-			if(empty($price_with_tax)){
+			
+			if( empty( $price_with_tax ) ){
 				$price_with_tax = 0;
 			}
-			if(empty($price)){
+
+			if( empty( $price ) ){
 				$price = 0;
 			}
 			$tax = $price_with_tax - $price;
 		}
 
-		if($force_exclude_tax){ //If we do not wat to include taxes. E.g., in GetResponse sync
+		if( $force_exclude_tax ){ //If we do not wat to include taxes. E.g., in GetResponse sync
 			$tax = 0;
 		}
 
-		if(!empty($tax) && ( apply_filters( 'cartbounty_include_tax', true ) || $force_tax == true )){ //If the tax value is set, the filter is set to true or the taxes are forced to display
+		if( !empty( $tax ) && ( apply_filters( 'cartbounty_include_tax', true ) || $force_tax == true ) ){ //If the tax value is set, the filter is set to true or the taxes are forced to display
 			$price = $price + $tax;
 		}
 
-		if(empty($price)){ //In case the price is empty
+		if( empty( $price ) ){ //In case the price is empty
 			$price = 0;
 		}
 
-		return round($price, $decimals);
+		return round( $price, $decimals );
 	}
 
 	/**

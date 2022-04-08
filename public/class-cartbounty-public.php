@@ -609,63 +609,67 @@ class CartBounty_Public{
 	 * @return   Array
 	 */
 	function read_cart(){
-		if(!WC()->cart){ //Exit if Woocommerce cart has not been initialized
+
+		if( !WC()->cart ){ //Exit if Woocommerce cart has not been initialized
 			return;
 		}
+
 		//Retrieving cart total value and currency
 		$cart_total = WC()->cart->total;
 		$cart_currency = get_woocommerce_currency();
 		$current_time = current_time( 'mysql', false ); //Retrieving current time
-
-		$session_id = WC()->session->get('cartbounty_session_id'); //Check if the session is already set
+		$session_id = WC()->session->get( 'cartbounty_session_id' ); //Check if the session is already set
+		
 		if( empty( $session_id ) ){ //If session value does not exist - set one now
 			$session_id = WC()->session->get_customer_id(); //Retrieving customer ID from WooCommerce sessions variable
 		}
 
 		if( WC()->session->get( 'cartbounty_from_link' ) && WC()->session->get( 'cartbounty_session_id' ) ){
-			$session_id = WC()->session->get('cartbounty_session_id');
+			$session_id = WC()->session->get( 'cartbounty_session_id' );
 		}
 
 		//Retrieving cart
 		$products = WC()->cart->get_cart_contents();
 		$product_array = array();
 				
-		foreach($products as $product => $values){
-			$item = wc_get_product( $values['data']->get_id() );
-
+		foreach( $products as $key => $product ){
+			$item = wc_get_product( $product['data']->get_id() );
 			$product_title = $item->get_title();
-			$product_quantity = $values['quantity'];
+			$product_quantity = $product['quantity'];
 			$product_variation_price = '';
 			$product_tax = '';
 
-			if(isset($values['line_total'])){
-				$product_variation_price = $values['line_total'];
+			if( isset( $product['line_total'] ) ){
+				$product_variation_price = $product['line_total'];
 			}
-			if(isset($values['line_tax'])){ //If we have taxes, add them to the price
-				$product_tax = $values['line_tax'];
+
+			if( isset( $product['line_tax'] ) ){ //If we have taxes, add them to the price
+				$product_tax = $product['line_tax'];
 			}
 			
 			// Handling product variations
-			if( $values['variation_id'] ){ //If user has chosen a variation
-				$single_variation = new WC_Product_Variation( $values['variation_id'] );
+			if( $product['variation_id'] ){ //If user has chosen a variation
+				$single_variation = new WC_Product_Variation( $product['variation_id'] );
 		
 				//Handling variable product title output with attributes
 				$product_attributes = $this->attribute_slug_to_title( $single_variation->get_variation_attributes() );
-				$product_variation_id = $values['variation_id'];
+				$product_variation_id = $product['variation_id'];
+
 			}else{
 				$product_attributes = false;
 				$product_variation_id = '';
 			}
 
-			//Inserting Product title, Variation and Quantity into array
-			$product_array[] = array(
+			$product_data = array(
 				'product_title' => $product_title . $product_attributes,
 				'quantity' => $product_quantity,
-				'product_id' => $values['product_id'],
+				'product_id' => $product['product_id'],
 				'product_variation_id' => $product_variation_id,
 				'product_variation_price' => $product_variation_price,
 				'product_tax' => $product_tax
 			);
+
+			$product_array[] = $product_data;
 		}
 
 		return $results_array = array(

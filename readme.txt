@@ -5,163 +5,143 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 7.1.2.4
+Stable tag: 7.1.2.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Save abandoned carts and increase your sales by recovering them. Plugin instantly saves WooCommerce checkout form before submission.
+Save abandoned carts and send automated abandoned cart recovery messages. Get more leads, reduce cart abandonment, and increase sales.
 
 == Description ==
 
-CartBounty - Save and recover abandoned carts for WooCommerce plugin saves all activity in the [WooCommerce](https://woocommerce.com/?aff=40932&cid=4595734)* checkout form before it is submitted. The plugin allows to see who abandons your shopping carts and get in touch with them.
+All online stores suffer from shopping cart abandonment. [CartBounty](https://www.cartbounty.com) helps to save abandoned carts in [WooCommerce](https://woocommerce.com/?aff=40932&cid=4595734) and send effective abandoned cart reminder messages to recover lost sales.
 
-You will receive regular email notifications about newly abandoned shopping carts and will be able to remind about these carts either manually or using WordPress default mail server to send automated abandoned cart recovery emails.
+* View shopping carts in real-time
+* Save abandoned carts
+* Automate abandoned cart recovery
+* Get more leads and reduce cart abandonment
+* Actions and filters for advanced configuration
+* Fully compliant with GDPR
 
-If you would like to send automated abandoned cart recovery emails or SMS text messages to customers via [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)*, [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)*, [MailChimp](http://eepurl.com/hHjfrX)* or [BulkGate](https://portal.bulkgate.com/join/55713)*, please visit our [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") plugin page.
+With thoughtful user experience, built-in efficiency tools and ability to integrate with other systems, CartBounty is a powerful addition to your marketing arsenal.
 
 [youtube https://www.youtube.com/watch?v=Sb4DpkDilw0]
 
-### Plugin basics and features:
+## Live shopping cart monitoring
 
-* Instantly save WooCommerce checkout field data before submission to save abandoned carts.
+CartBounty saves and displays all shopping cart activity from the moment a product is added to the cart.
 
-* Save and view ghost shopping carts.
+* Analyze most popular cart items
+* View ghost (guest) carts
+* Get notified about newly abandoned carts
+* Export abandoned carts (**Pro**)
+* Prevent bots from leaving abandoned carts using invisible Google reCAPTCHA (**Pro**)
 
-* Send abandoned cart reminder email via WordPress or upgrade to [Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") and send automated recovery email series, integrate with ActiveCampaign, GetResponse, MailChimp or BulkGate and include unique coupon codes in your emails or SMS text messages to increase recovery ratio and sales.
+## Automate abandoned cart recovery
 
-* Receive notifications on newly abandoned shopping carts via email. You can set notification frequency or disable them in case you want to take some time off :)
+Save your time with automated abandoned cart recovery and focus your energy on the important stuff.
 
-* The "Remember checkout fields" function will allow your customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data in the checkout form. Please note that this feature is enabled only for users who haven't logged in - WooCommerce takes care of this for authorized users.
+* Send abandoned cart reminders using WordPress mail server
+* Integrate and send abandoned cart email series [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_readme) and [MailChimp](http://eepurl.com/hHjfrX) (**Pro**)
+* Integrate and send SMS text message reminders with [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
+* [Personalize messages](https://www.cartbounty.com/personalization-tags/) with dynamic content (**Pro**)
+* Generate and send unique coupon codes (**Pro**)
+* Track message open and click-through rates (**Pro**)
+* Recover unfinished orders (**Pro**)
+* Restore Custom product fields (Product addons) and [WooCommerce Product Bundles](https://woocommerce.com/products/product-bundles/?aff=40932&cid=4595734) (**Pro**)
+* Translate emails and SMS text messages (**Pro**)
 
-* If a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
+## Get more leads and reduce cart abandonment
 
-* You can enable Exit Intent popup to offer saving unregistered user's shopping cart for later. With the help of Exit Intent Technology, you can capture even more abandoned carts by displaying a popup offering to save customer’s cart if he provides his email.
-Exit Intent will be triggered as soon as the user tries to leave your shop with a filled shopping cart. If you would like to make it work on mobile devices, please upgrade to our Pro version.
-Please note that Exit Intent popup will only be showed to unregistered users once every 60 minutes after they have added an item to their shopping cart.
-Please do check out our Pro version if you are interested in Early email capture feature that will allow collecting customer’s email or phone right after the customer tries to add an item to the cart using "Add to cart" button.
+Use CartBounty efficiency tools to increase your chances of getting more recoverable abandoned carts.
 
-* If a user completes the payment and reaches WooCommerce "Thank you" page, he is removed from the abandoned cart table and the Checkout form fields will be cleared. In case the user returns to his abandoned shopping cart via abandoned cart recovery email and places an order - the cart will be marked as "recovered" and will remain in the list of carts. If you would like to send automated abandoned cart recovery SMS text messages or emails to orders that have not been paid for (orders with status "Pending payment", "On Hold", "Canceled"), please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
+* Reduce checkout abandonment with built-in "Remember checkout fields" feature which allows store customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data
+* Use [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") to minimize cart abandonment and increase sales
+* Gather user's contact details right after "Add to cart" button is clicked using [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") (**Pro**)
 
-* Since we love to make things run smooth, in case if you Uninstall this plugin, it will automatically clean up after itself (delete abandoned cart data, table and options created by this plugin) leaving your project nice and clean.
-
-*Please note that this link has been linked under an affiliate marketing program which helps us to support and invest in the future evolution of this plugin since we get a small percentage of earnings for each new ActiveCampaign or GetResponse customer.
+Take advantage of abandoned cart email series, message personalization and other great features by upgrading to [CartBounty Pro](https://www.cartbounty.com).
 
 == Installation ==
 
-1. Upload the plugin files to the "/wp-content/plugins/plugin-name" directory or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the "Plugins" screen in WordPress.
-1. Look for the page "CartBounty Abandoned carts" under "WooCommerce" menu - WooCommerce abandoned carts data collected from your checkout form will be saved here unless the user completes the checkout process.
-1. Optionally setup automated abandoned cart recovery emails via WordPress recovery settings.
-1. Optionally enable additional productivity Tools like Exit Intent which will allow you to increase the ratio of recoverable abandoned carts.
+1. Go to your **WordPress dashboard > Plugins > Add new**
+1. Search for "CartBounty"
+1. Install and activate CartBounty
+1. Optionally setup automated abandoned cart recovery emails using WordPress recovery
+1. Optionally enable productivity tools like Exit Intent to increase the ratio of recoverable abandoned carts
 
 == Frequently Asked Questions ==
 
-= When is the cart and checkout form data saved? =
+= When is the cart saved? =
 
-Data and information about the cart is saved right after the user gets to the Checkout form and one of the following events happen:
+As soon as the user adds an item to the cart – it automatically is visible to store administrator under CartBounty abandoned carts. At this stage the cart is a ghost cart until an email address, or a phone number is provided from one of the following locations:
 
-* Correct email address is entered
-* Phone number is entered
-* On Checkout page load if email or phone number input fields are already filled
-* Any Checkout form input field with a class "input-text" is entered or changed if a valid Email or Phone number has been entered
+* [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") or [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") tools
+* WooCommerce Checkout form
+* User's account if he has logged in
 
-If ghost carts have been enabled, the cart will be saved as soon as the user adds an item to his cart. It will remain as a ghost cart until one of the above events has occurred.
+As soon as CartBounty has user's contact information, the ghost cart is turned into a recoverable cart. Once the user places an order – abandoned cart is instantly removed from the list of abandoned carts.
 
-In case a user is logged in, the shopping cart will be instantly captured as soon as an item is added to the cart. After this, the cart will be instantly updated if it is altered or an item is removed from the cart.
+If you would like to enable Unfinished order recovery, please consider upgrading to [CartBounty Pro](https://www.cartbounty.com).
 
-If a customer completes the checkout process and arrives on the WooCommerce "Thank you" page, the cart is removed from the abandoned cart table and the Checkout form fields are cleared.
+= When is a cart considered abandoned? =
 
-= When would a cart be considered as abandoned? =
+A shopping cart is only considered abandoned after a period of 60 minutes from the last user's activity with the shopping cart. If you see a "shopping" status in the CartBounty abandoned cart status column, it means the user is still shopping.
 
-Once the cart is saved, it is considered as abandoned after a period of 60 minutes. Email notifications will be sent out only after the cart is abandoned.
+Any notifications or reminders will be sent out only after the cart is abandoned and the "shopping" status is gone.
 
-= How to send automated abandoned cart recovery emails? =
+> Example. Let's say you have setup your first abandoned cart recovery email or text message to be sent out after 5 minutes. The user will receive it after around 65 minutes = 60 minutes + 5 minutes.
 
-The free version of CartBounty offers a basic solution for sending abandoned cart recovery emails using the default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts.
+= How to send abandoned cart recovery messages? =
+
+Once the cart is abandoned, an automated reminder or a series of multiple reminders over a period can be sent out to the user to remind about items in the shopping cart.
+
+The free version of CartBounty offers basic solution for sending abandoned cart recovery emails using default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts.
+
+Upgrade to [CartBounty Pro](https://www.cartbounty.com) to setup and send automated abandoned cart recovery emails and SMS text messages using these integrations:
+
+* [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
+* [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* is a beautifully designed email marketing platform to save and recover online abandoned shopping carts.
+* [MailChimp](http://eepurl.com/hHjfrX)* offers a forever Free plan that you can use to send abandoned cart recovery emails.
+* [BulkGate](https://portal.bulkgate.com/join/55713)* is a perfect channel for sending personalized, time-sensitive SMS text messages like abandoned cart reminders.
 
 If your emails are not reaching your recipients or they end up in the spam box, you might try switching from your default WordPress mail server to an SMTP. To do this just install one of the available WordPress SMTP plugins available in the [WordPress plugin directory](https://wordpress.org/plugins/).
 
-If you would like to [send your visitors automated abandoned cart recovery emails or SMS messages via ActiveCampaign, GetResponse, MailChimp or BulkGate](https://www.cartbounty.com "send your visitors automated abandoned cart recovery emails") please consider purchasing our Pro version.
+= What are ghost carts? =
 
-[ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* offers exceptional ways to automate your abandoned carts using If/Else statements to create different actions and triggers when to send out emails.
-[GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* is a beautifully designed email marketing platform to save and recover online abandoned shopping carts.
-[MailChimp](http://eepurl.com/hHjfrX)* offers a forever Free plan that you can use to send abandoned cart recovery emails.
-[BulkGate](https://portal.bulkgate.com/join/55713)* is a perfect channel for sending personalized, time-sensitive SMS text messages like abandoned cart reminders.
+Ghost or guest cart is a shopping cart that can't be identified. The user has added one or multiple items to the cart but hasn't provided any contact information that could be later used to recover it.
 
-If you would like to enable additional WordPress recovery email features and add multiple language support, please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
+You might be wondering why someone would want to save such carts. There can be many reasons, here are a few:
 
-= Can I send unique coupon codes? =
+* Monitor live shopping cart activity and have a better overview of what is happening in your store
+* Find which are the most popular products added to the cart
+* Information about the potential revenue from abandoned carts
 
-If you would like to add generated coupon codes to your abandoned cart recovery emails or SMS messages, please consider upgrading to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") which allows to easily include both static and one-time generated coupon codes in your abandoned cart reminder emails to increase the chances of abandoned cart recovery.
-
-= What are ghost carts, how do they work and how to use them? =
-
-Ghost cart is a cart that can't be identified since the customer has neither signed in your store nor he has entered his email / phone in your checkout form or Exit intent popup.
-
-Any customer who is unidentifiable and adds anything to his shopping cart instantly appears in CartBounty cart list as a ghost shopping cart. If during his shopping journey he adds his details, his ghost cart automatically is turned into a recoverable cart.
-
-There can be many different reasons why you would like to see ghost cart data, here are a couple of ideas:
-
-* Monitor live cart activity in your store and have a better overview of what is happening in your store
-* See which products are being placed into shopping carts to know which products are trending and what your customers are interested in
-* Manually analyze which products are being placed into the cart, but not getting purchased
-* Knowledge about the potential revenue that is missed out
-
-If you would rather not see ghost carts, you can exclude them from being saved in your CartBounty settings tab.
-
-= How do the email notifications work? =
-
-Once the cart is saved and is considered as abandoned, you will receive a notification about it in your email. You will not be notified about previously abandoned carts.
-
-You can set the following notification intervals:
-
-* Every 10 minutes
-* Every 20 minutes
-* Every 30 minutes
-* Every hour
-* Every 2 hours
-* Every 3 hours
-* Every 4 hours
-* Every 5 hours
-* Every 6 hours
-* Twice a day
-* Once a day
-* Once every 2 days
-* Disable notifications
-
-Default notification interval is "Every hour". You also have the option to disable notifications in case you ever get tired of them ;)
-
-Please also note how WordPress handles Cron job that is responsible for sending out email notifications. Scheduled actions can only be triggered when a visitor arrives on a WordPress site. Therefore, if you are not getting any traffic on your website you will not receive any email notifications until a visitor lands on your website.
-
-By default, notifications will be sent to WordPress registered admin email. But you can also set a different email address.
+CartBounty settings allow you to disable ghost carts or allow them only from specific countries.
 
 = How does Exit Intent Technology work? =
 
-If a user tries to leave your shop with an abandoned cart, just before leaving, he will be presented with an additional form that will ask for his email address. Once it is entered (no need to submit the form), user's cart will be automatically captured and labeled as recoverable.
+Exit Intent technology is a clever mechanism for tracking user behavior like mouse movements, scroll speed and scroll direction to identify and help predict user's intent to leave the site. Once the intent to abandon the store is detected, a popup is presented to engage the user. The goal of Exit Intent popup is to encourage user to finish the order or get user's contact information which later can be used in abandoned cart recovery.
 
-Exit Intent form will be displayed only to unregistered users once per hour. If the user enters his email address either in Exit Intent form or in the Checkout form - popup will no longer be displayed upon leaving your shop.
+Learn more about [Exit Intent Technology](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") and the principles of Mobile Exit Intent popup.
 
-If you would like to test the visual appearance of Exit Intent, please check the "Enable Test Mode" checkbox. Please note that only users with Admin rights will be able to see Exit Intent during this stage and appearance limits will be removed. This means that it will be showed to the Admin each time he tries to leave the shop.
+= How to use CartBounty templates? =
 
-In case you would like to enable Exit Intent Technology on mobile phones and tablets, please upgrade to [CartBounty Pro - Save and recover abandoned carts for WooCommerce](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce") version. Mobile Exit Intent will be triggered on mobile devices once the page is quickly scrolled up or if the "Back" button is used.
+Public facing portions of CartBounty like Exit Intent popup and WordPress recovery emails can be easily adjusted using plugin settings. However, if you require more, you can use CartBounty templates that come along with the plugin or make use of the available actions and filters.
 
-= How to use template files for Advanced customization? =
+You will find all available template files inside **/plugins/woo-save-abandoned-carts-pro/templates** folder. When you open these files, you will notice they all contain hooks that allow you to add, edit or remove content without the need to edit template files themselves. This method protects against plugin upgrade issues, as the template files can be left completely untouched.
 
-Public sections of the plugin can be quickly and easily styled using plugin settings. However, if you are looking for a more customized appearance, you can use template files that come along with CartBounty or take a look at [actions and filters](https://www.cartbounty.com/actions-and-filters).
+Please copy the template file you require to your active theme to keep your customization intact after plugin updates. You can copy them to either one of these locations:
 
-You can find all template files inside "/plugins/woo-save-abandoned-carts/templates". The template files contain markup required to present the data. Please copy this template to your active theme to keep your customizations intact after plugin updates.
+* your_theme_name/templates/emails/cartbounty-email-light.php
+* your_theme_name/templates/cartbounty-exit-intent.php
+* your_theme_name/cartbounty-exit-intent.php
 
-You can copy template files to either one of these locations:
+Now you can edit your copied template file and it will override the CartBounty default template file.
 
-* yourtheme/templates/emails/cartbounty-email-light.php
-* yourtheme/templates/cartbounty-exit-intent.php
-* yourtheme/cartbounty-exit-intent.php
+= What Actions and Filters are available? =
 
-When modifying our template, please do not change the ID #cartbounty-exit-intent-email of the email input field. If changed, the plugin will not be able to capture abandoned carts using Exit Intent form.
+Along with the customization options available in plugin settings, CartBounty also allows the use of different hooks for advanced customization. These hooks are an excellent way if you are looking to alter or extend the features of CartBounty without modifying the core files of the plugin.
 
-= What hooks are available for additional customization? =
-
-CartBounty comes with different hooks that make it possible to change some parts or extend the existing functionality of the plugin without modifying core files.
+Below you will find a list of hooks available in CartBounty alongside different examples. When using these actions and filters to modify the plugin, please add your code in the functions.php file of your theme.
 
 **General hooks**
 
@@ -193,7 +173,7 @@ Example how to display abandoned cart product prices excluding taxes:
 
 **Exit Intent hooks**
 
-Exit Intent template contains different actions and filters that allow you to create new, edit, replace or remove existing content including the main image in Exit Intent window.
+Exit Intent template contains different actions and filters that allow you to create new, edit, replace, or remove existing content including the main image in Exit Intent window.
 
 Actions:
 
@@ -308,17 +288,11 @@ Bots can be divided into two groups – good ones and bad ones.
 
 Harmful bots are the ones that might be responsible for leaving new ghost carts on your website. While this is not dangerous, it can be frustrating and annoying. Here are three solutions that will help you to deal to with them:
 
-1. The quick solution is to simply disable ghost carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities and slowing down your shop
+1. The quick solution is to simply disable ghost carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities, and slowing down your shop
 1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep ghost carts enabled to see what your customers are shopping for
 1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article on [how to block bad bots](https://www.seoblog.com/block-bots-spiders-htaccess) which will provide more about this topic
 
 In addition, the Pro version allows you to select if guests from specific countries should be able to leave ghost carts thus making sure that bots coming from countries you do not sell to are not able to leave ghost carts.
-
-= WooCommerce order "Failed", but no abandoned cart saved? =
-
-Once a user reaches WooCommerce "Thank you" page - the abandoned cart is automatically removed from the table since the cart is no longer considered as abandoned (regardless of the order status). In this case you can see all of the submitted user data under WooCommerce > Orders.
-
-If you would like to send automated abandoned cart recovery SMS text messages or emails to orders that have not been paid for (orders with status "Pending payment", "On Hold", "Canceled"), please consider [upgrading to Pro](https://www.cartbounty.com "CartBounty Pro - Save and recover abandoned carts for WooCommerce").
 
 == Screenshots ==
 
@@ -332,7 +306,7 @@ If you would like to send automated abandoned cart recovery SMS text messages or
 
 == Changelog ==
 
-= 7.1.2.4 =
-* Improved screen options
+= 7.1.2.5 =
+* Code refactoring
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
