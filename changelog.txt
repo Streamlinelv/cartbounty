@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 7.1.2.6 =
+* Minor user experience improvements
+* Improved variable product image function
+
 = 7.1.2.5 =
 * Code refactoring
 

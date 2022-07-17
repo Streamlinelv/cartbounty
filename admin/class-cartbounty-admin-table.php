@@ -233,28 +233,14 @@ class CartBounty_Table extends WP_List_Table{
                         if( isset( $product['product_title'] ) ){
 
                             //Checking product image
-                            if( !empty( $product['product_variation_id'] ) ){ //In case of a variable product
-                                $image = get_the_post_thumbnail_url( $product['product_variation_id'], 'thumbnail' );
-                                
-                                if( empty( $image ) ){ //If variation didn't have an image set
-                                    $image = get_the_post_thumbnail_url( $product['product_id'], 'thumbnail' );
-                                }
-
-                            }else{ //In case of a simple product
-                                 $image = get_the_post_thumbnail_url( $product['product_id'], 'thumbnail' );
-                            }
-
-                            if( empty( $image ) && class_exists( 'WooCommerce' ) ){ //In case WooCommerce is active and product has no image, output default WooCommerce image
-                                $image = wc_placeholder_img_src( 'thumbnail' );
-                            }
-
+                            $image_url = $admin->get_product_thumbnail_url( $product, 'thumbnail' );
                             $product_title = esc_html( $product['product_title'] );
                             $quantity = " (". $product['quantity'] .")"; //Enclose product quantity in brackets
                             $edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
                             $product_price = $admin->get_product_price( $product );
                             $price = ', ' . $admin->format_price( $product_price, esc_html( $item['currency'] ) );
                             $output .= '<div class="cartbounty-abandoned-product"><span class="cartbounty-tooltip">'. esc_html( $product_title ) . esc_html( $price ) . esc_html( $quantity ) .'</span>';
-                            $product_image = '<img src="'. esc_url( $image ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" />';
+                            $product_image = '<img src="'. esc_url( $image_url ) .'" title="'. esc_attr( $product_title ) .'" alt ="'. esc_attr( $product_title ) .'" />';
 
                             if( $edit_product_link ){ //If link exists (meaning the product hasn't been deleted)
                                 $output .= '<a href="'. esc_url( $edit_product_link ) .'" title="'. esc_attr( $product_title ) .'" target="_blank">' . $product_image . '</a>';

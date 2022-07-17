@@ -704,6 +704,7 @@ class CartBounty_Admin{
 		}
 
 		$intervals = array();
+		$intervals[0] = 	esc_html__( 'Disable notifications', 'woo-save-abandoned-carts' );
 		$minutes = array(10, 20, 30, 60, 120, 180, 240, 300, 360); //Defining array of minutes
 		foreach ($minutes as $minute) {
 			if($minute < 60) { //Generate minutes
@@ -724,7 +725,6 @@ class CartBounty_Admin{
 		$intervals[720] = 	esc_html__('Twice a day', 'woo-save-abandoned-carts');
 		$intervals[1440] = 	esc_html__('Once a day', 'woo-save-abandoned-carts');
 		$intervals[2880] = 	esc_html__('Once every 2 days', 'woo-save-abandoned-carts');
-		$intervals[0] = 	esc_html__('Disable notifications', 'woo-save-abandoned-carts');
 
     	echo '<select id="cartbounty_notification_frequency" class="cartbounty-select" name="cartbounty_notification_frequency[hours]" autocomplete="off" '. $this->disable_field() .'>';
 	    	foreach( $intervals as $key => $interval ){
@@ -3476,5 +3476,36 @@ class CartBounty_Admin{
 		$output .= "</div>";
 
 		return $output;
+	}
+
+	/**
+	 * Get product thumbnail
+	 *
+	 * @since    7.1.2.6
+	 * @return   string
+	 * @param    object     $product			Abandoned cart product data
+	 * @param    string     $size				Image size, default 'medium'
+	 */
+	function get_product_thumbnail_url( $product, $size = 'medium' ){
+
+		$image = '';
+
+		if( !empty( $product['product_variation_id'] ) ){ //In case of a variable product
+			$image = get_the_post_thumbnail_url( $product['product_variation_id'], $size );
+
+			if( empty( $image ) ){ //If variation didn't have an image set
+				$image = get_the_post_thumbnail_url( $product['product_id'], $size );
+			}
+
+		}else{ //In case of a simple product
+			$image = get_the_post_thumbnail_url( $product['product_id'], $size );
+		}
+
+		if( empty( $image ) && class_exists( 'WooCommerce' ) ){ //In case WooCommerce is active and product has no image, output default WooCommerce image
+			$image = wc_placeholder_img_src( $size );
+		}
+
+		return $image;
+
 	}
 }
