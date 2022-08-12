@@ -49,6 +49,7 @@ class CartBounty_System_Status{
 	 * @return   HTML
 	 */
 	public function get_system_status(){
+
 		if ( check_ajax_referer( 'get_system_status', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing the function
 	        wp_send_json_error(esc_html__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
 	    }
@@ -112,6 +113,13 @@ class CartBounty_System_Status{
 			$missing_hooks[] = 'cartbounty_remove_empty_carts_hook';
 		}
 
+		$active_theme = '-';
+		$active_theme_data = wp_get_theme();
+
+		if( $active_theme_data ){
+			$active_theme = $active_theme_data->get( 'Name' ) . ' ' . esc_html__( 'by', 'woo-save-abandoned-carts' ) . ' ' . $active_theme_data->get( 'Author' ) . ' ' . esc_html__( 'version', 'woo-save-abandoned-carts' ) . ' ' . $active_theme_data->get( 'Version' ) . ' (' . $active_theme_data->get( 'ThemeURI' ) . ')';
+		}
+
 		$active_plugins = (array) get_option( 'active_plugins', array() ); //Check for active plugins
 		if ( is_multisite() ) {
 			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
@@ -120,17 +128,16 @@ class CartBounty_System_Status{
 		foreach ( $active_plugins as $plugin ) {
 			$plugin_data    = @get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
 			$dirname        = dirname( $plugin );
-			$version_string = '';
+
 			if ( ! empty( $plugin_data['Name'] ) ) {
 				// link the plugin name to the plugin url if available
 				$plugin_name = $plugin_data['Name'];
-				$all_plugins[] = $plugin_name . ' ' . esc_html__( 'by', 'woo-save-abandoned-carts' ) . ' ' . $plugin_data['Author'] . ' ' . esc_html__( 'version', 'woo-save-abandoned-carts' ) . ' ' . $plugin_data['Version'] . $version_string;
+				$all_plugins[] = $plugin_name . ' ' . esc_html__( 'by', 'woo-save-abandoned-carts' ) . ' ' . $plugin_data['Author'] . ' ' . esc_html__( 'version', 'woo-save-abandoned-carts' ) . ' ' . $plugin_data['Version'];
 			}
 		}
 
-		if ( sizeof( $all_plugins ) == 0 ) {
-			$site_wide_plugins = '-';
-		} else {
+		$site_wide_plugins = '-';
+		if ( sizeof( $all_plugins ) != 0 ) {
 			$site_wide_plugins = implode( ', <br/>', $all_plugins );
 		}
 
@@ -186,8 +193,20 @@ class CartBounty_System_Status{
 							<td>'. esc_html( $value ) .'</td>
 						</tr>';
 					}
-		$output .= '</tbody>
-					<tbody>
+		$output .= '</tbody>';
+		$output .= '<tbody>
+						<tr>
+							<td class="section-title"></td>
+						</tr>
+						<tr>
+							<td class="section-title">###'. esc_html__( 'Themes', 'woo-save-abandoned-carts' ) .'###</td>
+						</tr>
+						<tr>
+							<td>'. esc_html__('Active theme', 'woo-save-abandoned-carts' ) .':</td>
+							<td>'. $active_theme .'</td>
+						</tr>';
+		$output .= '</tbody>';
+		$output .= '<tbody>
 						<tr>
 							<td class="section-title"></td>
 						</tr>

@@ -156,17 +156,16 @@ class CartBounty_WordPress{
 		$from_email = ( !empty(get_option('cartbounty_automation_from_email')) ) ? get_option('cartbounty_automation_from_email') : get_option( 'admin_email' );
 		$reply_to = ( !empty(get_option('cartbounty_automation_reply_email')) ) ? get_option('cartbounty_automation_reply_email') : false;
 
-		$headers = array(
-			'Content-Type: text/html',
-			'charset='. get_option('blog_charset')
+		$header = array(
+			'from' 			=> 'From: ' . sanitize_text_field( stripslashes( $from_name ) ) . ' <' . sanitize_email( $from_email ) . '>',
+			'content-type'	=> 'Content-Type: text/html; charset="' . esc_attr( get_option( 'blog_charset' ) ) . '"'
 		);
-		$headers[] = "From: ". $admin->sanitize_field($from_name) ." <". sanitize_email($from_email)  .">";
 
-		if($reply_to){
-			$headers[] = "Reply-To: <". sanitize_email($reply_to)  .">";
+		if( $reply_to ){
+			$header['reply-to'] = "Reply-To: <". sanitize_email( $reply_to )  .">";
 		}
 		
-		$result = wp_mail( sanitize_email($to), $admin->sanitize_field($subject), $message, $headers );
+		$result = wp_mail( sanitize_email($to), $admin->sanitize_field($subject), $message, $header );
 
 		if($result){ //In case if the email was successfuly sent out
 			if(!$test){ //If this is not a test email
