@@ -91,22 +91,36 @@ class CartBounty_Table extends WP_List_Table{
      */
     function column_name( $item ){
         $cart_status = 'all';
-        if (isset($_GET['cart-status'])){
+        $actions = array();
+        $name_array = array();
+        $paged = false;
+        $orderby = false;
+        $order = false;
+        
+        if ( isset( $_GET['cart-status'] ) ){
             $cart_status = $_GET['cart-status'];
         }
 
-        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status );
-        $actions = array(
-            'delete' => sprintf('<a href="%s">%s</a>', esc_url( $delete_url ), esc_html__('Delete', 'woo-save-abandoned-carts')),
-        );
+        if ( isset( $_GET['paged'] ) ){
+            $paged = '&paged=' . $_GET['paged'];
+        }
 
-        $name_array = array();
+        if ( isset( $_GET['orderby'] ) ){
+            $orderby = '&orderby=' . $_GET['orderby'];
+        }
 
-        if(!empty($item['name'])){
+        if ( isset( $_GET['order'] ) ){
+            $order = '&order=' . $_GET['order'];
+        }
+
+        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . $orderby . $order . $paged;
+        $actions['delete'] = sprintf( '<a href="%s">%s</a>', esc_url( $delete_url ), esc_html__( 'Delete', 'woo-save-abandoned-carts' ) );
+
+        if( !empty( $item['name'] ) ){
             $name_array[] = $item['name'];
         }
 
-        if(!empty($item['surname'])){
+        if( !empty( $item['surname'] ) ){
             $name_array[] = $item['surname'];
         }
 
@@ -117,7 +131,7 @@ class CartBounty_Table extends WP_List_Table{
             $name = '<a href="' . esc_url( add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php') ) ) . '" title="' . esc_attr__( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. esc_html__( $name ) .'</a>';
         }
 
-        return sprintf('<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
+        return sprintf( '<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
             $name,
             $this->row_actions( $actions )
         );
@@ -363,7 +377,7 @@ class CartBounty_Table extends WP_List_Table{
      */
 	 function get_bulk_actions(){
         $actions = array(
-            'delete' => esc_html__('Delete', 'woo-save-abandoned-carts')
+            'delete'    => esc_html__( 'Delete', 'woo-save-abandoned-carts' )
         );
         return $actions;
     }
@@ -374,40 +388,47 @@ class CartBounty_Table extends WP_List_Table{
      * @since    1.0
      */
     function process_bulk_action(){
+
+        if( empty( $_REQUEST['id'] ) ) return; //Exit in case no row selected
+
+        $cart_id = isset( $_REQUEST['id'] ) ? $_REQUEST['id'] : array();
+
+        if( empty( $cart_id ) ) return;
+
         global $wpdb;
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-        $footer_bulk_delete = false;
+        $footer_bulk_action = false;
 
-        if( isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if bottom Bulk delete action fired
-             $footer_bulk_delete = true;
+        if( isset( $_GET['action2'] ) ){ //Check if bottom Bulk delete action fired
+             $footer_bulk_action = $_GET['action2'];
         }
 
-        if ('delete' === $this->current_action() || $footer_bulk_delete ) {
-            if(empty($_REQUEST['id'])){ //Exit in case no row selected
+        if( 'delete' === $this->current_action() || $footer_bulk_action == 'delete' ) {
+            
+            if( empty( $_REQUEST['id'] ) ){ //Exit in case no row selected
                 return;
             }
-            $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-            if (!empty($ids)){
-                if(is_array($ids)){ //Bulk abandoned cart deletion
-                    foreach ($ids as $key => $id){
-                        $wpdb->query(
-                            $wpdb->prepare(
-                                "DELETE FROM $cart_table
-                                WHERE id = %d",
-                                intval($id)
-                            )
-                        );
-                    }
-                }else{ //Single abandoned cart deletion
-                    $id = $ids;
+
+            if( is_array( $cart_id ) ){ //Bulk abandoned cart deletion
+                foreach ( $cart_id as $key => $id ){
                     $wpdb->query(
                         $wpdb->prepare(
                             "DELETE FROM $cart_table
                             WHERE id = %d",
-                            intval($id)
+                            intval( $id )
                         )
                     );
                 }
+
+            }else{ //Single abandoned cart deletion
+                $id = $cart_id;
+                $wpdb->query(
+                    $wpdb->prepare(
+                        "DELETE FROM $cart_table
+                        WHERE id = %d",
+                        intval( $id )
+                    )
+                );
             }
         }
     }

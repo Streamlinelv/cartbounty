@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 7.1.2.7
+Stable tag: 7.1.2.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,6 +48,8 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 * Track message open and click-through rates (**Pro**)
 * Recover unfinished orders (**Pro**)
 * Restore Custom product fields (Product addons) and [WooCommerce Product Bundles](https://woocommerce.com/products/product-bundles/?aff=40932&cid=4595734) (**Pro**)
+* Exclude carts from abandoned cart recovery containing specific products or product categories (**Pro**)
+* Pause / Resume individual abandoned cart recovery (**Pro**)
 * Translate emails and SMS text messages (**Pro**)
 
 ## Get more leads and reduce cart abandonment
@@ -306,7 +308,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.1.2.7 =
-* Added Active Theme data to system report
+= 7.1.2.8 =
+* Improved abandoned cart list ordering
+* Code refactoring
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

@@ -1313,6 +1313,9 @@ class CartBounty_Admin{
 							</div>
 						</div>
 					</div>
+					<div class="cartbounty-row">
+						<?php $this->display_exclusion_settings(); ?>
+					</div>
 					<div class='cartbounty-button-row'>
 						<?php
 						if(current_user_can( 'manage_options' )){
@@ -2985,7 +2988,10 @@ class CartBounty_Admin{
 	 *
 	 * @since    7.0.8
 	 * @return   integer
-	 * @param    string    	$status		    Cart status. 0 = default, 1 = recovered, 2 = order created
+	 * @param    string    	$status		    Cart status. 
+	 * 										0 = default,
+	 *										1 = recovered,
+	 *										2 = order created,
 	 */
 	function get_cart_type( $status ){
 		if( empty($status) ){
@@ -3062,17 +3068,19 @@ class CartBounty_Admin{
 	 */
 	function handle_order( $order_id ){
 
-		if( !isset($order_id) ){ //Exit if Order ID is not present
+		if( !isset( $order_id ) ){ //Exit if Order ID is not present
 			return;
 		}
 
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$public->update_logged_customer_id(); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
+		
 		if( WC()->session ){ //If session exists
 			$cart = $public->read_cart();
 			$type = $this->get_cart_type('ordered'); //Default type describing an order has been placed
 
 			if(isset($cart['session_id'])){
+				
 				if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
 					$type = $this->get_cart_type('recovered');
 				}
@@ -3508,4 +3516,32 @@ class CartBounty_Admin{
 		return $image;
 
 	}
+
+	/**
+	* Returning HTML of product settings
+	*
+	* @since    7.1.2.8
+	* @return   HTML
+	*/
+	public function display_exclusion_settings(){
+		?>
+		<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+			<h4><?php esc_html_e('Exclusions', 'woo-save-abandoned-carts'); ?></h4>
+			<p class="cartbounty-titles-column-description">
+				<?php esc_html_e( 'Exclude from abandoned cart recovery carts containing specific products or categories.', 'woo-save-abandoned-carts' ); ?>
+			</p>
+		</div>
+		<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+			<div class="cartbounty-settings-group cartbounty-toggle">
+				<label for="cartbounty-enable-exclusions" class="cartbounty-switch cartbounty-unavailable">
+					<input id="cartbounty-enable-exclusions" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+					<span class="cartbounty-slider round"></span>
+				</label>
+				<label for="cartbounty-enable-exclusions" class="cartbounty-unavailable"><?php esc_html_e( 'Enable', 'woo-save-abandoned-carts' ); ?></label>
+				<p class='cartbounty-additional-information'>
+					<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'wp_exclude_settings' ); ?></i>
+				</p>
+			</div>
+		</div>
+	<?php }
 }

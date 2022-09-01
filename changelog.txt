@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 7.1.2.8 =
+* Improved abandoned cart list ordering
+* Code refactoring
+
 = 7.1.2.7 =
 * Added Active Theme data to system report
 

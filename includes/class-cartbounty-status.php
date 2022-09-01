@@ -159,7 +159,7 @@ class CartBounty_System_Status{
 		$cartbounty_settings = array(
 			esc_html__('CartBounty version', 'woo-save-abandoned-carts' ) => esc_html( $this->version ),
 			esc_html__('Saved carts', 'woo-save-abandoned-carts' ) => ($carts) ? implode(", ", $carts) : '-',
-			esc_html__('Automation', 'woo-save-abandoned-carts' ) => ($active_recovery) ? implode(", ", $active_recovery) : '-',
+			esc_html__('Recovery', 'woo-save-abandoned-carts' ) => ($active_recovery) ? implode(", ", $active_recovery) : '-',
 			esc_html__('Exit Intent', 'woo-save-abandoned-carts' ) => ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
 			esc_html__('Settings', 'woo-save-abandoned-carts' ) => ($settings) ? implode(", ", $settings) : '-',
 			esc_html__('Missing hooks', 'woo-save-abandoned-carts' ) => ($missing_hooks) ? implode(", ", $missing_hooks) : '-',

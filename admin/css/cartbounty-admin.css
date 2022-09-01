@@ -177,12 +177,12 @@ h2.cartbounty-section-title{
 }
 
 .status.shopping{
-	background: #eeb900;
+	background-color: #eeb900;
 }
 
 .status.new,
 #adminmenu li.current a .new-abandoned{
-	background: #ca4a1f;
+	background-color: #ca4a1f;
 }
 
 .status.synced,
