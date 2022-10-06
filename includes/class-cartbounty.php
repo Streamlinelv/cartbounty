@@ -165,8 +165,8 @@ class CartBounty{
 		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' );
 		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $public, 'display_exit_intent_form' );
 		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' );
-		$this->loader->add_action( 'wp_ajax_nopriv_remove_exit_intent', $public, 'remove_exit_intent_form' );
-		$this->loader->add_action( 'wp_ajax_remove_exit_intent', $public, 'remove_exit_intent_form' );
+		$this->loader->add_action( 'wp_ajax_nopriv_check_empty_cart', $public, 'check_empty_cart' );
+		$this->loader->add_action( 'wp_ajax_check_empty_cart', $public, 'check_empty_cart' );
 	}
 
 	/**

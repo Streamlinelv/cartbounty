@@ -147,7 +147,7 @@ class CartBounty_System_Status{
 			esc_html__('WordPress version', 'woo-save-abandoned-carts' ) => get_bloginfo( 'version' ),
 			esc_html__('WordPress multisite', 'woo-save-abandoned-carts' ) => (is_multisite()) ? esc_html__('Yes', 'woo-save-abandoned-carts' ) : '-',
 			esc_html__('WooCommerce version', 'woo-save-abandoned-carts' ) => class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',
-			esc_html__('Server info', 'woo-save-abandoned-carts' ) => isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '',
+			esc_html__('Server info', 'woo-save-abandoned-carts' ) => isset( $_SERVER['SERVER_SOFTWARE'] ) ? esc_html( $_SERVER['SERVER_SOFTWARE'] ) : '',
 			esc_html__('PHP version', 'woo-save-abandoned-carts' ) => phpversion(),
 			esc_html__('MySQL Version', 'woo-save-abandoned-carts' ) => $wpdb->db_version(),
 			esc_html__('WordPress debug mode', 'woo-save-abandoned-carts' ) => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? esc_html__('On', 'woo-save-abandoned-carts' ) : '-',

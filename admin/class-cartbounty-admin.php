@@ -840,6 +840,12 @@ class CartBounty_Admin{
 					'connected'			=> false,
 					'availability'		=> true,
 					'description'		=> '<p>' . esc_html__('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked.', 'woo-save-abandoned-carts') . '</p>'
+				),
+				'tab_notification'	=> array(
+					'name'				=> esc_html__('Tab notification', 'woo-save-abandoned-carts'),
+					'connected'			=> false,
+					'availability'		=> true,
+					'description'		=> '<p>' . esc_html__('Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab with Tab notification.', 'woo-save-abandoned-carts') . '</p>'
 				)
 			);
 		}
@@ -1570,11 +1576,11 @@ class CartBounty_Admin{
 								</p>
 							</div>
 							<div class="cartbounty-settings-group cartbounty-toggle">
-								<label for="cartbounty-early-capture-mandatory" class="cartbounty-switch cartbounty-control-visibility">
+								<label for="cartbounty-early-capture-mandatory" class="cartbounty-switch">
 									<input id="cartbounty-early-capture-mandatory" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
-								<label for="cartbounty-early-capture-mandatory" class="cartbounty-control-visibility"><?php esc_html_e('Enable mandatory input', 'woo-save-abandoned-carts'); ?></label>
+								<label for="cartbounty-early-capture-mandatory"><?php esc_html_e('Enable mandatory input', 'woo-save-abandoned-carts'); ?></label>
 								<p class='cartbounty-additional-information'>
 									<i class='cartbounty-hidden'>
 										<?php esc_html_e('Your guest visitors will not be able to add anything to their carts until a valid email or phone is provided.', 'woo-save-abandoned-carts'); ?>
@@ -1676,7 +1682,7 @@ class CartBounty_Admin{
 						</div>
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group cartbounty-toggle">
-								<label for="cartbounty-early-capture-test-mode" class="cartbounty-switch cartbounty-control-visibility">
+								<label for="cartbounty-early-capture-test-mode" class="cartbounty-switch">
 									<input id="cartbounty-early-capture-test-mode" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
@@ -1691,6 +1697,111 @@ class CartBounty_Admin{
 					</div>
 					<div class='cartbounty-button-row'>
 						<a class="button cartbounty-button button-primary" href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'early_capture_enable_button' ) ); ?>" target="_blank"> <?php esc_html_e('Get Pro to enable', 'woo-save-abandoned-carts'); ?></a>
+					</div>
+				</form>
+				<?php
+				break;
+
+			case 'tab_notification':
+
+				if(!class_exists('WooCommerce')){ //If WooCommerce is not active
+					$this->missing_woocommerce_notice( $active_section ); 
+					return;
+				}?>
+
+				<div class="cartbounty-section-intro">
+					<?php echo esc_html__( "Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab with Tab notification.", 'woo-save-abandoned-carts') . ' ' . sprintf( 
+						/* translators: %s - Link */
+						esc_html__( "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s.", 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/dynamic-browser-tab-notification', 'tn_learn_more' ) ) .'" target="_blank" title="'. esc_html__( 'Learn more about Tab notification', 'woo-save-abandoned-carts' ) .'">', '</a>'
+					); ?>
+				</div>
+				<form>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+							<h4><?php esc_html_e('General', 'woo-save-abandoned-carts'); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php esc_html_e('Enable Tab notification and set the speed at which tab Title and Favicon will change.', 'woo-save-abandoned-carts'); ?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-tab-notification-status" class="cartbounty-switch cartbounty-unavailable">
+									<input id="cartbounty-tab-notification-status" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-tab-notification-status" class="cartbounty-unavailable"><?php esc_html_e('Enable Tab notification', 'woo-save-abandoned-carts'); ?></label>
+								<p class='cartbounty-additional-information'>
+									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'tab_notification_enable' ); ?></i>
+								</p>
+							</div>
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-tab-notification-check-cart" class="cartbounty-switch">
+									<input id="cartbounty-tab-notification-check-cart" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-tab-notification-check-cart"><?php esc_html_e('Check for empty cart', 'woo-save-abandoned-carts'); ?></label>
+								<p class='cartbounty-additional-information'>
+									<?php esc_html_e('If enabled, will show Tab notification only when shopping cart is not empty.', 'woo-save-abandoned-carts'); ?>
+								</p>
+							</div>
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty_tab_notification_interval"><?php esc_html_e( 'Notification interval', 'woo-save-abandoned-carts' ); ?></label>
+								<select id="cartbounty_tab_notification_interval" class="cartbounty-select" disabled autocomplete="off">
+									<option><?php echo sprintf( esc_html( _n( '%s second', '%s seconds', 2, 'woo-save-abandoned-carts' ) ), 2 )?></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+							<h4><?php esc_html_e('Notification content', 'woo-save-abandoned-carts'); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php esc_html_e('Customize the message that will appear in the Tab title and enable Favicon.', 'woo-save-abandoned-carts'); ?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group">
+								<label for="cartbounty-tab-notification-message"><?php esc_html_e('Message', 'woo-save-abandoned-carts'); ?></label>
+								<div class="cartbounty-content-creation cartbounty-flex">
+									<input id="cartbounty-tab-notification-message" class="cartbounty-text" type="text" placeholder="<?php echo esc_attr( 'I miss you 💔', 'woo-save-abandoned-carts' ); ?>" disabled /><?php $this->add_emojis(); ?>
+								</div>
+							</div>
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-tab-notification-favicon-status" class="cartbounty-switch cartbounty-unavailable">
+									<input id="cartbounty-tab-notification-favicon-status" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-tab-notification-favicon-status" class="cartbounty-unavailable"><?php esc_html_e('Enable Favicon change', 'woo-save-abandoned-carts'); ?></label>
+								<p class='cartbounty-additional-information'>
+									<?php esc_html_e('A Favicon is a small image or icon displayed next to the page title in the browser tab.', 'woo-save-abandoned-carts'); ?> <i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'tab_notification_favicon_enable' ); ?></i>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="cartbounty-row">
+						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+							<h4><?php esc_html_e( 'Miscellaneous', 'woo-save-abandoned-carts' ); ?></h4>
+							<p class="cartbounty-titles-column-description">
+								<?php esc_html_e( 'Enable test mode to see how Tab notification works.', 'woo-save-abandoned-carts' );?>
+							</p>
+						</div>
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+							<div class="cartbounty-settings-group cartbounty-toggle">
+								<label for="cartbounty-tab-notification-test-mode" class="cartbounty-switch">
+									<input id="cartbounty-tab-notification-test-mode" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+									<span class="cartbounty-slider round"></span>
+								</label>
+								<label for="cartbounty-tab-notification-test-mode"><?php esc_html_e( 'Enable test mode', 'woo-save-abandoned-carts' ); ?></label>
+								<p class='cartbounty-additional-information'>
+									<i class='cartbounty-hidden'>
+										<?php esc_html_e( 'Now open your store, add a product to the cart and switch to a new browser tab. Please note that while this is enabled, only users with Admin rights will be able to see the Tab notification. Don’t forget to disable this after you have done testing.', 'woo-save-abandoned-carts' ); ?>
+									</i>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='cartbounty-button-row'>
+						<a class="button cartbounty-button button-primary" href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'tab_notification_enable_button' ) ); ?>" target="_blank"> <?php esc_html_e('Get Pro to enable', 'woo-save-abandoned-carts'); ?></a>
 					</div>
 				</form>
 				<?php
@@ -2657,6 +2768,10 @@ class CartBounty_Admin{
 			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38.87 70"><path d="M38.53,32.71,23,67.71A3.89,3.89,0,0,1,19.43,70a5.56,5.56,0,0,1-.81-.08,3.87,3.87,0,0,1-3.07-3.81V42.78H3.88A3.89,3.89,0,0,1,.34,37.3l15.55-35A3.88,3.88,0,0,1,23.32,3.9V27.23H35a3.9,3.9,0,0,1,3.54,5.48Zm0,0"/></svg>';
 		}
 
+		elseif( $icon == 'tab_notification' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.5 70"><path d="M55.38,41V28.11A19.19,19.19,0,0,0,55.21,25l0-.27C54.12,16.29,47.66,9.48,38.72,7.34l-1.29-.29V5.3a3.87,3.87,0,1,0-7.73,0V7.06A21.9,21.9,0,0,0,11.75,27.94c-.07,2.61-.07,8.9-.06,13a9.82,9.82,0,0,0-6.33,9.33c0,5.44,4.16,9.86,9.29,9.86H33.32v.48a9.38,9.38,0,0,0,18.75,0v-.48h.36c5.12,0,9.29-4.42,9.29-9.86A9.84,9.84,0,0,0,55.38,41ZM19.44,28.67a15.16,15.16,0,0,1,.29-3A14.06,14.06,0,0,1,33.54,14.44a14.53,14.53,0,0,1,4.77.81,14,14,0,0,1,9.34,12.46c0,.45,0,.53,0,.56a3.91,3.91,0,0,1,0,.51c0,1,0,7.44,0,11.66H19.42C19.42,36.37,19.42,30.92,19.44,28.67ZM42.7,62.92a2.47,2.47,0,0,1-2.47-2.46,3,3,0,0,1,0-.31h4.87a3,3,0,0,1,0,.31A2.46,2.46,0,0,1,42.7,62.92Zm9.62-10.16H14.75c-.92,0-1.67-1.11-1.67-2.47s.75-2.46,1.67-2.46H52.32c.92,0,1.67,1.1,1.67,2.46S53.24,52.76,52.32,52.76Z"/><path d="M11.31.8A34.14,34.14,0,0,0,.24,15.73a3.82,3.82,0,0,0,3.61,5.11h0A3.78,3.78,0,0,0,7.4,18.43,26.5,26.5,0,0,1,16,6.87a3.81,3.81,0,0,0,1.47-3v0A3.83,3.83,0,0,0,11.31.8Z"/><path d="M56.19.8A34.14,34.14,0,0,1,67.26,15.73a3.82,3.82,0,0,1-3.61,5.11h0a3.8,3.8,0,0,1-3.56-2.41A26.4,26.4,0,0,0,51.5,6.87a3.78,3.78,0,0,1-1.47-3v0A3.83,3.83,0,0,1,56.19.8Z"/></svg>';
+		}
+
 		elseif( $icon == 'activecampaign' ){
 			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.24 20"><path d="M12.52,8.69C12.23,8.45.76,0.44,0.24,0.12L0.08,0V2A1.32,1.32,0,0,0,.8,3.14l0.08,0L10.7,10c-1.09.76-9.38,6.52-9.9,6.84a1.16,1.16,0,0,0-.68,1.25V20s12.19-8.49,12.43-8.69h0a1.52,1.52,0,0,0,.68-1.25V9.82A1.4,1.4,0,0,0,12.52,8.69Z"/><path d="M5.35,10.91a1.61,1.61,0,0,0,1-.36L7.08,10,7.2,9.94,7.08,9.86s-5.39-3.74-6-4.1A0.7,0.7,0,0,0,.36,5.63,0.71,0.71,0,0,0,0,6.28V7.53l0,0s3.7,2.58,4.43,3.06A1.63,1.63,0,0,0,5.35,10.91Z"/></svg>';
 		}
@@ -2674,7 +2789,7 @@ class CartBounty_Admin{
 		}
 
 		elseif( $icon == 'bulkgate' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" class="cls-1" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
 		}
 
 		return "<span class='cartbounty-icon-container cartbounty-icon-$icon'><img src='data:image/svg+xml;base64," . esc_attr( base64_encode($svg) ) . "' alt='" . esc_attr( $icon ) . "' /></span>";

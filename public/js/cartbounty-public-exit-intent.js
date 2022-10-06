@@ -9,10 +9,10 @@
 	 		var currentTime = new Date().getTime();
 			var timePeriod = cartbounty_ei.hours; //Time period in hours
 			var last_time_displayed = localStorage.getItem('cartbounty_ei_last_time');
-			var productCount = cartbounty_ei.product_count; //Products in the shopping cart
+			var product_count = cartbounty_ei.product_count; //Products in the shopping cart
 
 			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field
-		        if(productCount == 0){
+		        if(product_count == 0){
 
 		        }
 		        else if(last_time_displayed == null || timePeriod == 0) { //If time period has passed or Exit Intent test mode is enabled
@@ -77,7 +77,7 @@
 
 		function removeExitIntentFormIfEmptyCart(){//Removing Exit Intent form in case if cart emptied using Ajax
 			var data = {
-				action: 			"remove_exit_intent",
+				action: 			"check_empty_cart",
 				cartbounty_remove: 	true
 			}
 			if($('#cartbounty-exit-intent-form').length > 0){ //If Exit intent HTML exists on page

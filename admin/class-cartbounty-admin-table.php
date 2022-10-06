@@ -113,7 +113,7 @@ class CartBounty_Table extends WP_List_Table{
             $order = '&order=' . $_GET['order'];
         }
 
-        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . $orderby . $order . $paged;
+        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . esc_attr( $orderby ) . esc_attr( $order ) . esc_attr( $paged );
         $actions['delete'] = sprintf( '<a href="%s">%s</a>', esc_url( $delete_url ), esc_html__( 'Delete', 'woo-save-abandoned-carts' ) );
 
         if( !empty( $item['name'] ) ){

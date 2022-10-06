@@ -52,6 +52,7 @@ Use CartBounty efficiency tools to increase your chances of getting more recover
 * Reduce checkout abandonment with built-in "Remember checkout fields" feature which allows store customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data
 * Use [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") to minimize cart abandonment and increase sales
 * Gather user's contact details right after "Add to cart" button is clicked using [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") (**Pro**)
+* Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab using dynamic [Tab notification](https://www.cartbounty.com/dynamic-browser-tab-notification "Dynamic browser Tab notification") (**Pro**)
 
 Take advantage of abandoned cart email series, message personalization and other great features by upgrading to [CartBounty Pro](https://www.cartbounty.com).
 

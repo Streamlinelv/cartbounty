@@ -67,12 +67,6 @@ class CartBounty_Public{
 		}
 
 		if($this->tool_enabled( 'exit_intent' )){ //If Exit Intent Enabled
-			$cart_content_count = 0;
-
-			if(WC()->cart){
-				$cart_content_count = WC()->cart->get_cart_contents_count();
-			}
-
 			$hours = 1;
 			if(get_option('cartbounty_exit_intent_test_mode')){ //If test mode is enabled
 				$hours = 0;
@@ -80,7 +74,7 @@ class CartBounty_Public{
 
 			$data = array(
 			    'hours' => $hours,
-			    'product_count' => $cart_content_count,
+			    'product_count' => $this->get_cart_product_count(),
 			    'ajaxurl' => admin_url( 'admin-ajax.php' )
 			);
 			wp_enqueue_script( $this->plugin_name . '-exit-intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
@@ -941,12 +935,12 @@ class CartBounty_Public{
 	 * @since    3.0
 	 * @return   boolean
 	 */
-	function remove_exit_intent_form(){
-		if(!WC()->cart){
-			return;
-		}
+	function check_empty_cart(){
+		if(!WC()->cart) return;
+
 		if( WC()->cart->get_cart_contents_count() == 0 ){ //If the cart is empty
 			return wp_send_json_success('true'); //Sending successful output to Javascript function
+			
 		}else{
 			return wp_send_json_success('false');
 		}
@@ -1148,5 +1142,21 @@ class CartBounty_Public{
 			return;
 		}
 		include $template_file;
+	}
+
+	/**
+	 * Get product count isnide shopping cart
+	 *
+	 * @since    7.1.3
+	 * @return   integer
+	 */
+	function get_cart_product_count(){
+		$count = 0;
+
+		if( WC()->cart ){
+			$count = WC()->cart->get_cart_contents_count();
+		}
+
+		return $count;
 	}
 }
