@@ -44,7 +44,7 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 * Restore Custom product fields (Product addons) and [WooCommerce Product Bundles](https://woocommerce.com/products/product-bundles/?aff=40932&cid=4595734) (**Pro**)
 * Exclude carts from abandoned cart recovery containing specific products or product categories, countries, languages etc. (**Pro**)
 * Pause / Resume individual abandoned cart recovery (**Pro**)
-* Translate emails and SMS text messages (**Pro**)
+* Translate emails and SMS text messages, [WPML](https://wpml.org/?aid=447227&affiliate_key=0a2ZxRioMm8S) plugin support (**Pro**)
 
 #### Get more leads and reduce cart abandonment
 
