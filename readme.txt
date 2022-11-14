@@ -3,9 +3,9 @@ Donate link: https://www.cartbounty.com
 Contributors: streamlinestar, nauriskolats
 Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 7.1.3
+Stable tag: 7.1.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -42,13 +42,14 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 
 * Send abandoned cart reminders using WordPress mail server
 * Integrate and send abandoned cart email series [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_readme) and [MailChimp](http://eepurl.com/hHjfrX) (**Pro**)
+* Use webhook to send abandoned cart data and create powerful automations in apps like [Make (former Integromat)](https://www.make.com/en?pc=cartbounty), [Pabbly](https://payments.pabbly.com/api/affurl/RVYZ07kQyUZ0Z1HUKZ1m/xciq3ahCAzNG3CSo?target=9Z2AHyhSldo6KI1Fn), Zapier or similar (**Pro**)
 * Integrate and send SMS text message reminders with [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
 * [Personalize messages](https://www.cartbounty.com/personalization-tags/) with dynamic content (**Pro**)
 * Generate and send unique coupon codes (**Pro**)
 * Track message open and click-through rates (**Pro**)
 * Recover unfinished orders (**Pro**)
 * Restore Custom product fields (Product addons) and [WooCommerce Product Bundles](https://woocommerce.com/products/product-bundles/?aff=40932&cid=4595734) (**Pro**)
-* Exclude carts from abandoned cart recovery containing specific products or product categories (**Pro**)
+* Exclude carts from abandoned cart recovery containing specific products or product categories, countries, languages etc. (**Pro**)
 * Pause / Resume individual abandoned cart recovery (**Pro**)
 * Translate emails and SMS text messages (**Pro**)
 
@@ -309,8 +310,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.1.3 =
-* Improved security
+= 7.1.4 =
+* Exit Intent CSS update
 * Code refactoring
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

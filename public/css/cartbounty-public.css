@@ -181,15 +181,15 @@
 	#cartbounty-exit-intent-form-container{
 		padding: 30px 30px 10px;
 	}
+
+	#cartbounty-exit-intent-submit{
+		width: auto;
+	}
 }
 
 @media screen and (max-width: 320px) {
 	#cartbounty-exit-intent-form h2{
 		font-size: 26px;
 		line-height: 36px;
-	}
-
-	#cartbounty-exit-intent-submit{
-		width: auto;
 	}
 }

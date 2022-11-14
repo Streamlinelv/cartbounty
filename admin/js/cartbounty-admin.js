@@ -137,12 +137,7 @@
 
 			jQuery.post(cartbounty_admin_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 			function(response){
-				if ( response.success == true ){
-			        button.removeClass('cartbounty-loading');
-
-			    }else{
-			    	button.removeClass('cartbounty-loading');
-			    }
+				button.removeClass('cartbounty-loading');
 			});
 		}
 

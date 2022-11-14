@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 7.1.3
+ * Version: 7.1.4
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -33,7 +33,7 @@ if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLU
 if (!defined('CARTBOUNTY_TABLE_NAME_EMAILS')) define( 'CARTBOUNTY_TABLE_NAME_EMAILS', 'cartbounty_emails' );
 if (!defined('CARTBOUNTY_BASENAME')) define( 'CARTBOUNTY_BASENAME', plugin_basename( __FILE__ ) );
 if (!defined('CARTBOUNTY_TABLE_NAME')) define( 'CARTBOUNTY_TABLE_NAME', 'cartbounty' );
-if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER_URL', 'https://www.cartbounty.com' );
+if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER_URL', 'https://www.cartbounty.com/' );
 if (!defined('CARTBOUNTY_REVIEW_LINK')) define('CARTBOUNTY_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post' );
 if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-save-abandoned-carts' ); //No longer used since v6.1.3. Will be removed in future releases
 if (!defined('CARTBOUNTY_ABREVIATION')) define( 'CARTBOUNTY_ABREVIATION', 'CartBounty' );
@@ -48,6 +48,9 @@ if (!defined('CARTBOUNTY_FAQ_LINK')) define('CARTBOUNTY_FAQ_LINK', 'https://word
 if (!defined('CARTBOUNTY_FEATURE_LINK')) define('CARTBOUNTY_FEATURE_LINK', 'https://www.cartbounty.com/contact/' ); //This is the URL where users can provide new ideas and suggestions
 if (!defined('CARTBOUNTY_SUPPORT_LINK')) define('CARTBOUNTY_SUPPORT_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/#new-topic-0' ); //This is the URL where users can get support
 if (!defined('CARTBOUNTY_BULKGATE_TRIAL_LINK')) define('CARTBOUNTY_BULKGATE_TRIAL_LINK', 'https://portal.bulkgate.com/join/55713/en/solutions/sms-gateway' );
+if (!defined('CARTBOUNTY_WEBHOOK_LINK')) define('CARTBOUNTY_WEBHOOK_LINK', 'https://www.cartbounty.com/webhook-make-integromat-pabbly-abandoned-cart-recovery-automation/' );
+if (!defined('CARTBOUNTY_MAKE_LINK')) define('CARTBOUNTY_MAKE_LINK', 'https://www.make.com/en?pc=cartbounty' );
+if (!defined('CARTBOUNTY_PABBLY_LINK')) define('CARTBOUNTY_PABBLY_LINK', 'https://payments.pabbly.com/api/affurl/RVYZ07kQyUZ0Z1HUKZ1m/xciq3ahCAzNG3CSo?target=9Z2AHyhSldo6KI1Fn' );
 
 //Registering custom options
 register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );

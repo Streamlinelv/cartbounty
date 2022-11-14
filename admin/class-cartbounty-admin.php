@@ -419,7 +419,7 @@ class CartBounty_Admin{
 										<p class="cartbounty-titles-column-description">
 											<?php echo sprintf(
 											/* translators: %s - URL link */
-											esc_html__('In case you feel that bots might be leaving recoverable abandoned carts. Please %sview this%s to learn how to prevent bots from leaving ghost carts.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL . '/abandoned-carts', 'ghost_bots', '#prevent-bots-from-leaving-abandoned-carts' ) ) .'" title="'. esc_attr__('Prevent bots from leaving ghost carts', 'woo-save-abandoned-carts') .'" target="_blank">', '</a>' ); ?>
+											esc_html__('In case you feel that bots might be leaving recoverable abandoned carts. Please %sview this%s to learn how to prevent bots from leaving ghost carts.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link(CARTBOUNTY_LICENSE_SERVER_URL . 'abandoned-carts', 'ghost_bots', '#prevent-bots-from-leaving-abandoned-carts' ) ) .'" title="'. esc_attr__('Prevent bots from leaving ghost carts', 'woo-save-abandoned-carts') .'" target="_blank">', '</a>' ); ?>
 										</p>
 									</div>
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
@@ -823,6 +823,15 @@ class CartBounty_Admin{
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_BULKGATE_TRIAL_LINK,
 					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized, time-sensitive SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Add an additional dimension to your existing abandoned cart email recovery workflow including a personal SMS about the abandoned cart.", 'woo-save-abandoned-carts') . '</p>'
+				),
+				'webhook'	=> array(
+					'name'				=> 'Webhook',
+					'connected'			=> false,
+					'availability'		=> false,
+					'info_link'			=> CARTBOUNTY_WEBHOOK_LINK,
+					'description'		=> '<p>' . sprintf(
+						/* translators: %1$s - Link start, %2$s - Link start, %3$s - Link end */
+						esc_html__( 'Webhook offers an easy way of sending event based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing workflows.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( CARTBOUNTY_MAKE_LINK ) .'" target="_blank">', '<a href="'. esc_url( CARTBOUNTY_PABBLY_LINK ) .'" target="_blank">', '</a>' ) . '</p>'
 				)
 			);
 		}
@@ -971,7 +980,7 @@ class CartBounty_Admin{
 																<?php esc_html_e('Enable email sending to start this automated abandoned cart recovery step.', 'woo-save-abandoned-carts');
 																	echo ' ' . sprintf(
 																	/* translators: %s - Link tags */
-																	 esc_html__('Learn how to use %spersonalization tags%s.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/personalization-tags', 'wp_personalization' ) ) .'" target="_blank">', '</a>');?>
+																	 esc_html__('Learn how to use %spersonalization tags%s.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'personalization-tags', 'wp_personalization' ) ) .'" target="_blank">', '</a>');?>
 															</p>
 														</div>
 														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9<?php if($enabled){ echo ' cartbounty-checked-parent'; }?>">
@@ -988,7 +997,7 @@ class CartBounty_Admin{
 																<p class='cartbounty-additional-information'>
 																	<?php echo sprintf(
 																	/* translators: %s - Link tags */
-																	 esc_html__( 'Please %ssee this%s to learn how reminder sending works and when it will be delivered.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/abandoned-carts', 'wp_is_it_abandoned', '#when-is-the-cart-abandoned' ) ) .'" target="_blank">', '</a>'); ?>
+																	 esc_html__( 'Please %ssee this%s to learn how reminder sending works and when it will be delivered.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'abandoned-carts', 'wp_is_it_abandoned', '#when-is-the-cart-abandoned' ) ) .'" target="_blank">', '</a>'); ?>
 																</p>
 															</div>
 															<div class="cartbounty-settings-group">
@@ -1020,7 +1029,7 @@ class CartBounty_Admin{
 															<p class="cartbounty-titles-column-description">
 																<?php echo sprintf(
 																	/* translators: %s - Link tags */
-																	 esc_html__('Choose a template that will be used to display the abandoned cart reminder email. Look %shere%s to see advanced template customization options', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/templates', 'wp_template_customization' ) ) .'" target="_blank">', '</a>');?>
+																	 esc_html__('Choose a template that will be used to display the abandoned cart reminder email. Look %shere%s to see advanced template customization options', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'templates', 'wp_template_customization' ) ) .'" target="_blank">', '</a>');?>
 															</p>
 														</div>
 														<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
@@ -1347,7 +1356,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 esc_html__('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email or phone field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn how to %scustomize contents%s of Exit Intent popup.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/exit-intent-popup-technology', 'ei_modify_content' ) ) .'" target="_blank" title="'. esc_html__( 'How to customize contents of Exit Intent', 'woo-save-abandoned-carts' ) .'">', '</a>' );
+						 esc_html__('With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email or phone field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn how to %scustomize contents%s of Exit Intent popup.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'exit-intent-popup-technology', 'ei_modify_content' ) ) .'" target="_blank" title="'. esc_html__( 'How to customize contents of Exit Intent', 'woo-save-abandoned-carts' ) .'">', '</a>' );
 					?>
 				</div>
 				<form method="post" action="options.php">
@@ -1553,7 +1562,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo sprintf(
 						/* translators: %s - Link */
-						 esc_html__('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked. You can also enable mandatory input to make sure guest visitors are not able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn how to %scustomize contents%s of Early capture request.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/early-capture-add-to-cart-popup', 'ec_modify_content' ) ) .'" target="_blank" title="'. esc_html__( 'How to customize contents of Early capture', 'woo-save-abandoned-carts' ) .'">', '</a>' );
+						 esc_html__('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked. You can also enable mandatory input to make sure guest visitors are not able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn how to %scustomize contents%s of Early capture request.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'early-capture-add-to-cart-popup', 'ec_modify_content' ) ) .'" target="_blank" title="'. esc_html__( 'How to customize contents of Early capture', 'woo-save-abandoned-carts' ) .'">', '</a>' );
 					?>
 				</div>
 				<form>
@@ -1712,7 +1721,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo esc_html__( "Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab with Tab notification.", 'woo-save-abandoned-carts') . ' ' . sprintf( 
 						/* translators: %s - Link */
-						esc_html__( "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s.", 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/dynamic-browser-tab-notification', 'tn_learn_more' ) ) .'" target="_blank" title="'. esc_html__( 'Learn more about Tab notification', 'woo-save-abandoned-carts' ) .'">', '</a>'
+						esc_html__( "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s.", 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'dynamic-browser-tab-notification', 'tn_learn_more' ) ) .'" target="_blank" title="'. esc_html__( 'Learn more about Tab notification', 'woo-save-abandoned-carts' ) .'">', '</a>'
 					); ?>
 				</div>
 				<form>
@@ -2792,6 +2801,10 @@ class CartBounty_Admin{
 			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
 		}
 
+		elseif( $icon == 'webhook' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.88 68"><path d="M17.52,68a17.68,17.68,0,0,1-1.78-.09A17.49,17.49,0,0,1,.09,52.27a17.3,17.3,0,0,1,2.8-11.41,3.15,3.15,0,0,1,2.63-1.42,3.08,3.08,0,0,1,2.35,1.07,3.24,3.24,0,0,1,.2,3.82,11.28,11.28,0,0,0,9.45,17.44,12.63,12.63,0,0,0,4.56-.9,11,11,0,0,0,6.72-10,3.59,3.59,0,0,1,3.52-3.65H51l.3-.38a5.17,5.17,0,1,1,0,6.4l-.3-.38H37.47a3.24,3.24,0,0,0-3.1,2.37A17.58,17.58,0,0,1,17.52,68Z"/><path d="M55.39,67.57c-.36,0-.72,0-1.08,0a3.12,3.12,0,0,1-2.79-4.14,3.23,3.23,0,0,1,3-2.08h.18l.64,0A11.26,11.26,0,0,0,66.6,50.87a11.52,11.52,0,0,0-4.53-9.95,10.39,10.39,0,0,0-6.51-2.23,11.85,11.85,0,0,0-5.49,1.38l-.09,0a3.75,3.75,0,0,1-1.79.46,3.44,3.44,0,0,1-3-1.73L35.85,22.68l-.48-.07a5.17,5.17,0,0,1,.74-10.28,5.17,5.17,0,0,1,4.81,7.09l-.18.45,6.73,11.7a3.23,3.23,0,0,0,2.8,1.61,3.58,3.58,0,0,0,.8-.1,17.51,17.51,0,1,1,4.32,34.49Z"/><path d="M17.51,55.6a5.17,5.17,0,0,1-.73-10.29l.48-.07L24,33.57a3.25,3.25,0,0,0-.49-3.88A17.5,17.5,0,0,1,36.18,0a17.1,17.1,0,0,1,7.14,1.54,17.34,17.34,0,0,1,8.47,8.15,3.13,3.13,0,0,1,0,2.8,3.1,3.1,0,0,1-2.21,1.68,3.31,3.31,0,0,1-.55.05,3.24,3.24,0,0,1-2.84-1.8,11.32,11.32,0,0,0-21.34,3.83,11,11,0,0,0,5.26,10.82,3.58,3.58,0,0,1,1.39,4.86L22.14,48.07l.18.45A5.13,5.13,0,0,1,22,53a5.19,5.19,0,0,1-4.48,2.58Z"/></svg>';
+		}
+
 		return "<span class='cartbounty-icon-container cartbounty-icon-$icon'><img src='data:image/svg+xml;base64," . esc_attr( base64_encode($svg) ) . "' alt='" . esc_attr( $icon ) . "' /></span>";
     }
 
@@ -2932,6 +2945,7 @@ class CartBounty_Admin{
 
 		//Calculating time intervals
 		$datetime = current_time( 'mysql' );
+
 		return array(
 			'cart_abandoned' 	=> date( 'Y-m-d H:i:s', strtotime( '-' . $waiting_time . ' minutes', strtotime( $datetime ) ) ),
 			'cart_recovered' 	=> date( 'Y-m-d H:i:s', strtotime( '-30 seconds', strtotime( $datetime ) ) ),
@@ -2951,9 +2965,11 @@ class CartBounty_Admin{
 	public function get_waiting_time(){
 		$default_waiting_time = 60; //In minutes. Defines the time period after which an email notice will be sent to admin and the cart is presumed abandoned
 		$waiting_time = apply_filters( 'cartbounty_waiting_time', $default_waiting_time );
+		
 		if($waiting_time < 20){ //Making sure minimum waiting period is not less than 20 minutes
 			$waiting_time = 20;
 		}
+		
 		return $waiting_time;
 	}
 
@@ -3579,7 +3595,7 @@ class CartBounty_Admin{
 
 				ob_start(); ?>
 				<div class="cartbounty-header-image">
-					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . '/personalization-tags', $tracking_label ) ); ?>" title="<?php esc_attr_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts'); ?>" target="_blank">
+					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'personalization-tags', $tracking_label ) ); ?>" title="<?php esc_attr_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts'); ?>" target="_blank">
 						<img src="<?php echo esc_url( plugins_url( 'assets/personalization-preview.gif', __FILE__ ) ); ?>"/>
 					</a>
 				</div>
@@ -3643,7 +3659,9 @@ class CartBounty_Admin{
 		<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
 			<h4><?php esc_html_e('Exclusions', 'woo-save-abandoned-carts'); ?></h4>
 			<p class="cartbounty-titles-column-description">
-				<?php esc_html_e( 'Exclude from abandoned cart recovery carts containing specific products or categories.', 'woo-save-abandoned-carts' ); ?>
+				<?php esc_html_e( 'Exclude from abandoned cart recovery carts containing specific products or categories.', 'woo-save-abandoned-carts' ); ?> <?php echo sprintf(
+					/* translators: %1$s - Link start, %2$s - Link end */
+					esc_html__( 'Use %1$scustom filters%2$s to exclude carts by language, country etc.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'actions-and-filters', 'custom_exclusion_filters', '#exclude-specific-countries-from-abandoned-cart-recovery' ) ) .'" target="_blank">', '</a>' ); ?>
 			</p>
 		</div>
 		<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
