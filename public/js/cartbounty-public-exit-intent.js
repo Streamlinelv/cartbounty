@@ -11,11 +11,15 @@
 			var last_time_displayed = localStorage.getItem('cartbounty_ei_last_time');
 			var product_count = cartbounty_ei.product_count; //Products in the shopping cart
 
-			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field
-		        if(product_count == 0){
+			if(localStorage.getItem('cartbounty_product_count') !== null){
+				product_count = localStorage.getItem('cartbounty_product_count');
+			}
 
-		        }
-		        else if(last_time_displayed == null || timePeriod == 0) { //If time period has passed or Exit Intent test mode is enabled
+			if(product_count == 0) return; //Exit if we have no products
+
+			if (event.clientY <= 0 && event.target.tagName.toLowerCase() != "select" && event.target.tagName.toLowerCase() != "option" && event.target.tagName.toLowerCase() != "input") { //Checking if mouse Y poosition goes beyond the top screen and that we haven't clicked on dropdown or autocomplete input field
+
+		        if(last_time_displayed == null || timePeriod == 0) { //If time period has passed or Exit Intent test mode is enabled
 		            $('#cartbounty-exit-intent-form').addClass('cartbounty-visible'); //Display form
 		        	$('#cartbounty-exit-intent-form-backdrop').css('opacity', '').addClass('cartbounty-visible'); //Show backdrop
 		        	if(timePeriod != 0){
@@ -54,41 +58,21 @@
 			}
 		}
 
-		function insertExitIntentForm(){//Adding Exit Intent form in case if Ajax Add To Cart button pressed
-			var data = {
-				action: 			"insert_exit_intent",
-				cartbounty_insert: 	true
-			}
+		function increaseProductCount(){ //Increasing product count
 			
-			if($('#cartbounty-exit-intent-form').length <= 0){ //If Exit intent HTML does not exist on page
-				jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
-				function(response){ //Response consists of HTML
-					var output = response;
-					$("body").append(output); //Adding Exit Intent form to the footer
-					//Binding these functions once again since HTML added by Ajax is new
-					jQuery("#cartbounty-exit-intent-email").on("keyup keypress change", getExitIntentEmail ); //All action happens on or after changing Email field. Data saved to Database only after Email fields have been entered.
-					jQuery("#cartbounty-exit-intent-close, #cartbounty-exit-intent-form-backdrop").on("click", closeExitIntentForm ); //Close Exit intent window
-				});
-			}
+			if( localStorage.getItem( 'cartbounty_product_count' ) === null ){
+				localStorage.setItem( 'cartbounty_product_count', 1 );
 
-			cartbounty_ei.product_count = parseInt(cartbounty_ei.product_count) + 1; //Updating product count in cart data variable once Add to Cart button is pressed
-		
+			}else{
+				localStorage.setItem( 'cartbounty_product_count', parseInt( localStorage.getItem( 'cartbounty_product_count' ) ) + 1 );
+			}
 		}
 
-		function removeExitIntentFormIfEmptyCart(){//Removing Exit Intent form in case if cart emptied using Ajax
-			var data = {
-				action: 			"check_empty_cart",
-				cartbounty_remove: 	true
-			}
-			if($('#cartbounty-exit-intent-form').length > 0){ //If Exit intent HTML exists on page
-				jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
-				function(response){
-					if(response.data == 'true'){ //If the cart is empty - removing exit intent HTML
-						$('#cartbounty-exit-intent-form').remove();
-						$('#cartbounty-exit-intent-form-backdrop').remove();
-					}
-				}); 
-			}
+		function decreaseProductCount(){ //Decreasing product count
+			
+			if( localStorage.getItem( 'cartbounty_product_count' ) === null ) return;
+
+			localStorage.setItem( 'cartbounty_product_count', parseInt( localStorage.getItem( 'cartbounty_product_count' ) ) - 1 );
 		}
 
 		function closeExitIntentForm(){ //Close exit intent window
@@ -99,8 +83,8 @@
 		jQuery(document).on("mouseleave", showExitIntentForm); //Displaying Exit intent if the mouse leaves the window
 		jQuery("#cartbounty-exit-intent-email").on("keyup keypress change", getExitIntentEmail ); //All action happens on or after changing Email field. Data saved to Database only after Email fields have been entered.
 		jQuery("#cartbounty-exit-intent-close, #cartbounty-exit-intent-form-backdrop").on("click", closeExitIntentForm ); //Close Exit intent window
-		jQuery(document).on("added_to_cart", insertExitIntentForm ); //Calling Exit Intent form function output if Add to Cart button is pressed
-		jQuery(document).on("removed_from_cart", removeExitIntentFormIfEmptyCart ); //Firing the function if item is removed from cart via Ajax 
+		jQuery(document).on("added_to_cart", increaseProductCount ); //Increasing product count if Ajax Add to Cart button pressed
+		jQuery(document).on("removed_from_cart", decreaseProductCount ); //Firing the function if item is removed from cart via Ajax 
 	});
 
 })(jQuery);

@@ -917,33 +917,10 @@ class CartBounty_Public{
 			return;
 		}
 		
-		if( WC()->cart->get_cart_contents_count() > 0 ){ //If the cart is not empty
-			$current_user_is_admin = current_user_can( 'manage_options' );
-			$output = $this->build_exit_intent_output($current_user_is_admin); //Creating the Exit Intent output
-			if (isset( $_POST["cartbounty_insert"])) { //In case function triggered using Ajax Add to Cart
-				return wp_send_json_success($output); //Sending Output to Javascript function
-			}
-			else{ //Outputing in case of page reload
-				echo $output;
-			}
-		}
-	}
-
-	/**
-	 * Checking if cart is empty and sending result to Ajax function
-	 *
-	 * @since    3.0
-	 * @return   boolean
-	 */
-	function check_empty_cart(){
-		if(!WC()->cart) return;
-
-		if( WC()->cart->get_cart_contents_count() == 0 ){ //If the cart is empty
-			return wp_send_json_success('true'); //Sending successful output to Javascript function
-			
-		}else{
-			return wp_send_json_success('false');
-		}
+		$current_user_is_admin = current_user_can( 'manage_options' );
+		$output = $this->build_exit_intent_output($current_user_is_admin); //Creating the Exit Intent output
+		echo $output;
+		echo "<script>localStorage.setItem( 'cartbounty_product_count', " . $this->get_cart_product_count() . " )</script>";
 	}
 
 	/**
@@ -1010,14 +987,7 @@ class CartBounty_Public{
 			'inverse_color' => $inverse_color
 		);
 
-		//In case the function is called via Ajax Add to Cart button
-		//We must add wp_die() or otherwise the function does not return anything
-		if (isset( $_POST["cartbounty_insert"])){ 
-			$output = $this->get_template( 'cartbounty-exit-intent.php', $args );
-			die();
-		}else{
-			return $this->get_template( 'cartbounty-exit-intent.php', $args );
-		}
+		return $this->get_template( 'cartbounty-exit-intent.php', $args );
 	}
 
 	/**

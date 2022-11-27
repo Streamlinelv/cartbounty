@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 7.1.4
+Stable tag: 7.1.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -310,8 +310,9 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.1.4 =
-* Exit Intent CSS update
-* Code refactoring
+= 7.1.5 =
+* Improved abandoned cart table design
+* Improved performance and efficiency of Exit Intent technology
+* Minor abandoned cart order handling update
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

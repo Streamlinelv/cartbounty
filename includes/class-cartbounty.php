@@ -134,6 +134,7 @@ class CartBounty{
 		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' );
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' );
 		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_fields', 10, 1 );
+		$this->loader->add_action( 'woocommerce_new_order', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' );
 		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' );
@@ -163,10 +164,6 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 );
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $public, 'restore_input_data', 1 );
 		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' );
-		$this->loader->add_action( 'wp_ajax_nopriv_insert_exit_intent', $public, 'display_exit_intent_form' );
-		$this->loader->add_action( 'wp_ajax_insert_exit_intent', $public, 'display_exit_intent_form' );
-		$this->loader->add_action( 'wp_ajax_nopriv_check_empty_cart', $public, 'check_empty_cart' );
-		$this->loader->add_action( 'wp_ajax_check_empty_cart', $public, 'check_empty_cart' );
 	}
 
 	/**

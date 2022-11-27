@@ -41,8 +41,7 @@ class CartBounty_Table extends WP_List_Table{
             'cb'            => 		'<input type="checkbox" />',
             'id'            =>		esc_html__('ID', 'woo-save-abandoned-carts'),
             'name'          =>		esc_html__('Name, Surname', 'woo-save-abandoned-carts'),
-            'email'         =>		esc_html__('Email', 'woo-save-abandoned-carts'),
-            'phone'			=>		esc_html__('Phone', 'woo-save-abandoned-carts'),
+            'contact'       =>      esc_html__('Contact details', 'woo-save-abandoned-carts'),
             'location'      =>      esc_html__('Location', 'woo-save-abandoned-carts'),
             'cart_contents' =>		esc_html__('Cart contents', 'woo-save-abandoned-carts'),
             'cart_total'    =>		esc_html__('Cart total', 'woo-save-abandoned-carts'),
@@ -63,8 +62,6 @@ class CartBounty_Table extends WP_List_Table{
 		return $sortable = array(
 			'id'                =>      array('id', true),
             'name'              =>      array('name', true),
-            'email'             =>      array('email', true),
-            'phone'             =>      array('phone', true),
             'cart_total'        =>      array('cart_total', true),
             'time'              =>      array('time', true)
 		);
@@ -131,24 +128,39 @@ class CartBounty_Table extends WP_List_Table{
             $name = '<a href="' . esc_url( add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php') ) ) . '" title="' . esc_attr__( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. esc_html__( $name ) .'</a>';
         }
 
-        return sprintf( '<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 506"><path d="M225,0A123,123,0,1,0,348,123,123.14,123.14,0,0,0,225,0Z"/><path d="M393,352.2C356,314.67,307,294,255,294H195c-52,0-101,20.67-138,58.2A196.75,196.75,0,0,0,0,491a15,15,0,0,0,15,15H435a15,15,0,0,0,15-15A196.75,196.75,0,0,0,393,352.2Z"/></svg>%s %s',
+        $user_icon = '<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.77 82.92"><path d="M32.89,41.8a20.9,20.9,0,1,1,20.9-20.9A20.92,20.92,0,0,1,32.89,41.8Zm0-32.8a11.9,11.9,0,1,0,11.9,11.9A11.91,11.91,0,0,0,32.89,9Z"/><path d="M47.46,82.92H18.31a18.32,18.32,0,0,1,0-36.63H47.46a18.32,18.32,0,0,1,0,36.63ZM18.31,55.29a9.32,9.32,0,0,0,0,18.63H47.46a9.32,9.32,0,0,0,0-18.63Z"/></svg>';
+
+        if( !empty( $item['email'] ) || !empty( $item['phone'] ) ){ //If we have phone or email
+            $user_icon = '<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.77 70"><path d="M42,42.37H13.81a13.82,13.82,0,0,0,0,27.63H42a13.82,13.82,0,0,0,0-27.63Z"/><path d="M27.89,32.8a16.4,16.4,0,1,0-16.4-16.4A16.4,16.4,0,0,0,27.89,32.8Z"/></svg>';
+        }
+
+        return sprintf( '%s%s %s',
+            $user_icon,
             $name,
             $this->row_actions( $actions )
         );
     }
-	
-	/**
-     * Rendering Email column
+
+    /**
+     * Rendering Contact info column
      *
-     * @since    1.0
+     * @since    7.1.5
      * @return   HTML
      * @param    $item - row (key, value array)
      */
-    function column_email( $item ){
-        return sprintf('<a href="%s">%s</a>',
-            esc_url( 'mailto:' . $item['email'] ),
-            esc_html( $item['email'] )
-        );
+    function column_contact( $item ){
+        $contact_details = array();
+        
+        if( !empty( $item['email'] ) ){
+            $contact_details[] = '<p><a href="'. esc_url( 'mailto:' . $item['email'] ) .'">'. esc_html( $item['email'] ) .'</a></p>';
+        }
+
+        if( !empty( $item['phone'] ) ){
+            $contact_details[] = '<p>'. esc_html( $item['phone'] ) .'</p>';
+        }
+
+        $data = implode( '', $contact_details );
+        return sprintf( '%s', $data );
     }
 
     /**

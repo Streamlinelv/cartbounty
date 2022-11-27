@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2022-11-14 23:13+0200\n"
+"POT-Creation-Date: 2022-11-27 15:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -28,75 +28,66 @@ msgid "Name, Surname"
 msgstr ""
 
 #: admin/class-cartbounty-admin-table.php:44
-#: admin/class-cartbounty-admin.php:1408 admin/class-cartbounty-admin.php:1606
-#: includes/class-cartbounty-status.php:100
-#: templates/emails/cartbounty-admin-email-notification.php:100
-msgid "Email"
+msgid "Contact details"
 msgstr ""
 
 #: admin/class-cartbounty-admin-table.php:45
-#: admin/class-cartbounty-admin.php:1412 admin/class-cartbounty-admin.php:1610
-#: templates/emails/cartbounty-admin-email-notification.php:101
-msgid "Phone"
-msgstr ""
-
-#: admin/class-cartbounty-admin-table.php:46
 msgid "Location"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:47
+#: admin/class-cartbounty-admin-table.php:46
 msgid "Cart contents"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:48
+#: admin/class-cartbounty-admin-table.php:47
 msgid "Cart total"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:49
+#: admin/class-cartbounty-admin-table.php:48
 msgid "Time"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:50
+#: admin/class-cartbounty-admin-table.php:49
 msgid "Status"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:117
-#: admin/class-cartbounty-admin-table.php:380
+#: admin/class-cartbounty-admin-table.php:114
+#: admin/class-cartbounty-admin-table.php:392
 msgid "Delete"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:131
+#: admin/class-cartbounty-admin-table.php:128
 msgid "View user profile"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:306
+#: admin/class-cartbounty-admin-table.php:318
 #, php-format
 msgid "%1$s ago"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:332
+#: admin/class-cartbounty-admin-table.php:344
 #: admin/class-cartbounty-admin.php:3018
 #: includes/class-cartbounty-status.php:75
 msgid "Recovered"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:336
+#: admin/class-cartbounty-admin-table.php:348
 msgid "Shopping"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:340
+#: admin/class-cartbounty-admin-table.php:352
 msgid "Recently abandoned"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:342
+#: admin/class-cartbounty-admin-table.php:354
 msgid "Recently recovered"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:344
+#: admin/class-cartbounty-admin-table.php:356
 msgid "New"
 msgstr ""
 
-#: admin/class-cartbounty-admin-table.php:351
+#: admin/class-cartbounty-admin-table.php:363
 msgid "Sent via WordPress"
 msgstr ""
 
@@ -758,6 +749,17 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:1404
 msgid "Choose which input field should be collected in the popup."
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1408 admin/class-cartbounty-admin.php:1606
+#: includes/class-cartbounty-status.php:100
+#: templates/emails/cartbounty-admin-email-notification.php:100
+msgid "Email"
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1412 admin/class-cartbounty-admin.php:1610
+#: templates/emails/cartbounty-admin-email-notification.php:101
+msgid "Phone"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1436
