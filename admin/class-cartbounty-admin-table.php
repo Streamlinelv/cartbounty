@@ -93,6 +93,7 @@ class CartBounty_Table extends WP_List_Table{
         $paged = false;
         $orderby = false;
         $order = false;
+        $user = false;
         
         if ( isset( $_GET['cart-status'] ) ){
             $cart_status = $_GET['cart-status'];
@@ -122,7 +123,10 @@ class CartBounty_Table extends WP_List_Table{
         }
 
         $name = implode( ' ', $name_array );
-        $user = get_user_by( 'email', $item['email'] );
+
+        if( isset( $item['email'] ) ){
+            $user = get_user_by( 'email', $item['email'] );
+        }
 
         if( $user ){ //If the user is registered, add link to his profile page
             $name = '<a href="' . esc_url( add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php') ) ) . '" title="' . esc_attr__( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. esc_html__( $name ) .'</a>';
@@ -178,9 +182,12 @@ class CartBounty_Table extends WP_List_Table{
 
         if( is_serialized( $item['location'] ) ){
             $location_data = @unserialize( $item['location'] );
-            $country = $location_data['country'];
-            $city = $location_data['city'];
-            $postcode = $location_data['postcode'];
+
+            if( is_array( $location_data ) ){
+                $country = $location_data['country'];
+                $city = $location_data['city'];
+                $postcode = $location_data['postcode'];
+            }
         }
 
         if( $country && class_exists( 'WooCommerce' ) ){ //In case WooCommerce is active and we have Country data, we can add abbreviation to it with a full country name

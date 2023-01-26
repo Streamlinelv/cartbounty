@@ -38,9 +38,14 @@ class CartBounty_WordPress{
 	public function automation_enabled() {
 		$enabled = false;
 		$active_steps = $this->get_active_steps();
-		if(count($active_steps) > 0){
-			$enabled = true;
+		
+		if( is_array( $active_steps ) ){
+			
+			if( count( $active_steps ) > 0 ){
+				$enabled = true;
+			}
 		}
+
 		return $enabled;
 	}
 
@@ -749,12 +754,17 @@ class CartBounty_WordPress{
 		$option = 'cartbounty_automation_steps';
 		$this->restore_steps( $option );
 		$automation_steps = get_option( $option );
-		$result = array();
-		foreach ($automation_steps as $key => $step) {
-			if(isset($step['enabled'])){
-				$result[] = $key;
+
+		if( !empty( $automation_steps ) ){
+			$result = array();
+			foreach ($automation_steps as $key => $step) {
+
+				if(isset($step['enabled'])){
+					$result[] = $key;
+				}
 			}
 		}
+
 		return $result;
 	}
 
@@ -852,6 +862,7 @@ class CartBounty_WordPress{
 	*/
 	private function restore_steps( $option ){
 		$automation_steps = get_option( $option );
+		
 		if( empty( $automation_steps ) ){
 			update_option( $option,
 				array(

@@ -64,6 +64,10 @@ class CartBounty_Activator{
 		$sql ="ALTER TABLE $cart_table AUTO_INCREMENT = 1";
 		dbDelta( $sql );
 
+		//Try to change WordPress options table collation to allow saving emojis
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin->try_convert_options_table_collation();
+
 		/**
 		 * Handling cart transfer from the old captured_wc_fields table to new one
 		 * Temporary block since version 5.0.1. Will be removed in future versions

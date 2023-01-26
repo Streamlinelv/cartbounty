@@ -101,25 +101,21 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function save_cart(){
-		if (isset( $_GET['cartbounty'])){
-			return;
-		}
-		if(!WC()->cart){ //Exit if Woocommerce cart has not been initialized
-			return;
-		}
 		$ghost = true;
 
-		if($this->cart_recoverable()){ //If cart is recoverable
+		if( isset( $_GET['cartbounty'] ) ) return;
+
+		if( !WC()->cart ) return;
+
+		if( $this->cart_recoverable() ){ //If cart is recoverable
 			$ghost = false;
 			$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
 		}
 
-		if(get_option('cartbounty_exclude_ghost_carts') && $ghost){ //If Ghost carts are disabled and current cart is a ghost cart - do not save it
-			return;
-		}
+		if( get_option( 'cartbounty_exclude_ghost_carts' ) && $ghost ) return;
 
 		$cart = $this->read_cart();
-		$cart_saved = $this->cart_saved($cart['session_id']);
+		$cart_saved = $this->cart_saved( $cart['session_id'] );
 
 		if( $cart_saved ){ //If cart has already been saved
 			$this->update_cart( $cart, $ghost );

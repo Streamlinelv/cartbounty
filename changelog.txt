@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 7.1.5.1 =
+* Improved order handling
+* Improved automation step creation
+* Compatibility improvements with PHP8
+
 = 7.1.5 =
 * Improved abandoned cart table design
 * Improved performance and efficiency of Exit Intent technology
