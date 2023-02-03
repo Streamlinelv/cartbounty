@@ -16,10 +16,23 @@ class CartBounty_Deactivator{
 	 * @since    1.0
 	 */
 	public static function deactivate() {
-		//Deactivating Wordpress cron job functions and stop sending out emails
-		wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
-		wp_clear_scheduled_hook( 'cartbounty_sync_hook' );
-		wp_clear_scheduled_hook( 'cartbounty_remove_empty_carts_hook' );
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$hooks = array(
+			'cartbounty_sync_hook',
+			'cartbounty_notification_sendout_hook',
+			'cartbounty_remove_empty_carts_hook'
+		);
+
+		foreach( $hooks as $key => $hook ){
+
+			if( $admin->action_scheduler_enabled() ){ //If WooCommerce Action scheduler library exists
+				as_unschedule_action( $hook, array(), CARTBOUNTY ); //Deactivating scheduled Action Scheduler actions
+
+			}else{ //Fallback to WP Cron and clear these events
+				wp_clear_scheduled_hook( $hook ); //Deactivating scheduled WP Cron actions
+			}
+		}
+		
 		delete_transient( 'cartbounty_recoverable_cart_count' );
 	}
 }

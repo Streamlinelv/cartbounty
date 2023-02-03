@@ -624,7 +624,7 @@ class CartBounty_Public{
 				
 		foreach( $products as $key => $product ){
 			$item = wc_get_product( $product['data']->get_id() );
-			$product_title = $item->get_title();
+			$product_title = strip_tags( $item->get_title() );
 			$product_quantity = $product['quantity'];
 			$product_variation_price = '';
 			$product_tax = '';

@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 7.1.5.1
+Stable tag: 7.1.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -310,9 +310,11 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.1.5.1 =
-* Improved order handling
-* Improved automation step creation
-* Compatibility improvements with PHP8
+= 7.1.6 =
+* Moving away from WP Cron in favour of Action Scheduler for improved efficiency
+* Improved product title storage (HTML tag removal)
+* Improved newly abandoned cart counter next to CartBounty admin menu
+* Improved domain retrieval function
+* Code refactoring
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

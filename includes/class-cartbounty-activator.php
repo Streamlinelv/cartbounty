@@ -166,9 +166,6 @@ class CartBounty_Activator{
 		//Temporary function since version 5.0.1. Will be removed in future releases
 		cartbounty_transfer_carts( $wpdb, $cart_table, $old_cart_table );
 
-		//Registering email notification frequency in case it has not been set before
-		add_option('cartbounty_notification_frequency', array('hours' => 60));
-
 		//Setting default Exit Intent type if it has not been previously set
 		add_option('cartbounty_exit_intent_type', 1);
 
@@ -186,5 +183,60 @@ class CartBounty_Activator{
 			update_option('cartbounty_automation_sends', get_option('cartbounty_automation_sent_emails'));
 			delete_option('cartbounty_automation_sent_emails');
 		}
+
+		/**
+		 * Since version 7.1.6
+		 * Transfering time to miliseconds
+		 * This code will be removed in later versions
+		 */
+		function transfer_time_to_miliseconds(){
+
+			if( CARTBOUNTY_VERSION_NUMBER == get_option( 'cartbounty_version_number' ) || empty( get_option( 'cartbounty_version_number' ) ) ){ //If this is a fresh install or plugin activation
+				update_option( 'cartbounty_converted_minutes_to_miliseconds', true ); //setting this variable as we do not require to convert minutes to miliseconds for new installs or activations
+				return;
+			}
+
+			if( get_option( 'cartbounty_converted_minutes_to_miliseconds' ) ) return;
+
+			$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+			$wordpress_steps = get_option( 'cartbounty_automation_steps' );
+			$notification_frequency = get_option( 'cartbounty_notification_frequency' );
+
+			//Converting WordPres recovery time intervals
+			if( $wordpress_steps ){
+
+				if( is_array( $wordpress_steps ) && !empty( $wordpress_steps ) ){
+					foreach( $wordpress_steps as $key => $step ){
+						
+						if( isset( $wordpress_steps[$key]['interval'] ) ){
+							$wordpress_steps[$key]['interval'] = $admin->convert_minutes_to_miliseconds( $step['interval'] );
+						}
+					}
+					update_option( 'cartbounty_automation_steps', $wordpress_steps );
+				}
+			}
+
+			//Converting Notification time interval
+			if( !empty( $notification_frequency ) ){
+
+				if( isset( $notification_frequency['hours'] ) ){
+					$notification_frequency['interval'] = $admin->convert_minutes_to_miliseconds( $notification_frequency['hours'] );
+					update_option( 'cartbounty_notification_frequency', $notification_frequency );
+				}
+			}
+
+			update_option( 'cartbounty_converted_minutes_to_miliseconds', true );
+
+			/**
+			 * Since version 7.1.6
+			 * Due to moving to a different time interval add_custom_wp_cron_intervals() functions
+			 */
+			if( wp_next_scheduled( 'cartbounty_remove_empty_carts_hook' ) ){
+				wp_clear_scheduled_hook( 'cartbounty_remove_empty_carts_hook' );
+			}
+
+		}
+
+		transfer_time_to_miliseconds();
 	}
 }

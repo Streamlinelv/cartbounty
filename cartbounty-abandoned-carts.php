@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 7.1.5.1
+ * Version: 7.1.6
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -13,20 +13,10 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
-
-//Retrieve email notification frequency from database
-$user_settings_notification_frequency = get_option('cartbounty_notification_frequency'); //Retrieving notification frequency
-if($user_settings_notification_frequency == '' || $user_settings_notification_frequency == NULL){
-	$frequency = 60; //Default 60 minutes
-}else{
-	$frequency = intval($user_settings_notification_frequency['hours']);
-}
+if ( ! defined( 'WPINC' ) ) die;
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.1.5.1' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '7.1.6' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
@@ -37,7 +27,6 @@ if (!defined('CARTBOUNTY_LICENSE_SERVER_URL')) define('CARTBOUNTY_LICENSE_SERVER
 if (!defined('CARTBOUNTY_REVIEW_LINK')) define('CARTBOUNTY_REVIEW_LINK', 'https://wordpress.org/support/plugin/woo-save-abandoned-carts/reviews/#new-post' );
 if (!defined('CARTBOUNTY_TEXT_DOMAIN')) define( 'CARTBOUNTY_TEXT_DOMAIN', 'woo-save-abandoned-carts' ); //No longer used since v6.1.3. Will be removed in future releases
 if (!defined('CARTBOUNTY_ABREVIATION')) define( 'CARTBOUNTY_ABREVIATION', 'CartBounty' );
-if (!defined('CARTBOUNTY_EMAIL_INTERVAL')) define( 'CARTBOUNTY_EMAIL_INTERVAL', $frequency ); //In minutes. Defines the interval at which email function is fired
 if (!defined('CARTBOUNTY_NEW_NOTICE')) define( 'CARTBOUNTY_NEW_NOTICE', 240 ); //Defining time in minutes how long New status is shown in the table
 if (!defined('CARTBOUNTY_MAX_SYNC_PERIOD')) define( 'CARTBOUNTY_MAX_SYNC_PERIOD', 30 ); //Defining maximum period in days that is up for recovery. We do not want to remind about very old abandoned carts
 if (!defined('CARTBOUNTY_ENCRYPTION_KEY')) define('CARTBOUNTY_ENCRYPTION_KEY', '6c7f0ff3c5b607b0762gbsEwuqSb5c0e5461611791f2ff8d4d45009853795c' ); //Defines encryption key used for creating checkout URL hash part of the link

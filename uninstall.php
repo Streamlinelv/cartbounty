@@ -51,6 +51,7 @@ delete_option( 'cartbounty_automation_reply_email' );
 delete_option( 'cartbounty_automation_sends' );
 delete_option( 'cartbounty_email_table_exists' );
 delete_option( 'cartbounty_cron_warning' );
+delete_option( 'cartbounty_converted_minutes_to_miliseconds' );
 
 delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true );
 delete_metadata( 'user', 0, 'cartbounty_unsupported_plugin_notice', '', true );

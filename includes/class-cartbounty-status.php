@@ -64,6 +64,7 @@ class CartBounty_System_Status{
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$wordpress = new CartBounty_WordPress();
 		$overrides = $admin->get_template_overrides();
+		$notification_frequency = $admin->get_interval_data( 'cartbounty_notification_frequency' );
 		
 		if(get_option('cartbounty_recoverable_cart_count')){
 			$carts[] = esc_html__('Recoverable', 'woo-save-abandoned-carts' ) .': '. esc_html( get_option('cartbounty_recoverable_cart_count') );
@@ -88,13 +89,10 @@ class CartBounty_System_Status{
 		}
 
 		if(get_option('cartbounty_exclude_ghost_carts')){
-			$settings[] = esc_html__('Exclude ghost carts', 'woo-save-abandoned-carts' );
+			$settings[] = esc_html__( 'Exclude ghost carts', 'woo-save-abandoned-carts' );
 		}
-		if(get_option('cartbounty_notification_frequency')){
-			$frequency = get_option('cartbounty_notification_frequency');
-			if(isset($frequency['hours'])){
-				$settings[] = esc_html__('Notification frequency', 'woo-save-abandoned-carts' ) .': '. esc_html( $frequency['hours'] );
-			}
+		if( isset( $notification_frequency['selected'] ) ){
+			$settings[] = esc_html__( 'Notification frequency', 'woo-save-abandoned-carts' ) .': '. esc_html( $admin->convert_miliseconds_to_minutes( $notification_frequency['selected'] ) );
 		}
 		if(get_option('cartbounty_notification_email')){
 			$settings[] = esc_html__('Email', 'woo-save-abandoned-carts' ) .' ('. esc_html( get_option('cartbounty_notification_email') ) .')';
@@ -103,14 +101,16 @@ class CartBounty_System_Status{
 			$settings[] = esc_html__('Lift email field', 'woo-save-abandoned-carts' );
 		}
 
-		if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false){
-			$missing_hooks[] = 'cartbounty_notification_sendout_hook';
-		}
-		if(wp_next_scheduled('cartbounty_sync_hook') === false){
-			$missing_hooks[] = 'cartbounty_sync_hook';
-		}
-		if(wp_next_scheduled('cartbounty_remove_empty_carts_hook') === false) {
-			$missing_hooks[] = 'cartbounty_remove_empty_carts_hook';
+		if( !$admin->action_scheduler_enabled() ){ //If WooCommerce Action scheduler library does not exist
+			if(wp_next_scheduled('cartbounty_notification_sendout_hook') === false){
+				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
+			}
+			if(wp_next_scheduled('cartbounty_sync_hook') === false){
+				$missing_hooks[] = 'cartbounty_sync_hook';
+			}
+			if(wp_next_scheduled('cartbounty_remove_empty_carts_hook') === false) {
+				$missing_hooks[] = 'cartbounty_remove_empty_carts_hook';
+			}
 		}
 
 		$active_theme = '-';
@@ -151,6 +151,7 @@ class CartBounty_System_Status{
 			esc_html__('PHP version', 'woo-save-abandoned-carts' ) => phpversion(),
 			esc_html__('MySQL Version', 'woo-save-abandoned-carts' ) => $wpdb->db_version(),
 			esc_html__('WordPress debug mode', 'woo-save-abandoned-carts' ) => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? esc_html__('On', 'woo-save-abandoned-carts' ) : '-',
+			esc_html__('Action scheduler', 'woo-save-abandoned-carts' ) => ( $admin->action_scheduler_enabled() ) ? esc_html__('On', 'woo-save-abandoned-carts' ) : '-',
 			esc_html__('WordPress cron', 'woo-save-abandoned-carts' ) => !( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ? esc_html__('On', 'woo-save-abandoned-carts' ) : '-',
 			esc_html__('Language', 'woo-save-abandoned-carts' ) => get_locale(),
 			esc_html__('Default server timezone', 'woo-save-abandoned-carts' ) => date_default_timezone_get()

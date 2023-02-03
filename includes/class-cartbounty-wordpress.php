@@ -650,7 +650,7 @@ class CartBounty_WordPress{
 					'subject'		=> esc_attr__( 'Forgot something? 🙈', 'woo-save-abandoned-carts' ),
 					'heading'		=> esc_attr__( 'Forgot to complete your purchase? 🙈', 'woo-save-abandoned-carts' ),
 					'content'		=> esc_attr__( 'We noticed that you placed some nice items in your cart. Would you like to complete your order?', 'woo-save-abandoned-carts' ),
-					'interval'		=> 5
+					'interval'		=> 300000
 				);
 
 				break;
@@ -662,7 +662,7 @@ class CartBounty_WordPress{
 					'subject'		=> esc_attr__( 'Return to complete your checkout!', 'woo-save-abandoned-carts' ),
 					'heading'		=> esc_attr__( 'Still thinking it over?', 'woo-save-abandoned-carts' ),
 					'content'		=> esc_attr__( 'We are keeping items in your cart reserved for you, but do not wait too long or they will expire 😇.', 'woo-save-abandoned-carts' ),
-					'interval'		=> 1440
+					'interval'		=> 86400000
 				);
 			
 				break;
@@ -674,7 +674,7 @@ class CartBounty_WordPress{
 					'subject'		=> esc_attr__( 'Your cart is about to expire! 🛒', 'woo-save-abandoned-carts' ),
 					'heading'		=> esc_attr__( 'Last chance to save your cart! 🛒', 'woo-save-abandoned-carts' ),
 					'content'		=> esc_attr__( 'Goodbyes are never easy, but this is our last reminder. Products in your shopping cart will expire unless you take them with you.', 'woo-save-abandoned-carts' ),
-					'interval'		=> 2880
+					'interval'		=> 172800000
 				);
 			
 				break;
@@ -688,60 +688,7 @@ class CartBounty_WordPress{
 
 		return $defaults;
 	}
-
-	/**
-     * Method returns available time intervals alongside a selected interval for a given automation or just the name of the selected interval if $selected_name set to true
-     *
-     * @since    7.0
-     * @return   array or string
-     * @param    integer    $automation    		  Automation number
-     * @param    boolean    $selected_name    	  Should just the name of the selected Interval be returned
-     */
-	public function get_intervals( $automation = false, $selected_name = false ){
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$automation_steps = get_option('cartbounty_automation_steps');
-		$minutes = array(5, 10, 15, 20, 25, 30, 40, 50, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 1080, 1440, 2880, 4320, 5760, 7200, 8640, 10080); //Defining array of minutes
-
-		if(isset($automation_steps[$automation])){
-			$automation_step = $automation_steps[$automation];
-		}
-
-		if(!empty($automation_step['interval'])){ //If custom interval is not set, fallback to default
-			$selected_interval = $automation_step['interval'];
-		}else{
-			$selected_interval = $this->get_defaults( 'interval', $automation );
-		}
-
-		$intervals = $admin->prepare_time_intervals( $minutes );
-		
-		if($selected_name){ //In case just the selected name should be returned
-			return $intervals[$selected_interval];
-
-		}else{
-			return array(
-				'intervals'  => $intervals,
-				'selected'   => $selected_interval
-			);
-		}
-	}
-
-	/**
-	 * Method displays available time intervals at which we are sending out abandoned carts
-	 *
-	 * @since    7.0
-	 * @return   string
-	 * @param    integer    $automation    		  Automation number
-	 */
-	public function display_intervals( $automation = false ){
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$array = $this->get_intervals( $automation );
-		echo '<select id="cartbounty-automation-interval-'. esc_attr( $automation ) .'" class="cartbounty-select" name="cartbounty_automation_steps['. esc_attr( $automation ) .'][interval]" autocomplete="off" '. $admin->disable_field() .'>';
-			foreach( $array['intervals'] as $key => $interval ){
-				echo "<option value='". esc_attr( $key ) ."' ". selected( $array['selected'], $key, false ) .">". esc_html( $interval ) ."</option>";
-			}
-		echo '</select>';
-	}
-
+	
 	/**
 	 * Check if a given automation is enabled
 	 *

@@ -123,14 +123,14 @@ class CartBounty{
 		$this->loader->add_action( 'admin_head', $admin, 'menu_abandoned_count' );
 		$this->loader->add_action( 'admin_head', $admin, 'register_admin_tabs' );
 		$this->loader->add_filter( 'set-screen-option', $admin, 'save_page_options', 12, 3 ); //Saving Screen options
-		$this->loader->add_action( 'admin_head', $admin, 'schedule_events' );
-		$this->loader->add_action( 'plugins_loaded', $admin, 'check_current_plugin_version' );
+		$this->loader->add_action( 'admin_init', $admin, 'schedule_events' );
+		$this->loader->add_filter( 'cron_schedules', $admin, 'add_custom_wp_cron_intervals' );
+		$this->loader->add_action( 'update_option_cartbounty_notification_frequency', $admin, 'unschedule_notification_sendout_hook' );
+		$this->loader->add_action( 'plugins_loaded', $admin, 'check_version' );
 		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 );
 		$this->loader->add_action( 'cartbounty_after_page_title', $admin, 'output_bubble_content' );
 		$this->loader->add_action( 'init', $admin, 'cartbounty_text_domain' );
 		$this->loader->add_action( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
-		$this->loader->add_filter( 'cron_schedules', $admin, 'additional_cron_intervals' );
-		$this->loader->add_action( 'update_option_cartbounty_notification_frequency', $admin, 'notification_sendout_interval_update' );
 		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' );
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' );
 		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_fields', 10, 1 );

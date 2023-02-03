@@ -106,7 +106,7 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Adds newly abandoned cart count to the menu
+	 * Adds newly abandoned, recoverable abandoned cart count to the menu
 	 *
 	 * @since    1.4
 	 */
@@ -116,24 +116,22 @@ class CartBounty_Admin{
 
 		if ( isset( $submenu['woocommerce'] ) ) { //If WooCommerce Menu exists
 			$time = $this->get_time_intervals();
-			// Retrieve from database rows that have not been emailed and are older than 60 minutes
-			$cart_count = $wpdb->get_var(
+			$where_sentence = $this->get_where_sentence( 'recoverable' );
+
+			$recoverable_new_cart_count = $wpdb->get_var( //Counting newly abandoned carts
 				$wpdb->prepare(
 					"SELECT COUNT(id)
 					FROM $cart_table
-					WHERE (email != '' OR phone != '') AND
-					type != %d AND
-					time < %s AND 
+					WHERE cart_contents != ''
+					$where_sentence AND
 					time > %s",
-					$this->get_cart_type('ordered'),
-					$time['cart_recovered'],
 					$time['old_cart']
 				)
 			);
 
 			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for CartBounty Abandoned carts
 				if ( 0 === strpos( $menu_item[0], esc_html__('CartBounty Abandoned carts', 'woo-save-abandoned-carts'))) {
-					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . esc_attr( $cart_count ) . '">' .  esc_html( $cart_count ) .'</span>';
+					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . esc_attr( $recoverable_new_cart_count ) . '">' .  esc_html( $recoverable_new_cart_count ) .'</span>';
 				}
 			}
 		}
@@ -362,23 +360,34 @@ class CartBounty_Admin{
 											<?php esc_html_e('Ghost carts are carts that can’t be identified since the visitor has not provided neither email nor phone number.', 'woo-save-abandoned-carts'); ?>
 										</p>
 									</div>
-									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9<?php if($exclude_ghost_carts){ echo ' cartbounty-checked-parent'; }?>">
-										<div class="cartbounty-settings-group cartbounty-toggle <?php if($exclude_ghost_carts){ echo ' cartbounty-checked'; }?>">
+									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9<?php if( $exclude_ghost_carts ){ echo ' cartbounty-checked-parent'; }?>">
+										<div class="cartbounty-settings-group cartbounty-toggle <?php if( $exclude_ghost_carts ){ echo ' cartbounty-checked'; }?>">
 											<label for="cartbounty-exclude-ghost-carts" class="cartbounty-switch cartbounty-control-visibility">
 												<input id="cartbounty-exclude-ghost-carts" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exclude_ghost_carts" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_ghost_carts, false ); ?> autocomplete="off" />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty-exclude-ghost-carts" class="cartbounty-control-visibility">
-												<?php esc_html_e('Exclude ghost carts', 'woo-save-abandoned-carts'); ?>
+												<?php esc_html_e( 'Exclude ghost carts', 'woo-save-abandoned-carts' ); ?>
 											</label>
 										</div>
 										<div class="cartbounty-settings-group cartbounty-hidden">
 											<label for="cartbounty_allowed_countries" class="cartbounty-unavailable"><?php esc_html_e('Exclude from all countries except these', 'woo-save-abandoned-carts'); ?></label>
-											<select id="cartbounty-allowed-countries" class="cartbounty-select cartbounty-unavailable disabled" placeholder="<?php echo esc_attr('Choose countries / regions…', 'woo-save-abandoned-carts'); ?>"></select>
+											<select id="cartbounty-allowed-countries" class="cartbounty-select cartbounty-unavailable" disabled>
+												<option><?php esc_html_e( 'Choose countries / regions…', 'woo-save-abandoned-carts' ); ?></option>
+											</select>
 											<button id="cartbounty-add-all-countries" class="cartbounty-button button button-secondary cartbounty-unavailable hidden" type="button"><?php esc_html_e('Select all', 'woo-save-abandoned-carts'); ?></button>
 											<button id="cartbounty-remove-all-countries" class="cartbounty-button button button-secondary cartbounty-unavailable hidden" type="button"><?php esc_html_e('Select none', 'woo-save-abandoned-carts'); ?></button>
 											<p class='cartbounty-additional-information'>
 												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'ghost_countries' ); ?></i>
+											</p>
+										</div>
+										<div class="cartbounty-settings-group">
+											<label for="cartbounty_delete_ghost_carts" class="cartbounty-unavailable"><?php esc_html_e( 'Automatically delete ghost carts older than', 'woo-save-abandoned-carts' ); ?></label>
+											<select id="cartbounty_delete_ghost_carts" class="cartbounty-select cartbounty-unavailable" disabled autocomplete="off">
+												<option><?php esc_html_e( 'Disable deletion', 'woo-save-abandoned-carts' ); ?></option>
+											</select>
+											<p class='cartbounty-additional-information'>
+												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'ghost_cart_auto_delete' ); ?></i>
 											</p>
 										</div>
 									</div>
@@ -400,7 +409,7 @@ class CartBounty_Admin{
 										</div>
 										<div class="cartbounty-settings-group">
 											<label for="cartbounty_notification_frequency"><?php esc_html_e('Check for new abandoned carts', 'woo-save-abandoned-carts'); ?></label>
-											<?php $this->display_frequencies(); ?>
+											<?php $this->display_time_intervals( 'cartbounty_notification_frequency' ); ?>
 										</div>
 										<div class="cartbounty-settings-group cartbounty-toggle">
 											<label for="cartbounty-exclude-recovered" class="cartbounty-switch">
@@ -691,87 +700,190 @@ class CartBounty_Admin{
     	echo '</select>';
     }
 
-	/**
-     * Method displays available time intervals at which we are checking for notifications
-     *
-     * @since    6.0
-     * @return   string
-     */
-    function display_frequencies(){
-    	$active_frequency = get_option( 'cartbounty_notification_frequency' );
-    	if(!$active_frequency){
-			$active_frequency = array('hours' => 60);
-		}
-
-		$intervals = array();
-		$intervals[0] = 	esc_html__( 'Disable notifications', 'woo-save-abandoned-carts' );
-		$minutes = array(10, 20, 30, 60, 120, 180, 240, 300, 360); //Defining array of minutes
-		foreach ($minutes as $minute) {
-			if($minute < 60) { //Generate minutes
-				$intervals[$minute] = sprintf(
-					esc_html( _n( 'Every minute', 'Every %s minutes', esc_html( $minute ), 'woo-save-abandoned-carts' ) ), esc_html( $minute )
-				);
-			}
-
-			elseif ($minute < 720) {
-				$hours = $minute / 60; //Splitting with 60 minutes to get amount of hours
-				$intervals[$minute] = sprintf(
-					esc_html( _n( 'Every hour', 'Every %s hours', esc_html( $hours ), 'woo-save-abandoned-carts' ) ), esc_html( $hours )
-				);
-			}
-		}
-
-		//Add other intervals
-		$intervals[720] = 	esc_html__('Twice a day', 'woo-save-abandoned-carts');
-		$intervals[1440] = 	esc_html__('Once a day', 'woo-save-abandoned-carts');
-		$intervals[2880] = 	esc_html__('Once every 2 days', 'woo-save-abandoned-carts');
-
-    	echo '<select id="cartbounty_notification_frequency" class="cartbounty-select" name="cartbounty_notification_frequency[hours]" autocomplete="off" '. $this->disable_field() .'>';
-	    	foreach( $intervals as $key => $interval ){
-		    	echo "<option value='". esc_attr( $key ) ."' ". selected( $active_frequency['hours'], $key, false ) .">". esc_html( $interval ) ."</option>";
-	    	}
-    	echo '</select>';
-    }
-
     /**
-     * Prepare time intervals from minutes
+	 * Method displays a dropdown field of available time intervals for a given option name
+	 *
+	 * @since    7.1.6
+	 * @return   HTML
+	 * @param    string     $option				Name of the option field used for storing time in database
+     * @param    integer    $automation			Automation number
+	 */
+	public function display_time_intervals( $option, $automation = NULL ) {
+		$data = $this->get_interval_data( $option, $automation );
+		$storage_array = '[interval]';
+		$step_nr = '';
+		$step_array = '';
+
+		if( $option == 'cartbounty_automation_steps' ){
+			$step_nr = '_' . $automation;
+			$step_array = '[' . $automation . ']';
+		}
+
+		echo '<label for="' . $option . $step_nr . '">' . $data['name'] . '</label>';
+		echo '<select id="' . $option . $step_nr . '" class="cartbounty-select" name="' . $option . $step_array . $storage_array .'" autocomplete="off" ' . $this->disable_field() . '>';
+		foreach( $this->prepare_time_intervals( $data['interval'], $data['zero_name'], $option ) as $key => $miliseconds ) {
+			echo '<option value="' . esc_attr( $key ) . '" ' . selected( $data['selected'], $key, false ) . '>' . esc_html( $miliseconds ) . '</option>';
+		}
+		echo '</select>';
+	}
+
+	/**
+     * Prepare time intervals from miliseconds
      *
      * @since    7.0.5
      * @return   array
-     * @param 	 array    $minutes    		Array of minutes
+     * @param 	 array    $miliseconds    	Array of miliseconds
      * @param 	 string   $zero_value    	Content for zero value
+     * @param    string   $option			Name of the option field used for storing time in database
      */
-    function prepare_time_intervals( $minutes = array(), $zero_value = '' ){
+    function prepare_time_intervals( $miliseconds = array(), $zero_value = '', $option = '' ){
     	$intervals = array();
-		foreach ($minutes as $minute) {
-			if($minute == 0) { //Generate minutes
-				$intervals[$minute] = $zero_value;
-			}
-			elseif($minute < 60) { //Generate minutes
-				$intervals[$minute] = sprintf(
-					esc_html( _n( '%s minute', '%s minutes', esc_html( $minute ), 'woo-save-abandoned-carts' ) ), esc_html( $minute )
-				);
+    	$alternative_options = array( 'cartbounty_notification_frequency' );
 
-			}elseif($minute < 1440) { //Generate hours
-				$hours = $minute / 60; //Splitting with 60 minutes to get amount of hours
-				$intervals[$minute] = sprintf(
-					esc_html( _n( '%s hour', '%s hours', esc_html( $hours ), 'woo-save-abandoned-carts' ) ), esc_html( $hours )
-				);
+    	if( is_array( $miliseconds ) ){
 
-			}elseif($minute < 10080) { //Generate days
-				$days = $minute / 1440; //Splitting with 1440 minutes to get amount of days
-				$intervals[$minute] = sprintf(
-					esc_html( _n( '%s day', '%s days', esc_html( $days ), 'woo-save-abandoned-carts' ) ), esc_html( $days )
-				);
+			foreach( $miliseconds as $milisecond ){
+				
+				if( $milisecond == 0 ) {
+					$intervals[$milisecond] = $zero_value;
 
-			}else{ //Generate weeks
-				$weeks = $minute / 10080; //Splitting with 10080 minutes to get amount of weeks
-				$intervals[$minute] = sprintf(
-					esc_html( _n( '%s week', '%s weeks', esc_html( $weeks ), 'woo-save-abandoned-carts' ) ), esc_html( $weeks )
-				);
+				}elseif( $milisecond < 60000 ){ //Generate seconds
+					$seconds = $milisecond / 1000;
+					$intervals[$milisecond] = sprintf(
+						esc_html( _n( '%s second', '%s seconds', esc_html( $seconds ), 'woo-save-abandoned-carts' ) ), esc_html( $seconds )
+					);
+
+				}elseif( $milisecond < 3600000 ){ //Generate minutes
+					$minutes = $milisecond / 60000;
+					$intervals[$milisecond] = sprintf(
+						esc_html( _n( '%s minute', '%s minutes', esc_html( $minutes ), 'woo-save-abandoned-carts' ) ), esc_html( $minutes )
+					);
+
+					if( in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = sprintf(
+							esc_html( _n( 'Every minute', 'Every %s minutes', esc_html( $minutes ), 'woo-save-abandoned-carts' ) ), esc_html( $minutes )
+						);
+					}
+
+				}elseif( $milisecond < 86400000 ){ //Generate hours
+					$hours = $milisecond / 3600000;
+					$intervals[$milisecond] = sprintf(
+						esc_html( _n( '%s hour', '%s hours', esc_html( $hours ), 'woo-save-abandoned-carts' ) ), esc_html( $hours )
+					);
+
+					if( in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = sprintf(
+							esc_html( _n( 'Every hour', 'Every %s hours', esc_html( $hours ), 'woo-save-abandoned-carts' ) ), esc_html( $hours )
+						);
+					}
+
+					if( $hours == 12 && in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = esc_html__( 'Twice daily', 'woo-save-abandoned-carts' );
+					}
+
+				}elseif( $milisecond < 604800000 ){ //Generate days
+					$days = $milisecond / 86400000;
+					$intervals[$milisecond] = sprintf(
+						esc_html( _n( '%s day', '%s days', esc_html( $days ), 'woo-save-abandoned-carts' ) ), esc_html( $days )
+					);
+
+					if( $days == 1 && in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = esc_html__( 'Once daily', 'woo-save-abandoned-carts' );
+					}
+
+					if( $days == 2 && in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = esc_html__( 'Once every 2 days', 'woo-save-abandoned-carts' );
+					}
+
+				}elseif( $milisecond < 2419200000 ){ //Generate weeks
+					$weeks = $milisecond / 604800000;
+					$intervals[$milisecond] = sprintf(
+						esc_html( _n( '%s week', '%s weeks', esc_html( $weeks ), 'woo-save-abandoned-carts' ) ), esc_html( $weeks )
+					);
+
+					if( $weeks == 1 && in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = esc_html__( 'Once weekly', 'woo-save-abandoned-carts' );
+					}
+
+				}else{ //Generate months
+					$months = $milisecond / 2419200000;
+					$intervals[$milisecond] = sprintf(
+						esc_html( _n( '%s month', '%s months', esc_html( $months ), 'woo-save-abandoned-carts' ) ), esc_html( $months )
+					);
+
+					if( $months == 1 && in_array( $option, $alternative_options ) ){ //To display alternative frequencies like "Every minute" or "Once a day"
+						$intervals[$milisecond] = esc_html__( 'Once monthly', 'woo-save-abandoned-carts' );
+					}
+				}
 			}
 		}
+
 		return $intervals;
+	}
+
+	/**
+	 * Method returns existing time intervals for a given option
+	 *
+	 * @since    7.1.6
+	 * @return   array or string
+	 * @param    string     $option					Name of the option field saved in database
+     * @param    integer    $automation				Automation number
+     * @param    boolean    $just_selected_value	Should only the selected Interval value be returned
+	 */
+	public function get_interval_data( $option, $automation = false, $just_selected_value = false ){
+		$option_value = get_option( $option );
+
+		switch( $option ) {
+
+			case 'cartbounty_notification_frequency':
+				$name = esc_html__( 'Check for new abandoned carts', 'woo-save-abandoned-carts' );
+				$zero_name = esc_html__( 'Disable notifications', 'woo-save-abandoned-carts' );
+				$miliseconds = array( 0, 600000, 1200000, 1800000, 3600000, 7200000, 10800000, 14400000, 18000000, 21600000, 43200000, 86400000, 172800000, 604800000, 2419200000 );
+				$selected_interval = 3600000;
+
+				if( isset( $option_value['interval'] ) ){
+
+					if( !empty( $option_value['interval'] ) || $option_value['interval'] == 0 ){ //If interval has been set - use it
+						$selected_interval = $option_value['interval'];
+					}
+				}
+
+				break;
+
+			case 'cartbounty_automation_steps':
+
+				$name = esc_html__( 'Send email after', 'woo-save-abandoned-carts' );
+				$zero_name = '';
+				$miliseconds = array( 300000, 600000, 900000, 1200000, 1500000, 1800000, 2400000, 3000000, 3600000, 7200000, 10800000, 14400000, 18000000, 21600000, 25200000, 28800000, 32400000, 36000000, 39600000, 43200000, 64800000, 86400000, 172800000, 259200000, 345600000, 432000000, 518400000, 604800000, 1209600000, 1814400000, 2419200000, 4838400000, 7257600000, 9676800000, 12096000000, 14515200000 );
+				$wordpress = new CartBounty_WordPress();
+				$selected_interval = $wordpress->get_defaults( 'interval', $automation );
+
+				if( isset( $option_value[$automation] ) ){
+					$automation_step = $option_value[$automation];
+				}
+
+				if( !empty( $automation_step['interval'] ) ){ //If interval has been set - use it
+					$selected_interval = $automation_step['interval'];
+				}
+
+				break;
+		}
+
+		if( $just_selected_value ){ //In case just the selected value is requested
+			$prepared_interval_array = $this->prepare_time_intervals( array( $selected_interval ) );
+
+			if( isset( $prepared_interval_array[$selected_interval] ) ){
+				return $prepared_interval_array[$selected_interval];
+			}
+
+		}else{
+			return array(
+				'name'  		=> $name,
+				'zero_name'		=> $zero_name,
+				'interval'		=> $miliseconds,
+				'selected'		=> $selected_interval
+			);
+		}
 	}
 
     /**
@@ -914,7 +1026,7 @@ class CartBounty_Admin{
 										$button_color = ( isset($step->button_color) ) ? $step->button_color : false;
 										$text_color = ( isset($step->text_color) ) ? $step->text_color : false;
 										$background_color = ( isset($step->background_color) ) ? $step->background_color : false;
-										$time_interval_name = $wordpress->get_intervals( 0, $selected_name = true );
+										$time_interval_name = $this->get_interval_data( 'cartbounty_automation_steps', 0, $just_selected_value = true );
 										$preview_email_nonce = wp_create_nonce( 'preview_email' );
 										$test_email_nonce = wp_create_nonce( 'test_email' ); ?>
 
@@ -994,7 +1106,7 @@ class CartBounty_Admin{
 														</div>
 														<div class="cartbounty-settings-group cartbounty-hidden">
 															<label for="cartbounty-automation-interval"><?php esc_html_e('Send email after', 'woo-save-abandoned-carts'); ?></label>
-															<?php $wordpress->display_intervals(0); ?>
+															<?php $this->display_time_intervals( 'cartbounty_automation_steps', 0 ); ?>
 															<p class='cartbounty-additional-information'>
 																<?php echo sprintf(
 																/* translators: %s - Link tags */
@@ -1171,7 +1283,7 @@ class CartBounty_Admin{
 														<div class="cartbounty-automation-number">2</div>
 														<div class="cartbounty-automation-name">
 															<h3><?php echo esc_html( $wordpress->get_defaults( 'name', 1 ) ); ?></h3>
-															<p><?php $time_interval_name = $wordpress->get_intervals( 1, $selected_name = true );
+															<p><?php $time_interval_name = $this->get_interval_data( 'cartbounty_automation_steps', 1, $just_selected_value = true );
 																echo sprintf( esc_html__('Sends after %s', 'woo-save-abandoned-carts'), esc_html( $time_interval_name ) );?></p>
 															<div class="cartbounty-step-trigger"></div>
 														</div>
@@ -1240,7 +1352,7 @@ class CartBounty_Admin{
 														<div class="cartbounty-automation-number">3</div>
 														<div class="cartbounty-automation-name">
 															<h3><?php echo esc_html( $wordpress->get_defaults( 'name', 2 ) ); ?></h3>
-															<p><?php $time_interval_name = $wordpress->get_intervals( 2, $selected_name = true );
+															<p><?php $time_interval_name = $this->get_interval_data( 'cartbounty_automation_steps', 2, $just_selected_value = true );
 																echo sprintf( esc_html__('Sends after %s', 'woo-save-abandoned-carts'), esc_html( $time_interval_name ) );?></p>
 															<div class="cartbounty-step-trigger"></div>
 														</div>
@@ -1886,26 +1998,92 @@ class CartBounty_Admin{
 	}
 
 	/**
+	* Check if WooCommerce Action scheduler library exists
+	*
+	* @since    7.1.6
+	* @return   boolean
+	*/
+	function action_scheduler_enabled(){
+		$status = false;
+
+		if( class_exists( 'ActionScheduler_Store' ) ){
+			$status = true;
+		}
+
+		return $status;
+	}
+
+	/**
 	 * Schedules Wordpress events
+	 * By default trying to use WooCommerce Action Scheduler library to schedule events.
+	 * Documentation: https://actionscheduler.org/api/
+	 * Fallback to WP Cron
 	 * Moved outside of Plugin activation class in v.9.4 since there were many ocurances when events were not scheduled after plugin activation
 	 *
-	 * @since    4.3
+	 * @since    1.1
 	 */
 	function schedule_events(){
-		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
 
-		if(intval($user_settings_notification_frequency['hours']) == 0){ //If Email notifications have been disabled, we disable cron job
-			wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
-		}else{
-			if (! wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
-				wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
+		$notification_frequency = $this->get_interval_data( 'cartbounty_notification_frequency' );
+
+		$hooks = array(
+			'cartbounty_sync_hook' 						=> array( 
+				'interval'			=> 5 * 60, //Every 5 minutes
+				'wp_cron_interval'	=> 'cartbounty_sync_interval',
+				'enabled'			=> true
+			),
+			'cartbounty_remove_empty_carts_hook' 	=> array(
+				'interval'			=> 12 * 60 * 60, //Twice Daily
+				'wp_cron_interval'	=> 'cartbounty_twice_daily_interval',
+				'enabled'			=> true
+			),
+			'cartbounty_notification_sendout_hook' 	=> array(
+				'interval'			=> $notification_frequency['selected'] / 1000,
+				'wp_cron_interval'	=> 'cartbounty_notification_sendout_interval',
+				'enabled'			=> ( $notification_frequency['selected'] == 0 ) ? false : true
+			)
+		);
+
+		foreach( $hooks as $hook_name => $hook_data ){
+
+			if( $this->action_scheduler_enabled() ){ //Check if WooCommerce Action scheduler library exists
+
+				if( $hook_data['enabled'] ){ //If action should be scheduled
+
+					if ( !as_next_scheduled_action( $hook_name ) ){ //Validate if action has not already been scheduled
+						as_schedule_recurring_action( time(), $hook_data['interval'], $hook_name, array(), CARTBOUNTY );
+					}
+
+				}else{ //Unschedule action
+					as_unschedule_action( $hook_name, array(), CARTBOUNTY );
+				}
+
+				wp_clear_scheduled_hook( $hook_name ); //Removing any WP Cron events in case they were scheduled previously
+
+			}else{ //Falling back to using WP Cron in case Action Scheduler not available
+				
+				if( $hook_data['enabled'] ){ //If action should be scheduled
+
+					if ( !wp_next_scheduled( $hook_name ) ){ //Validate if action has not already been scheduled
+						wp_schedule_event( time(), $hook_data['wp_cron_interval'], $hook_name );
+					}
+
+				}else{ //Unschedule action
+					wp_clear_scheduled_hook( $hook_name );
+				}
 			}
 		}
-		if (! wp_next_scheduled ( 'cartbounty_sync_hook' )) {
-			wp_schedule_event(time(), 'cartbounty_sync_interval', 'cartbounty_sync_hook'); //Schedules a hook which will be executed by the WordPress actions core on a specific interval
-		}
-		if (! wp_next_scheduled ( 'cartbounty_remove_empty_carts_hook' )) {
-			wp_schedule_event(time(), 'cartbounty_remove_empty_carts_interval', 'cartbounty_remove_empty_carts_hook');
+	}
+
+	/**
+	* Unschedule email notification sendout hook in case the interval gets changed and Action Scheduler is being used
+	*
+	* @since    7.1.6
+	*/
+	function unschedule_notification_sendout_hook(){
+
+		if( $this->action_scheduler_enabled() ){
+			as_unschedule_action( 'cartbounty_notification_sendout_hook', array(), CARTBOUNTY );
 		}
 	}
 
@@ -1915,39 +2093,27 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 * @param    array    $intervals    Existing interval array
 	 */
-	function additional_cron_intervals( $intervals ){
+	function add_custom_wp_cron_intervals( $intervals ){
+		$notification_frequency = $this->get_interval_data( 'cartbounty_notification_frequency' );
+		$interval_name = $this->prepare_time_intervals( $notification_frequency['interval'], $zero_value = '', 'cartbounty_notification_frequency' );
+		$interval = $notification_frequency['selected'];
+
 		$intervals['cartbounty_notification_sendout_interval'] = array( //Defining cron Interval for sending out email notifications about abandoned carts
-			'interval' => CARTBOUNTY_EMAIL_INTERVAL * 60,
-			'display' => 'Every '. CARTBOUNTY_EMAIL_INTERVAL .' minutes'
+			'interval' => $interval / 1000,
+			'display' => $interval_name[$interval]
 		);
+
 		$intervals['cartbounty_sync_interval'] = array( //Defining cron Interval for sending out abandoned carts
 			'interval' => 5 * 60,
 			'display' => 'Every 5 minutes'
 		);
-		$intervals['cartbounty_remove_empty_carts_interval'] = array( //Defining cron Interval for removing abandoned carts that do not have products
-			'interval' => 12 * 60 * 60,
-			'display' => 'Twice a day'
-		);
-		return $intervals;
-	}
 
-	/**
-	 * Method resets Wordpress cron function after user sets other notification frequency
-	 * wp_schedule_event() Schedules a hook which will be executed by the WordPress actions core on a specific interval, specified by you. 
-	 * The action will trigger when someone visits your WordPress site, if the scheduled time has passed.
-	 *
-	 * @since    4.3
-	 */
-	function notification_sendout_interval_update(){
-		$user_settings_notification_frequency = get_option('cartbounty_notification_frequency');
-		if(intval($user_settings_notification_frequency['hours']) == 0){ //If Email notifications have been disabled, we disable cron job
-			wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
-		}else{
-			if (wp_next_scheduled ( 'cartbounty_notification_sendout_hook' )) {
-				wp_clear_scheduled_hook( 'cartbounty_notification_sendout_hook' );
-			}
-			wp_schedule_event(time(), 'cartbounty_notification_sendout_interval', 'cartbounty_notification_sendout_hook');
-		}
+		$intervals['cartbounty_twice_daily_interval'] = array(
+			'interval' => 12 * 60 * 60,
+			'display' => 'Twice Daily'
+		);
+
+		return $intervals;
 	}
 
 	/**
@@ -1966,13 +2132,16 @@ class CartBounty_Admin{
 	 * @since    4.3
 	 */
 	function display_wp_cron_warnings(){
+
+		if( $this->action_scheduler_enabled() ) return; //Do not display WP Cron related messages in case WooCommerce Action scheduler is enabled
+
 		$wordpress = new CartBounty_WordPress();
 
 		if( $wordpress->automation_enabled() ){ //Check if we have connected to WordPress automation
 			$missing_hooks = array();
-			$user_settings_notification_frequency = get_option( 'cartbounty_notification_frequency' );
+			$notification_frequency = $this->get_interval_data( 'cartbounty_notification_frequency' );
 
-			if( wp_next_scheduled( 'cartbounty_notification_sendout_hook' ) === false && intval( $user_settings_notification_frequency['hours'] ) != 0 ){ //If we havent scheduled email notifications and notifications have not been disabled
+			if( wp_next_scheduled( 'cartbounty_notification_sendout_hook' ) === false && $notification_frequency['selected'] != 0 ){ //If we havent scheduled email notifications and notifications have not been disabled
 				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
 			}
 
@@ -2184,7 +2353,7 @@ class CartBounty_Admin{
 			$to = explode(',', $to_without_spaces);
 		}
 		
-		$sender = 'WordPress@' . preg_replace('#^www\.#', '', strtolower( isset( $_SERVER['SERVER_NAME'] ) ? $_SERVER['SERVER_NAME'] : 'Unknown' ) );
+		$sender = 'WordPress@' . preg_replace( '#^www.#', '', $this->get_current_domain_name() );
 		$from = "From: ". esc_html( CARTBOUNTY_ABREVIATION ) ." <" . apply_filters( 'cartbounty_from_email', esc_html( $sender ) ) . ">";
 		$blog_name = get_option( 'blogname' );
 		$admin_link = get_admin_url() .'admin.php?page='. CARTBOUNTY;
@@ -2360,15 +2529,14 @@ class CartBounty_Admin{
 	 *
 	 * @since    1.4.1
 	 */
-	function check_current_plugin_version(){
-		$plugin = new CartBounty();
-		$current_version = $plugin->get_version();
-		
-		if ($current_version == get_option('cartbounty_version_number')){ //If database version is equal to plugin version. Not updating database
+	function check_version(){
+
+		if( CARTBOUNTY_VERSION_NUMBER == get_option( 'cartbounty_version_number' ) ){
 			return;
-		}else{ //Versions are different and we must update the database
-			update_option('cartbounty_version_number', $current_version);
-			activate_cartbounty(); //Function that updates the database
+
+		}else{
+			activate_cartbounty();
+			update_option( 'cartbounty_version_number', CARTBOUNTY_VERSION_NUMBER );
 			return;
 		}
 	}
@@ -2431,12 +2599,12 @@ class CartBounty_Admin{
 				<?php endif; ?>
 				<div id="cartbounty-go-pro" class="cartbounty-bubble">
 					<div class="cartbounty-header-image">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" title="<?php esc_attr_e('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos (:', 'woo-save-abandoned-carts'); ?>" target="_blank">
+						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" title="<?php esc_attr_e('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts'); ?>" target="_blank">
 							<img src="<?php echo esc_url( plugins_url( 'assets/notification-email.gif', __FILE__ ) ); ?>"/>
 						</a>
 					</div>
 					<div id="cartbounty-go-pro-content">
-						<h2><?php esc_html_e('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos (:', 'woo-save-abandoned-carts' ); ?></h2>
+						<h2><?php esc_html_e('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts' ); ?></h2>
 						<p><?php esc_html_e('Use your time wisely by enabling Pro features and increase your sales.', 'woo-save-abandoned-carts' ); ?></p>
 						<div class="cartbounty-button-row">
 							<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
@@ -2956,7 +3124,7 @@ class CartBounty_Admin{
 	 *
 	 * @since    4.6
 	 * @return 	 Array
-	 * @param    integer     $interval    		  	  Time interval that has to be waited for in minues
+	 * @param    integer     $interval    		  	  Time interval that has to be waited for in miliseconds
 	 * @param    boolean     $first_step    		  Wheather function requested during the first step of WordPress automation. Default false
 	 */
 	public function get_time_intervals( $interval = false, $first_step = false ){
@@ -2965,6 +3133,8 @@ class CartBounty_Admin{
 		if($first_step){ //In case if we need to get WordPress first automation step time interval, we must add additional time the cart was waiting to be recognized as abandoned
 			$interval = $interval + $waiting_time;
 		}
+
+		$interval = $this->convert_miliseconds_to_minutes( $interval );
 
 		//Calculating time intervals
 		$datetime = current_time( 'mysql' );
@@ -3677,8 +3847,7 @@ class CartBounty_Admin{
 	* @since    7.1.2.8
 	* @return   HTML
 	*/
-	public function display_exclusion_settings(){
-		?>
+	public function display_exclusion_settings(){ ?>
 		<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
 			<h4><?php esc_html_e('Exclusions', 'woo-save-abandoned-carts'); ?></h4>
 			<p class="cartbounty-titles-column-description">
@@ -3710,5 +3879,51 @@ class CartBounty_Admin{
 		global $wpdb;
 		$options_table = $wpdb->prefix . 'options';
 		$result = maybe_convert_table_to_utf8mb4( $options_table );
+	}
+
+	/**
+	* Convert miliseconds to minutes
+	*
+	* @since    7.1.6
+	* @return   integer
+	* @param    integer    $miliseconds    		 A nummeric value of miliseconds
+	*/
+	function convert_miliseconds_to_minutes( $miliseconds ){
+		$minutes = 0;
+
+		if( !empty( $miliseconds ) ){
+			$minutes = intval( $miliseconds / 60000 );
+		}
+		
+		return $minutes;
+	}
+
+	/**
+	* Convert minutes to miliseconds
+	*
+	* @since    7.1.6
+	* @return   integer
+	* @param    integer    $minutes    		 A nummeric value of minutes
+	*/
+	function convert_minutes_to_miliseconds( $minutes ){
+		$miliseconds = 0;
+
+		if( !empty( $minutes ) ){
+			$miliseconds = intval( $minutes * 60000 );
+		}
+		
+		return $miliseconds;
+	}
+
+	/**
+	* Retrieve current domain name
+	* Returning domain name
+	*
+	* @since    7.1.6
+	* @return   string
+	*/
+	function get_current_domain_name(){
+		$domain = strtolower( parse_url( get_site_url(), PHP_URL_HOST ) );
+		return $domain;
 	}
 }

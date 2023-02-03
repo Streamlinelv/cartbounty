@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 7.1.6 =
+* Moving away from WP Cron in favour of Action Scheduler for improved efficiency
+* Improved product title storage (HTML tag removal)
+* Improved newly abandoned cart counter next to CartBounty admin menu
+* Improved domain retrieval function
+* Code refactoring
+
 = 7.1.5.1 =
 * Improved order handling
 * Improved automation step creation
