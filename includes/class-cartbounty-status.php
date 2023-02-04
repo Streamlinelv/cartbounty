@@ -61,6 +61,7 @@ class CartBounty_System_Status{
 		$exit_intent_options = array();
 		$settings = array();
 		$missing_hooks = array();
+		$interval_output = 0;
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$wordpress = new CartBounty_WordPress();
 		$overrides = $admin->get_template_overrides();
@@ -92,7 +93,12 @@ class CartBounty_System_Status{
 			$settings[] = esc_html__( 'Exclude ghost carts', 'woo-save-abandoned-carts' );
 		}
 		if( isset( $notification_frequency['selected'] ) ){
-			$settings[] = esc_html__( 'Notification frequency', 'woo-save-abandoned-carts' ) .': '. esc_html( $admin->convert_miliseconds_to_minutes( $notification_frequency['selected'] ) );
+
+			if( $notification_frequency['selected'] != 0 ){
+				$interval_output = $admin->get_interval_data( 'cartbounty_notification_frequency', false, $just_selected_value = true ) . ' ('. esc_html( $admin->convert_miliseconds_to_minutes( $notification_frequency['selected'] ) ) . ')';
+			}
+
+			$settings[] = esc_html__( 'Notification frequency', 'woo-save-abandoned-carts' ) .': ' . $interval_output;
 		}
 		if(get_option('cartbounty_notification_email')){
 			$settings[] = esc_html__('Email', 'woo-save-abandoned-carts' ) .' ('. esc_html( get_option('cartbounty_notification_email') ) .')';
