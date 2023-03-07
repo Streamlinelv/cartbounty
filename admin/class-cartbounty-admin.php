@@ -1019,6 +1019,7 @@ class CartBounty_Admin{
 										$step = $automation_steps[0];
 										$step = (object)$step;
 										$enabled = ( isset($step->enabled) ) ? $step->enabled : false;
+										$testmode = ( isset($step->testmode) ) ? $step->testmode : false;
 										$subject = ( isset($step->subject) ) ? $step->subject : '';
 										$heading = ( isset($step->heading) ) ? $step->heading : '';
 										$content = ( isset($step->content) ) ? $step->content : '';
@@ -1103,6 +1104,13 @@ class CartBounty_Admin{
 																<span class="cartbounty-slider round"></span>
 															</label>
 															<label for="cartbounty-automation-status" class="cartbounty-control-visibility cartbounty-step-controller"><?php esc_html_e('Enable email', 'woo-save-abandoned-carts'); ?></label>
+														</div>
+														<div class="cartbounty-settings-group cartbounty-toggle">
+															<label for="cartbounty-automation-testmode-status" class="cartbounty-switch cartbounty-step-controller">
+																<input id="cartbounty-automation-testmode-status" class="cartbounty-checkbox" type="checkbox" name="cartbounty_automation_steps[0][testmode]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $testmode, false ); ?> autocomplete="off" />
+																<span class="cartbounty-slider round"></span>
+															</label>
+															<label for="cartbounty-automation-testmode-status" class="cartbounty-step-controller"><?php esc_html_e('Enable testmode', 'woo-save-abandoned-carts'); ?></label>
 														</div>
 														<div class="cartbounty-settings-group cartbounty-hidden">
 															<label for="cartbounty-automation-interval"><?php esc_html_e('Send email after', 'woo-save-abandoned-carts'); ?></label>
