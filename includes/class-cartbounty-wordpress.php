@@ -114,7 +114,9 @@ class CartBounty_WordPress{
 					$step_wait_time = $admin->get_time_intervals( $interval, $first_step ); //Get time interval for the current step
 
 					if ($time < $step_wait_time['wp_step_send_period']){ //Check if time has passed for current step
-						$this->send_reminder( $cart ); //Time has passed - must prepare and send out reminder email
+						if( !isset($automation_step['testmode']) || ( isset($automation_step['testmode']) && user_can(get_user_by('email', $cart->email),'administrator') ) ) {
+							$this->send_reminder( $cart ); //Time has passed - must prepare and send out reminder email
+						}
 						unset($carts[$cart_key]); //Remove array element so the next step loop runs faster
 					}
 				}
