@@ -19,13 +19,11 @@ class CartBounty_WordPress{
 	 * @since    7.0
 	 */
 	public function auto_send(){
-		if(!class_exists('WooCommerce')){ //Exit if license key not valid or if WooCommerce is not activated
-			return;
-		}else{
-			if( $this->automation_enabled() ){ //If WordPress email automation workflow enabled
-				//Activating automation workflow
-				$this->recover_carts();
-			}
+		if( !class_exists( 'WooCommerce' ) ) return; //Exit if license key not valid or if WooCommerce is not activated
+
+		if( $this->automation_enabled() ){ //If WordPress email automation workflow enabled
+			//Activating automation workflow
+			$this->recover_carts();
 		}
 	}
 
@@ -57,11 +55,12 @@ class CartBounty_WordPress{
      * @param    boolean    $enabled    		  Wheather automation has been enabled or not
 	 */
 	public function display_automation_status( $enabled ) {
-		if($enabled){
-			$status = sprintf('<span class="status active">%s</span>', esc_html__('Active', 'woo-save-abandoned-carts'));
-		}else{
-			$status = sprintf('<span class="status inactive">%s</span>', esc_html__('Disabled', 'woo-save-abandoned-carts'));
+		$status = sprintf( '<span class="status inactive">%s</span>', esc_html__( 'Disabled', 'woo-save-abandoned-carts' ) );
+
+		if( $enabled ){
+			$status = sprintf( '<span class="status active">%s</span>', esc_html__( 'Active', 'woo-save-abandoned-carts' ) );
 		}
+
 		echo $status;
 	}
 
@@ -153,6 +152,7 @@ class CartBounty_WordPress{
 		if(isset($step['subject'])){ //In case we have a custom subject set, use it
 			if( !empty($step['subject']) ) {
 				$subject = $step['subject'];
+				$subject = html_entity_decode( $subject ); //If subject field includes encoded emojis - must decode them
 			}
 		}
 
@@ -171,15 +171,14 @@ class CartBounty_WordPress{
 		}
 		
 		$result = wp_mail( sanitize_email($to), $admin->sanitize_field($subject), $message, $header );
-
-		if($result){ //In case if the email was successfuly sent out
-			if(!$test){ //If this is not a test email
-				$current_time = current_time( 'mysql', false );
-				$template = ( isset($step['template']) ) ? $step['template'] : $this->get_defaults( 'template', 0 );
-				$this->update_cart( $cart ); //Update cart information
-				$this->add_email( $cart->id, $current_time ); //Create a new row in the emails table
-			}
+		
+		if(!$test){ //If this is not a test email
+			$current_time = current_time( 'mysql', false );
+			$template = ( isset($step['template']) ) ? $step['template'] : $this->get_defaults( 'template', 0 );
+			$this->update_cart( $cart ); //Update cart information
+			$this->add_email( $cart->id, $current_time ); //Create a new row in the emails table
 		}
+
 		restore_previous_locale();
 	}
 
@@ -478,9 +477,10 @@ class CartBounty_WordPress{
      */
 	public function add_email( $cart_id, $current_time ){
 		global $wpdb;
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 
 		//Making sure that the email table exists or is created
-		if(!$this->email_table_exist()){
+		if( !$admin->table_exists( 'cartbounty_email_table_exists' ) ){
 			$this->create_email_table();
 		}
 
@@ -522,9 +522,12 @@ class CartBounty_WordPress{
      */
 	public function get_email_history( $cart_id = false ){
 		global $wpdb;
-		if(!$this->email_table_exist()){
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+
+		if( !$admin->table_exists( 'cartbounty_email_table_exists' ) ){
 			$this->create_email_table();
 		}
+
 		$email_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME_EMAILS;
 		$emails = $wpdb->get_results(
 			$wpdb->prepare(
@@ -775,20 +778,6 @@ class CartBounty_WordPress{
 	}
 
 	/**
-	 * Method checks if WordPress email table has been created
-	 *
-	 * @since    7.0
-	 */
-	public function email_table_exist(){
-		$email_table_exists = get_option('cartbounty_email_table_exists');
-		if(empty($email_table_exists)){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
-	/**
 	* Method sanitizes "From" field
 	*
 	* @since    7.0.2
@@ -814,9 +803,9 @@ class CartBounty_WordPress{
 			update_option( $option,
 				array(
 					array(
-						'subject' => $this->get_defaults( 'subject', 0 ),
-						'heading' => $this->get_defaults( 'heading', 0 ),
-						'content' => $this->get_defaults( 'content', 0 )
+						'subject' => '',
+						'heading' => '',
+						'content' => ''
 					),
 					1,
 					1

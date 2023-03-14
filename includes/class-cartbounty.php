@@ -145,6 +145,7 @@ class CartBounty{
 		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' );
 		$this->loader->add_action( 'cartbounty_automation_footer_end', $admin, 'add_email_badge', 100 );
 		$this->loader->add_action( 'cartbounty_admin_email_footer_end', $admin, 'add_email_badge', 100 );
+		$this->loader->add_action( 'pre_update_option', $admin, 'validate_cartbounty_fields', 10, 3 );
 	}
 
 	/**

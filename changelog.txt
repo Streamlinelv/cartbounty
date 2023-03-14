@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 7.2 =
+* Increased maximum abandoned cart sync period from 30 to 100 days
+* Improved emoji support
+* Fixed ghost and recoverable cart count update
+* Fixed a warning if email input field missing from Checkout page
+* Fixed WordPress email loop issue when an email could not be delivered
+
 = 7.1.6 =
 * Moving away from WP Cron in favour of Action Scheduler for improved efficiency
 * Improved product title storage (HTML tag removal)

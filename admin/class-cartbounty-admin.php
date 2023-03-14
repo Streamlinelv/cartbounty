@@ -266,7 +266,7 @@ class CartBounty_Admin{
 							<div class="cartbounty-sidebar cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3"><?php $this->display_sections( $current_section, $tab ); ?></div>
 							<div class="cartbounty-content cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 								<h2 class="cartbounty-section-title"><?php esc_html_e('Recovery', 'woo-save-abandoned-carts'); ?></h2>
-								<div class="cartbounty-section-intro"><?php esc_html_e('Automate your abandoned cart recovery by sending automated recovery emails and SMS text messages to your visitors.', 'woo-save-abandoned-carts')?><br/> <?php echo sprintf(
+								<div class="cartbounty-section-intro"><?php esc_html_e('Automate your abandoned cart recovery by sending automated recovery emails, SMS text messages and web push notifications to your visitors.', 'woo-save-abandoned-carts')?><br/> <?php echo sprintf(
 									/* translators: %s - URL link tags */
 									esc_html__('Please consider upgrading to %s%s Pro%s to connect one of the professional automation services listed below.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'recovery' ) ) .'" target="_blank">', esc_html( CARTBOUNTY_ABREVIATION ), '</a>'); ?></div>
 								<div class="cartbounty-row cartbounty-flex">
@@ -854,7 +854,7 @@ class CartBounty_Admin{
 
 				$name = esc_html__( 'Send email after', 'woo-save-abandoned-carts' );
 				$zero_name = '';
-				$miliseconds = array( 300000, 600000, 900000, 1200000, 1500000, 1800000, 2400000, 3000000, 3600000, 7200000, 10800000, 14400000, 18000000, 21600000, 25200000, 28800000, 32400000, 36000000, 39600000, 43200000, 64800000, 86400000, 172800000, 259200000, 345600000, 432000000, 518400000, 604800000, 1209600000, 1814400000, 2419200000, 4838400000, 7257600000, 9676800000, 12096000000, 14515200000 );
+				$miliseconds = array( 300000, 600000, 900000, 1200000, 1500000, 1800000, 2400000, 3000000, 3600000, 7200000, 10800000, 14400000, 18000000, 21600000, 25200000, 28800000, 32400000, 36000000, 39600000, 43200000, 64800000, 86400000, 172800000, 259200000, 345600000, 432000000, 518400000, 604800000, 1209600000, 1814400000, 2419200000, 4838400000, 7257600000 );
 				$wordpress = new CartBounty_WordPress();
 				$selected_interval = $wordpress->get_defaults( 'interval', $automation );
 
@@ -936,6 +936,13 @@ class CartBounty_Admin{
 					'info_link'			=> CARTBOUNTY_BULKGATE_TRIAL_LINK,
 					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized, time-sensitive SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Add an additional dimension to your existing abandoned cart email recovery workflow including a personal SMS about the abandoned cart.", 'woo-save-abandoned-carts') . '</p>'
 				),
+				'push_notification'	=> array(
+					'name'				=> esc_html__( 'Push notifications', 'woo-save-abandoned-carts' ),
+					'connected'			=> false,
+					'availability'		=> false,
+					'info_link'			=> CARTBOUNTY_PUSH_NOTIFICATION_LINK,
+					'description'		=> '<p>' . esc_html__("With no requirement for an email or phone number, web push notifications provide a low-friction, real-time, personal and efficient channel for sending abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Additionally, notifications can be sent even after the user has closed the website, providing a higher chance of engaging them to complete their purchase.", 'woo-save-abandoned-carts') . '</p>'
+				),
 				'webhook'	=> array(
 					'name'				=> 'Webhook',
 					'connected'			=> false,
@@ -943,7 +950,7 @@ class CartBounty_Admin{
 					'info_link'			=> CARTBOUNTY_WEBHOOK_LINK,
 					'description'		=> '<p>' . sprintf(
 						/* translators: %1$s - Link start, %2$s - Link start, %3$s - Link end */
-						esc_html__( 'Webhook offers an easy way of sending event based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing workflows.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( CARTBOUNTY_MAKE_LINK ) .'" target="_blank">', '<a href="'. esc_url( CARTBOUNTY_PABBLY_LINK ) .'" target="_blank">', '</a>' ) . '</p>'
+						esc_html__( 'Webhook offers an easy way of sending event-based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing workflows.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( CARTBOUNTY_MAKE_LINK ) .'" target="_blank">', '<a href="'. esc_url( CARTBOUNTY_PABBLY_LINK ) .'" target="_blank">', '</a>' ) . '</p>'
 				)
 			);
 		}
@@ -1140,9 +1147,9 @@ class CartBounty_Admin{
 													<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
 														<h4><?php esc_html_e('Appearance', 'woo-save-abandoned-carts'); ?></h4>
 														<p class="cartbounty-titles-column-description">
-															<?php echo sprintf(
-																/* translators: %s - Link tags */
-																 esc_html__('Choose a template that will be used to display the abandoned cart reminder email. Look %shere%s to see advanced template customization options', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'templates', 'wp_template_customization' ) ) .'" target="_blank">', '</a>');?>
+															<?php esc_html_e( 'Choose a template that will be used to display the abandoned cart reminder email.', 'woo-save-abandoned-carts' ); ?> <?php echo sprintf(
+																	/* translators: %s - Link tags */
+																	 esc_html__( 'Look here to see advanced %stemplate customization%s options.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'templates', 'wp_template_customization' ) ) .'" target="_blank">', '</a>');?>
 														</p>
 													</div>
 													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
@@ -1414,29 +1421,7 @@ class CartBounty_Admin{
 												</div>
 											</div>
 										</div>
-									<?php }
-									else{ ?>
-										<div class="cartbounty-step cartbounty-step-active cartbounty-step-single">
-											<div class="cartbounty-step-contents">
-												<div class="cartbounty-row">
-													<div class="cartbounty-titles-column cartbounty-full-width cartbounty-col-sm-12 cartbounty-col-md-12 cartbounty-col-lg-12">
-														<h4><?php esc_html_e( 'Warning: Unable to display automation steps', 'woo-save-abandoned-carts' ); ?></h4>
-														<p class="cartbounty-titles-column-description">
-															<?php echo sprintf(
-																/* translators: %s - Table name */
-																esc_html__( 'Unfortunately, your database table "%s" is not ready to store 4-byte characters, which is necessary for storing and displaying emojis.', 'woo-save-abandoned-carts'), $wpdb->prefix . 'options' ); ?>
-															<?php esc_html_e( 'But do not worry, you can easily fix this by creating a backup of your database and changing the collation of this table and all of its columns to "utf8mb4_unicode_ci" or similar.', 'woo-save-abandoned-carts'); ?>
-														</p>
-														<p class="cartbounty-titles-column-description">
-															<?php echo sprintf(
-																/* translators: %s - Link tags */
-																 esc_html__('You can do this by either going directly to the database or using a %splugin%s.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( "https://wordpress.org/plugins/database-collation-fix" ) .'" target="_blank">', '</a>'); ?>
-														</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php }?>
+									<?php } ?>
 								</div>
 							</div>
 						</div>
@@ -1671,7 +1656,7 @@ class CartBounty_Admin{
 								<label for="cartbounty-exit-intent-test-mode" class="cartbounty-control-visibility"><?php esc_html_e('Enable test mode', 'woo-save-abandoned-carts'); ?></label>
 								<p class='cartbounty-additional-information'>
 									<i class='cartbounty-hidden'>
-										<?php esc_html_e('Now open your store, add a product to the cart and try leaving it. Please note that while this is enabled, only users with Admin rights will be able to see the Exit Intent and appearance limitations have been removed which means that you will see the popup each time you try to leave your store. Don’t forget to disable this after you have done testing.', 'woo-save-abandoned-carts'); ?>
+										<?php esc_html_e('Now open your store, add a product to the cart and try leaving it. Please note that while this is enabled, only users with Admin rights will be able to see the Exit Intent and appearance limitations have been removed which means that you will see the popup each time you try to leave your store. Do not forget to disable this after you have done testing.', 'woo-save-abandoned-carts'); ?>
 									</i>
 								</p>
 							</div>
@@ -1833,7 +1818,7 @@ class CartBounty_Admin{
 								<label for="cartbounty-early-capture-test-mode" class="cartbounty-control-visibility"><?php esc_html_e('Enable test mode', 'woo-save-abandoned-carts'); ?></label>
 								<p class='cartbounty-additional-information'>
 									<i class='cartbounty-hidden'>
-										<?php esc_html_e('Now open your store and try adding a product to your cart. Please note that while this is enabled, only users with Admin rights will be able to see the Early capture request and appearance limitations have been removed which means that you will see the request each time you try to add an item to your cart. Don’t forget to disable this after you have done testing.', 'woo-save-abandoned-carts'); ?>
+										<?php esc_html_e('Now open your store and try adding a product to your cart. Please note that while this is enabled, only users with Admin rights will be able to see the Early capture request and appearance limitations have been removed which means that you will see the request each time you try to add an item to your cart. Do not forget to disable this after you have done testing.', 'woo-save-abandoned-carts'); ?>
 									</i>
 								</p>
 							</div>
@@ -1938,7 +1923,7 @@ class CartBounty_Admin{
 								<label for="cartbounty-tab-notification-test-mode"><?php esc_html_e( 'Enable test mode', 'woo-save-abandoned-carts' ); ?></label>
 								<p class='cartbounty-additional-information'>
 									<i class='cartbounty-hidden'>
-										<?php esc_html_e( 'Now open your store, add a product to the cart and switch to a new browser tab. Please note that while this is enabled, only users with Admin rights will be able to see the Tab notification. Don’t forget to disable this after you have done testing.', 'woo-save-abandoned-carts' ); ?>
+										<?php esc_html_e( 'Now open your store, add a product to the cart and switch to a new browser tab. Please note that while this is enabled, only users with Admin rights will be able to see the Tab notification. Do not forget to disable this after you have done testing.', 'woo-save-abandoned-carts' ); ?>
 									</i>
 								</p>
 							</div>
@@ -2992,6 +2977,10 @@ class CartBounty_Admin{
 			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
 		}
 
+		elseif( $icon == 'push_notification' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 67"><path d="M50.84,67a6.26,6.26,0,0,1-4.27-1.68L34,53.58H12.45A12.4,12.4,0,0,1,0,41.26V12.32A12.4,12.4,0,0,1,12.45,0h45.1A12.4,12.4,0,0,1,70,12.32V41.26A12.4,12.4,0,0,1,57.55,53.58h-.43l-.07,7.3A6.22,6.22,0,0,1,50.84,67ZM12.45,6.53a5.87,5.87,0,0,0-5.92,5.79V41.26a5.87,5.87,0,0,0,5.92,5.79H36.62l13.91,13,.12-13h6.9a5.87,5.87,0,0,0,5.92-5.79V12.32a5.87,5.87,0,0,0-5.92-5.79Z"/><rect x="14.47" y="16.99" width="41.06" height="6.53" rx="3.27"/><rect x="14.47" y="30.01" width="31.06" height="6.53" rx="3.27"/></svg>';
+		}
+
 		elseif( $icon == 'webhook' ){
 			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.88 68"><path d="M17.52,68a17.68,17.68,0,0,1-1.78-.09A17.49,17.49,0,0,1,.09,52.27a17.3,17.3,0,0,1,2.8-11.41,3.15,3.15,0,0,1,2.63-1.42,3.08,3.08,0,0,1,2.35,1.07,3.24,3.24,0,0,1,.2,3.82,11.28,11.28,0,0,0,9.45,17.44,12.63,12.63,0,0,0,4.56-.9,11,11,0,0,0,6.72-10,3.59,3.59,0,0,1,3.52-3.65H51l.3-.38a5.17,5.17,0,1,1,0,6.4l-.3-.38H37.47a3.24,3.24,0,0,0-3.1,2.37A17.58,17.58,0,0,1,17.52,68Z"/><path d="M55.39,67.57c-.36,0-.72,0-1.08,0a3.12,3.12,0,0,1-2.79-4.14,3.23,3.23,0,0,1,3-2.08h.18l.64,0A11.26,11.26,0,0,0,66.6,50.87a11.52,11.52,0,0,0-4.53-9.95,10.39,10.39,0,0,0-6.51-2.23,11.85,11.85,0,0,0-5.49,1.38l-.09,0a3.75,3.75,0,0,1-1.79.46,3.44,3.44,0,0,1-3-1.73L35.85,22.68l-.48-.07a5.17,5.17,0,0,1,.74-10.28,5.17,5.17,0,0,1,4.81,7.09l-.18.45,6.73,11.7a3.23,3.23,0,0,0,2.8,1.61,3.58,3.58,0,0,0,.8-.1,17.51,17.51,0,1,1,4.32,34.49Z"/><path d="M17.51,55.6a5.17,5.17,0,0,1-.73-10.29l.48-.07L24,33.57a3.25,3.25,0,0,0-.49-3.88A17.5,17.5,0,0,1,36.18,0a17.1,17.1,0,0,1,7.14,1.54,17.34,17.34,0,0,1,8.47,8.15,3.13,3.13,0,0,1,0,2.8,3.1,3.1,0,0,1-2.21,1.68,3.31,3.31,0,0,1-.55.05,3.24,3.24,0,0,1-2.84-1.8,11.32,11.32,0,0,0-21.34,3.83,11,11,0,0,0,5.26,10.82,3.58,3.58,0,0,1,1.39,4.86L22.14,48.07l.18.45A5.13,5.13,0,0,1,22,53a5.19,5.19,0,0,1-4.48,2.58Z"/></svg>';
 		}
@@ -3113,8 +3102,11 @@ class CartBounty_Admin{
 	 */ 
 	public function lift_checkout_fields( $fields ) {
 		$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
-		if($lift_email_on){ //Changing the priority and moving the email higher
-			$fields['billing_email']['priority'] = 4;
+		
+		if( $lift_email_on ){ //Changing the priority and moving the email higher
+			if( isset( $fields['billing_email'] ) ){
+				$fields['billing_email']['priority'] = 4;
+			}
 		}
 		return $fields;
 	}
@@ -3191,6 +3183,22 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Method returns if ghost carts are excluded
+	 *
+	 * @since    7.2
+	 * @return   boolean
+	 */
+	function ghost_carts_excluded(){
+		$exclude = false;
+
+		if( get_option( 'cartbounty_exclude_ghost_carts' ) ){
+			$exclude = true;
+		}
+
+		return $exclude;
+	}
+
+	/**
      * Method displays available cart type filters
      *
      * @since    5.0
@@ -3198,38 +3206,41 @@ class CartBounty_Admin{
      * @param 	 $cart_status    Currently filtered cart status
      * @param 	 $tab    		 Currently open tab
      */
-    function display_cart_statuses( $cart_status, $tab ){
-    	$exclude = false;
-    	$divider = '<em>|</em>';
-    	if(get_option('cartbounty_exclude_ghost_carts' )){
-			$exclude = true;
+	function display_cart_statuses( $cart_status, $tab ){
+		$exclude = $this->ghost_carts_excluded();
+		$cart_types = array(
+			'all' 			=> esc_html__('All', 'woo-save-abandoned-carts'),
+			'recoverable' 	=> esc_html__('Recoverable', 'woo-save-abandoned-carts'),
+			'ghost' 		=> esc_html__('Ghost', 'woo-save-abandoned-carts'),
+			'recovered' 	=> esc_html__('Recovered', 'woo-save-abandoned-carts')
+		);
+
+		$output = '<ul id="cartbounty-cart-statuses" class="subsubsub">';
+		$counter = 0;
+		
+		foreach( $cart_types as $key => $type ){
+			$counter++;
+			$divider = '<em>|</em>';
+			$count = $this->get_cart_count($key);
+
+			if( $counter == 1 ){ //Do not output vertical line before the first item
+				$divider = '';
+			}
+
+			$class = ( $key == $cart_status ) ? 'current' : '';
+
+			if( $count != 0 ){//Do not display empty categories
+
+				if( !( $key == 'ghost' && $exclude ) ){ //If we are not processing Ghost carts and they have not been excluded
+					$url = '?page="'. esc_attr( CARTBOUNTY ) .'"&tab='. esc_attr( $tab ) .'&cart-status='. esc_attr( $key );
+					$output .= "<li>". wp_kses( $divider, 'data' ) ."<a href='". esc_url( $url ) ."' title='". esc_attr( $type ) ."' class='". esc_attr( $class ) ."'>". esc_html( $type ) ." <span class='count'>(". esc_html( $count ) .")</span></a></li>";
+				}
+			}
 		}
-    	$cart_types = array(
-    		'all' 			=> esc_html__('All', 'woo-save-abandoned-carts'),
-    		'recoverable' 	=> esc_html__('Recoverable', 'woo-save-abandoned-carts'),
-    		'ghost' 		=> esc_html__('Ghost', 'woo-save-abandoned-carts'),
-    		'recovered' 	=> esc_html__('Recovered', 'woo-save-abandoned-carts')
-    	);
-    	$total_items = count($cart_types);
-    	if(count($cart_types) <= 3 && $exclude){ //Do not output the filter if we are excluding Ghost carts and we have only 3 cart types
-    		return;
-    	}
-    	echo '<ul id="cartbounty-cart-statuses" class="subsubsub">';
-    	$counter = 0;
-    	foreach( $cart_types as $key => $type ){
-    		$counter++;
-    		if($counter == $total_items){
-    			$divider = '';
-    		}
-    		$class = ( $key == $cart_status ) ? 'current' : '';
-    		$count = $this->get_cart_count($key);
-    		if (!($key == 'ghost' && $exclude)){ //If we are not processing Ghost carts and they have not been excluded
-    			$url = '?page="'. esc_attr( CARTBOUNTY ) .'"&tab='. esc_attr( $tab ) .'&cart-status='. esc_attr( $key );
-	    		echo "<li><a href='". esc_url( $url ) ."' title='". esc_attr( $type ) ."' class='". esc_attr( $class ) ."'>". esc_html( $type ) ." <span class='count'>(". esc_html( $count ) .")</span></a>". wp_kses( $divider, 'data' ) ."</li>";
-	    	}
-    	}
-    	echo '</ul>';
-    }
+
+		$output .= '</ul>';
+		echo $output;
+	}
 
     /**
      * Method for creating SQL query depending on different post types
@@ -3290,6 +3301,24 @@ class CartBounty_Admin{
 		$nonce = wp_create_nonce( 'force_sync' );
 		$button = "<a id='force_sync' class='cartbounty-button button button-secondary' href='#' data-integration='". esc_attr( $integration ) ."' data-nonce='". esc_attr( $nonce ) ."'>". esc_html( $button_name ) ."</a>";
 		return $button;
+	}
+
+	/**
+	 * Method checks if a specific database table has been created
+	 *
+	 * @since    7.2
+	 * @return   boolean
+	 * @param    string     $option    		 Database option field name
+	 */
+	public function table_exists( $option ){
+		$exists = true;
+		$table_exists = get_option( $option );
+
+		if( empty( $table_exists ) ){
+			$exists = false;
+		}
+
+		return $exists;
 	}
 
 	/**
@@ -3871,17 +3900,6 @@ class CartBounty_Admin{
 	<?php }
 
 	/**
-	 * Try chaging WordPress options table collation to utf8mb4 for allowing to save emojis
-	 *
-	 * @since    7.1.5.1
-	 */
-	function try_convert_options_table_collation(){
-		global $wpdb;
-		$options_table = $wpdb->prefix . 'options';
-		$result = maybe_convert_table_to_utf8mb4( $options_table );
-	}
-
-	/**
 	* Convert miliseconds to minutes
 	*
 	* @since    7.1.6
@@ -3917,7 +3935,6 @@ class CartBounty_Admin{
 
 	/**
 	* Retrieve current domain name
-	* Returning domain name
 	*
 	* @since    7.1.6
 	* @return   string
@@ -3925,5 +3942,50 @@ class CartBounty_Admin{
 	function get_current_domain_name(){
 		$domain = strtolower( parse_url( get_site_url(), PHP_URL_HOST ) );
 		return $domain;
+	}
+
+	/**
+	* Method for encoding emoji symbols in content input fields
+	*
+	* @since    7.2
+	* @param    string   $item    		 Array value
+	* @param    string   $key    		 Array key
+	*/
+	function encode_emojis( &$item, $key ) {
+		$content_fields = array( //Content fields that may include emoji symbols
+			'subject',
+			'heading',
+			'content',
+			'cartbounty_exit_intent_heading',
+			'cartbounty_exit_intent_content',
+		);
+
+		if( in_array( $key, $content_fields ) ){ //Encoding only content input fields
+			$item = wp_encode_emoji( $item );
+		}
+	}
+
+	/**
+	* Filtering CartBounty options before their values are serialized and saved inside database
+	*
+	* @since    7.2
+	* @return   mixed
+	* @param    mixed    $value    		 	 The new, unserialized option value
+	* @param    string   $option    		 Name of the option
+	* @param    mixed    $old_value    		 The old option value
+	*/
+	function validate_cartbounty_fields( $value, $option, $old_value ) {
+		
+		if ( strpos( $option, 'cartbounty_' ) === 0 ) { //Check if the option being updated belongs to CartBounty
+
+			if( is_array( $value ) ){ //If option value is an array
+				array_walk_recursive( $value, array( $this, 'encode_emojis' ) );
+
+			}else{
+				$this->encode_emojis( $value, $option );
+			}
+		}
+
+		return $value;
 	}
 }

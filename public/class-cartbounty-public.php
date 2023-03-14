@@ -73,9 +73,9 @@ class CartBounty_Public{
 			}
 
 			$data = array(
-			    'hours' => $hours,
+			    'hours' 		=> $hours,
 			    'product_count' => $this->get_cart_product_count(),
-			    'ajaxurl' => admin_url( 'admin-ajax.php' )
+			    'ajaxurl' 		=> admin_url( 'admin-ajax.php' )
 			);
 			wp_enqueue_script( $this->plugin_name . '-exit-intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
 			wp_localize_script( $this->plugin_name . '-exit-intent', 'cartbounty_ei', $data); //Sending variable over to JS file
@@ -831,16 +831,18 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function increase_recoverable_cart_count(){
-		if(!WC()->session){ //If session does not exist, exit function 
-			return;
-		}
-		if(WC()->session->get('cartbounty_recoverable_count_increased') || WC()->session->get('cartbounty_from_link')){//Exit function in case we already have run this once or user has returned form a recovery link
-			return;
-		}
-		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') + 1);
-		WC()->session->set('cartbounty_recoverable_count_increased', 1);
 
-		if(WC()->session->get('cartbounty_ghost_count_increased')){ //In case we previously increased ghost cart count, we must now reduce it as it has been turned to recoverable
+		if( !WC()->session ) return; //If session does not exist, exit
+
+		if( WC()->session->get( 'cartbounty_recoverable_count_increased' ) ) return; //Exit function in case we already have run this once
+
+		WC()->session->set( 'cartbounty_recoverable_count_increased', true );
+
+		if( WC()->session->get( 'cartbounty_from_link' ) ) return; //Exit if user returned from link - it means we have increased this before
+
+		update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_recoverable_cart_count' ) + 1 ); //Increasing count by one abandoned cart
+
+		if( WC()->session->get( 'cartbounty_ghost_count_increased' ) ){ //In case we previously increased ghost cart count, we must now reduce it as it has been turned to recoverable
 			$this->decrease_ghost_cart_count( 1 );
 		}
 	}
@@ -851,14 +853,13 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function increase_ghost_cart_count(){
-		if(!WC()->session){ //If session does not exist, exit function
-			return;
-		}
-		if(WC()->session->get('cartbounty_ghost_count_increased')){ //Exit fnction in case we already have run this once
-			return;
-		}
-		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') + 1);
-		WC()->session->set('cartbounty_ghost_count_increased', 1);
+
+		if( !WC()->session ) return; //If session does not exist, exit
+
+		if( WC()->session->get( 'cartbounty_ghost_count_increased' ) ) return; //Exit in case we already have run this once
+
+		update_option( 'cartbounty_ghost_cart_count', get_option( 'cartbounty_ghost_cart_count' ) + 1 );
+		WC()->session->set( 'cartbounty_ghost_count_increased', 1 );
 	}
 
 	/**
@@ -867,15 +868,15 @@ class CartBounty_Public{
 	 * @since    7.0
 	 */
 	function increase_recovered_cart_count(){
-		if(!WC()->session){ //If session does not exist, exit function
-			return;
-		}
 
-		if(WC()->session->get('cartbounty_recovered_count_increased')){ //Exit fnction in case we already have run this once
-			return;
-		}
-		update_option('cartbounty_recovered_cart_count', get_option('cartbounty_recovered_cart_count') + 1);
-		WC()->session->set('cartbounty_recovered_count_increased', 1);
+		if( !WC()->session ) return; //If session does not exist, exit function
+
+		if( WC()->session->get( 'cartbounty_recovered_count_increased' ) ) return; //Exit fnction in case we already have run this once
+
+		WC()->session->set( 'cartbounty_recovered_count_increased', 1 );
+
+		update_option( 'cartbounty_recovered_cart_count', get_option( 'cartbounty_recovered_cart_count' ) + 1 );
+		
 	}
 
 	/**
@@ -885,8 +886,13 @@ class CartBounty_Public{
 	 * @param    $count    Abandoned cart number - integer 
 	 */
 	function decrease_recoverable_cart_count( $count ){
-		update_option('cartbounty_recoverable_cart_count', get_option('cartbounty_recoverable_cart_count') - $count);
+		update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_recoverable_cart_count' ) - $count ); //Decreasing the count by one abandoned cart
 		delete_transient( 'cartbounty_recoverable_cart_count' );
+
+		if( WC()->session ) {
+			WC()->session->__unset( 'cartbounty_recoverable_count_increased' );
+			$this->increase_ghost_cart_count(); //Since this is no longer a recoverable cart - must make sure we update ghost cart count
+		}
 	}
 
 	/**
@@ -896,7 +902,11 @@ class CartBounty_Public{
 	 * @param    $count    Cart number - integer 
 	 */
 	function decrease_ghost_cart_count( $count ){
-		update_option('cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count') - $count);
+		update_option( 'cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count' ) - $count );
+
+		if( WC()->session ){
+			WC()->session->__unset( 'cartbounty_ghost_count_increased' );
+		}
 	}
 
 	/**

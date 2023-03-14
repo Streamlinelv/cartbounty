@@ -21,6 +21,7 @@
 	height: 100%;
 	top: 0;
 	left: 0;
+	overflow: auto;
 }
 
 #cartbounty-exit-intent-form-backdrop{
@@ -100,7 +101,7 @@
 	height: 50px;
 	float: none;
 	min-width: unset;
-	border: 0px none;
+	border: 0 none;
 	opacity: .9;
 }
 
@@ -125,6 +126,8 @@
 #cartbounty-exit-intent-form h2{
 	font-size: 34px;
 	line-height: 42px;
+	margin-top: 0;
+	margin-bottom: 15px;
 }
 
 #cartbounty-exit-intent-form p{
@@ -147,7 +150,6 @@
  }
 
 .cartbounty-ei-center #cartbounty-exit-intent-form-container{
-	margin: 0;
 	position: relative;
 	height: auto;
 	width: 100%;

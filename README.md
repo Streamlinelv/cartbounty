@@ -35,6 +35,7 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 
 * Send abandoned cart reminders using WordPress mail server
 * Integrate and send abandoned cart email series [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_readme) and [MailChimp](http://eepurl.com/hHjfrX) (**Pro**)
+* Use [web push notifications](https://www.cartbounty.com/web-push-notifications-abandoned-cart-recovery/) to send low-friction, real-time, personal and efficient reminders that don't require an email or a phone number (**Pro**)
 * Use webhook to send abandoned cart data and create powerful automations in apps like [Make (former Integromat)](https://www.make.com/en?pc=cartbounty), [Pabbly](https://payments.pabbly.com/api/affurl/RVYZ07kQyUZ0Z1HUKZ1m/xciq3ahCAzNG3CSo?target=9Z2AHyhSldo6KI1Fn), Zapier or similar (**Pro**)
 * Integrate and send SMS text message reminders with [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
 * [Personalize messages](https://www.cartbounty.com/personalization-tags/) with dynamic content (**Pro**)
