@@ -1841,7 +1841,7 @@ class CartBounty_Admin{
 				<div class="cartbounty-section-intro">
 					<?php echo esc_html__( "Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab with Tab notification.", 'woo-save-abandoned-carts') . ' ' . sprintf( 
 						/* translators: %s - Link */
-						esc_html__( "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s.", 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'dynamic-browser-tab-notification', 'tn_learn_more' ) ) .'" target="_blank" title="'. esc_html__( 'Learn more about Tab notification', 'woo-save-abandoned-carts' ) .'">', '</a>'
+						esc_html__( "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s.", 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'dynamic-browser-tab-notification', 'tn_learn_more' ) ) .'" target="_blank" title="'. esc_html__( 'Tab notification', 'woo-save-abandoned-carts' ) .'">', '</a>'
 					); ?>
 				</div>
 				<form>

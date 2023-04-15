@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-03-14 14:13+0200\n"
+"POT-Creation-Date: 2023-04-15 11:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -521,7 +521,7 @@ msgstr ""
 msgid "Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the \"Add to cart\" button is clicked."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:973
+#: admin/class-cartbounty-admin.php:973 admin/class-cartbounty-admin.php:1844
 msgid "Tab notification"
 msgstr ""
 
@@ -921,10 +921,6 @@ msgstr ""
 #: admin/class-cartbounty-admin.php:1844
 #, php-format
 msgid "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s."
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1844
-msgid "Learn more about Tab notification"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1852
