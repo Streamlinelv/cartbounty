@@ -2220,7 +2220,7 @@ class CartBounty_Admin{
 			$total = count( $active_unsupported_plugins );
 			$unsupported_plugins_list = implode( ' ' . __('and') . ' ', array_filter( array_merge( array( implode( ', ', array_slice( $active_unsupported_plugins, 0, -1 ) ) ), array_slice( $active_unsupported_plugins, -1 ) ), 'strlen')); //Join plugins with commas and the last two elements with "and"
 			$message = sprintf(
-				/* translators: %s - Cron event name */
+				/* translators: %s - Single or multiple plugin names */
 				wp_kses( _n( 'You are using %s. The Free version of %s does not support saving all options this plugin adds.', 'You are using %s. The Free version of %s does not support saving all options these plugins add.', esc_html( $total ), 'woo-save-abandoned-carts' ), 'data' ), $unsupported_plugins_list, esc_html( CARTBOUNTY_ABREVIATION ) ) . '<br/>' . $this->display_unavailable_notice( 'unsupported_plugins' );
 			echo $this->get_notice_output( $message, $handle, 'notice', true, 'close', $user_specific = true );
 		}
@@ -2356,7 +2356,7 @@ class CartBounty_Admin{
 
 		}else{
 			$subject = '['.$blog_name.'] '. esc_html( _n('New abandoned cart saved! 🛒', 'New abandoned carts saved! 🛒', $cart_count, 'woo-save-abandoned-carts') );
-			$heading = esc_html( _n('New abandoned cart!', 'New abandoned carts! ', $cart_count, 'woo-save-abandoned-carts') );
+			$heading = esc_html( _n('New abandoned cart!', 'New abandoned carts!', $cart_count, 'woo-save-abandoned-carts') );
 			$content = sprintf(
 			/* translators: %1$d - Abandoned cart count, %2$s - Plugin name */
 			esc_html( _n('Great, you have saved a new recoverable abandoned cart using %2$s.', 'Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s.', $cart_count, 'woo-save-abandoned-carts') ), esc_html( $cart_count ), esc_html( CARTBOUNTY_ABREVIATION ) );

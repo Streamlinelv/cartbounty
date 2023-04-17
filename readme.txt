@@ -34,7 +34,7 @@ CartBounty saves and displays all shopping cart activity from the moment a produ
 * View ghost (guest) carts
 * Get notified about newly abandoned carts
 * Export abandoned carts (**Pro**)
-* Prevent bots from leaving abandoned carts using invisible Google reCAPTCHA (**Pro**)
+* Prevent bots from leaving abandoned carts using Google reCAPTCHA (**Pro**)
 
 ## Automate abandoned cart recovery
 
