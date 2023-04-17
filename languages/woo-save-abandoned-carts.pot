@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-15 11:39+0300\n"
+"POT-Creation-Date: 2023-04-17 22:27+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -1054,7 +1054,7 @@ msgstr[1] ""
 
 #: admin/class-cartbounty-admin.php:2359
 msgid "New abandoned cart!"
-msgid_plural "New abandoned carts! "
+msgid_plural "New abandoned carts!"
 msgstr[0] ""
 msgstr[1] ""
 
