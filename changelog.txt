@@ -3,7 +3,7 @@
 = 7.2 =
 * Increased maximum abandoned cart sync period from 30 to 100 days
 * Improved emoji support
-* Fixed ghost and recoverable cart count update
+* Fixed anonymous and recoverable cart count update
 * Fixed a warning if email input field missing from Checkout page
 * Fixed WordPress email loop issue when an email could not be delivered
 
@@ -143,7 +143,7 @@
 * Overall design, UI / UX improvements
 * Moved CartBounty menu closer to WooCommerce Orders section
 * Fixed issue with saving abandoned carts without an email field present in the checkout form
-* Fixed issue with abandoned cart count next to CartBounty menu with disabled ghost carts
+* Fixed issue with abandoned cart count next to CartBounty menu with disabled anonymous carts
 
 = 5.0.4 =
 * Code cleanup
@@ -163,8 +163,8 @@
 * CartBounty database table name renamed from "captured_wc_fields" to "cartbounty"
 
 = 5.0 =
-* Added option to save and view ghost carts
-* Added option to filter between ghost and recoverable carts
+* Added option to save and view anonymous carts
+* Added option to filter between anonymous and recoverable carts
 * Added screen options tab
 
 = 4.7 =

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-17 22:27+0300\n"
+"POT-Creation-Date: 2023-04-18 22:46+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -194,15 +194,15 @@ msgid "Enable"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:358
-msgid "Ghost carts"
+msgid "Anonymous carts"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:360
-msgid "Ghost carts are carts that can’t be identified since the visitor has not provided neither email nor phone number."
+msgid "Carts that cannot be identified are classified as anonymous since the visitor has not provided any contact information."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:370 includes/class-cartbounty-status.php:93
-msgid "Exclude ghost carts"
+msgid "Exclude anonymous carts"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:374
@@ -222,7 +222,7 @@ msgid "Select none"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:385
-msgid "Automatically delete ghost carts older than"
+msgid "Automatically delete anonymous carts older than"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:387
@@ -234,7 +234,7 @@ msgid "Notifications"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:399
-msgid "Receive email notifications about newly abandoned carts. Please note, that you will not get emails about ghost carts."
+msgid "Receive email notifications about newly abandoned carts. Please note, that you will not get emails about anonymous carts."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:404
@@ -259,11 +259,11 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:431
 #, php-format
-msgid "In case you feel that bots might be leaving recoverable abandoned carts. Please %sview this%s to learn how to prevent bots from leaving ghost carts."
+msgid "In case you feel that bots might be leaving recoverable abandoned carts. Please %sview this%s to learn how to prevent bots from leaving anonymous carts."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:431
-msgid "Prevent bots from leaving ghost carts"
+msgid "Prevent bots from leaving anonymous carts"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:440
@@ -275,7 +275,7 @@ msgid "Unfinished orders"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:451
-msgid "Send abandoned cart reminders about WooCommerce orders that have been abandoned."
+msgid "Send reminders about WooCommerce orders that have been abandoned."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:461
@@ -452,7 +452,7 @@ msgid "Send email after"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:909
-msgid "ActiveCampaign is awesome and allows creating different If/Else statements to setup elaborate rules for sending abandoned cart recovery emails."
+msgid "ActiveCampaign is an awesome platform that enable you to set up advanced rules for sending abandoned cart recovery emails tailored to customer behavior."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:909
@@ -464,15 +464,15 @@ msgid "GetResponse offers efficient and beautifully designed email marketing pla
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:923
-msgid "MailChimp offers a forever free plan and allows to create both single and series of reminder emails (e.g., first email in the 1st hour of cart abandonment, 2nd after 24 hours etc.)."
+msgid "MailChimp offers a free plan and allows you to send personalized reminder emails for your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:923
 msgid "MailChimp will only send the 1st email in the series unless a user becomes a subscriber."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:930
-msgid "A simple solution for sending abandoned cart recovery emails using the default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts."
+#: admin/class-cartbounty-admin.php:930 admin/class-cartbounty-admin.php:1004
+msgid "A simple solution for sending abandoned cart reminder emails using WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:930
@@ -480,11 +480,11 @@ msgid "If you are looking for something more advanced and powerful, please consi
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:937
-msgid "A perfect channel for sending personalized, time-sensitive SMS text messages like abandoned cart reminders."
+msgid "A perfect channel for sending personalized SMS text messages like abandoned cart reminders."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:937
-msgid "Add an additional dimension to your existing abandoned cart email recovery workflow including a personal SMS about the abandoned cart."
+msgid "Recover more lost sales with a personal SMS message added to your abandoned cart email recovery workflow."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:940
@@ -531,7 +531,7 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:1004
 #, php-format
-msgid "A simple solution for sending abandoned cart recovery emails using the default WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts. If you are looking for something more advanced and powerful, please consider upgrading to %s%s Pro%s."
+msgid "If you are looking for something more advanced and powerful, please consider upgrading to %s%s Pro%s."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1017
@@ -704,7 +704,7 @@ msgid "Coupon"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1241
-msgid "Add a coupon code to your recovery email as it might help to increase recovery ratio."
+msgid "Consider adding a coupon code to your reminder to encourage customers to complete their purchase."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1250
@@ -960,7 +960,7 @@ msgid "Enable Favicon change"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1905
-msgid "A Favicon is a small image or icon displayed next to the page title in the browser tab."
+msgid "A Favicon is a small image displayed next to the page title in the browser tab."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1914
@@ -1175,7 +1175,7 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:3214
 #: includes/class-cartbounty-status.php:74
-msgid "Ghost"
+msgid "Anonymous"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:3279
@@ -1225,7 +1225,7 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:3885
 #, php-format
-msgid "Use %1$scustom filters%2$s to exclude carts by language, country etc."
+msgid "Use %1$svarious filters%2$s to exclude carts by language, country etc."
 msgstr ""
 
 #: includes/class-cartbounty-status.php:82

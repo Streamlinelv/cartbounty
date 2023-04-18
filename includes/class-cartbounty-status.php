@@ -70,8 +70,8 @@ class CartBounty_System_Status{
 		if(get_option('cartbounty_recoverable_cart_count')){
 			$carts[] = esc_html__('Recoverable', 'woo-save-abandoned-carts' ) .': '. esc_html( get_option('cartbounty_recoverable_cart_count') );
 		}
-		if(get_option('cartbounty_ghost_cart_count')){
-			$carts[] = esc_html__('Ghost', 'woo-save-abandoned-carts' ) .': '. esc_html( get_option('cartbounty_ghost_cart_count') );
+		if(get_option('cartbounty_anonymous_cart_count')){
+			$carts[] = esc_html__('Anonymous', 'woo-save-abandoned-carts' ) .': '. esc_html( get_option('cartbounty_anonymous_cart_count') );
 		}
 		if(get_option('cartbounty_recovered_cart_count')){
 			$carts[] = esc_html__('Recovered', 'woo-save-abandoned-carts' ) .': '. esc_html( get_option('cartbounty_recovered_cart_count') );
@@ -89,8 +89,8 @@ class CartBounty_System_Status{
 			$exit_intent_options[] = esc_html__('Test mode', 'woo-save-abandoned-carts' );
 		}
 
-		if(get_option('cartbounty_exclude_ghost_carts')){
-			$settings[] = esc_html__( 'Exclude ghost carts', 'woo-save-abandoned-carts' );
+		if(get_option('cartbounty_exclude_anonymous_carts')){
+			$settings[] = esc_html__( 'Exclude anonymous carts', 'woo-save-abandoned-carts' );
 		}
 		if( isset( $notification_frequency['selected'] ) ){
 

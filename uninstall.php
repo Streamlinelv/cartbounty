@@ -22,13 +22,13 @@ $wpdb->query( "DROP TABLE IF EXISTS $email_table" );
 //Removing Custom options created with the plugin
 delete_option( 'cartbounty_notification_email' );
 delete_option( 'cartbounty_notification_frequency' );
-delete_option( 'cartbounty_exclude_ghost_carts' );
+delete_option( 'cartbounty_exclude_anonymous_carts' );
 delete_option( 'cartbounty_last_time_bubble_displayed' );
 delete_option( 'cartbounty_last_time_bubble_steps_displayed' );
 delete_option( 'cartbounty_review_submitted' );
 delete_option( 'cartbounty_version_number' );
 delete_option( 'cartbounty_recoverable_cart_count' );
-delete_option( 'cartbounty_ghost_cart_count' );
+delete_option( 'cartbounty_anonymous_cart_count' );
 delete_option( 'cartbounty_recovered_cart_count' );
 delete_option( 'cartbounty_times_review_declined' );
 delete_option( 'cartbounty_exit_intent_status' );

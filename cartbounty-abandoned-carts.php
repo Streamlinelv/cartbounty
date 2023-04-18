@@ -47,7 +47,7 @@ register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );
 register_setting( 'cartbounty-settings', 'cartbounty_notification_frequency' );
 register_setting( 'cartbounty-settings', 'cartbounty_lift_email' );
 register_setting( 'cartbounty-settings', 'cartbounty_hide_images' );
-register_setting( 'cartbounty-settings', 'cartbounty_exclude_ghost_carts' );
+register_setting( 'cartbounty-settings', 'cartbounty_exclude_anonymous_carts' );
 register_setting( 'cartbounty-settings', 'cartbounty_exclude_recovered' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_status' );
 register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_test_mode' );

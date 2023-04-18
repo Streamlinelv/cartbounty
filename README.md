@@ -24,7 +24,7 @@ With thoughtful user experience, built-in efficiency tools and ability to integr
 CartBounty saves and displays all shopping cart activity from the moment a product is added to the cart.
 
 * Analyze most popular cart items
-* View ghost (guest) carts
+* View anonymous carts
 * Get notified about newly abandoned carts
 * Export abandoned carts (**Pro**)
 * Prevent bots from leaving abandoned carts using Google reCAPTCHA (**Pro**)
@@ -70,13 +70,13 @@ Take advantage of abandoned cart email series, message personalization and other
 
 ### When is the cart saved?
 
-When a user adds an item to their cart, it is automatically visible to the store administrator under CartBounty abandoned carts. However, at this stage, the cart is considered a ghost cart until an email address or phone number is provided from one of the following locations:
+As soon as an item is added to the cart, store administrator can see it in CartBounty abandoned carts, but it remains anonymous until the user provides contact information from one of the following sources:
 
 * [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") or [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") tools
 * WooCommerce Checkout form
 * The user's account if they are logged in
 
-As soon as CartBounty has user's contact information, the ghost cart is turned into a recoverable cart. After the user places an order, the abandoned cart is immediately removed from the list of abandoned carts.
+As soon as CartBounty has user's contact information, the anonymous cart is turned into a recoverable cart. After the user places an order, the abandoned cart is immediately removed from the list of abandoned carts.
 
 If you would like to enable Unfinished order recovery, please consider upgrading to [CartBounty Pro](https://www.cartbounty.com).
 
@@ -97,17 +97,17 @@ The free version of CartBounty offers a basic solution for sending abandoned car
 
 Upgrade to [CartBounty Pro](https://www.cartbounty.com) to setup and send automated abandoned cart recovery Push notifications, emails and SMS text messages using [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC)* , [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_free_readme)* , [MailChimp](http://eepurl.com/hHjfrX)* or [BulkGate](https://portal.bulkgate.com/join/55713)* .
 
-### What are ghost carts?
+### What are anonymous carts?
 
-A ghost or guest cart is a shopping cart that cannot be identified. In this scenario, the user has added one or multiple items to the cart but has not provided any contact information that can later be used to recover it.
+Carts that cannot be identified are classified as anonymous since the visitor has not provided any contact information. In this scenario, the user has added one or multiple items to the cart but has not provided any contact information that can later be used to recover it.
 
-Perhaps you're curious as to why someone would want to save these types of carts. Here are some reasons why:
+Perhaps you are curious as to why someone would want to save them? Here are a couple of reasons:
 
 To keep track of live shopping cart activity and get a better understanding of what's happening in your store.
 To identify the most popular products that are being added to carts.
 To gather information about the potential revenue from abandoned carts.
 
-CartBounty settings allow you to disable ghost carts or allow them only from specific countries.
+CartBounty settings allow you to disable anonymous carts or allow them only from specific countries.
 
 ### How does Exit Intent Technology work?
 
@@ -269,22 +269,22 @@ How to change the default footer address. By default, it is taken from WooCommer
 	}
 	add_filter( 'cartbounty_automation_footer_address_2', 'cartbounty_alter_automation_footer_address_2' );
 
-### How to prevent bots from leaving ghost carts?
+### How to prevent bots from leaving anonymous carts?
 
-If you have noticed unusual amounts of multiple new ghost carts being left almost at the same time, from one country and consisting of a single product, it might be that they are left by bots who are visiting your store.
+If you have noticed unusual amounts of multiple new anonymous carts being left almost at the same time, from one country and consisting of a single product, it might be that they are left by bots who are visiting your store.
 
 Bots can be divided into two groups – good ones and bad ones.
 
 * Good bots. The most common example of a good bot could be a web crawler. It is a bot that is sent via a search engine like Google to index your shop. Online store owners generally welcome these bots, because it keeps their content and products visible in the search engine results and hopefully will attract new visitors
 * Harmful bots. These bots are visiting your store for malicious purposes. Their actions range from mildly harmful to potentially critical. Bad bots are scanning your store for weak spots, security holes, ways to take over your store, steal your visitor credit card data etc. Besides that, they are also increasing stress on your server thus slowing down your store
 
-Harmful bots are the ones that might be responsible for leaving new ghost carts on your website. While this is not dangerous, it can be frustrating and annoying. Here are three solutions that will help you to deal to with them:
+Harmful bots are the ones that might be responsible for leaving new anonymous carts on your website. While this is not dangerous, it can be frustrating and annoying. Here are three solutions that will help you to deal to with them:
 
-1. The quick solution is to simply disable ghost carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities, and slowing down your shop
-1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep ghost carts enabled to see what your customers are shopping for
+1. The quick solution is to simply disable anonymous carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities, and slowing down your shop
+1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep anonymous carts enabled to see what your customers are shopping for
 1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article on [how to block bad bots](https://www.seoblog.com/block-bots-spiders-htaccess) which will provide more about this topic
 
-In addition, the Pro version allows you to select if guests from specific countries should be able to leave ghost carts thus making sure that bots coming from countries you do not sell to are not able to leave ghost carts.
+In addition, the Pro version allows you to select if guests from specific countries should be able to leave anonymous carts thus making sure that bots coming from countries you do not sell to are not able to leave anonymous carts.
 
 ## Screenshots
 

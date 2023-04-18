@@ -234,5 +234,19 @@ class CartBounty_Activator{
 		}
 
 		transfer_time_to_miliseconds();
+
+		/**
+		 * Since version 7.2.1
+		 * This code will be removed in later versions
+		 */
+		if(get_option('cartbounty_ghost_cart_count')){
+			update_option('cartbounty_anonymous_cart_count', get_option('cartbounty_ghost_cart_count'));
+			delete_option('cartbounty_ghost_cart_count');
+		}
+
+		if(get_option('cartbounty_exclude_ghost_carts')){
+			update_option('cartbounty_exclude_anonymous_carts', get_option('cartbounty_exclude_ghost_carts'));
+			delete_option('cartbounty_exclude_ghost_carts');
+		}
 	}
 }

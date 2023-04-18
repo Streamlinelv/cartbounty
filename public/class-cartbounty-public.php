@@ -101,27 +101,27 @@ class CartBounty_Public{
 	 * @since    5.0
 	 */
 	function save_cart(){
-		$ghost = true;
+		$anonymous = true;
 
 		if( isset( $_GET['cartbounty'] ) ) return;
 
 		if( !WC()->cart ) return;
 
 		if( $this->cart_recoverable() ){ //If cart is recoverable
-			$ghost = false;
+			$anonymous = false;
 			$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
 		}
 
-		if( get_option( 'cartbounty_exclude_ghost_carts' ) && $ghost ) return;
+		if( get_option( 'cartbounty_exclude_anonymous_carts' ) && $anonymous ) return;
 
 		$cart = $this->read_cart();
 		$cart_saved = $this->cart_saved( $cart['session_id'] );
 
 		if( $cart_saved ){ //If cart has already been saved
-			$this->update_cart( $cart, $ghost );
+			$this->update_cart( $cart, $anonymous );
 
 		}else{
-			$this->create_new_cart( $cart, $ghost );
+			$this->create_new_cart( $cart, $anonymous );
 		}
 	}
 
@@ -129,10 +129,10 @@ class CartBounty_Public{
 	 * Method creates a new cart
 	 *
 	 * @since    5.0
-	 * @param    array      $cart     Cart contents
-	 * @param    boolean    $ghost    If the cart is a ghost cart or not
+	 * @param    array      $cart     		Cart contents
+	 * @param    boolean    $anonymous    	If the cart is anonymous or not
 	 */
-	function create_new_cart( $cart = array(), $ghost = false ){
+	function create_new_cart( $cart = array(), $anonymous = false ){
 		global $wpdb;
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
@@ -144,7 +144,7 @@ class CartBounty_Public{
 			return;
 		}
 
-		if($ghost){ //If dealing with a ghost cart
+		if($anonymous){ //If dealing with anonymous cart
 			//Inserting row into database
 			$wpdb->query(
 				$wpdb->prepare(
@@ -161,7 +161,7 @@ class CartBounty_Public{
 					)
 				)
 			);
-			$this->increase_ghost_cart_count();
+			$this->increase_anonymous_cart_count();
 
 		}else{
 			$other_fields = NULL;
@@ -198,10 +198,10 @@ class CartBounty_Public{
 	 * Method updates a cart
 	 *
 	 * @since    5.0
-	 * @param    array      $cart     Cart contents
-	 * @param    boolean    $ghost    If the cart is a ghost cart or not
+	 * @param    array      $cart     		Cart contents
+	 * @param    boolean    $anonymous   	If the cart is anonymous or not
 	 */
-	function update_cart( $cart = array(), $ghost = false ){
+	function update_cart( $cart = array(), $anonymous = false ){
 		$user_data = $this->get_user_data();
 
 		//In case if the cart has no items in it, we must delete the cart
@@ -211,7 +211,7 @@ class CartBounty_Public{
 			return;
 		}
 
-		if($ghost){ //In case of a ghost cart
+		if($anonymous){ //In case of anonymous cart
 			$this->update_cart_data($cart);
 
 		}else{
@@ -560,9 +560,9 @@ class CartBounty_Public{
 		if($duplicate_count){ //If we have updated at least one row
 			if($duplicate_count > 1){ //Checking if we have updated more than a single row to know if there were duplicates
 				$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-				$where_sentence = $admin->get_where_sentence('ghost');
-				//First delete all duplicate ghost carts
-				$deleted_duplicate_ghost_carts = $wpdb->query(
+				$where_sentence = $admin->get_where_sentence('anonymous');
+				//First delete all duplicate anonymous carts
+				$deleted_duplicate_anonymous_carts = $wpdb->query(
 					$wpdb->prepare(
 						"DELETE FROM $cart_table
 						WHERE session_id = %s
@@ -571,7 +571,7 @@ class CartBounty_Public{
 					)
 				);
 
-				$limit = $duplicate_count - $deleted_duplicate_ghost_carts - 1;
+				$limit = $duplicate_count - $deleted_duplicate_anonymous_carts - 1;
 				if($limit < 1){
 					$limit = 0;
 				}
@@ -842,24 +842,24 @@ class CartBounty_Public{
 
 		update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_recoverable_cart_count' ) + 1 ); //Increasing count by one abandoned cart
 
-		if( WC()->session->get( 'cartbounty_ghost_count_increased' ) ){ //In case we previously increased ghost cart count, we must now reduce it as it has been turned to recoverable
-			$this->decrease_ghost_cart_count( 1 );
+		if( WC()->session->get( 'cartbounty_anonymous_count_increased' ) ){ //In case we previously increased anonymous cart count, we must now reduce it as it has been turned to recoverable
+			$this->decrease_anonymous_cart_count( 1 );
 		}
 	}
 
 	/**
-	 * Method saves and updates total count of captured ghost carts
+	 * Method saves and updates total count of captured anonymous carts
 	 *
 	 * @since    5.0
 	 */
-	function increase_ghost_cart_count(){
+	function increase_anonymous_cart_count(){
 
 		if( !WC()->session ) return; //If session does not exist, exit
 
-		if( WC()->session->get( 'cartbounty_ghost_count_increased' ) ) return; //Exit in case we already have run this once
+		if( WC()->session->get( 'cartbounty_anonymous_count_increased' ) ) return; //Exit in case we already have run this once
 
-		update_option( 'cartbounty_ghost_cart_count', get_option( 'cartbounty_ghost_cart_count' ) + 1 );
-		WC()->session->set( 'cartbounty_ghost_count_increased', 1 );
+		update_option( 'cartbounty_anonymous_cart_count', get_option( 'cartbounty_anonymous_cart_count' ) + 1 );
+		WC()->session->set( 'cartbounty_anonymous_count_increased', 1 );
 	}
 
 	/**
@@ -891,26 +891,26 @@ class CartBounty_Public{
 
 		if( WC()->session ) {
 			WC()->session->__unset( 'cartbounty_recoverable_count_increased' );
-			$this->increase_ghost_cart_count(); //Since this is no longer a recoverable cart - must make sure we update ghost cart count
+			$this->increase_anonymous_cart_count(); //Since this is no longer a recoverable cart - must make sure we update anonymous cart count
 		}
 	}
 
 	/**
-	 * Method decreases the total count of captured ghost carts
+	 * Method decreases the total count of captured anonymous carts
 	 *
 	 * @since    5.0
 	 * @param    $count    Cart number - integer 
 	 */
-	function decrease_ghost_cart_count( $count ){
-		update_option( 'cartbounty_ghost_cart_count', get_option('cartbounty_ghost_cart_count' ) - $count );
+	function decrease_anonymous_cart_count( $count ){
+		update_option( 'cartbounty_anonymous_cart_count', get_option('cartbounty_anonymous_cart_count' ) - $count );
 
 		if( WC()->session ){
-			WC()->session->__unset( 'cartbounty_ghost_count_increased' );
+			WC()->session->__unset( 'cartbounty_anonymous_count_increased' );
 		}
 	}
 
 	/**
-	 * Outputing email form if a ghost user who is not logged in wants to leave with a full shopping cart
+	 * Outputing email form if anonymous user who is not logged in wants to leave with a full shopping cart
 	 *
 	 * @since    3.0
 	 */
