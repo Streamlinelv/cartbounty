@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-18 22:46+0300\n"
+"POT-Creation-Date: 2023-04-19 11:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -464,7 +464,7 @@ msgid "GetResponse offers efficient and beautifully designed email marketing pla
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:923
-msgid "MailChimp offers a free plan and allows you to send personalized reminder emails for your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
+msgid "MailChimp offers a free plan and allows to send personalized reminder emails for your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:923
@@ -484,7 +484,7 @@ msgid "A perfect channel for sending personalized SMS text messages like abandon
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:937
-msgid "Recover more lost sales with a personal SMS message added to your abandoned cart email recovery workflow."
+msgid "Recover more lost sales with a personal SMS message added to your abandoned cart email recovery process."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:940
@@ -501,7 +501,7 @@ msgstr ""
 
 #: admin/class-cartbounty-admin.php:953
 #, php-format
-msgid "Webhook offers an easy way of sending event-based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing workflows."
+msgid "Webhook offers an easy way of sending event-based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing processes."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:961
@@ -535,11 +535,11 @@ msgid "If you are looking for something more advanced and powerful, please consi
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1017
-msgid "Automation workflow"
+msgid "Automation process"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1019
-msgid "Configure your abandoned cart reminder emails, how they look, when to send them, include coupons, etc. You can choose to enable just one or all of them creating a 3-step automation workflow. The countdown of the next step starts right after the previous one is finished."
+msgid "Configure your abandoned cart reminder emails, how they look, when to send them, include coupons, etc. You can choose to enable just one or all of them creating a 3-step automation process. The countdown of the next step starts right after the previous one is finished."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1049 admin/class-cartbounty-admin.php:1294
@@ -1094,7 +1094,7 @@ msgid "Done that"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:2587 admin/class-cartbounty-admin.php:2592
-msgid "Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos 😸"
+msgid "Automate your abandoned cart recovery process and get back to those lovely cat videos 😸"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:2593
