@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-19 18:12+0300\n"
+"POT-Creation-Date: 2023-04-19 21:13+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -749,7 +749,7 @@ msgid "Disabled"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1344 admin/class-cartbounty-admin.php:1413
-msgid "Upgrade to enable this email"
+msgid "Upgrade to enable this reminder"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1431
