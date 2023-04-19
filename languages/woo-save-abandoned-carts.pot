@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-19 11:01+0300\n"
+"POT-Creation-Date: 2023-04-19 18:12+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -484,7 +484,7 @@ msgid "A perfect channel for sending personalized SMS text messages like abandon
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:937
-msgid "Recover more lost sales with a personal SMS message added to your abandoned cart email recovery process."
+msgid "Recover more sales by sending a personal SMS message along with other abandoned cart reminders."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:940

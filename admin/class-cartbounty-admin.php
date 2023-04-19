@@ -934,7 +934,7 @@ class CartBounty_Admin{
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_BULKGATE_TRIAL_LINK,
-					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Recover more lost sales with a personal SMS message added to your abandoned cart email recovery process.", 'woo-save-abandoned-carts') . '</p>'
+					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Recover more sales by sending a personal SMS message along with other abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p>'
 				),
 				'push_notification'	=> array(
 					'name'				=> esc_html__( 'Push notifications', 'woo-save-abandoned-carts' ),
@@ -1341,7 +1341,7 @@ class CartBounty_Admin{
 												<div class="cartbounty-row">
 													<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-lg-3">
 														<div class="cartbounty-automation-name">
-															<h3><?php esc_html_e('Upgrade to enable this email', 'woo-save-abandoned-carts'); ?></h3>
+															<h3><?php esc_html_e('Upgrade to enable this reminder', 'woo-save-abandoned-carts'); ?></h3>
 														</div>
 													</div>
 													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
@@ -1410,7 +1410,7 @@ class CartBounty_Admin{
 												<div class="cartbounty-row">
 													<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-lg-3">
 														<div class="cartbounty-automation-name">
-															<h3><?php esc_html_e('Upgrade to enable this email', 'woo-save-abandoned-carts'); ?></h3>
+															<h3><?php esc_html_e('Upgrade to enable this reminder', 'woo-save-abandoned-carts'); ?></h3>
 														</div>
 													</div>
 													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
