@@ -77,7 +77,7 @@ Take advantage of abandoned cart email series, message personalization and other
 
 = When is the cart saved? =
 
-As soon as an item is added to the cart, store administrator can see it in CartBounty abandoned carts, but it remains anonymous until the user provides contact information from one of the following sources:
+As soon as a product is added to the cart, it is visible to the store administrator in CartBounty abandoned carts. The cart remains anonymous until the user provides contact information from one of the following sources:
 
 * [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") or [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") tools
 * WooCommerce Checkout form
