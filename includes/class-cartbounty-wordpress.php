@@ -14,15 +14,15 @@
 class CartBounty_WordPress{
 	
 	/**
-	 * Starting WordPress email automation workflow
+	 * Starting WordPress email automation process
 	 *
 	 * @since    7.0
 	 */
 	public function auto_send(){
 		if( !class_exists( 'WooCommerce' ) ) return; //Exit if license key not valid or if WooCommerce is not activated
 
-		if( $this->automation_enabled() ){ //If WordPress email automation workflow enabled
-			//Activating automation workflow
+		if( $this->automation_enabled() ){ //If WordPress email automation process enabled
+			//Activating automation process
 			$this->recover_carts();
 		}
 	}

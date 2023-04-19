@@ -934,7 +934,7 @@ class CartBounty_Admin{
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_BULKGATE_TRIAL_LINK,
-					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Recover more lost sales with a personal SMS message added to your abandoned cart email recovery workflow.", 'woo-save-abandoned-carts') . '</p>'
+					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Recover more lost sales with a personal SMS message added to your abandoned cart email recovery process.", 'woo-save-abandoned-carts') . '</p>'
 				),
 				'push_notification'	=> array(
 					'name'				=> esc_html__( 'Push notifications', 'woo-save-abandoned-carts' ),
@@ -950,7 +950,7 @@ class CartBounty_Admin{
 					'info_link'			=> CARTBOUNTY_WEBHOOK_LINK,
 					'description'		=> '<p>' . sprintf(
 						/* translators: %1$s - Link start, %2$s - Link start, %3$s - Link end */
-						esc_html__( 'Webhook offers an easy way of sending event-based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing workflows.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( CARTBOUNTY_MAKE_LINK ) .'" target="_blank">', '<a href="'. esc_url( CARTBOUNTY_PABBLY_LINK ) .'" target="_blank">', '</a>' ) . '</p>'
+						esc_html__( 'Webhook offers an easy way of sending event-based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing processes.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( CARTBOUNTY_MAKE_LINK ) .'" target="_blank">', '<a href="'. esc_url( CARTBOUNTY_PABBLY_LINK ) .'" target="_blank">', '</a>' ) . '</p>'
 				)
 			);
 		}
@@ -1014,9 +1014,9 @@ class CartBounty_Admin{
 					?>
 					<div class="cartbounty-row">
 						<div class="cartbounty-titles-column cartbounty-full-width cartbounty-col-sm-12 cartbounty-col-md-12 cartbounty-col-lg-12">
-							<h4><?php esc_html_e('Automation workflow', 'woo-save-abandoned-carts'); ?></h4>
+							<h4><?php esc_html_e('Automation process', 'woo-save-abandoned-carts'); ?></h4>
 							<p class="cartbounty-titles-column-description">
-								<?php esc_html_e('Configure your abandoned cart reminder emails, how they look, when to send them, include coupons, etc. You can choose to enable just one or all of them creating a 3-step automation workflow. The countdown of the next step starts right after the previous one is finished.', 'woo-save-abandoned-carts'); ?>
+								<?php esc_html_e('Configure your abandoned cart reminder emails, how they look, when to send them, include coupons, etc. You can choose to enable just one or all of them creating a 3-step automation process. The countdown of the next step starts right after the previous one is finished.', 'woo-save-abandoned-carts'); ?>
 							</p>
 						</div>
 						<div class="cartbounty-settings-column cartbounty-full-width cartbounty-col-sm-12 cartbounty-col-md-12 cartbounty-col-lg-12">
@@ -2584,12 +2584,12 @@ class CartBounty_Admin{
 				<?php endif; ?>
 				<div id="cartbounty-go-pro" class="cartbounty-bubble">
 					<div class="cartbounty-header-image">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" title="<?php esc_attr_e('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts'); ?>" target="_blank">
+						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" title="<?php esc_attr_e('Automate your abandoned cart recovery process and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts'); ?>" target="_blank">
 							<img src="<?php echo esc_url( plugins_url( 'assets/notification-email.gif', __FILE__ ) ); ?>"/>
 						</a>
 					</div>
 					<div id="cartbounty-go-pro-content">
-						<h2><?php esc_html_e('Fully automate your abandoned cart recovery workflow and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts' ); ?></h2>
+						<h2><?php esc_html_e('Automate your abandoned cart recovery process and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts' ); ?></h2>
 						<p><?php esc_html_e('Use your time wisely by enabling Pro features and increase your sales.', 'woo-save-abandoned-carts' ); ?></p>
 						<div class="cartbounty-button-row">
 							<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
