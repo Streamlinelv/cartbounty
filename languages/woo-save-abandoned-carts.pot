@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-19 21:13+0300\n"
+"POT-Creation-Date: 2023-04-20 11:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -464,7 +464,7 @@ msgid "GetResponse offers efficient and beautifully designed email marketing pla
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:923
-msgid "MailChimp offers a free plan and allows to send personalized reminder emails for your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
+msgid "MailChimp offers a free plan and allows to send personalized reminder emails to your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:923

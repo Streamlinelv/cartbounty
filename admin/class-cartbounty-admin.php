@@ -920,7 +920,7 @@ class CartBounty_Admin{
 					'connected'			=> false,
 					'availability'		=> false,
 					'info_link'			=> CARTBOUNTY_MAILCHIMP_LINK,
-					'description'		=> '<p>' . esc_html__("MailChimp offers a free plan and allows to send personalized reminder emails for your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("MailChimp will only send the 1st email in the series unless a user becomes a subscriber.", 'woo-save-abandoned-carts') . '</p>'
+					'description'		=> '<p>' . esc_html__("MailChimp offers a free plan and allows to send personalized reminder emails to your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("MailChimp will only send the 1st email in the series unless a user becomes a subscriber.", 'woo-save-abandoned-carts') . '</p>'
 				),
 				'wordpress'	=> array(
 					'name'				=> 'WordPress',

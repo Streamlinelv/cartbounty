@@ -82,6 +82,7 @@ As soon as a product is added to the cart, it is visible to the store administra
 * [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") or [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") tools
 * WooCommerce Checkout form
 * The user's account if they are logged in
+* [Web push notification](https://www.cartbounty.com/web-push-notifications-abandoned-cart-recovery/ "Web push notification") permission
 
 As soon as CartBounty has user's contact information, the anonymous cart is turned into a recoverable cart. After the user places an order, the abandoned cart is immediately removed from the list of abandoned carts.
 
@@ -289,7 +290,7 @@ Harmful bots are the ones that might be responsible for leaving new anonymous ca
 
 1. The quick solution is to simply disable anonymous carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities, and slowing down your shop
 1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep anonymous carts enabled to see what your customers are shopping for
-1. If you would not like to install a new plugin and you have a developer who is able to help, you could try this solution. At first you will have to find your server access logs and find which of these entries have been left by bots. After that you can use .htaccess file to block these bots from further visits. Here is a good article on [how to block bad bots](https://www.seoblog.com/block-bots-spiders-htaccess) which will provide more about this topic
+1. If you have a developer, they can help you check your server access logs to identify any bot entries. Then, you can use the .htaccess file to block these bots and prevent them from visiting your website. Check out this article for more information on [blocking bad bots](https://www.seoblog.com/block-bots-spiders-htaccess).
 
 In addition, the Pro version allows you to select if guests from specific countries should be able to leave anonymous carts thus making sure that bots coming from countries you do not sell to are not able to leave anonymous carts.
 
