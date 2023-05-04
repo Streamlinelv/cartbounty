@@ -157,7 +157,7 @@ class CartBounty_Admin{
 			//Outputing how many rows we would like to see on the page
 			$option = 'per_page';
 			$args = array(
-				'label' => esc_html__('Carts per page: ', 'woo-save-abandoned-carts'),
+				'label' => esc_html__('Carts per page:', 'woo-save-abandoned-carts'),
 				'default' => 10,
 				'option' => 'cartbounty_carts_per_page'
 			);
@@ -527,7 +527,7 @@ class CartBounty_Admin{
 											</label>
 											<label for="cartbounty-hide-images"><?php esc_html_e('Display abandoned cart contents in a list', 'woo-save-abandoned-carts'); ?></label>
 											<p class='cartbounty-additional-information'>
-												<?php esc_html_e('This will only affect how abandoned cart contents are displayed in the Abandoned carts tab.', 'woo-save-abandoned-carts'); ?>
+												<?php esc_html_e('This will only affect how abandoned cart contents are displayed in the list of abandoned carts.', 'woo-save-abandoned-carts'); ?>
 											</p>
 										</div>
 									</div>

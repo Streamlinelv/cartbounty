@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2023-04-20 11:10+0300\n"
+"POT-Creation-Date: 2023-05-04 21:42+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -97,7 +97,7 @@ msgid "CartBounty Abandoned carts"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:160
-msgid "Carts per page: "
+msgid "Carts per page:"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:177
@@ -329,7 +329,7 @@ msgid "Display abandoned cart contents in a list"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:530
-msgid "This will only affect how abandoned cart contents are displayed in the Abandoned carts tab."
+msgid "This will only affect how abandoned cart contents are displayed in the list of abandoned carts."
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:540 admin/class-cartbounty-admin.php:1457

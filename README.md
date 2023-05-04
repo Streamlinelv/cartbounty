@@ -34,10 +34,10 @@ CartBounty saves and displays all shopping cart activity from the moment a produ
 Save your time with automated abandoned cart recovery and focus your energy on the important stuff.
 
 * Send abandoned cart reminders using WordPress mail server
-* Integrate and send abandoned cart email series [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_readme) and [MailChimp](http://eepurl.com/hHjfrX) (**Pro**)
+* Send abandoned cart email series using [ActiveCampaign](https://www.activecampaign.com/?_r=5347LGDC), [GetResponse](https://www.getresponse.com/?a=vPJGRchyVX&c=cartbounty_readme) and [MailChimp](http://eepurl.com/hHjfrX) (**Pro**)
 * Use [web push notifications](https://www.cartbounty.com/web-push-notifications-abandoned-cart-recovery/) to send low-friction, real-time, personal and efficient reminders that don't require an email or a phone number (**Pro**)
 * Use webhook to send abandoned cart data and create powerful automations in apps like [Make (former Integromat)](https://www.make.com/en?pc=cartbounty), [Pabbly](https://payments.pabbly.com/api/affurl/RVYZ07kQyUZ0Z1HUKZ1m/xciq3ahCAzNG3CSo?target=9Z2AHyhSldo6KI1Fn), Zapier or similar (**Pro**)
-* Integrate and send SMS text message reminders with [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
+* Send SMS text message reminders using [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
 * [Personalize messages](https://www.cartbounty.com/personalization-tags/) with dynamic content (**Pro**)
 * Generate and send unique coupon codes (**Pro**)
 * Track message open and click-through rates (**Pro**)
@@ -281,7 +281,7 @@ Bots can be divided into two groups – good ones and bad ones.
 
 Harmful bots are the ones that might be responsible for leaving new anonymous carts on your website. While this is not dangerous, it can be frustrating and annoying. Here are three solutions that will help you to deal to with them:
 
-1. The quick solution is to simply disable anonymous carts from being saved by CartBounty. You can do this in the CartBounty Settings tab. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities, and slowing down your shop
+1. The quick solution is to simply disable anonymous carts from being saved by CartBounty. You can do this in the CartBounty settings. As easy as this solution is, it only deals with consequences and does not stop these harmful bots from visiting your store, continuously searching for new vulnerabilities, and slowing down your shop
 1. A better solution would be to install a WordPress plugin that helps to prevent bots from visiting your store. You could try out a couple of different plugins, but this might be a good starting point: [Blackhole for Bad Bots](https://wordpress.org/plugins/blackhole-bad-bots). This way you will block harmful bots from wandering around your store and keep anonymous carts enabled to see what your customers are shopping for
 1. If you have a developer, they can help you check your server access logs to identify any bot entries. Then, you can use the .htaccess file to block these bots and prevent them from visiting your website. Check out this article for more information on [blocking bad bots](https://www.seoblog.com/block-bots-spiders-htaccess).
 
@@ -293,8 +293,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 ![Automated abandoned cart recovery using WordPress email reminders](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.jpg "Automated abandoned cart recovery using WordPress email reminders")
 ![WordPress recovery email settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.jpg "WordPress recovery email settings")
 ![WordPress recovery email preview](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.jpg "WordPress recovery email preview")
-![Exit Intent popup settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-5.jpg "Exit Intent popup settings tab")
-![General settings tab](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-6.jpg "General settings tab")
+![Exit Intent popup settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-5.jpg "Exit Intent popup settings")
+![General settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-6.jpg "General settings")
 ![How Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-7.gif "How Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
