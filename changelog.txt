@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 7.2.1 =
+* Improved checkout form data storage
+* Reduced the size of the Exit Intent animated image
+
 = 7.2 =
 * Increased maximum abandoned cart sync period from 30 to 100 days
 * Improved emoji support

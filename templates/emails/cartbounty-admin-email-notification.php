@@ -12,13 +12,14 @@
 
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce/Templates
  * @author     Streamline.lv
- * @version    7.1.2.3
+ * @version    7.2.1
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access
 	exit;
 }
 $position = is_rtl() ? 'right' : 'left';
+$inverse_position  = is_rtl() ? 'left' : 'right';
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -95,26 +96,41 @@ $position = is_rtl() ? 'right' : 'left';
 										<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 											<tr>
 												<td class="cartbounty-email-carts" width="650" valign="top" style="text-align: center; padding: 20px 50px 0;">
-													<table cellpadding="0" cellspacing="0" border="0" align="<?php echo $position; ?>" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; opacity: .3;">
+													<table cellpadding="0" cellspacing="0" border="0" align="<?php echo $position; ?>" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
 														<tr>
-															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Email', 'woo-save-abandoned-carts'); ?></strong></td>
-															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Phone', 'woo-save-abandoned-carts'); ?></strong></td>
-															<td valign="top" style="background-color: <?php echo esc_attr( $args['border_color'] ); ?>; text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Total', 'woo-save-abandoned-carts'); ?></strong></td>
+															<td valign="top" style="background-color: #f7f7f7; text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: #cacaca; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Contact details', 'woo-save-abandoned-carts'); ?></strong></td>
+															<td valign="top" style="background-color: #f7f7f7; text-align: <?php echo $position; ?>; padding: 13px 5px; color: #cacaca; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Cart contents', 'woo-save-abandoned-carts'); ?></strong></td>
+															<td valign="top" style="background-color: #f7f7f7; text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: #cacaca; font-size: 17px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif;"><strong><?php _e('Total', 'woo-save-abandoned-carts'); ?></strong></td>
 														</tr>
 														<tr>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">an*****@demo.com</a></td>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">+1378*****</td>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_1'] ); ?></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><span style="display: block; margin: 0 0 5px; padding: 0;"><a href="#" style="text-decoration:none; color: #cacaca;" rel="nofollow">an***@demo.com</a></span></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px 5px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><span style="margin: 0; padding: 0; padding-<?php echo $inverse_position; ?>: 5px; box-shadow: none; border-radius: 2px;">
+																	<img src="<?php echo esc_url( $example_items[0] ); ?>" width="40" height="40" style="margin: 0 0 3px; padding: 0; display:inline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0; border-radius: 2px;" />
+																</span>
+																<span style="margin: 0; padding: 0; padding-<?php echo $inverse_position; ?>: 5px; box-shadow: none; border-radius: 2px;">
+																	<img src="<?php echo esc_url( $example_items[1] ); ?>" width="40" height="40" style="margin: 0 0 3px; padding: 0; display:inline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0; border-radius: 2px;" />
+																</span></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><?php echo esc_html( $args['total_1'] ); ?></td>
 														</tr>
 														<tr>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color']); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">mu*****@demo.com</a></td>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">+1761*****</td>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_2'] ); ?></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><span style="display: block; margin: 0 0 5px; padding: 0;"><a href="#" style="text-decoration:none; color: #cacaca;" rel="nofollow">mu***@demo.com</a></span></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px 5px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><span style="margin: 0; padding: 0; padding-<?php echo $inverse_position; ?>: 5px; box-shadow: none; border-radius: 2px;">
+																	<img src="<?php echo esc_url( $example_items[2] ); ?>" width="40" height="40" style="margin: 0 0 3px; padding: 0; display:inline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0; border-radius: 2px;" />
+																</span>
+																<span style="margin: 0; padding: 0; padding-<?php echo $inverse_position; ?>: 5px; box-shadow: none; border-radius: 2px;">
+																	<img src="<?php echo esc_url( $example_items[3] ); ?>" width="40" height="40" style="margin: 0 0 3px; padding: 0; display:inline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0; border-radius: 2px;" />
+																</span>
+																<span style="margin: 0; padding: 0; padding-<?php echo $inverse_position; ?>: 5px; box-shadow: none; border-radius: 2px;">
+																	<img src="<?php echo esc_url( $example_items[4] ); ?>" width="40" height="40" style="margin: 0 0 3px; padding: 0; display:inline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0; border-radius: 2px;" />
+																</span></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><?php echo esc_html( $args['total_2'] ); ?></td>
 														</tr>
 														<tr>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><a href="#" style="text-decoration:none; color:<?php echo esc_attr( $args['text_color'] ); ?>" rel="nofollow">ja*****@demo.com</a></td>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;">-</td>
-															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: <?php echo esc_attr( $args['text_color'] );?>; font-size: 16px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid <?php echo esc_attr( $args['border_color'] ); ?>;"><?php echo esc_html( $args['total_3'] ); ?></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px; padding-<?php echo $position; ?>: 15px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><span style="display: block; margin: 0 0 5px; padding: 0;">+1761***</span></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 5px 5px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><span style="margin: 0; padding: 0; padding-<?php echo $inverse_position; ?>: 5px; box-shadow: none; border-radius: 2px;">
+																	<img src="<?php echo esc_url( $example_items[5] ); ?>" width="40" height="40" style="margin: 0 0 3px; padding: 0; display:inline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0; border-radius: 2px;" />
+																</span></td>
+															<td valign="top" style="text-align: <?php echo $position; ?>; padding: 13px 15px; padding-<?php echo $position; ?>: 5px; color: #cacaca; font-size: 15px; line-height: 1.3; font-family: 'Open Sans', Roboto, 'San Francisco', Arial, Helvetica, sans-serif; border-bottom: 1px solid #f7f7f7;"><?php echo esc_html( $args['total_3'] ); ?></td>
 														</tr>
 													</table>
 													<table cellpadding="0" cellspacing="0" border="0" align="<?php echo $position; ?>" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">

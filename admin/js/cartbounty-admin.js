@@ -5,6 +5,11 @@
 
 	 	jQuery('.cartbounty-color-picker').wpColorPicker(); //Activating color picker
 	 	jQuery('.cartbounty-select, .bulkactions select').selectize(); //Activating custom dropdown for all select fields
+	 	jQuery('.cartbounty-display-emails').selectize({ //Display entered items as tags
+	 		plugins: ['restore_on_backspace', 'remove_button'],
+			delimiter: ',',
+			create: true
+	 	});
 
 	 	function addActiveClass(){ //Adding class when changing radio button to display Get Pro notice
 			jQuery(this).siblings().removeClass('cartbounty-radio-active');

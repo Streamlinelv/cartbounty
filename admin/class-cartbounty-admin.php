@@ -402,7 +402,7 @@ class CartBounty_Admin{
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
 										<div class="cartbounty-settings-group">
 											<label for="cartbounty_notification_email"><?php esc_html_e('Admin email', 'woo-save-abandoned-carts'); ?></label>
-											<input id="cartbounty_notification_email" class="cartbounty-text" type="email" name="cartbounty_notification_email" value="<?php echo esc_attr( get_option('cartbounty_notification_email') ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) );?>" <?php echo $this->disable_field(); ?> multiple />
+											<input id="cartbounty_notification_email" class="cartbounty-text cartbounty-display-emails" type="email" name="cartbounty_notification_email" value="<?php echo esc_attr( get_option('cartbounty_notification_email') ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) );?>" <?php echo $this->disable_field(); ?> multiple />
 											<p class='cartbounty-additional-information'>
 												<?php esc_html_e('You can add multiple emails separated by a comma.', 'woo-save-abandoned-carts'); ?>
 											</p>
@@ -2375,6 +2375,15 @@ class CartBounty_Admin{
 		/* translators: %s - Link tags */
 		esc_html__('Get %sCartBounty Pro%s to enable cart data preview above.', 'woo-save-abandoned-carts'), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'enable_admin_email_contents' ) ) .'">', '</a>');
 
+		$example_items = array(
+			plugins_url( 'assets/admin-notification-email-product-image-1.png', __FILE__ ),
+			plugins_url( 'assets/admin-notification-email-product-image-2.png', __FILE__ ),
+			plugins_url( 'assets/admin-notification-email-product-image-3.png', __FILE__ ),
+			plugins_url( 'assets/admin-notification-email-product-image-4.png', __FILE__ ),
+			plugins_url( 'assets/admin-notification-email-product-image-5.png', __FILE__ ),
+			plugins_url( 'assets/admin-notification-email-product-image-6.png', __FILE__ )
+		);
+
 		$args = array(
 			'main_color'			=> $main_color,
 			'button_color'			=> $button_color,
@@ -2384,6 +2393,7 @@ class CartBounty_Admin{
 			'border_color'			=> $border_color,
 			'heading'				=> $heading,
 			'content'				=> $content,
+			'example_items'			=> $example_items,
 			'total_1'				=> $this->format_price('320'),
 			'total_2'				=> $this->format_price('4820'),
 			'total_3'				=> $this->format_price('51'),
@@ -2409,10 +2419,12 @@ class CartBounty_Admin{
 				$where_sentence AND
 				cart_contents != '' AND
 				type != %d AND
+				type != %d AND
 				time < %s",
 				1,
 				0,
 				$this->get_cart_type('ordered'),
+				$this->get_cart_type( 'ordered_deducted' ),
 				$time
 			)
 		);
@@ -2741,7 +2753,11 @@ class CartBounty_Admin{
 	}
 
 	/**
-	 * Method removes empty abandoned carts that do not have any products and are older than the set cart abandonment time (Default 1 hour)
+	 * Method removes empty abandoned carts
+	 * First removing carts that are anonymous and do not have cart contents
+	 * Then deleiting recoverable carts without cart contents
+	 * Next looking for ordered carts and updating them to ordered-deducted carts and decreasing recoverable cart count
+	 * Finally deleting ordered deducted carts from database since they have never really been abandoned (customer placed items, CartBounty saved them and user went through with purchase)
 	 *
 	 * @since    3.0
 	 */
@@ -2752,8 +2768,8 @@ class CartBounty_Admin{
 		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$where_sentence = $this->get_where_sentence( 'anonymous' );
 
-		//Deleting anonymous rows from database first
-		$anonymous_row_count = $wpdb->query(
+		//Deleting anonymous rows with empty cart contents from database first
+		$anonymous_cart_count = $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $cart_table
 				WHERE cart_contents = ''
@@ -2762,20 +2778,46 @@ class CartBounty_Admin{
 				$time['cart_abandoned']
 			)
 		);
-		$public->decrease_anonymous_cart_count( $anonymous_row_count );
 
-		//Deleting rest of the abandoned carts without products or ones that have been turned into orders
-		$rest_count = $wpdb->query(
+		$public->decrease_anonymous_cart_count( $anonymous_cart_count );
+
+		//Deleting recoverable abandoned carts without products
+		$recoverable_empty_cart_count = $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $cart_table
-				WHERE (cart_contents = '' OR type = %d) AND
+				WHERE cart_contents = '' AND
 				time < %s",
-				$this->get_cart_type('ordered'),
 				$time['cart_abandoned']
 			)
 		);
 
-		$public->decrease_recoverable_cart_count( $rest_count );
+		//Updating ordered carts as ordered-deducted carts
+		//This way we can immediatelly decrease recoverable cart count and leave them with other abandoned carts
+		//This can be useful if we would like to search cart history to look if a specific coupon code has been used by a specific email address beofre
+		$ordered_cart_count = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$cart_table}
+				SET type = %d
+				WHERE type = %d AND
+				time < %s",
+				$this->get_cart_type( 'ordered_deducted' ),
+				$this->get_cart_type( 'ordered' ),
+				$time['cart_abandoned']
+			)
+		);
+
+		$public->decrease_recoverable_cart_count( $recoverable_empty_cart_count + $ordered_cart_count ); //Decreasing recoverable cart count by a number that consists of both ordered cart and recoverable empty cart counts
+
+		//Deleting ordered-deducted carts from database since they have never really been abandoned (user has added an item to cart and placed an order without abandoneding the cart)
+		$ordered_deducted_cart_count = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM $cart_table
+				WHERE type = %d AND
+				time < %s",
+				$this->get_cart_type( 'ordered_deducted' ),
+				$time['maximum_sync_period']
+			)
+		);
 	}
 
 	/**
@@ -3170,12 +3212,14 @@ class CartBounty_Admin{
 		$total_items = 0;
 		$where_sentence = $this->get_where_sentence($cart_status);
 		$ordered = $this->get_cart_type('ordered');
+		$ordered_deducted = $this->get_cart_type( 'ordered_deducted' );
 
 		$total_items = $wpdb->get_var(
 			"SELECT COUNT(id)
 			FROM $cart_table
 			WHERE cart_contents != '' AND
-			type != $ordered
+			type != $ordered AND
+		    type != $ordered_deducted
 			$where_sentence"
 		);
 
@@ -3252,10 +3296,10 @@ class CartBounty_Admin{
 		$where_sentence = '';
 
 		if($cart_status == 'recoverable'){
-			$where_sentence = "AND (email != '' OR phone != '') AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered');
+			$where_sentence = "AND (email != '' OR phone != '') AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered') ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
 
 		}elseif($cart_status == 'anonymous'){
-			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered');
+			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered') ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
 
 		}elseif($cart_status == 'recovered'){
 			$where_sentence = "AND type = ". $this->get_cart_type('recovered');
@@ -3344,7 +3388,8 @@ class CartBounty_Admin{
 	 * @param    string    	$status		    Cart status. 
 	 * 										0 = default,
 	 *										1 = recovered,
-	 *										2 = order created,
+	 *										2 = order created
+	 *										4 = order created and cart deducted from recoverable cart count stats (this type added just to make sure we keep longer ordered abandoned carts in our database to check if a user has used a coupon code in previous orders)
 	 */
 	function get_cart_type( $status ){
 		if( empty($status) ){
@@ -3367,6 +3412,11 @@ class CartBounty_Admin{
 			case 'ordered':
 
 				$type = 2;
+				break;
+
+			case 'ordered_deducted':
+
+				$type = 4;
 				break;
 				
 		}
@@ -3430,12 +3480,12 @@ class CartBounty_Admin{
 		
 		if( WC()->session ){ //If session exists
 			$cart = $public->read_cart();
-			$type = $this->get_cart_type('ordered'); //Default type describing an order has been placed
+			$type = $this->get_cart_type( 'ordered' ); //Default type describing an order has been placed
 
 			if(isset($cart['session_id'])){
 				
 				if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
-					$type = $this->get_cart_type('recovered');
+					$type = $this->get_cart_type( 'recovered' );
 				}
 				$this->update_cart_type($cart['session_id'], $type); //Update cart type to recovered
 			}
@@ -3845,20 +3895,20 @@ class CartBounty_Admin{
 	 * @since    7.1.2.6
 	 * @return   string
 	 * @param    object     $product			Abandoned cart product data
-	 * @param    string     $size				Image size, default 'medium'
+	 * @param    string     $size				Image size, default 'woocommerce_thumbnail' 300x300 (with hard crop)
 	 */
-	function get_product_thumbnail_url( $product, $size = 'medium' ){
-
+	function get_product_thumbnail_url( $product, $size = 'woocommerce_thumbnail' ){
 		$image = '';
+
+		if( function_exists( 'has_image_size' ) && !has_image_size( 'woocommerce_thumbnail' ) && $size == 'woocommerce_thumbnail' ){ //If 'woocommerce_thumbnail' image requested but it does not exist, fallback to default WordPress image size 'medium'
+			$size = 'medium';
+		}
 
 		if( !empty( $product['product_variation_id'] ) ){ //In case of a variable product
 			$image = get_the_post_thumbnail_url( $product['product_variation_id'], $size );
+		}
 
-			if( empty( $image ) ){ //If variation didn't have an image set
-				$image = get_the_post_thumbnail_url( $product['product_id'], $size );
-			}
-
-		}else{ //In case of a simple product
+		if( empty( $image ) ){ //In case of a simple product or if variation did not have an image set
 			$image = get_the_post_thumbnail_url( $product['product_id'], $size );
 		}
 
@@ -3987,5 +4037,48 @@ class CartBounty_Admin{
 		}
 
 		return $value;
+	}
+
+	/**
+	* Returning cart location data. A single value or if no $value is specified - returning all location data as an array
+	*
+	* @since    7.2.1
+	* @return   string or array
+	* @param    string   $value    		 	 Location value to return, e.g. "country", "city"
+	*/
+	function get_cart_location( $location_data, $value = false ) {
+		$location_value = array( //Setting defaults
+			'country' 	=> '',
+			'city' 		=> '',
+			'postcode' 	=> '',
+		);
+
+		$location_array = @unserialize( $location_data );
+
+		if( is_array( $location_array ) ){ //If unserialization succeeded and we have an array
+			
+			if( isset( $location_array['country'] ) ){
+				$location_value['country'] = $location_array['country'];
+			}
+
+			if( isset( $location_array['city'] ) ){
+				$location_value['city'] = $location_array['city'];
+			}
+
+			if( isset( $location_array['postcode'] ) ){
+				$location_value['postcode'] = $location_array['postcode'];
+			}
+
+		}
+
+		if( $value ){ //If a single value should be returned
+			
+			if( isset( $location_value[$value] ) ){ //Checking if value exists
+				$location_value = $location_value[$value];
+			}
+
+		}
+
+		return $location_value;
 	}
 }

@@ -122,14 +122,14 @@ class CartBounty_Table extends WP_List_Table{
             $name_array[] = $item['surname'];
         }
 
-        $name = implode( ' ', $name_array );
+        $name = esc_html( stripslashes( implode( ' ', $name_array ) ) );
 
         if( isset( $item['email'] ) ){
             $user = get_user_by( 'email', $item['email'] );
         }
 
         if( $user ){ //If the user is registered, add link to his profile page
-            $name = '<a href="' . esc_url( add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php') ) ) . '" title="' . esc_attr__( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. esc_html__( $name ) .'</a>';
+            $name = '<a href="' . esc_url( add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php') ) ) . '" title="' . esc_attr__( 'View user profile', 'woo-save-abandoned-carts' ) . '">'. $name .'</a>';
         }
 
         $user_icon = '<svg class="cartbounty-customer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.77 82.92"><path d="M32.89,41.8a20.9,20.9,0,1,1,20.9-20.9A20.92,20.92,0,0,1,32.89,41.8Zm0-32.8a11.9,11.9,0,1,0,11.9,11.9A11.91,11.91,0,0,0,32.89,9Z"/><path d="M47.46,82.92H18.31a18.32,18.32,0,0,1,0-36.63H47.46a18.32,18.32,0,0,1,0,36.63ZM18.31,55.29a9.32,9.32,0,0,0,0,18.63H47.46a9.32,9.32,0,0,0,0-18.63Z"/></svg>';
@@ -175,20 +175,13 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_location( $item ){
+        $admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
         $location_array = array();
-        $city = '';
-        $postcode = '';
-        $country = '';
 
-        if( is_serialized( $item['location'] ) ){
-            $location_data = @unserialize( $item['location'] );
-
-            if( is_array( $location_data ) ){
-                $country = $location_data['country'];
-                $city = $location_data['city'];
-                $postcode = $location_data['postcode'];
-            }
-        }
+        $location_data = $admin->get_cart_location( $item['location'] );
+        $country = $location_data['country'];
+        $city = $location_data['city'];
+        $postcode = $location_data['postcode'];
 
         if( $country && class_exists( 'WooCommerce' ) ){ //In case WooCommerce is active and we have Country data, we can add abbreviation to it with a full country name
             $country = '<abbr class="cartbounty-country" title="' . esc_attr( WC()->countries->countries[ $country ] ) . '">' . esc_html( $country ) . '</abbr>';
@@ -206,7 +199,7 @@ class CartBounty_Table extends WP_List_Table{
              $location_array[] = $country;
         }
 
-        $location = implode( ', ', $location_array );
+        $location = stripslashes( implode( ', ', $location_array ) );
         return sprintf( '%s', $location );
     }
 	
@@ -497,12 +490,14 @@ class CartBounty_Table extends WP_List_Table{
         ));
 
         $ordered = $admin->get_cart_type('ordered');
+        $ordered_deducted = $admin->get_cart_type( 'ordered_deducted' );
         $where_sentence = $admin->get_where_sentence($cart_status);
         $this->items = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM $cart_table
                 WHERE cart_contents != '' AND
-                type != $ordered
+                type != $ordered AND
+                type != $ordered_deducted
                 $where_sentence
                 ORDER BY $orderby $order
                 LIMIT %d OFFSET %d",

@@ -179,7 +179,7 @@ class CartBounty_Public{
 						'surname'		=> sanitize_text_field( $user_data['surname'] ),
 						'email'			=> sanitize_email( $user_data['email'] ),
 						'phone'			=> filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
-						'location'		=> sanitize_text_field( serialize( $user_data['location'] ) ),
+						'location'		=> serialize( $user_data['location'] ),
 						'products'		=> serialize( $cart['product_array'] ),
 						'total'			=> sanitize_text_field( $cart['cart_total'] ),
 						'currency'		=> sanitize_text_field( $cart['cart_currency'] ),
@@ -273,6 +273,7 @@ class CartBounty_Public{
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$other_fields = NULL;
+
 		if(!empty($user_data['other_fields'])){
 			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 		}
@@ -289,7 +290,7 @@ class CartBounty_Public{
 				cart_total = %0.2f,
 				currency = %s,
 				time = %s,
-				other_fields = '$other_fields'
+				other_fields = %s
 				WHERE session_id = %s AND
 				type = %d",
 				sanitize_text_field( $user_data['name'] ),
@@ -301,6 +302,7 @@ class CartBounty_Public{
 				sanitize_text_field( $cart['cart_total'] ),
 				sanitize_text_field( $cart['cart_currency'] ),
 				sanitize_text_field( $cart['current_time'] ),
+				$other_fields,
 				$cart['session_id'],
 				$admin->get_cart_type('abandoned')
 			)
@@ -739,11 +741,12 @@ class CartBounty_Public{
 	 */
 	public function restore_input_data( $fields = array() ) {
 		
-		if(is_account_page()){ //In case this is user's account page, do not restore data. Added since some plugins change the My account form and may trigger this function unnecessarily
+		if( is_account_page() || is_order_received_page() ){ //In case this is user's account page, do not restore data. Added since some plugins change the My account form and may trigger this function unnecessarily
 			return $fields;
 		}
 
 		global $wpdb;
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$cart = $this->read_cart();
 		
@@ -758,30 +761,11 @@ class CartBounty_Public{
 		);
 
 		if($row){ //If we have a user with such session ID in the database
-			$other_fields = @unserialize($row->other_fields);
-
-			if(is_serialized($row->location)){ //Since version 4.6
-	            $location_data = unserialize($row->location);
-	            $country = $location_data['country'];
-	            $city = $location_data['city'];
-	            $postcode = $location_data['postcode'];
-
-	        }else{ //Prior version 4.6. Will be removed in future releases
-	        	$parts = explode(',', $row->location); //Splits the Location field into parts where there are commas
-	            if (count($parts) > 1) {
-	                $country = $parts[0];
-	                $city = trim($parts[1]); //Trim removes white space before and after the string
-	            }
-	            else{
-	                $country = $parts[0];
-	                $city = '';
-	            }
-
-	            $postcode = '';
-                if(isset($other_fields['cartbounty_billing_postcode'])){
-                    $postcode = $other_fields['cartbounty_billing_postcode'];
-                }
-	        }
+			$other_fields = unserialize($row->other_fields);
+			$location_data = $admin->get_cart_location( $row->location );
+            $country = $location_data['country'];
+            $city = $location_data['city'];
+            $postcode = $location_data['postcode'];
 
 	        (empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : '';
 			(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';

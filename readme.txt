@@ -3,9 +3,9 @@ Donate link: https://www.cartbounty.com
 Contributors: streamlinestar, nauriskolats
 Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
-Tested up to: 6.2
+Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 7.2
+Stable tag: 7.2.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -306,11 +306,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.2 =
-* Increased maximum abandoned cart sync period from 30 to 100 days
-* Improved emoji support
-* Fixed anonymous and recoverable cart count update
-* Fixed a warning if email input field missing from Checkout page
-* Fixed WordPress email loop issue when an email could not be delivered
+= 7.2.1 =
+* Improved checkout form data storage
+* Reduced the size of the Exit Intent animated image
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
