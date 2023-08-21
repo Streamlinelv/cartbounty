@@ -52,6 +52,7 @@ class CartBounty_Activator{
 			wp_steps_completed INT(3) DEFAULT 0,
 			wp_complete TINYINT DEFAULT 0,
 			type VARCHAR(10) DEFAULT 0,
+			saved_via VARCHAR(10),
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 

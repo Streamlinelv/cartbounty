@@ -158,7 +158,6 @@ class CartBounty{
 		$public = new CartBounty_Public( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
-		$this->loader->add_action( 'woocommerce_before_checkout_form', $public, 'add_additional_scripts_on_checkout' );
 		$this->loader->add_action( 'wp_ajax_nopriv_cartbounty_save', $public, 'save_cart' );
 		$this->loader->add_action( 'wp_ajax_cartbounty_save', $public, 'save_cart' );
 		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 );

@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 7.2.1
+Stable tag: 7.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -60,7 +60,9 @@ Use CartBounty efficiency tools to increase your chances of getting more recover
 
 * Reduce checkout abandonment with built-in "Remember checkout fields" feature which allows store customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data
 * Use [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") to minimize cart abandonment and increase sales
+* Save contact details from 3rd party plugins and [custom email fields](https://www.cartbounty.com/actions-and-filters/#save-abandoned-cart-email-from-a-custom-input-field)
 * Gather user's contact details right after "Add to cart" button is clicked using [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") (**Pro**)
+* Provide [Instant coupon codes](https://www.cartbounty.com/exit-intent-popup-technology/#enable-instant-coupons) to motivate customers to complete their purchase using Exit Intent and Early capture tools (**Pro**)
 * Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab using dynamic [Tab notification](https://www.cartbounty.com/dynamic-browser-tab-notification "Dynamic browser Tab notification") (**Pro**)
 
 Take advantage of abandoned cart email series, message personalization and other great features by upgrading to [CartBounty Pro](https://www.cartbounty.com).
@@ -306,8 +308,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.2.1 =
-* Improved checkout form data storage
-* Reduced the size of the Exit Intent animated image
+= 7.3 =
+* Added Instant coupon codes using Exit Intent and Early capture tools
+* Improved system report
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

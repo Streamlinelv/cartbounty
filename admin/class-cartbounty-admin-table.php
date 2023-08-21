@@ -364,6 +364,14 @@ class CartBounty_Table extends WP_List_Table{
                 }
             }
         }
+
+        if($item['saved_via'] == 1){ //If cart saved via Exit Intent
+            $status .= sprintf('<div class="status-item-container tool"><span class="cartbounty-tooltip">%s</span><span class="status tool-saved saved-by-exit-intent">EI</span></div>', esc_html__('Saved by Exit Intent', 'woo-save-abandoned-carts') );
+
+        }elseif($item['saved_via'] == 3){ //If cart saved via custom field
+            $status .= sprintf('<div class="status-item-container tool"><span class="cartbounty-tooltip">%s</span><span class="status tool-saved saved-by-custom-field">CF</span></div>', esc_html__('Saved by custom field', 'woo-save-abandoned-carts') );
+        }
+
         return $status;
     }
 

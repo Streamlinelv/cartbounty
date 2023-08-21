@@ -43,13 +43,16 @@
 			if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length)){ //Checking if the email field is valid
 				var data = {
 					action:						"cartbounty_save",
+					source:						"cartbounty_exit_intent",
 					cartbounty_email:			cartbounty_email
 				}
 
 				timer = setTimeout(function(){
 					jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
 					function(response) {
-						//console.log(response);
+						if(response.success){ //If successfuly saved data
+							localStorage.setItem('cartbounty_contact_saved', true);
+						}
 					});
 					
 				}, 800);

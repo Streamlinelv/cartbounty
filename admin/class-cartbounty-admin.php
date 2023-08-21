@@ -1641,6 +1641,9 @@ class CartBounty_Admin{
 						</div>
 					</div>
 					<div class="cartbounty-row">
+						<?php echo $this->display_instant_coupon_settings( 'exit-intent' ); ?>
+					</div>
+					<div class="cartbounty-row">
 						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
 							<h4><?php esc_html_e('Miscellaneous', 'woo-save-abandoned-carts'); ?></h4>
 							<p class="cartbounty-titles-column-description">
@@ -1801,6 +1804,9 @@ class CartBounty_Admin{
 								</div>
 							</div>
 						</div>
+					</div>
+					<div class="cartbounty-row">
+						<?php echo $this->display_instant_coupon_settings( 'early-capture' ); ?>
 					</div>
 					<div class="cartbounty-row">
 						<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
@@ -4080,5 +4086,52 @@ class CartBounty_Admin{
 		}
 
 		return $location_value;
+	}
+
+	/**
+	* Returning instant coupon settings
+	*
+	* @since    7.3
+	* @return   HTML
+	* @param    string   $location    		 	 Location where instant coupon settings should be displayed
+	*/
+	function display_instant_coupon_settings( $location ) {
+		$output = '';
+		$page_slug = 'exit-intent-popup-technology';
+
+		if( $location == 'early-capture' ){
+			$page_slug = 'early-capture-add-to-cart-popup';
+		}
+
+		ob_start(); ?>
+		<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-md-4 cartbounty-col-lg-3">
+			<h4><?php esc_html_e('Instant coupon', 'woo-save-abandoned-carts'); ?></h4>
+			<p class="cartbounty-titles-column-description">
+				<?php echo sprintf(
+					/* translators: %s - Link start, %s - Link end */
+					esc_html__( 'Provide %sInstant coupon codes%s to motivate customers to complete their purchase. Be sure to mention this in your message title.', 'woo-save-abandoned-carts' ), '<a href="'. esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . $page_slug, 'instant_coupons', '#enable-instant-coupons' ) ) .'" target="_blank">', '</a>' ); ?>
+			</p>
+		</div>
+		<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
+			<div class="cartbounty-settings-group cartbounty-toggle">
+				<label for="cartbounty-<?php echo $location; ?>-generate-coupon" class="cartbounty-switch cartbounty-unavailable">
+					<input id="cartbounty-<?php echo $location; ?>-generate-coupon" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
+					<span class="cartbounty-slider round"></span>
+				</label>
+				<label for="cartbounty-<?php echo $location; ?>-generate-coupon" class="cartbounty-unavailable"><?php esc_html_e('Generate coupon', 'woo-save-abandoned-carts'); ?></label>
+				<p class='cartbounty-additional-information'>
+					<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'generate_instant_coupon' ); ?></i>
+				</p>
+			</div>
+			<div class="cartbounty-settings-group">
+				<label for="cartbounty-<?php echo $location; ?>-existing-coupon"><?php esc_html_e('Include an existing coupon', 'woo-save-abandoned-carts'); ?></label>
+				<select id="cartbounty-<?php echo $location; ?>-existing-coupon" class="cartbounty-select" placeholder="<?php esc_attr_e('Search coupon...', 'woo-save-abandoned-carts'); ?>" disabled autocomplete="off">
+				</select>
+			</div>
+		</div>
+		<?php
+		$output .= ob_get_contents();
+		ob_end_clean();
+		return $output;
 	}
 }

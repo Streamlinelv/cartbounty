@@ -161,6 +161,7 @@ h2.cartbounty-section-title{
 .status.new,
 .status.synced,
 .status.recovered,
+.status.tool-saved,
 .status.active,
 .status.inactive{
 	padding: 1px 7px 2px;
@@ -189,16 +190,36 @@ h2.cartbounty-section-title{
 }
 
 .status.synced,
+.status.tool-saved,
 .status.inactive{
 	background-color: #b6b6b6;
 }
 
-.status.synced:hover{
+.status.synced:hover,
+.status.tool-saved:hover{
 	background-color: #3d3d3d;
 }
 
 .status.recovered{
 	background: #1f1a1b;
+}
+
+.status.tool-saved{
+	text-indent: -99999px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 11px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.status.saved-by-exit-intent{
+	background-image: url("data:image/svg+xml,%3Csvg style='fill: %23fff' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 65.5 70'%3E%3Cpath d='M29,7.23A7.23,7.23,0,1,1,21.75,0,7.23,7.23,0,0,1,29,7.23Z'/%3E%3Cpath d='M17.32,70a5.73,5.73,0,0,1-4.78-2.6,4.85,4.85,0,0,1-.18-4.84q1-2.12,2-4.25c1.33-2.8,2.71-5.68,4.14-8.5,1.33-2.6,5-5.49,11.29-8.81-2.17-4.18-4.25-8-6.35-11.61a21.16,21.16,0,0,1-5.12.66C11.6,30.05,5.59,26.63,1,20.18a4.58,4.58,0,0,1-.48-4.86,5.76,5.76,0,0,1,5.06-3,5.28,5.28,0,0,1,4.39,2.29c2.32,3.26,5.1,4.92,8.26,4.92A13.46,13.46,0,0,0,25,17.43c.18-.12.63-.36,1.12-.64l.31-.17,1.36-.78a23.44,23.44,0,0,1,12-3.55c6.76,0,12.77,3.42,17.39,9.89A4.56,4.56,0,0,1,57.58,27,5.76,5.76,0,0,1,52.52,30a5.26,5.26,0,0,1-4.38-2.28c-2.33-3.26-5.11-4.91-8.27-4.91a10.63,10.63,0,0,0-1.66.14c2.44,4.4,6.53,12.22,7.08,13.58,2.23,4.07,4.78,7.82,8.25,7.82A7,7,0,0,0,57,43.23a5.68,5.68,0,0,1,2.85-.81,5.85,5.85,0,0,1,5.41,4.43A5.27,5.27,0,0,1,62.74,53a18,18,0,0,1-9.08,2.68c-5,0-9.91-2.61-14.08-7.55-2.93,1.44-8.65,4.38-11.3,6.65-.53.87-4.4,8.16-6.4,12.29A5,5,0,0,1,17.32,70Z'/%3E%3C/svg%3E");
+}
+
+.status.saved-by-custom-field{
+	background-image: url("data:image/svg+xml,%3Csvg style='fill: %23fff' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 59.4 70'%3E%3Cpath d='M52,27.43H49V4.93A4.93,4.93,0,0,0,44.09,0H42.6a4.93,4.93,0,0,0-4.93,4.93v22.5H21.73V4.93A4.93,4.93,0,0,0,16.8,0H15.31a4.93,4.93,0,0,0-4.93,4.93v22.5h-3A7.39,7.39,0,0,0,.16,36.34L2.63,48a27.66,27.66,0,0,0,54.14,0l2.47-11.7A7.38,7.38,0,0,0,52,27.43Z'/%3E%3C/svg%3E");
+	background-size: 8px 11px;
 }
 
 .cartbounty-customer-icon,

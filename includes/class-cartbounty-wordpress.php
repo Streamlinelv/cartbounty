@@ -167,7 +167,7 @@ class CartBounty_WordPress{
 		);
 
 		if( $reply_to ){
-			$header['reply-to'] = "Reply-To: <". sanitize_email( $reply_to )  .">";
+			$header['reply-to'] = 'Reply-To: <'. sanitize_email( $reply_to )  .'>';
 		}
 		
 		$result = wp_mail( sanitize_email($to), $admin->sanitize_field($subject), $message, $header );

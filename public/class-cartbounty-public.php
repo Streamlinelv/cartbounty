@@ -62,37 +62,36 @@ class CartBounty_Public{
 	 * @since    3.0
 	 */
 	public function enqueue_scripts(){
-		if (!class_exists('WooCommerce')) { //If WooCommerce does not exist
-			return;
-		}
 
-		if($this->tool_enabled( 'exit_intent' )){ //If Exit Intent Enabled
+		if( !class_exists( 'WooCommerce' ) ) return; //If WooCommerce does not exist
+
+		$admin_ajax = admin_url( 'admin-ajax.php' );
+
+		if( $this->tool_enabled( 'exit_intent' ) ){ //If Exit Intent Enabled
 			$hours = 1;
 			if(get_option('cartbounty_exit_intent_test_mode')){ //If test mode is enabled
 				$hours = 0;
 			}
 
-			$data = array(
+			$data_ei = array(
 			    'hours' 		=> $hours,
 			    'product_count' => $this->get_cart_product_count(),
-			    'ajaxurl' 		=> admin_url( 'admin-ajax.php' )
+			    'ajaxurl' 		=> $admin_ajax
 			);
+
 			wp_enqueue_script( $this->plugin_name . '-exit-intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
-			wp_localize_script( $this->plugin_name . '-exit-intent', 'cartbounty_ei', $data); //Sending variable over to JS file
+			wp_localize_script( $this->plugin_name . '-exit-intent', 'cartbounty_ei', $data_ei ); //Sending variable over to JS file
 		}
-	}
-	
-	/**
-	 * Method to add aditional JS file to the checkout field and read data from inputs
-	 *
-	 * @since    1.0
-	 */
-	function add_additional_scripts_on_checkout(){
-		$data = array(
-		    'ajaxurl' => admin_url( 'admin-ajax.php' )
+
+		$data_co = array(
+			'save_custom_email' 		=> apply_filters( 'cartbounty_save_custom_email', true ),
+			'custom_email_selectors' 	=> $this->get_custom_email_selectors(),
+			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_email_selector_timeout', 2000 ), //Default timout 2 seconds - required for plugins that load the HTML form later
+		    'ajaxurl' => $admin_ajax
 		);
+
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-public.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script( $this->plugin_name, 'cartbounty_co', $data);
+		wp_localize_script( $this->plugin_name, 'cartbounty_co', $data_co );
 	}
 
 	/**
@@ -118,10 +117,21 @@ class CartBounty_Public{
 		$cart_saved = $this->cart_saved( $cart['session_id'] );
 
 		if( $cart_saved ){ //If cart has already been saved
-			$this->update_cart( $cart, $anonymous );
+			$result = $this->update_cart( $cart, $anonymous );
 
 		}else{
-			$this->create_new_cart( $cart, $anonymous );
+			$result = $this->create_new_cart( $cart, $anonymous );
+		}
+
+		if( isset( $_POST["action"] ) ){ //In case we are saving cart data via Ajax coming from CartBounty tools - try and return the result
+			if( $_POST["action"] == 'cartbounty_save' ){
+				if( $result ){
+					wp_send_json_success();
+
+				}else{
+					wp_send_json_error();
+				}
+			}
 		}
 	}
 
@@ -129,6 +139,7 @@ class CartBounty_Public{
 	 * Method creates a new cart
 	 *
 	 * @since    5.0
+	 * @return   boolean
 	 * @param    array      $cart     		Cart contents
 	 * @param    boolean    $anonymous    	If the cart is anonymous or not
 	 */
@@ -165,6 +176,13 @@ class CartBounty_Public{
 
 		}else{
 			$other_fields = NULL;
+			$cart_source = $this->get_cart_source();
+			$source = $cart_source['source'];
+
+			if(empty($source)){ //If source not coming from Tools
+				$source = 'NULL';
+			}
+
 			if(!empty($user_data['other_fields'])){
 				$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 			}
@@ -172,8 +190,8 @@ class CartBounty_Public{
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $cart_table
-					( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields)
-					VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s)",
+					( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields, saved_via )
+					VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s, %s )",
 					array(
 						'name'			=> sanitize_text_field( $user_data['name'] ),
 						'surname'		=> sanitize_text_field( $user_data['surname'] ),
@@ -185,19 +203,23 @@ class CartBounty_Public{
 						'currency'		=> sanitize_text_field( $cart['cart_currency'] ),
 						'time'			=> sanitize_text_field( $cart['current_time'] ),
 						'session_id'	=> sanitize_text_field( $cart['session_id'] ),
-						'other_fields'	=> $other_fields
+						'other_fields'	=> $other_fields,
+						'saved_via'		=> $source
 					)
 				)
 			);
 			$this->increase_recoverable_cart_count();
 		}
 		$this->set_cartbounty_session($cart['session_id']);
+
+		return true;
 	}
 
 	/**
 	 * Method updates a cart
 	 *
 	 * @since    5.0
+	 * @return   boolean
 	 * @param    array      $cart     		Cart contents
 	 * @param    boolean    $anonymous   	If the cart is anonymous or not
 	 */
@@ -227,6 +249,7 @@ class CartBounty_Public{
 		}
 
 		$this->set_cartbounty_session($cart['session_id']);
+		return true;
 	}
 
 	/**
@@ -273,6 +296,12 @@ class CartBounty_Public{
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$other_fields = NULL;
+		$cart_source = $this->get_cart_source();
+		$source = $cart_source['source'];
+
+		if(empty($source)){ //If source not coming from Tools
+			$source = 'NULL';
+		}
 
 		if(!empty($user_data['other_fields'])){
 			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
@@ -290,7 +319,8 @@ class CartBounty_Public{
 				cart_total = %0.2f,
 				currency = %s,
 				time = %s,
-				other_fields = %s
+				other_fields = %s,
+				saved_via = $source
 				WHERE session_id = %s AND
 				type = %d",
 				sanitize_text_field( $user_data['name'] ),
@@ -327,7 +357,7 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Method returns True in case the current user has got a cart that consists phone or email
+	 * Method returns True in case the current user has got a cart that contains a phone or email
 	 *
 	 * @since    5.0
 	 * @return   Boolean
@@ -1058,9 +1088,9 @@ class CartBounty_Public{
 		$search_array = array();
 
 		// Set variable to search folder of theme.
-		if ( ! $template_path ) :
+		if( !$template_path ){
 			$template_path = 'templates/';
-		endif;
+		}
 
 		//Add paths to look for template files
 		$search_array[] = $template_path . 'emails/' . $template_name; 
@@ -1071,15 +1101,16 @@ class CartBounty_Public{
 		$template = locate_template( $search_array );
 
 		// Set default plugin templates path.
-		if ( ! $default_path ) :
+		if( !$default_path ){
 			$default_path = plugin_dir_path( __FILE__ ) . '../templates/'; // Path to the template folder
-		endif;
+		}
 
 		// Get plugins template file.
-		if ( ! $template ) :
+		if( !$template ){
 			$template = $default_path . $template_name;
-		endif;
-		return apply_filters( 'get_template_path', $template, $template_name, $template_path, $default_path );
+		}
+
+		return apply_filters( 'cartbounty_get_template_path', $template, $template_name, $template_path, $default_path );
 	}
 
 	/**
@@ -1097,11 +1128,50 @@ class CartBounty_Public{
 			extract( $args );
 		}
 		$template_file = $this->get_template_path($template_name, $tempate_path, $default_path);
-		if ( ! file_exists( $template_file ) ){ //Handling error output in case template file does not exist
-			_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $template_file ) ), '6.1' );
+		
+		if ( !file_exists( $template_file ) ){ //Handling error output in case template file does not exist
+			_doing_it_wrong( __FUNCTION__, sprintf( 'Template file %s does not exist.', esc_html( $template_file ) ), '6.1' );
+
 			return;
 		}
 		include $template_file;
+	}
+
+	/**
+	 * Check what is the source of the saved abandoned cart and return it
+	 * Source types NULL = checkout, 1 = Exit Intent, 3 = Custom email field
+	 *
+	 * @since    7.3
+	 * @return 	 Array
+	 */
+	function get_cart_source(){
+		$source = '';
+
+		if(WC()->session){ //If session exists
+			if(!WC()->session->get('cartbounty_saved_via')){ //If we do not know how the cart was initially saved
+				if(isset($_POST['source'])){ //Check if data coming from a source or not
+					switch ( $_POST['source'] ) {
+						case 'cartbounty_exit_intent':
+							$source = 1;
+							break;
+
+						case 'cartbounty_custom_email':
+							$source = 3;
+							break;
+					}
+
+					if(!empty($source)){
+						WC()->session->set('cartbounty_saved_via', $source);
+					}
+				}
+				
+			}else{ //In case we already know how the cart was initially saved - retrieve the information from session
+				$source = WC()->session->get('cartbounty_saved_via');
+			}
+		}
+		return array(
+			'source' 	=> $source
+		);
 	}
 
 	/**
@@ -1118,5 +1188,67 @@ class CartBounty_Public{
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Get custom email field selectors (required for adding email to abandoned cart data input field data from 3rd party plugins)
+	 * Aility to use a filter to edit this list
+	 *
+	 * Supporting these plugins by default:
+	 * - CartBounty custom email field option									[cartbounty]
+	 * - WooCommerce MyAccount login form										[woocommerce]
+	 * - WPForms Lite by by WPForms												[wpforms]
+	 * - Popup Builder by Looking Forward Software Incorporated					[sgpb]
+	 * - Popup Maker by Popup Maker												[pum]
+	 * - Ninja Forms by Saturday Drive											[ninja]
+	 * - Contact Form 7 by Takayuki Miyoshi										[wpcf7]
+	 * - Fluent Forms by Contact Form - WPManageNinja LLC						[fluentform]
+	 * - Newsletter, SMTP, Email marketing and Subscribe forms by Brevo			[sib]
+	 * - MailPoet by MailPoet													[mailpoet]
+	 * - Newsletter by Stefano Lissa & The Newsletter Team						[tnp]
+	 * - OptinMonster by OptinMonster Popup Builder Team						[optinmonster]
+	 * - OptiMonk: Popups, Personalization & A/B Testing by OptiMonk			[optimonk]
+	 * - Poptin by Poptin														[poptin]
+	 * - Gravity Forms by Gravity Forms											[gform]
+	 * - Popup Anything by WP OnlineSupport, Essential Plugin					[paoc]
+	 * - Popup Box by Popup Box Team											[ays]
+	 * - Hustle by WPMU DEV														[hustle]
+	 * - Popups for Divi by divimode.com										[popdivi]
+	 * - Brave Conversion Engine by Brave										[brave]
+	 * - Popup by Supsystic by supsystic.com									[ppspopup]
+	 * - Login/Signup Popup by XootiX											[xoologin]
+	 *
+	 * @since    7.3
+	 * @return   string
+	 */
+	function get_custom_email_selectors(){
+		$selectors = apply_filters( 'cartbounty_custom_email_selectors',
+			array(
+				'cartbounty' 	=> '.cartbounty-custom-email-field',
+				'woocommerce' 	=> '.login #username',
+				'wpforms' 		=> '.wpforms-container input[type="email"]',
+				'sgpb' 			=> '.sgpb-form input[type="email"]',
+				'pum' 			=> '.pum-container input[type="email"]',
+				'ninja'			=> '.nf-form-cont input[type="email"]',
+				'wpcf7'			=> '.wpcf7 input[type="email"]',
+				'fluentform'	=> '.fluentform input[type="email"]',
+				'sib'			=> '.sib_signup_form input[type="email"]',
+				'mailpoet'		=> '.mailpoet_form input[type="email"]',
+				'tnp'			=> '.tnp input[type="email"]',
+				'optinmonster'	=> '.om-element input[type="email"]',
+				'optimonk'		=> '.om-holder input[type="email"]',
+				'poptin'		=> '.poptin-popup input[type="email"]',
+				'gform'			=> '.gform_wrapper input[type="email"]',
+				'paoc'			=> '.paoc-popup input[type="email"]',
+				'ays'			=> '.ays-pb-form input[type="email"]',
+				'hustle'		=> '.hustle-form input[type="email"]',
+				'popdivi'		=> '.et_pb_section input[type="email"]',
+				'brave'			=> '.brave_form_form input[type="email"]',
+				'ppspopup'		=> '.ppsPopupShell input[type="email"]',
+				'xoologin'		=> '.xoo-el-container input[name="xoo-el-username"]',
+			)
+		);
+
+		return implode( ', ', $selectors );
 	}
 }
