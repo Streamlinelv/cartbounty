@@ -309,7 +309,7 @@ In addition, the Pro version allows you to select if guests from specific countr
 == Changelog ==
 
 = 7.3 =
-* Added Instant coupon codes using Exit Intent and Early capture tools
+* Added support for saving abandoned carts via custom email fields
 * Improved system report
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

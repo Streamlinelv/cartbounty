@@ -1,7 +1,7 @@
 == Changelog ==
 
 = 7.3 =
-* Added Instant coupon codes using Exit Intent and Early capture tools
+* Added support for saving abandoned carts via custom email fields
 * Improved system report
 
 = 7.2.1 =
