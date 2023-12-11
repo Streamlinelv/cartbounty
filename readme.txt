@@ -308,8 +308,7 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.3 =
-* Added support for saving abandoned carts via custom email fields
-* Improved system report
+= 7.3.0.1 =
+* Compatibility improvements with PHP8
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
