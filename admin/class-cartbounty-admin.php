@@ -130,8 +130,10 @@ class CartBounty_Admin{
 			);
 
 			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for CartBounty Abandoned carts
-				if ( 0 === strpos( $menu_item[0], esc_html__('CartBounty Abandoned carts', 'woo-save-abandoned-carts'))) {
-					$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . esc_attr( $recoverable_new_cart_count ) . '">' .  esc_html( $recoverable_new_cart_count ) .'</span>';
+				if( isset( $menu_item[0] ) ){
+					if ( 0 === strpos( $menu_item[0], esc_html__('CartBounty Abandoned carts', 'woo-save-abandoned-carts'))) {
+						$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . esc_attr( $recoverable_new_cart_count ) . '">' .  esc_html( $recoverable_new_cart_count ) .'</span>';
+					}
 				}
 			}
 		}

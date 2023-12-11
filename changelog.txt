@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 7.3.0.1 =
+* Compatibility improvements with PHP8
+
 = 7.3 =
 * Added support for saving abandoned carts via custom email fields
 * Improved system report
