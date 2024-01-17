@@ -299,13 +299,14 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Screenshots ==
 
-1. Location of CartBounty after activation
-2. Automated abandoned cart recovery using WordPress email reminders
-3. WordPress recovery email settings
-4. WordPress recovery email preview
-5. Exit Intent popup settings
-6. General settings
-7. How Exit Intent popup looks like once the user tries to leave the shop
+1. CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats and top abandoned products
+2. Abandoned cart list
+3. Automated abandoned cart recovery using WordPress email reminders
+4. WordPress recovery email settings
+5. WordPress recovery email preview
+6. Exit Intent popup settings
+7. General settings
+8. How Exit Intent popup looks like once the user tries to leave the shop
 
 == Changelog ==
 

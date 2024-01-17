@@ -292,13 +292,14 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 ## Screenshots
 
-![Location of CartBounty after activation](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "Location of CartBounty after activation")
-![Automated abandoned cart recovery using WordPress email reminders](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.jpg "Automated abandoned cart recovery using WordPress email reminders")
-![WordPress recovery email settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.jpg "WordPress recovery email settings")
-![WordPress recovery email preview](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.jpg "WordPress recovery email preview")
-![Exit Intent popup settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-5.jpg "Exit Intent popup settings")
-![General settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-6.jpg "General settings")
-![How Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-7.gif "How Exit Intent popup looks like once the user tries to leave the shop")
+![CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats and top abandoned products](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "CartBounty dashboard and abandoned cart reports including cart abandonment rate stats and top abandoned products")
+![Abandoned cart list](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.jpg "Location of CartBounty after activation")
+![Automated abandoned cart recovery using WordPress email reminders](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.jpg "Abandoned cart list")
+![WordPress recovery email settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.jpg "WordPress recovery email settings")
+![WordPress recovery email preview](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-5.jpg "WordPress recovery email preview")
+![Exit Intent popup settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-6.jpg "Exit Intent popup settings")
+![General settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-7.jpg "General settings")
+![How Exit Intent popup looks like once the user tries to leave the shop](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-8.gif "How Exit Intent popup looks like once the user tries to leave the shop")
 
 ## Changelog
 
