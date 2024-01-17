@@ -495,7 +495,7 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Method checks if current user session ID also exists in the database and the cart has not been paid for (type = abandoned or recovered_pending)
+	 * Method checks if current shopping cart has been saved in the past 24 hours basing upon session ID
 	 *
 	 * @since    3.0
 	 * @return   boolean
@@ -503,10 +503,12 @@ class CartBounty_Public{
 	 */
 	function cart_saved( $session_id ){
 		$saved = false;
+
 		if( $session_id !== NULL ){
 			global $wpdb;
-			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+			$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+			$time = $admin->get_time_intervals();
 
 			//Checking if we have this abandoned cart in our database already
 			$result = $wpdb->get_var(
@@ -514,13 +516,13 @@ class CartBounty_Public{
 					"SELECT session_id
 					FROM $cart_table
 					WHERE session_id = %s AND
-					type = %d",
+					time > %s",
 					$session_id,
-					$admin->get_cart_type('abandoned')
+					$time['day']
 				)
 			);
 
-			if($result){
+			if( $result ){
 				$saved = true;
 			}
 		}
@@ -782,55 +784,67 @@ class CartBounty_Public{
 		
 		$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
 
-		//Retrieve a single row with current customer ID
-		$row = $wpdb->get_row($wpdb->prepare(
-			"SELECT *
-			FROM  $cart_table
-			WHERE session_id = %s",
-			$cart['session_id'])
+		//Retrieve a single, latest edited abandoned cart with current customer ID
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT *
+				FROM $cart_table
+				WHERE session_id = %s
+				ORDER BY time DESC",
+				$cart['session_id']
+			)
 		);
 
-		if($row){ //If we have a user with such session ID in the database
-			$other_fields = unserialize($row->other_fields);
+		if( $row ){ //If we have a user with such session ID in the database
+
+			$other_fields = '';
+
+			if( !empty( $row->other_fields ) ){
+				$other_fields = unserialize( $row->other_fields );
+			}
+			
 			$location_data = $admin->get_cart_location( $row->location );
             $country = $location_data['country'];
             $city = $location_data['city'];
             $postcode = $location_data['postcode'];
 
-	        (empty( $_POST['billing_first_name'])) ? $_POST['billing_first_name'] = sprintf('%s', esc_html($row->name)) : '';
-			(empty( $_POST['billing_last_name'])) ? $_POST['billing_last_name'] = sprintf('%s', esc_html($row->surname)) : '';
-			(empty( $_POST['billing_country'])) ? $_POST['billing_country'] = sprintf('%s', esc_html($country)) : '';
-			(empty( $_POST['billing_city'])) ? $_POST['billing_city'] = sprintf('%s', esc_html($city)) : '';
-			(empty( $_POST['billing_phone'])) ? $_POST['billing_phone'] = sprintf('%s', esc_html($row->phone)) : '';
-			(empty( $_POST['billing_email'])) ? $_POST['billing_email'] = sprintf('%s', esc_html($row->email)) : '';
-			(empty( $_POST['billing_postcode'])) ? $_POST['billing_postcode'] = sprintf('%s', esc_html($postcode)) : '';
+            ( empty( $_POST['billing_first_name'] ) ) ? $_POST['billing_first_name'] = sprintf( '%s', esc_html( $row->name ) ) : '';
+			( empty( $_POST['billing_last_name'] ) ) ? $_POST['billing_last_name'] = sprintf( '%s', esc_html( $row->surname ) ) : '';
+			( empty( $_POST['billing_country'] ) ) ? $_POST['billing_country'] = sprintf( '%s', esc_html( $country ) ) : '';
+			( empty( $_POST['billing_city'] ) ) ? $_POST['billing_city'] = sprintf( '%s', esc_html( $city ) ) : '';
+			( empty( $_POST['billing_phone'] ) ) ? $_POST['billing_phone'] = sprintf( '%s', esc_html( $row->phone ) ) : '';
+			( empty( $_POST['billing_email'] ) ) ? $_POST['billing_email'] = sprintf( '%s', esc_html( $row->email ) ) : '';
+			( empty( $_POST['billing_postcode'] ) ) ? $_POST['billing_postcode'] = sprintf( '%s', esc_html( $postcode ) ) : '';
 
-			if($other_fields){
-				(empty( $_POST['billing_company'])) ? $_POST['billing_company'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_company'])) : '';
-				(empty( $_POST['billing_address_1'])) ? $_POST['billing_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_1'])) : '';
-				(empty( $_POST['billing_address_2'])) ? $_POST['billing_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_address_2'])) : '';
-				(empty( $_POST['billing_state'])) ? $_POST['billing_state'] = sprintf('%s', esc_html($other_fields['cartbounty_billing_state'])) : '';
-				(empty( $_POST['shipping_first_name'])) ? $_POST['shipping_first_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_first_name'])) : '';
-				(empty( $_POST['shipping_last_name'])) ? $_POST['shipping_last_name'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_last_name'])) : '';
-				(empty( $_POST['shipping_company'])) ? $_POST['shipping_company'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_company'])) : '';
-				(empty( $_POST['shipping_country'])) ? $_POST['shipping_country'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_country'])) : '';
-				(empty( $_POST['shipping_address_1'])) ? $_POST['shipping_address_1'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_1'])) : '';
-				(empty( $_POST['shipping_address_2'])) ? $_POST['shipping_address_2'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_address_2'])) : '';
-				(empty( $_POST['shipping_city'])) ? $_POST['shipping_city'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_city'])) : '';
-				(empty( $_POST['shipping_state'])) ? $_POST['shipping_state'] = sprintf('%s', esc_html($other_fields['cartbounty_shipping_state'])) : '';
-				(empty( $_POST['order_comments'])) ? $_POST['order_comments'] = sprintf('%s', esc_html($other_fields['cartbounty_order_comments'])) : '';
+			if( $other_fields ){
+				( empty( $_POST['billing_company'] ) ) ? $_POST['billing_company'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_company'] ) ) : '';
+				( empty( $_POST['billing_address_1'] ) ) ? $_POST['billing_address_1'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_address_1'] ) ) : '';
+				( empty( $_POST['billing_address_2'] ) ) ? $_POST['billing_address_2'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_address_2'] ) ) : '';
+				( empty( $_POST['billing_state'] ) ) ? $_POST['billing_state'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_state'] ) ) : '';
+				( empty( $_POST['shipping_first_name'] ) ) ? $_POST['shipping_first_name'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_first_name'] ) ) : '';
+				( empty( $_POST['shipping_last_name'] ) ) ? $_POST['shipping_last_name'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_last_name'] ) ) : '';
+				( empty( $_POST['shipping_company'] ) ) ? $_POST['shipping_company'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_company'] ) ) : '';
+				( empty( $_POST['shipping_country'] ) ) ? $_POST['shipping_country'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_country'] ) ) : '';
+				( empty( $_POST['shipping_address_1'] ) ) ? $_POST['shipping_address_1'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_address_1'] ) ) : '';
+				( empty( $_POST['shipping_address_2'] ) ) ? $_POST['shipping_address_2'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_address_2'] ) ) : '';
+				( empty( $_POST['shipping_city'] ) ) ? $_POST['shipping_city'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_city'] ) ) : '';
+				( empty( $_POST['shipping_state'] ) ) ? $_POST['shipping_state'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_state'] ) ) : '';
+				( empty( $_POST['shipping_postcode'] ) ) ? $_POST['shipping_postcode'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_postcode'] ) ) : '';
+				( empty( $_POST['order_comments'] ) ) ? $_POST['order_comments'] = sprintf( '%s', esc_html( $other_fields['cartbounty_order_comments'] ) ) : '';
 			}
-
+			
 			//Checking if Create account should be checked or not
-			if(isset($other_fields['cartbounty_create_account'])){
-				if($other_fields['cartbounty_create_account']){
+			if( isset( $other_fields['cartbounty_create_account'] ) ){
+				
+				if( $other_fields['cartbounty_create_account'] ){
 					add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
 				}
 			}
 
 			//Checking if Ship to a different location must be checked or not
-			if(isset($other_fields['cartbounty_ship_elsewhere'])){
-				if($other_fields['cartbounty_ship_elsewhere']){
+			if( isset( $other_fields['cartbounty_ship_elsewhere'] ) ){
+				
+				if( $other_fields['cartbounty_ship_elsewhere'] ){
 					add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
 				}
 			}

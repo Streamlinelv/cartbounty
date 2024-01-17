@@ -60,6 +60,7 @@ class CartBounty{
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->define_wordpress_hooks();
+		$this->define_reports_hooks();
 	}
 
 	/**
@@ -104,6 +105,11 @@ class CartBounty{
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-status.php';
 
+		/**
+		 * The class responsible for defining all methods for dealing with reports
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cartbounty-reports.php';
+
 		$this->loader = new CartBounty_Loader();
 
 	}
@@ -142,7 +148,7 @@ class CartBounty{
 		$this->loader->add_action( 'wp_loaded', $admin, 'trigger_on_load', 15 );
 		$this->loader->add_action( 'wp_ajax_force_sync', $admin, 'force_sync' );
 		$this->loader->add_action( 'wp_ajax_get_system_status', $status, 'get_system_status' );
-		$this->loader->add_action( 'wp_ajax_handle_bubble', $admin, 'handle_bubble' );
+		$this->loader->add_action( 'wp_ajax_handle_notice', $admin, 'handle_notices' );
 		$this->loader->add_action( 'cartbounty_automation_footer_end', $admin, 'add_email_badge', 100 );
 		$this->loader->add_action( 'cartbounty_admin_email_footer_end', $admin, 'add_email_badge', 100 );
 		$this->loader->add_action( 'pre_update_option', $admin, 'validate_cartbounty_fields', 10, 3 );
@@ -180,6 +186,21 @@ class CartBounty{
 		$this->loader->add_action( 'update_option_cartbounty_automation_from_name', $wordpress, 'sanitize_from_field', 50);
 		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
 		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
+	}
+
+	/**
+	 * Register all of the hooks related to the reports area functionality of the plugin.
+	 *
+	 * @since    8.0
+	 * @access   private
+	 */
+	private function define_reports_hooks(){
+		$reports = new CartBounty_Reports();
+		$this->loader->add_action( 'admin_init', $reports, 'handle_calendar_period_submit' );
+		$this->loader->add_action( 'wp_ajax_update_quick_stats', $reports, 'handle_report_updates' );
+		$this->loader->add_action( 'wp_ajax_update_charts', $reports, 'handle_report_updates' );
+		$this->loader->add_action( 'wp_ajax_apply_report_period', $reports, 'handle_ajax_submit' );
+		$this->loader->add_action( 'wp_ajax_update_chart_type', $reports, 'handle_chart_type_updates' );
 	}
 
 	/**

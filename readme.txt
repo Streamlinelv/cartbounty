@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.4
 Requires PHP: 7.0
-Stable tag: 7.3.0.1
+Stable tag: 8.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,7 +13,7 @@ Save abandoned carts and send automated abandoned cart recovery messages. Get mo
 
 == Description ==
 
-All online stores suffer from shopping cart abandonment. [CartBounty](https://www.cartbounty.com) helps to save abandoned carts in [WooCommerce](https://woocommerce.com/?aff=40932&cid=4595734) and send effective abandoned cart reminder messages to recover lost sales.
+All online stores suffer from shopping cart abandonment. [CartBounty](https://www.cartbounty.com) helps to save abandoned carts in WooCommerce and send effective abandoned cart reminder messages to recover lost sales.
 
 * View shopping carts in real-time
 * Save abandoned carts
@@ -26,11 +26,12 @@ With thoughtful user experience, built-in efficiency tools and ability to integr
 
 [youtube https://www.youtube.com/watch?v=Sb4DpkDilw0]
 
-## Live shopping cart monitoring
+## Live shopping cart monitoring and reports
 
 CartBounty saves and displays all shopping cart activity from the moment a product is added to the cart.
 
-* Analyze most popular cart items
+* Detailed abandoned cart reports
+* Discover the top most abandoned products
 * View anonymous carts
 * Get notified about newly abandoned carts
 * Export abandoned carts (**Pro**)
@@ -49,7 +50,7 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 * Generate and send unique coupon codes (**Pro**)
 * Track message open and click-through rates (**Pro**)
 * Recover unfinished orders (**Pro**)
-* Restore Custom product fields (Product addons) and [WooCommerce Product Bundles](https://woocommerce.com/products/product-bundles/?aff=40932&cid=4595734) (**Pro**)
+* Restore Custom product fields (Product addons) and WooCommerce Product Bundles (**Pro**)
 * Exclude carts from abandoned cart recovery containing specific products or product categories, countries, languages etc. (**Pro**)
 * Pause / Resume individual abandoned cart recovery (**Pro**)
 * Translate emails and SMS text messages, [WPML](https://wpml.org/?aid=447227&affiliate_key=0a2ZxRioMm8S) plugin support (**Pro**)
@@ -308,7 +309,13 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 7.3.0.1 =
+= 8.0 =
+* Added a Dashboard including Abandoned cart reports and Top abandoned products
+* Added duplicate abandoned cart removal after placing an order
+* Added date time localization
+* Improved "Remember checkout fields" feature - input field restoration
+* Minor improvement for abandoned cart data saving on WooCommerce Checkout form
 * Compatibility improvements with PHP8
+* Code refactoring
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

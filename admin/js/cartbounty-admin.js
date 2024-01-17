@@ -165,6 +165,11 @@
 			current.parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
 		}
 
+		function addUnavailableReportClass(){ //Adding unavailable class to display a message
+			var current = jQuery(this);
+			current.parent().parent().parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
+		}
+
 		function disableLink(e){ //Function prevents link from firing
 			e.preventDefault();
 		}
@@ -238,20 +243,30 @@
 			});
 		}
 
-		function closeBubble(e){
+		function closeNotice(e){
 			e.preventDefault();
 			var button = jQuery(this);
-			var bubble = button.closest('.cartbounty-bubble');
+			var notice = button.closest('.cartbounty-notice-block');
 			var data = {
 				nonce		: button.data('nonce'),
-				action		: 'handle_bubble',
+				action		: 'handle_notice',
 				operation	: button.data('operation'),
 				type		: button.data('type')
 			};
 			
 			jQuery.post(cartbounty_admin_data.ajaxurl, data,
 			function(response){
-				bubble.css({top:"-600px", right: "50px"}); //Hide the bubble from screen
+
+				if(notice.hasClass('cartbounty-report-widget')){
+					notice.css({opacity:"0"});
+					setTimeout(function(){
+						notice.css({display:"none"});
+					}, 1600);
+
+				}else{ //In case dealing with bubble notice
+					notice.removeClass('cartbounty-show-bubble'); //Hide the bubble from screen
+				}
+
 				if ( response.success != true ){
 					console.log(response.data);
 				}
@@ -281,12 +296,13 @@
 		jQuery("#force_sync").on("click", force_sync );
 		jQuery(".cartbounty-toggle .cartbounty-control-visibility").on("click", addCheckedClass );
 		jQuery(".cartbounty-unavailable").on("click", addUnavailableClass );
+		jQuery("#cartbounty-abandoned-cart-stats-options .cartbounty-unavailable").on("click", addUnavailableReportClass );
 		jQuery(".cartbounty-unavailable .cartbounty-section-image, #cartbounty-sections .cartbounty-unavailable a").on("click", disableLink );
 		jQuery('#cartbounty-copy-system-status').on("click", copySystemReport );
 		jQuery('.cartbounty-step-opener').on("click", addActiveStepClass );
 		jQuery('.cartbounty-wordpress-get-additional-step').on("click", removeActiveStepClassUpgradeNotice );
-		jQuery(".cartbounty-bubble-close").on("click", closeBubble );
-		jQuery(".button-preview, .cartbounty-close-preview").on("click", togglePreview );
+		jQuery(".cartbounty-close-notice:not(.cartbounty-preview-container .cartbounty-notice-content .button)").on("click", closeNotice );
+		jQuery(".button-preview, .cartbounty-preview-container .cartbounty-notice-content .button").on("click", togglePreview );
 	});
 
 })( jQuery );

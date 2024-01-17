@@ -72,17 +72,36 @@ class CartBounty_Admin{
 		$screen = get_current_screen();
 		
 		//Do not continue if we are not on CartBounty plugin page
-		if(!is_object($screen) || $screen->id != $cartbounty_admin_menu_page){
-			return;
-		}
+		if( !is_object( $screen ) || $screen->id != $cartbounty_admin_menu_page ) return;
 
 		$data = array(
 		    'ajaxurl' => admin_url( 'admin-ajax.php' )
 		);
 
-		if (isset($_GET['section'])){ //Adding additional script on WordPress recovery page
-			if($_GET['section'] == 'wordpress'){
+		if( isset( $_GET['section'] ) ){ //Adding additional script on WordPress recovery page
+			
+			if( $_GET['section'] == 'wordpress' ){
 				wp_enqueue_script( $this->plugin_name . '-micromodal', plugin_dir_url( __FILE__ ) . 'js/micromodal.min.js', array( 'jquery' ), $this->version, false );
+			}
+		}
+
+		if( $screen->id == $cartbounty_admin_menu_page ){ //Load report scripts only on Dashboard
+
+			if( !isset( $_GET['tab'] ) || $_GET['tab'] == 'dashboard' ){
+				wp_enqueue_script( $this->plugin_name . '-d3', plugin_dir_url( __FILE__ ) . 'js/d3.min.js', array( 'jquery' ), $this->version, false );
+				wp_enqueue_script( $this->plugin_name . '-plot', plugin_dir_url( __FILE__ ) . 'js/plot.min.js', array( 'jquery' ), $this->version, false );
+				wp_enqueue_script( $this->plugin_name . '-daypicker', plugin_dir_url( __FILE__ ) . 'js/daypicker.min.js', array( 'jquery' ), $this->version, false );
+				wp_enqueue_script( $this->plugin_name . '-reports', plugin_dir_url( __FILE__ ) . 'js/cartbounty-reports.js', array( 'jquery' ), $this->version, false );
+
+				//Adding extra data related with daypicker calendar
+				$reports = new CartBounty_Reports();
+				$data['daypicker'] = $reports->prepare_daypicker_data();
+				$data['active_charts'] = $reports->get_active_reports( 'charts' );
+				$data['chart_type'] = $reports->get_selected_chart_type();
+				$data['locale'] = $this->get_locale_with_hyphen( get_user_locale() );
+				$data['report_translations'] = array(
+					'missing_chart_data' 	=> $reports->get_defaults( 'empty_chart_data' ),
+				);
 			}
 		}
 
@@ -129,9 +148,10 @@ class CartBounty_Admin{
 				)
 			);
 
-			foreach ( $submenu['woocommerce'] as $key => $menu_item ) { //Go through all Sumenu sections of WooCommerce and look for CartBounty Abandoned carts
+			foreach( $submenu['woocommerce'] as $key => $menu_item ){ //Go through all submenu sections of WooCommerce and look for CartBounty Abandoned carts
+				
 				if( isset( $menu_item[0] ) ){
-					if ( 0 === strpos( $menu_item[0], esc_html__('CartBounty Abandoned carts', 'woo-save-abandoned-carts'))) {
+					if ( 0 === strpos( $menu_item[0], esc_html__( 'CartBounty Abandoned carts', 'woo-save-abandoned-carts' ) ) ){
 						$submenu['woocommerce'][$key][0] .= ' <span class="new-abandoned update-plugins count-' . esc_attr( $recoverable_new_cart_count ) . '">' .  esc_html( $recoverable_new_cart_count ) .'</span>';
 					}
 				}
@@ -233,9 +253,9 @@ class CartBounty_Admin{
 			<?php do_action('cartbounty_after_page_title'); ?>
 
 			<?php if ( isset ( $_GET['tab'] ) ){
-				$this->create_admin_tabs($_GET['tab']);
+				$this->create_admin_tabs( $_GET['tab'] );
 			}else{
-				$this->create_admin_tabs('carts');
+				$this->create_admin_tabs( 'dashboard' );
 			}
 
 			if ( $pagenow == 'admin.php' && $_GET['page'] == CARTBOUNTY ){
@@ -261,7 +281,142 @@ class CartBounty_Admin{
 						<?php endif;
 					}?>
 
-				<?php elseif($tab == 'recovery'): //Recovery tab ?>
+
+
+
+
+				<?php elseif( $tab == 'dashboard' ): //Dashboard tab ?>
+
+					<?php
+					$reports = new CartBounty_Reports();
+					$nonce = wp_create_nonce('cartbounty_report_period');
+					?>
+
+					<div id="cartbounty-content-container" class="cartbounty-dashboard">
+						<div class="cartbounty-row cartbounty-flex">
+							<div class="cartbounty-col-xs-6 cartbounty-col-sm-6 cartbounty-dashboard-title-column">
+								<h2 id="cartbounty-dashboard-title" class="cartbounty-section-title"><?php esc_html_e( 'Welcome to Dashboard', 'woo-save-abandoned-carts' ); ?></h2>
+							</div>
+							<div class="cartbounty-col-xs-6 cartbounty-col-sm-6 cartbounty-calendar-column">
+								<div id="cartbounty-calendar-container">
+									<div id="cartbounty-period-dropdown-container">
+										<?php echo $reports->display_period_dropdown(); ?>
+									</div>
+									<div id="cartbounty-daypicker-container">
+										<form method="post">
+											<input type="hidden" name="cartbounty_apply_period" value="cartbounty_apply_period_c" />
+											<input type="hidden" name="cartbounty_report_period" value="<?php echo $nonce; ?>">
+											<div id='cartbounty-daypicker-container'></div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<div class="cartbounty-col-xs-12 cartbounty-col-md-6 cartbounty-col-lg-7">
+								<div class="cartbounty-abandoned-cart-stats-block cartbounty-report-widget">
+									<div class="cartbounty-stats-header cartbounty-report-content">
+										<h3>
+											<i class="cartbounty-widget-icon cartbounty-abandoned-cart-stats-icon">
+												<img src="<?php echo esc_url( plugins_url( 'assets/reports-icon.svg', __FILE__ ) ) ?>" />
+											</i><?php esc_html_e( 'Abandoned cart reports', 'woo-save-abandoned-carts' ); ?>
+										</h3>
+										<?php echo $reports->edit_options( 'reports' ); ?>
+									</div>
+									<?php echo $reports->display_reports(); ?>
+								</div>
+							</div>
+							<div class="cartbounty-col-xs-12 cartbounty-col-md-6 cartbounty-col-lg-5">
+								<?php echo $this->display_dashboard_notices(); ?>
+								<div class="cartbounty-top-abandoned-products cartbounty-report-widget">
+									<div class="cartbounty-stats-header cartbounty-report-content">
+										<h3>
+											<i class="cartbounty-widget-icon cartbounty-top-abandoned-products-icon">
+												<img src="<?php echo esc_url( plugins_url( 'assets/top-products-icon.svg', __FILE__ ) ) ?>" />
+											</i>
+											<?php esc_html_e( 'Top abandoned products', 'woo-save-abandoned-carts' ); ?></h3>
+										<?php echo $reports->edit_options( 'top-products' ); ?>
+									</div>
+									<div id="cartbounty-top-abandoned-products-container">
+										<?php echo $reports->display_top_products(); ?>
+									</div>
+								</div>
+								<?php $active_features = $this->display_active_features();
+								if( !empty( trim( $active_features ) ) ) : ?>
+								<div class="cartbounty-active-features">
+									<h3><?php esc_html_e( 'Active features', 'woo-save-abandoned-carts' ); ?></h3>
+									<div class="cartbounty-row cartbounty-flex">
+										<?php echo $active_features; ?>
+									</div>
+								</div>
+								<?php endif; ?>
+							</div>
+						</div>
+					</div>
+
+				<?php elseif( $tab == 'carts' ): //Abandoned carts tab ?>
+
+					<?php
+						require_once plugin_dir_path( __FILE__ ) . 'class-cartbounty-admin-table.php';
+						$table = new CartBounty_Table();
+						$table->prepare_items();
+						$footer_bulk_delete = false;
+
+						if( isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if bottom Bulk delete action fired
+							$footer_bulk_delete = true;
+						}
+						
+						//Output table contents
+						$message = '';
+						if ('delete' === $table->current_action() || $footer_bulk_delete) {
+							if(!empty($_REQUEST['id'])){ //In case we have a row selected for deletion, process the message otput
+								if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
+									$deleted_row_count = esc_html(count($_REQUEST['id']));
+								}
+								else{ //If a single row is deleted
+									$deleted_row_count = 1;
+								}
+								$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
+									/* translators: %d - Item count */
+									esc_html__('Items deleted: %d', 'woo-save-abandoned-carts' ), esc_html( $deleted_row_count )
+								) . '</p></div>';
+							}
+						}
+
+						$cart_status = 'all';
+				        if (isset($_GET['cart-status'])){
+				            $cart_status = $_GET['cart-status'];
+				        }
+					?>
+					<?php echo $message; 
+					if ($this->get_cart_count( 'all' ) == 0): //If no abandoned carts, then output this note ?>
+						<p id="cartbounty-no-carts-message">
+							<?php echo wp_kses_post( __( 'Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.', 'woo-save-abandoned-carts') ); ?>
+						</p>
+					<?php else: ?>
+						<?php $action_url = admin_url( 'admin.php' );?>
+						<form id="cartbounty-table" method="GET" action="<?php echo esc_url( $action_url ); ?>">
+							<div class="cartbounty-row">
+								<div class="cartbounty-col-sm-6">
+									<?php $this->display_cart_statuses( $cart_status, $tab);?>
+								</div>
+								<div class="cartbounty-col-sm-6">
+									<div id="cartbounty-cart-search">
+										<label class="screen-reader-text cartbounty-unavailable" for="post-search-input"><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?> :</label>
+										<input type="search" id="cartbounty-cart-search-input" class="cartbounty-text cartbounty-unavailable" readonly><button type="button" id="cartbounty-search-submit" class="cartbounty-button button button-secondary cartbounty-unavailable"><i class="cartbounty-icon cartbounty-visible-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70.06 70"><path d="M30,60a29.9,29.9,0,0,0,16.64-5.06L60.7,69a3.58,3.58,0,0,0,5,0L69,65.64a3.57,3.57,0,0,0,0-5l-14.13-14A30,30,0,1,0,30,60Zm0-48.21A18.23,18.23,0,1,1,11.76,30,18.24,18.24,0,0,1,30,11.76Zm0,0" transform="translate(0)"/></svg></i><i class='cartbounty-hidden-xs'><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?></i>
+										</button>
+										<p class='cartbounty-additional-information'>
+											<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'enable_search' ); ?></i>
+										</p>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" name="cart-status" value="<?php echo esc_attr( $cart_status ); ?>">
+							<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>"/>
+							<input type="hidden" name="tab" value="<?php echo esc_attr( $tab ); ?>"/>
+							<?php $table->display(); ?>
+						</form>
+					<?php endif; ?>
+
+				<?php elseif( $tab == 'recovery' ): //Recovery tab ?>
 
 					<div id="cartbounty-content-container">
 						<div class="cartbounty-row">
@@ -307,7 +462,7 @@ class CartBounty_Admin{
 						</div>
 					</div>
 
-				<?php elseif($tab == 'tools'): //Tools tab ?>
+				<?php elseif( $tab == 'tools' ): //Tools tab ?>
 
 					<div id="cartbounty-content-container">
 						<div class="cartbounty-row">
@@ -344,7 +499,7 @@ class CartBounty_Admin{
 						</div>
 					</div>
 
-				<?php elseif($tab == 'settings'): //Settings tab ?>
+				<?php elseif( $tab == 'settings' ): //Settings tab ?>
 
 					<div id="cartbounty-content-container">
 						<div class="cartbounty-settings-container">
@@ -545,67 +700,6 @@ class CartBounty_Admin{
 							</form>
 						</div>
 					</div>
-
-				<?php else: //Abandoned cart tab ?>
-
-					<?php
-						require_once plugin_dir_path( __FILE__ ) . 'class-cartbounty-admin-table.php';
-						$table = new CartBounty_Table();
-						$table->prepare_items();
-						$footer_bulk_delete = false;
-
-						if( isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if bottom Bulk delete action fired
-							$footer_bulk_delete = true;
-						}
-						
-						//Output table contents
-						$message = '';
-						if ('delete' === $table->current_action() || $footer_bulk_delete) {
-							if(!empty($_REQUEST['id'])){ //In case we have a row selected for deletion, process the message otput
-								if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
-									$deleted_row_count = esc_html(count($_REQUEST['id']));
-								}
-								else{ //If a single row is deleted
-									$deleted_row_count = 1;
-								}
-								$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
-									/* translators: %d - Item count */
-									esc_html__('Items deleted: %d', 'woo-save-abandoned-carts' ), esc_html( $deleted_row_count )
-								) . '</p></div>';
-							}
-						}
-
-						$cart_status = 'all';
-				        if (isset($_GET['cart-status'])){
-				            $cart_status = $_GET['cart-status'];
-				        }
-					?>
-					<?php echo $message; 
-					if ($this->get_cart_count( 'all' ) == 0): //If no abandoned carts, then output this note ?>
-						<p id="cartbounty-no-carts-message">
-							<?php echo wp_kses_post( __( 'Looks like you do not have any saved Abandoned carts yet.<br/>But do not worry, as soon as someone fills the <strong>Email</strong> or <strong>Phone number</strong> fields of your WooCommerce Checkout form and abandons the cart, it will automatically appear here.', 'woo-save-abandoned-carts') ); ?>
-						</p>
-					<?php else: ?>
-						<form id="cartbounty-table" method="GET">
-							<div class="cartbounty-row">
-								<div class="cartbounty-col-sm-6">
-									<?php $this->display_cart_statuses( $cart_status, $tab);?>
-								</div>
-								<div class="cartbounty-col-sm-6">
-									<div id="cartbounty-cart-search">
-										<label class="screen-reader-text cartbounty-unavailable" for="post-search-input"><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?> :</label>
-										<input type="search" id="cartbounty-cart-search-input" class="cartbounty-text cartbounty-unavailable" readonly><button type="button" id="cartbounty-search-submit" class="cartbounty-button button button-secondary cartbounty-unavailable"><i class="cartbounty-icon cartbounty-visible-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70.06 70"><path d="M30,60a29.9,29.9,0,0,0,16.64-5.06L60.7,69a3.58,3.58,0,0,0,5,0L69,65.64a3.57,3.57,0,0,0,0-5l-14.13-14A30,30,0,1,0,30,60Zm0-48.21A18.23,18.23,0,1,1,11.76,30,18.24,18.24,0,0,1,30,11.76Zm0,0" transform="translate(0)"/></svg></i><i class='cartbounty-hidden-xs'><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?></i>
-										</button>
-										<p class='cartbounty-additional-information'>
-											<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'enable_search' ); ?></i>
-										</p>
-									</div>
-								</div>
-							</div>
-							<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>"/>
-							<?php $table->display(); ?>
-						</form>
-					<?php endif; ?>
 				<?php endif;
 			}?>
 		</div>
@@ -618,12 +712,13 @@ class CartBounty_Admin{
 	 * @since    3.0
 	 * @param    $current    Currently open tab - string
 	 */
-	function create_admin_tabs( $current = 'carts' ){
+	function create_admin_tabs( $current = 'dashboard' ){
 		$tabs = array(
-			'carts' 	=> esc_html__('Abandoned carts', 'woo-save-abandoned-carts'),
-			'recovery' 	=> esc_html__('Recovery', 'woo-save-abandoned-carts'),
-			'tools' 	=> esc_html__('Tools', 'woo-save-abandoned-carts'),
-			'settings' 	=> esc_html__('Settings', 'woo-save-abandoned-carts')
+			'dashboard' => esc_html__( 'Dashboard', 'woo-save-abandoned-carts' ),
+			'carts' 	=> esc_html__( 'Abandoned carts', 'woo-save-abandoned-carts' ),
+			'recovery' 	=> esc_html__( 'Recovery', 'woo-save-abandoned-carts' ),
+			'tools' 	=> esc_html__( 'Tools', 'woo-save-abandoned-carts' ),
+			'settings' 	=> esc_html__( 'Settings', 'woo-save-abandoned-carts' )
 		);
 		echo '<h2 class="nav-tab-wrapper">';
 		
@@ -635,13 +730,100 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Method returns icons as SVG code
+	 *
+	 * @since    6.0
+	 * @return 	 String
+	 * @param    $icon 		Icon to get - string
+	 * @param    $current 	Current active tab - string
+	 * @param    $section 	Wheather the icon is located in sections - boolean
+	 * @param    $grid 		Wheather the icon is located section items grid - boolean
+	 */
+	public function get_icon( $icon, $current, $section, $grid ){
+
+		$color = '#555'; //Default icon color
+		$svg = '';
+		
+		if( $current == $icon ){ //If the icon is active in tabs
+			$color = '#000';
+		}
+
+		if( $grid ){ //If the icon is in the item grid
+			$color = '#000';
+		}
+
+		if( $current == $icon && $section ){ //If the icon is active in sections
+			$color = '#976dfb';
+		}
+
+		if( $icon == 'dashboard' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.73 65"><path d="M61.2,2.41C29.21-7.79,0,15.85,0,46.45,0,50.63,1.11,65,4.71,65H88.56c2.82,0,4.17-14.37,4.17-18.55C92.73,26.52,80.21,8.43,61.2,2.41Zm-45.58,50a5.58,5.58,0,1,1,5.57-5.58A5.58,5.58,0,0,1,15.62,52.38Zm8.46-22.9a5.58,5.58,0,1,1,5.57-5.58A5.57,5.57,0,0,1,24.08,29.48ZM46.37,9.12a5.57,5.57,0,1,1-5.58,5.57A5.57,5.57,0,0,1,46.37,9.12Zm4.69,46.15a5.57,5.57,0,0,1-9-6.55l3-4.09c1.81-2.48,23.85-28.58,26.34-26.77S55.83,48.69,54,51.18Zm26.05-3.59a5.57,5.57,0,1,1,5.58-5.57A5.57,5.57,0,0,1,77.11,51.68Z"/></svg>';
+		}
+
+		elseif( $icon == 'carts' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.34 29.48"><path d="M7.65,24c-2.43,0-3.54-1.51-3.54-2.91V3.44C3.77,3.34,3,3.15,2.48,3L.9,2.59A1.28,1.28,0,0,1,0,1.15,1.32,1.32,0,0,1,1.34,0a1.52,1.52,0,0,1,.42.06l.68.2c1.38.41,2.89.85,3.25,1A1.72,1.72,0,0,1,6.79,2.8V5.16L24.67,7.53a1.75,1.75,0,0,1,1.67,2v6.1a3.45,3.45,0,0,1-3.59,3.62h-16v1.68c0,.14,0,.47,1.07.47H21.13a1.32,1.32,0,0,1,1.29,1.38,1.35,1.35,0,0,1-.25.79,1.18,1.18,0,0,1-1,.5Zm-.86-7.5,15.76,0c.41,0,1.11,0,1.11-1.45V10c-3-.41-13.49-1.69-16.87-2.11Z"/><path d="M21.78,29.48a4,4,0,1,1,4-4A4,4,0,0,1,21.78,29.48Zm0-5.37a1.35,1.35,0,1,0,1.34,1.34A1.35,1.35,0,0,0,21.78,24.11ZM10.14,29.48a4,4,0,1,1,4-4A4,4,0,0,1,10.14,29.48Zm0-5.37a1.35,1.35,0,1,0,1.34,1.34A1.34,1.34,0,0,0,10.14,24.11Z"/><path d="M18.61,18.91a1.34,1.34,0,0,1-1.34-1.34v-9a1.34,1.34,0,1,1,2.67,0v9A1.34,1.34,0,0,1,18.61,18.91Z"/><path d="M12.05,18.87a1.32,1.32,0,0,1-1.34-1.29v-10a1.34,1.34,0,0,1,2.68,0v10A1.32,1.32,0,0,1,12.05,18.87Z"/></svg>';
+		}
+
+		elseif( $icon == 'recovery' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66.07 49.48"><path d="M28.91,26.67A7.62,7.62,0,0,0,33,28a7,7,0,0,0,4.16-1.37c.77-.46,23.19-17.66,26.05-20s1.06-4.9,1.06-4.9S63.51,0,60.64,0H6.08c-3.83,0-4.5,2-4.5,2S0,4.49,3.28,7Z"/><path d="M40.84,32.14A13.26,13.26,0,0,1,33,34.9a13,13,0,0,1-7.77-2.76C24.33,31.55,1.11,14.49,0,13.25V43a6.52,6.52,0,0,0,6.5,6.5H59.57a6.51,6.51,0,0,0,6.5-6.5V13.25C65,14.46,41.74,31.55,40.84,32.14Z"/></svg>';
+		}
+
+		elseif( $icon == 'settings' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69.95 69.95"><path d="M64,34.83a20.36,20.36,0,0,0,5.2-20A2.49,2.49,0,0,0,65,13.79L56.61,22.2a6.25,6.25,0,0,1-8.85,0h0a6.26,6.26,0,0,1,0-8.86l8.4-8.41a2.49,2.49,0,0,0-1-4.16A20.4,20.4,0,0,0,30.26,27a2.16,2.16,0,0,1-.54,2.22L2.27,56.71a7.76,7.76,0,0,0,0,11h0a7.77,7.77,0,0,0,11,0L40.7,40.23a2.18,2.18,0,0,1,2.22-.54A20.38,20.38,0,0,0,64,34.83Z"/></svg>';
+		}
+
+		elseif( $icon == 'exit_intent' || $icon == 'tools' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.5 70"><path d="M29,7.23A7.23,7.23,0,1,1,21.75,0,7.23,7.23,0,0,1,29,7.23Z"/><path d="M17.32,70a5.73,5.73,0,0,1-4.78-2.6,4.85,4.85,0,0,1-.18-4.84q1-2.12,2-4.25c1.33-2.8,2.71-5.68,4.14-8.5,1.33-2.6,5-5.49,11.29-8.81-2.17-4.18-4.25-8-6.35-11.61a21.16,21.16,0,0,1-5.12.66C11.6,30.05,5.59,26.63,1,20.18a4.58,4.58,0,0,1-.48-4.86,5.76,5.76,0,0,1,5.06-3,5.28,5.28,0,0,1,4.39,2.29c2.32,3.26,5.1,4.92,8.26,4.92A13.46,13.46,0,0,0,25,17.43c.18-.12.63-.36,1.12-.64l.31-.17,1.36-.78a23.44,23.44,0,0,1,12-3.55c6.76,0,12.77,3.42,17.39,9.89A4.56,4.56,0,0,1,57.58,27,5.76,5.76,0,0,1,52.52,30a5.26,5.26,0,0,1-4.38-2.28c-2.33-3.26-5.11-4.91-8.27-4.91a10.63,10.63,0,0,0-1.66.14c2.44,4.4,6.53,12.22,7.08,13.58,2.23,4.07,4.78,7.82,8.25,7.82A7,7,0,0,0,57,43.23a5.68,5.68,0,0,1,2.85-.81,5.85,5.85,0,0,1,5.41,4.43A5.27,5.27,0,0,1,62.74,53a18,18,0,0,1-9.08,2.68c-5,0-9.91-2.61-14.08-7.55-2.93,1.44-8.65,4.38-11.3,6.65-.53.87-4.4,8.16-6.4,12.29A5,5,0,0,1,17.32,70Z"/></svg>';
+		}
+
+		elseif( $icon == 'early_capture' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38.87 70"><path d="M38.53,32.71,23,67.71A3.89,3.89,0,0,1,19.43,70a5.56,5.56,0,0,1-.81-.08,3.87,3.87,0,0,1-3.07-3.81V42.78H3.88A3.89,3.89,0,0,1,.34,37.3l15.55-35A3.88,3.88,0,0,1,23.32,3.9V27.23H35a3.9,3.9,0,0,1,3.54,5.48Zm0,0"/></svg>';
+		}
+
+		elseif( $icon == 'tab_notification' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.5 70"><path d="M55.38,41V28.11A19.19,19.19,0,0,0,55.21,25l0-.27C54.12,16.29,47.66,9.48,38.72,7.34l-1.29-.29V5.3a3.87,3.87,0,1,0-7.73,0V7.06A21.9,21.9,0,0,0,11.75,27.94c-.07,2.61-.07,8.9-.06,13a9.82,9.82,0,0,0-6.33,9.33c0,5.44,4.16,9.86,9.29,9.86H33.32v.48a9.38,9.38,0,0,0,18.75,0v-.48h.36c5.12,0,9.29-4.42,9.29-9.86A9.84,9.84,0,0,0,55.38,41ZM19.44,28.67a15.16,15.16,0,0,1,.29-3A14.06,14.06,0,0,1,33.54,14.44a14.53,14.53,0,0,1,4.77.81,14,14,0,0,1,9.34,12.46c0,.45,0,.53,0,.56a3.91,3.91,0,0,1,0,.51c0,1,0,7.44,0,11.66H19.42C19.42,36.37,19.42,30.92,19.44,28.67ZM42.7,62.92a2.47,2.47,0,0,1-2.47-2.46,3,3,0,0,1,0-.31h4.87a3,3,0,0,1,0,.31A2.46,2.46,0,0,1,42.7,62.92Zm9.62-10.16H14.75c-.92,0-1.67-1.11-1.67-2.47s.75-2.46,1.67-2.46H52.32c.92,0,1.67,1.1,1.67,2.46S53.24,52.76,52.32,52.76Z"/><path d="M11.31.8A34.14,34.14,0,0,0,.24,15.73a3.82,3.82,0,0,0,3.61,5.11h0A3.78,3.78,0,0,0,7.4,18.43,26.5,26.5,0,0,1,16,6.87a3.81,3.81,0,0,0,1.47-3v0A3.83,3.83,0,0,0,11.31.8Z"/><path d="M56.19.8A34.14,34.14,0,0,1,67.26,15.73a3.82,3.82,0,0,1-3.61,5.11h0a3.8,3.8,0,0,1-3.56-2.41A26.4,26.4,0,0,0,51.5,6.87a3.78,3.78,0,0,1-1.47-3v0A3.83,3.83,0,0,1,56.19.8Z"/></svg>';
+		}
+
+		elseif( $icon == 'activecampaign' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.24 20"><path d="M12.52,8.69C12.23,8.45.76,0.44,0.24,0.12L0.08,0V2A1.32,1.32,0,0,0,.8,3.14l0.08,0L10.7,10c-1.09.76-9.38,6.52-9.9,6.84a1.16,1.16,0,0,0-.68,1.25V20s12.19-8.49,12.43-8.69h0a1.52,1.52,0,0,0,.68-1.25V9.82A1.4,1.4,0,0,0,12.52,8.69Z"/><path d="M5.35,10.91a1.61,1.61,0,0,0,1-.36L7.08,10,7.2,9.94,7.08,9.86s-5.39-3.74-6-4.1A0.7,0.7,0,0,0,.36,5.63,0.71,0.71,0,0,0,0,6.28V7.53l0,0s3.7,2.58,4.43,3.06A1.63,1.63,0,0,0,5.35,10.91Z"/></svg>';
+		}
+
+		elseif( $icon == 'getresponse' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 44.54"><path d="M35,35a29,29,0,0,1-17.22-5.84A28.38,28.38,0,0,1,6.89,11.35c-.07-.47-.15-.94-.21-1.33A3.2,3.2,0,0,1,9.86,6.36h1.48a23.94,23.94,0,0,0,8.4,13.76A24.74,24.74,0,0,0,34.91,25.5C48.16,25.78,61.05,14,69.31,1.15A3,3,0,0,0,67,0H3A3,3,0,0,0,0,3V41.55a3,3,0,0,0,3,3H67a3,3,0,0,0,3-3V8.5C59.14,27.59,46.65,35,35,35Z"/></svg>';
+		}
+
+		elseif( $icon == 'mailchimp' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.96 70"><path d="M49.61,33.08a5.41,5.41,0,0,1,1.45,0,4.92,4.92,0,0,0,.07-2.75c-.34-1.66-.82-2.67-1.79-2.52s-1,1.37-.66,3a5.7,5.7,0,0,0,.93,2.24Z"/><path d="M41.26,34.4c.69.3,1.12.5,1.29.33s.07-.32-.09-.59a4,4,0,0,0-1.8-1.45,4.88,4.88,0,0,0-4.78.57c-.47.34-.91.81-.84,1.1,0,.09.09.16.25.19a27.75,27.75,0,0,1,3.27-.73,5.65,5.65,0,0,1,2.7.58Z"/><path d="M39.85,35.2a3.23,3.23,0,0,0-1.72.72,1.1,1.1,0,0,0-.45.69.19.19,0,0,0,.07.16.2.2,0,0,0,.15.06,2.81,2.81,0,0,0,.67-.18,5.74,5.74,0,0,1,2.92-.31c.45,0,.67.08.77-.07a.26.26,0,0,0,0-.29,2.62,2.62,0,0,0-2.38-.78Z"/><path d="M46.79,38.13a1.13,1.13,0,0,0,1.52-.26c.22-.45-.1-1.06-.72-1.37a1.13,1.13,0,0,0-1.52.27,1.11,1.11,0,0,0,.72,1.36Z"/><path d="M50.75,34.67c-.5,0-.92.54-.93,1.23s.39,1.25.89,1.26.91-.55.93-1.23-.39-1.25-.89-1.26Z"/><path d="M17.14,47c-.12-.15-.33-.1-.53-.06a2.11,2.11,0,0,1-.46.07,1,1,0,0,1-.86-.44,1.59,1.59,0,0,1,0-1.47,2,2,0,0,1,.12-.26c.4-.9,1.07-2.41.31-3.85a3.38,3.38,0,0,0-2.6-1.89,3.34,3.34,0,0,0-2.87,1,4.14,4.14,0,0,0-1.07,3.47c.08.22.2.28.29.29s.47-.11.64-.58a.86.86,0,0,0,0-.15,5,5,0,0,1,.46-1.08,2,2,0,0,1,1.26-.87,2,2,0,0,1,1.53.29,2,2,0,0,1,.74,2.36A5.58,5.58,0,0,0,13.8,46a2.11,2.11,0,0,0,1.87,2.16,1.59,1.59,0,0,0,1.5-.75.31.31,0,0,0,0-.37Z"/><path d="M24.76,19.66a31,31,0,0,1,8.71-7.12.11.11,0,0,1,.15.15,8.56,8.56,0,0,0-.81,2,.12.12,0,0,0,.18.12,17,17,0,0,1,7.65-2.7.13.13,0,0,1,.08.22,6.6,6.6,0,0,0-1.21,1.21.12.12,0,0,0,.1.18A15.09,15.09,0,0,1,46,15.38c.12.06,0,.3-.1.27a25.86,25.86,0,0,0-11.58,0,26.57,26.57,0,0,0-9.41,4.15.11.11,0,0,1-.15-.17Zm13,29.25Zm10.78,1.27a.21.21,0,0,0,.12-.2.2.2,0,0,0-.22-.18,24.86,24.86,0,0,1-10.84-1.1c.57-1.87,2.1-1.19,4.4-1a32.17,32.17,0,0,0,10.64-1.15,24.28,24.28,0,0,0,8-3.95,16,16,0,0,1,1.11,3.78,1.86,1.86,0,0,1,1.17.22c.5.31.87.95.62,2.61a14.39,14.39,0,0,1-4,7.93,16.67,16.67,0,0,1-4.86,3.63,20,20,0,0,1-3.17,1.34c-8.35,2.73-16.9-.27-19.65-6.71a9.46,9.46,0,0,1-.55-1.52,13.36,13.36,0,0,1,2.93-12.54h0a1.09,1.09,0,0,0,.39-.75,1.27,1.27,0,0,0-.3-.7c-1.09-1.59-4.86-4.28-4.11-9.49C30.68,26.64,34,24,37,24.16l.77,0c1.33.08,2.48.25,3.57.3a7.19,7.19,0,0,0,5.41-1.81,4.13,4.13,0,0,1,2.07-1.17,2.71,2.71,0,0,1,.79-.08,2.68,2.68,0,0,1,1.33.43c1.56,1,1.78,3.55,1.86,5.38,0,1.05.17,3.58.21,4.31.1,1.67.54,1.9,1.42,2.19.5.17,1,.29,1.65.48a9.31,9.31,0,0,1,4,1.92,2.56,2.56,0,0,1,.74,1.45c.24,1.77-1.38,4-5.67,5.95a28.69,28.69,0,0,1-14.3,2.29l-1.37-.15c-3.15-.43-4.94,3.63-3,6.42,1.21,1.79,4.52,3,7.84,3,7.59,0,13.43-3.24,15.6-6l.17-.24c.11-.16,0-.25-.11-.16-1.77,1.21-9.66,6-18.08,4.58a11.38,11.38,0,0,1-2-.53c-.75-.29-2.3-1-2.49-2.6,6.8,2.1,11.09.11,11.09.11ZM11.18,34a9.06,9.06,0,0,0-5.72,3.65A15.45,15.45,0,0,1,3,35.33C1,31.46,5.24,24,8.22,19.7c7.35-10.49,18.86-18.43,24.19-17,.86.25,3.73,3.58,3.73,3.58a74.88,74.88,0,0,0-10.26,7.07A46.63,46.63,0,0,0,11.18,34Zm4,17.73a5,5,0,0,1-1.09.08c-3.56-.09-7.41-3.3-7.79-7.1-.42-4.2,1.72-7.43,5.52-8.2a6.67,6.67,0,0,1,1.6-.11c2.13.11,5.27,1.75,6,6.39.64,4.11-.37,8.29-4.22,8.94Zm48.22-7.43c0-.11-.23-.84-.51-1.71a13.28,13.28,0,0,0-.55-1.49,5.47,5.47,0,0,0,1-3.94,5,5,0,0,0-1.45-2.81,11.64,11.64,0,0,0-5.11-2.53l-1.3-.36c0-.06-.07-3.07-.13-4.37a15,15,0,0,0-.57-3.84,10.35,10.35,0,0,0-2.66-4.74c3.24-3.36,5.27-7.06,5.26-10.24,0-6.11-7.51-8-16.76-4.13l-2,.83L35,1.47c-10.54-9.2-43.51,27.44-33,36.34l2.31,1.95A11.32,11.32,0,0,0,3.71,45,10.3,10.3,0,0,0,7.27,51.6a10.86,10.86,0,0,0,7,2.81C18.35,63.86,27.72,69.66,38.71,70c11.78.35,21.68-5.18,25.82-15.11A20.84,20.84,0,0,0,66,48.26c0-2.79-1.58-3.94-2.58-3.94Z"/></svg>';
+		}
+
+		elseif( $icon == 'wordpress' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><path d="M35,0A35,35,0,1,0,70,35,35,35,0,0,0,35,0M3.53,35A31.33,31.33,0,0,1,6.26,22.19l15,41.13A31.48,31.48,0,0,1,3.53,35M35,66.47a31.42,31.42,0,0,1-8.89-1.28l9.44-27.44,9.67,26.5a3.45,3.45,0,0,0,.23.43A31.21,31.21,0,0,1,35,66.47m4.34-46.22c1.89-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-3.09,0-8.29-.4-8.29-.4a1.3,1.3,0,0,0-.2,2.6s1.61.2,3.3.3l4.91,13.43L27.18,54.33,15.72,20.25c1.9-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-.59,0-1.28,0-2,0a31.46,31.46,0,0,1,47.54-5.92l-.41,0a5.44,5.44,0,0,0-5.28,5.58c0,2.6,1.49,4.79,3.09,7.38a16.66,16.66,0,0,1,2.59,8.68c0,2.69-1,5.82-2.39,10.17L50.71,54.07Zm23.27-.35A31.46,31.46,0,0,1,50.82,62.2l9.61-27.79a29.62,29.62,0,0,0,2.39-11.27,23.42,23.42,0,0,0-.21-3.24"/></svg>';
+		}
+
+		elseif( $icon == 'bulkgate' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
+		}
+
+		elseif( $icon == 'push_notification' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 67"><path d="M50.84,67a6.26,6.26,0,0,1-4.27-1.68L34,53.58H12.45A12.4,12.4,0,0,1,0,41.26V12.32A12.4,12.4,0,0,1,12.45,0h45.1A12.4,12.4,0,0,1,70,12.32V41.26A12.4,12.4,0,0,1,57.55,53.58h-.43l-.07,7.3A6.22,6.22,0,0,1,50.84,67ZM12.45,6.53a5.87,5.87,0,0,0-5.92,5.79V41.26a5.87,5.87,0,0,0,5.92,5.79H36.62l13.91,13,.12-13h6.9a5.87,5.87,0,0,0,5.92-5.79V12.32a5.87,5.87,0,0,0-5.92-5.79Z"/><rect x="14.47" y="16.99" width="41.06" height="6.53" rx="3.27"/><rect x="14.47" y="30.01" width="31.06" height="6.53" rx="3.27"/></svg>';
+		}
+
+		elseif( $icon == 'webhook' ){
+			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.88 68"><path d="M17.52,68a17.68,17.68,0,0,1-1.78-.09A17.49,17.49,0,0,1,.09,52.27a17.3,17.3,0,0,1,2.8-11.41,3.15,3.15,0,0,1,2.63-1.42,3.08,3.08,0,0,1,2.35,1.07,3.24,3.24,0,0,1,.2,3.82,11.28,11.28,0,0,0,9.45,17.44,12.63,12.63,0,0,0,4.56-.9,11,11,0,0,0,6.72-10,3.59,3.59,0,0,1,3.52-3.65H51l.3-.38a5.17,5.17,0,1,1,0,6.4l-.3-.38H37.47a3.24,3.24,0,0,0-3.1,2.37A17.58,17.58,0,0,1,17.52,68Z"/><path d="M55.39,67.57c-.36,0-.72,0-1.08,0a3.12,3.12,0,0,1-2.79-4.14,3.23,3.23,0,0,1,3-2.08h.18l.64,0A11.26,11.26,0,0,0,66.6,50.87a11.52,11.52,0,0,0-4.53-9.95,10.39,10.39,0,0,0-6.51-2.23,11.85,11.85,0,0,0-5.49,1.38l-.09,0a3.75,3.75,0,0,1-1.79.46,3.44,3.44,0,0,1-3-1.73L35.85,22.68l-.48-.07a5.17,5.17,0,0,1,.74-10.28,5.17,5.17,0,0,1,4.81,7.09l-.18.45,6.73,11.7a3.23,3.23,0,0,0,2.8,1.61,3.58,3.58,0,0,0,.8-.1,17.51,17.51,0,1,1,4.32,34.49Z"/><path d="M17.51,55.6a5.17,5.17,0,0,1-.73-10.29l.48-.07L24,33.57a3.25,3.25,0,0,0-.49-3.88A17.5,17.5,0,0,1,36.18,0a17.1,17.1,0,0,1,7.14,1.54,17.34,17.34,0,0,1,8.47,8.15,3.13,3.13,0,0,1,0,2.8,3.1,3.1,0,0,1-2.21,1.68,3.31,3.31,0,0,1-.55.05,3.24,3.24,0,0,1-2.84-1.8,11.32,11.32,0,0,0-21.34,3.83,11,11,0,0,0,5.26,10.82,3.58,3.58,0,0,1,1.39,4.86L22.14,48.07l.18.45A5.13,5.13,0,0,1,22,53a5.19,5.19,0,0,1-4.48,2.58Z"/></svg>';
+		}
+
+		return "<span class='cartbounty-icon-container cartbounty-icon-$icon'><img src='data:image/svg+xml;base64," . esc_attr( base64_encode( $svg ) ) . "' alt='" . esc_attr( $icon ) . "' /></span>";
+    }
+
+	/**
 	 * Method returns current open tab. Default tab - carts
 	 *
 	 * @since    7.0.4
 	 */
 	function get_open_tab(){
-		$tab = 'carts';
-		if (isset($_GET['tab'])){
+		$tab = 'dashboard';
+
+		if( isset( $_GET['tab'] ) ){
 			$tab = $_GET['tab'];
 		}
 		return $tab;
@@ -654,7 +836,8 @@ class CartBounty_Admin{
 	 */
 	function get_open_section(){
 		$section = '';
-		if (isset($_GET['section'])){
+
+		if( isset( $_GET['section'] ) ){
 			$section = $_GET['section'];
 		}
 		return $section;
@@ -2278,7 +2461,7 @@ class CartBounty_Admin{
 		}
 
 		if( $submit ){
-			$button = '<span class="cartbounty-button-container"><a class="cartbounty-close-notice cartbounty-button button button-secondary cartbounty-progress" href="'. esc_url( wp_nonce_url( add_query_arg( 'handle', $handle ), 'cartbounty-notice-nonce', $handle ) ) .'">'. esc_html( $button_text ) .'</a></span>';
+			$button = '<span class="cartbounty-button-container"><a class="cartbounty-close-header-notice cartbounty-button button button-secondary cartbounty-progress" href="'. esc_url( wp_nonce_url( add_query_arg( 'handle', $handle ), 'cartbounty-notice-nonce', $handle ) ) .'">'. esc_html( $button_text ) .'</a></span>';
 		}
 
 		$output = '<div class="cartbounty-notification notice updated '. esc_attr( $class ) .'">
@@ -2444,8 +2627,19 @@ class CartBounty_Admin{
 	 * @since    1.1
 	 */
 	public static function get_settings_tab_url(){
-		$url = menu_page_url(CARTBOUNTY, false);
-		$url = $url.'&tab=settings'; //Adding settings tab manually
+		$url = menu_page_url( CARTBOUNTY, false );
+		$url = $url . '&tab=settings';
+		return $url;
+	}
+
+	/**
+	 * Method retrieves Carts tab url
+	 *
+	 * @since    8.0
+	 */
+	public static function get_carts_tab_url(){
+		$url = menu_page_url( CARTBOUNTY, false );
+		$url = $url . '&tab=carts';
 		return $url;
 	}
 
@@ -2457,24 +2651,27 @@ class CartBounty_Admin{
 	 * @param    $plugin_file    Location of the plugin
 	 */
 	function add_plugin_action_links( $actions, $plugin_file ){
-		if ( ! is_array( $actions ) ) {
+		
+		if ( !is_array( $actions ) ){
 			return $actions;
 		}
-		$settings_tab = $this->get_settings_tab_url();
+
+		$carts_tab = $this->get_carts_tab_url();
 		
 		$action_links = array();
 		$action_links['cartbounty_settings'] = array(
-			'label' => esc_html__('Settings', 'woo-save-abandoned-carts'),
-			'url'   => $settings_tab
+			'label' => esc_html__( 'Carts', 'woo-save-abandoned-carts' ),
+			'url'   => $carts_tab
 		);
 		$action_links['cartbounty_carts'] = array(
-			'label' => esc_html__('Carts', 'woo-save-abandoned-carts'),
-			'url'   => menu_page_url(CARTBOUNTY, false)
+			'label' => esc_html__( 'Dashboard', 'woo-save-abandoned-carts' ),
+			'url'   => menu_page_url( CARTBOUNTY, false )
 		);
 		$action_links['cartbounty_get_pro'] = array(
-			'label' => esc_html__('Get Pro', 'woo-save-abandoned-carts'),
+			'label' => esc_html__( 'Get Pro', 'woo-save-abandoned-carts' ),
 			'url'   => $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'plugin_link' )
 		);
+
 		return $this->add_display_plugin_action_links( $actions, $plugin_file, $action_links, 'before' );
 	}
 
@@ -2566,170 +2763,147 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Check if notice has been submitted or not
+	 *
+	 * @since    8.0
+	 * @return   boolean
+	 * @param    string    		$notice_type        Notice type
+	 */
+	function is_notice_submitted( $notice_type ){
+		$result = false;
+		$submitted_notices = get_option( 'cartbounty_submitted_notices' );
+
+		if( isset( $submitted_notices[$notice_type] ) ){
+			$result = true;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Method outputs bubble content
 	 *
 	 * @since    1.4.2
 	 */
-	function output_bubble_content(){ ?>
-		<?php $bubble_nonce = wp_create_nonce( 'bubble_security' );
-
+	function output_bubble_content(){
 		$tab = $this->get_open_tab();
 		$current_section = $this->get_open_section();
 
-		if($tab == 'carts'): //In case we are on Abandoned cart page ?>
-			<div id="cartbounty-bubbles">
-				<?php if(!get_option('cartbounty_review_submitted')): //Don't output Review bubble if review has been left ?>
-					<div id="cartbounty-review" class="cartbounty-bubble">
-						<div class="cartbounty-header-image">
-							<a href="<?php echo esc_url( CARTBOUNTY_REVIEW_LINK ); ?>" title="<?php esc_attr_e('If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', 'woo-save-abandoned-carts' ); ?>" target="_blank">
-								<img src="<?php echo esc_url( plugins_url( 'assets/review-notification.gif', __FILE__ ) ); ?>"/>
-							</a>
-						</div>
-						<div id="cartbounty-review-content">
-							<?php
-								$expression = $this->get_expressions();
-								$saved_cart_count = $this->total_cartbounty_recoverable_cart_count();
-							?>
-							<h2><?php echo sprintf(
-								/* translators: %s - Gets replaced by an excitement word e.g. Awesome!, %d - Abandoned cart count */
-								esc_html( _n('%s You have already captured %d abandoned cart!', '%s You have already captured %d abandoned carts!', $saved_cart_count , 'woo-save-abandoned-carts' ) ), esc_html( $expression['exclamation'] ), esc_html( $saved_cart_count ) ); ?></h2>
-							<p><?php esc_html_e('If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', 'woo-save-abandoned-carts' ); ?></p>
-							<div class="cartbounty-button-row">
-								<a href="<?php echo esc_url( CARTBOUNTY_REVIEW_LINK ); ?>" class="button" target="_blank"><?php esc_html_e("Leave a 5-star rating", 'woo-save-abandoned-carts'); ?></a>
-								<button type="button" class='button cartbounty-review-submitted cartbounty-bubble-close' data-operation='submitted' data-type='review' data-nonce='<?php echo esc_attr( $bubble_nonce ); ?>'><?php esc_html_e('Done that', 'woo-save-abandoned-carts'); ?></button>
-								<button type="button" class='button cartbounty-close cartbounty-bubble-close' data-operation='declined' data-type='review' data-nonce='<?php echo esc_attr( $bubble_nonce ); ?>'><?php esc_html_e('Close', 'woo-save-abandoned-carts'); ?></button>
-							</div>
-						</div>
-					</div>
-				<?php endif; ?>
-				<div id="cartbounty-go-pro" class="cartbounty-bubble">
-					<div class="cartbounty-header-image">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" title="<?php esc_attr_e('Automate your abandoned cart recovery process and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts'); ?>" target="_blank">
-							<img src="<?php echo esc_url( plugins_url( 'assets/notification-email.gif', __FILE__ ) ); ?>"/>
-						</a>
-					</div>
-					<div id="cartbounty-go-pro-content">
-						<h2><?php esc_html_e('Automate your abandoned cart recovery process and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts' ); ?></h2>
-						<p><?php esc_html_e('Use your time wisely by enabling Pro features and increase your sales.', 'woo-save-abandoned-carts' ); ?></p>
-						<div class="cartbounty-button-row">
-							<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble' ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-							<button type="button" class='button cartbounty-close cartbounty-bubble-close' data-operation='declined' data-type='upgrade' data-nonce='<?php echo esc_attr( $bubble_nonce ); ?>'><?php esc_html_e('Not now', 'woo-save-abandoned-carts'); ?></button>
-						</div>
-					</div>
-				</div>
-				<?php echo $this->draw_bubble(); ?>
-			</div>
-		<?php elseif($current_section == 'wordpress'): //In case we are on WordPress Recovery cart page ?>
-			<div id="cartbounty-bubbles">
-				<div id="cartbounty-steps" class="cartbounty-bubble">
-					<div class="cartbounty-header-image">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble_steps' ) ); ?>" title="<?php esc_attr_e('Make the most of your automation with a 3-step email series', 'woo-save-abandoned-carts'); ?>" target="_blank">
-							<img src="<?php echo esc_url( plugins_url( 'assets/3-step-email-series.gif', __FILE__ ) ); ?>"/>
-						</a>
-					</div>
-					<div id="cartbounty-go-pro-content">
-						<h2><?php esc_html_e('Make the most of your automation with a 3-step email series', 'woo-save-abandoned-carts' ); ?></h2>
-						<p><?php esc_html_e('A single recovery email can raise your sales but sending 2 or 3 follow-up emails is proved to get the most juice out of your recovery campaigns.', 'woo-save-abandoned-carts' ); ?></p>
-						<div class="cartbounty-button-row">
-							<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'bubble_steps' ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-							<button type="button" class='button cartbounty-close cartbounty-bubble-close' data-operation='declined' data-type='upgrade_steps' data-nonce='<?php echo esc_attr( $bubble_nonce ); ?>'><?php esc_html_e('Not now', 'woo-save-abandoned-carts'); ?></button>
-						</div>
-					</div>
-				</div>
-				<?php echo $this->draw_bubble(); ?>
-			</div> 
-		<?php endif;
+		if( $tab == 'carts' ){ //In case we are on Abandoned cart page
+			$review_bubble = $this->draw_bubble( 'review' );
+			$upgrade_bubble = $this->draw_bubble( 'upgrade' );
+			echo $content = $this->prepare_notice( 'review' );
+			echo $content = $this->prepare_notice( 'upgrade' );
+			
+			if( $upgrade_bubble ){ //If we should display this bubble
+				echo $upgrade_bubble;
+			
+			}elseif( $review_bubble ){ //If we should display this bubble
+				echo $review_bubble;
+
+			}
+
+		}elseif( $current_section == 'wordpress' ){
+			$steps_bubble = $this->draw_bubble( 'steps' );
+			echo $content = $this->prepare_notice( 'steps', false, 'bubble_steps' );
+			
+			if( $steps_bubble ){ //If we should display this bubble
+				echo $steps_bubble;
+			}
+		}
 	}
 
 	/**
 	 * Show bubble slide-out window
 	 *
-	 * @since 	1.3
+	 * @since    1.3
+	 * @return   false / HTML
+	 * @param    string    	$notice_type        Notice type
 	 */
-	function draw_bubble(){
-		$display_bubble = false;
-		$bubble_type = false;
-		$position  = is_rtl() ? 'left' : 'right';
-		$wordpress = new CartBounty_WordPress();
+	function draw_bubble( $notice_type ){
+		$result = false;
 
-
-		//Checking if we should display the Review bubble or Get Pro bubble
-		//Displaying review bubble after 10, 30, 100, 300, 500 and 1000 abandoned carts have been captured and if the review has not been submitted
-		if(
-			($this->total_cartbounty_recoverable_cart_count() > 9 && get_option('cartbounty_times_review_declined') < 1 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_cartbounty_recoverable_cart_count() > 29 && get_option('cartbounty_times_review_declined') < 2 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_cartbounty_recoverable_cart_count() > 99 && get_option('cartbounty_times_review_declined') < 3 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_cartbounty_recoverable_cart_count() > 299 && get_option('cartbounty_times_review_declined') < 4 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_cartbounty_recoverable_cart_count() > 499 && get_option('cartbounty_times_review_declined') < 5 && !get_option('cartbounty_review_submitted')) ||
-			($this->total_cartbounty_recoverable_cart_count() > 999 && get_option('cartbounty_times_review_declined') < 6 && !get_option('cartbounty_review_submitted'))
-		){
-			$bubble_type = '#cartbounty-review';
-			$display_bubble = true; //Show the bubble
-
-		}elseif($this->total_cartbounty_recoverable_cart_count() > 5 && $this->days_have_passed('cartbounty_last_time_bubble_displayed', 18 )){ //If we have more than 5 abandoned carts or the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
-			$bubble_type = '#cartbounty-go-pro';
-			$display_bubble = true; //Show the bubble
-
-		}elseif($wordpress->get_stats() > 9 && $this->days_have_passed('cartbounty_last_time_bubble_steps_displayed', 18 )){ //If we have already sent out more than 10 reminder emails using WordPress or the last time bubble was displayed was 18 days ago, display the bubble info about Pro version
-			$bubble_type = '#cartbounty-steps';
-			$display_bubble = true; //Show the bubble
-		}
-		
-		if($display_bubble){ //Check ff we should display the bubble ?>
+		if( $this->should_display_notice( $notice_type ) ){ //If we should display the bubble
+			$notice_id = '#cartbounty-notice-' . $notice_type;
+			ob_start(); ?>
 			<script>
 				jQuery(document).ready(function($) {
-					var bubble = $(<?php echo "'". $bubble_type ."'"; ?>);
-					var close = $('.cartbounty-close, .cartbounty-review-submitted');
+					var bubble = $(<?php echo "'". $notice_id ."'"; ?>);
+					var close = $('.cartbounty-close, .cartbounty-notice-done');
 					
 					//Function loads the bubble after a given time period in seconds	
 					setTimeout(function() {
-						bubble.css({top:"60px", <?php echo $position; ?>: "50px"});
+						bubble.addClass('cartbounty-show-bubble');
 					}, 2500);
 				});
 			</script>
 			<?php
-		}else{
-			//Do nothing
-			return;
+			$result .= ob_get_contents();
+			ob_end_clean();
 		}
+
+		return $result;
 	}
 
 	/**
-	 * Handles bubble button actions
+	 * Handles notice actions (dashboard and bubble notices)
 	 *
-	 * @since    7.0
+	 * @since    8.0
 	 */
-	function handle_bubble(){
-		if ( check_ajax_referer( 'bubble_security', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing function
-			wp_send_json_error(esc_html__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ));
+	function handle_notices(){
+
+		if ( check_ajax_referer( 'notice_nonce', 'nonce', false ) == false ) { //If the request does not include our nonce security check, stop executing function
+			wp_send_json_error(esc_html__( 'Looks like you are not allowed to do this.', 'woo-save-abandoned-carts' ) );
 		}
-		if(isset($_POST['type'])){
-			if($_POST['type'] == 'review'){ //If we are handling review bubble
-				//Check what button has been pressed and what should we do next
-				if(isset($_POST['operation'])){
-					if($_POST['operation'] == 'submitted'){
-						update_option( 'cartbounty_review_submitted', 1 ); //Update option that the review has been added
-						wp_send_json_success();
-					}elseif($_POST['operation'] == 'declined'){
-						update_option( 'cartbounty_times_review_declined', get_option('cartbounty_times_review_declined') + 1 ); //Update declined count by one
+
+		if( !( isset( $_POST['type'] ) && isset( $_POST['operation'] ) ) ){ //Stop if missing necessary data
+			wp_send_json_error(esc_html__( 'Something is wrong.', 'woo-save-abandoned-carts' ) );
+		}
+
+		$notice_type = sanitize_text_field( $_POST['type'] );
+		$operation = sanitize_text_field( $_POST['operation'] );
+		$submitted_notices = get_option( 'cartbounty_submitted_notices' );
+		
+		if( empty( $submitted_notices ) ){
+			$submitted_notices = array();
+		}
+
+		switch( $notice_type ){
+			case 'upgrade':
+
+				if( $operation == 'declined' ){
+					update_option( 'cartbounty_last_time_bubble_displayed', current_time( 'mysql' ) ); //Update option that the upgrade bubble has been declined
+					wp_send_json_success();
+
+				}
+				break;
+
+			case 'steps':
+
+				if( $operation == 'declined' ){
+					update_option( 'cartbounty_last_time_bubble_steps_displayed', current_time( 'mysql' ) ); //Update option that the upgrade bubble has been declined
+					wp_send_json_success();
+
+				}
+				break;
+
+			case 'review':
+
+				if( $operation == 'submitted' ){
+					$submitted_notices[$notice_type] = 1;
+					update_option( 'cartbounty_submitted_notices', $submitted_notices ); //Update option that the review has been added
+					wp_send_json_success();
+
+				}elseif( $operation == 'declined' ){
+					$level = $this->get_achieved_review_level();
+					
+					if( $level > 0 ){
+						update_option( 'cartbounty_times_review_declined', $level ); //Update declined count according to the current level
 						wp_send_json_success();
 					}
 				}
-			}
-			if($_POST['type'] == 'upgrade'){ //If we are handling upgrade bubble
-				if($_POST['operation'] == 'declined'){
-					update_option( 'cartbounty_last_time_bubble_displayed', current_time('mysql') ); //Update option that the upgrade bubble has been declined
-					wp_send_json_success();
-				}
-			}
-			if($_POST['type'] == 'upgrade_steps'){ //If we are handling upgrade bubble
-				if($_POST['operation'] == 'declined'){
-					update_option( 'cartbounty_last_time_bubble_steps_displayed', current_time('mysql') ); //Update option that the upgrade bubble has been declined
-					wp_send_json_success();
-				}
-			}
+				break;
 		}
-		wp_send_json_error(esc_html__( 'Something is wrong.', 'woo-save-abandoned-carts' ));
 	}
 
 	/**
@@ -2739,16 +2913,39 @@ class CartBounty_Admin{
 	 * @return 	 number
 	 */
 	function total_cartbounty_recoverable_cart_count(){
-		if ( false === ( $captured_abandoned_cart_count = get_transient( 'cartbounty_recoverable_cart_count' ))){ //If value is not cached or has expired
-			$captured_abandoned_cart_count = get_option('cartbounty_recoverable_cart_count');
-			set_transient( 'cartbounty_recoverable_cart_count', $captured_abandoned_cart_count, 60 * 10 ); //Temporary cache will expire in 10 minutes
+		$count = get_option( 'cartbounty_recoverable_cart_count' );
+		return $count;
+	}
+
+	/**
+	 * Retrieves the closest and lowest rounded integer number
+	 * If number is 1, return 1
+	 * If number is smaller than 5, output number - 1
+	 * If number is smaller than 10, output 5
+	 * If number is anything else, output lowest integer
+	 *
+	 * @since    8.0
+	 * @return 	 integer
+	 */
+	function get_closest_lowest_integer( $number ){
+
+		if( $number == 0 ){
+			$number = 0;
+
+		}elseif( $number == 1 ){
+			$number = 1;
+
+		}elseif( $number <= 5 ){
+			$number = $number - 1;
+
+		}elseif( $number <= 10 ){
+			$number = 5;
+
+		}else{
+			$number = floor( ( $number - 1 ) / 10 ) * 10;
 		}
 
-		if(empty($captured_abandoned_cart_count)){ //If we do not have any carts
-			$captured_abandoned_cart_count = 0;
-		}
-
-		return $captured_abandoned_cart_count;
+		return $number;
 	}
 
 	/**
@@ -2836,6 +3033,11 @@ class CartBounty_Admin{
 	function clear_cart_data(){
 		//If a new Order is added from the WooCommerce admin panel, we must check if WooCommerce session is set. Otherwise we would get a Fatal error.
 		if( !isset( WC()->session ) ){
+			return;
+		}
+
+		if( WC()->session->get( 'cartbounty_order_placed' ) ){ //If user created a new order - do not clear the cart for the first time in case of a quick checkout form submission or else the cart is cleared
+			WC()->session->__unset( 'cartbounty_order_placed' );
 			return;
 		}
 
@@ -2941,7 +3143,7 @@ class CartBounty_Admin{
 			);
 		}elseif($this->total_cartbounty_recoverable_cart_count() <= 500){
 			$expressions = array(
-				'exclamation' => esc_html__('Crazy!', 'woo-save-abandoned-carts')
+				'exclamation' => esc_html__('Wow!', 'woo-save-abandoned-carts')
 			);
 		}elseif($this->total_cartbounty_recoverable_cart_count() <= 1000){
 			$expressions = array(
@@ -2955,88 +3157,6 @@ class CartBounty_Admin{
 
 		return $expressions;
 	}
-
-	/**
-	 * Method returns icons as SVG code
-	 *
-	 * @since    6.0
-	 * @return 	 String
-	 * @param    $icon 		Icon to get - string
-	 * @param    $current 	Current active tab - string
-	 * @param    $section 	Wheather the icon is located in sections - boolean
-	 * @param    $grid 		Wheather the icon is located section items grid - boolean
-	 */
-	public function get_icon( $icon, $current, $section, $grid ){
-
-		$color = '#555'; //Default icon color
-		$svg = '';
-		
-		if( $current == $icon ){ //If the icon is active in tabs
-			$color = '#000';
-		}
-
-		if( $grid ){ //If the icon is in the item grid
-			$color = '#000';
-		}
-
-		if( $current == $icon && $section ){ //If the icon is active in sections
-			$color = '#976dfb';
-		}
-
-		if( $icon == 'carts' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.34 29.48"><path d="M7.65,24c-2.43,0-3.54-1.51-3.54-2.91V3.44C3.77,3.34,3,3.15,2.48,3L.9,2.59A1.28,1.28,0,0,1,0,1.15,1.32,1.32,0,0,1,1.34,0a1.52,1.52,0,0,1,.42.06l.68.2c1.38.41,2.89.85,3.25,1A1.72,1.72,0,0,1,6.79,2.8V5.16L24.67,7.53a1.75,1.75,0,0,1,1.67,2v6.1a3.45,3.45,0,0,1-3.59,3.62h-16v1.68c0,.14,0,.47,1.07.47H21.13a1.32,1.32,0,0,1,1.29,1.38,1.35,1.35,0,0,1-.25.79,1.18,1.18,0,0,1-1,.5Zm-.86-7.5,15.76,0c.41,0,1.11,0,1.11-1.45V10c-3-.41-13.49-1.69-16.87-2.11Z"/><path d="M21.78,29.48a4,4,0,1,1,4-4A4,4,0,0,1,21.78,29.48Zm0-5.37a1.35,1.35,0,1,0,1.34,1.34A1.35,1.35,0,0,0,21.78,24.11ZM10.14,29.48a4,4,0,1,1,4-4A4,4,0,0,1,10.14,29.48Zm0-5.37a1.35,1.35,0,1,0,1.34,1.34A1.34,1.34,0,0,0,10.14,24.11Z"/><path d="M18.61,18.91a1.34,1.34,0,0,1-1.34-1.34v-9a1.34,1.34,0,1,1,2.67,0v9A1.34,1.34,0,0,1,18.61,18.91Z"/><path d="M12.05,18.87a1.32,1.32,0,0,1-1.34-1.29v-10a1.34,1.34,0,0,1,2.68,0v10A1.32,1.32,0,0,1,12.05,18.87Z"/></svg>';
-		}
-
-		elseif( $icon == 'recovery' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66.07 49.48"><path d="M28.91,26.67A7.62,7.62,0,0,0,33,28a7,7,0,0,0,4.16-1.37c.77-.46,23.19-17.66,26.05-20s1.06-4.9,1.06-4.9S63.51,0,60.64,0H6.08c-3.83,0-4.5,2-4.5,2S0,4.49,3.28,7Z"/><path d="M40.84,32.14A13.26,13.26,0,0,1,33,34.9a13,13,0,0,1-7.77-2.76C24.33,31.55,1.11,14.49,0,13.25V43a6.52,6.52,0,0,0,6.5,6.5H59.57a6.51,6.51,0,0,0,6.5-6.5V13.25C65,14.46,41.74,31.55,40.84,32.14Z"/></svg>';
-		}
-
-		elseif( $icon == 'settings' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69.95 69.95"><path d="M64,34.83a20.36,20.36,0,0,0,5.2-20A2.49,2.49,0,0,0,65,13.79L56.61,22.2a6.25,6.25,0,0,1-8.85,0h0a6.26,6.26,0,0,1,0-8.86l8.4-8.41a2.49,2.49,0,0,0-1-4.16A20.4,20.4,0,0,0,30.26,27a2.16,2.16,0,0,1-.54,2.22L2.27,56.71a7.76,7.76,0,0,0,0,11h0a7.77,7.77,0,0,0,11,0L40.7,40.23a2.18,2.18,0,0,1,2.22-.54A20.38,20.38,0,0,0,64,34.83Z"/></svg>';
-		}
-
-		elseif( $icon == 'exit_intent' || $icon == 'tools' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.5 70"><path d="M29,7.23A7.23,7.23,0,1,1,21.75,0,7.23,7.23,0,0,1,29,7.23Z"/><path d="M17.32,70a5.73,5.73,0,0,1-4.78-2.6,4.85,4.85,0,0,1-.18-4.84q1-2.12,2-4.25c1.33-2.8,2.71-5.68,4.14-8.5,1.33-2.6,5-5.49,11.29-8.81-2.17-4.18-4.25-8-6.35-11.61a21.16,21.16,0,0,1-5.12.66C11.6,30.05,5.59,26.63,1,20.18a4.58,4.58,0,0,1-.48-4.86,5.76,5.76,0,0,1,5.06-3,5.28,5.28,0,0,1,4.39,2.29c2.32,3.26,5.1,4.92,8.26,4.92A13.46,13.46,0,0,0,25,17.43c.18-.12.63-.36,1.12-.64l.31-.17,1.36-.78a23.44,23.44,0,0,1,12-3.55c6.76,0,12.77,3.42,17.39,9.89A4.56,4.56,0,0,1,57.58,27,5.76,5.76,0,0,1,52.52,30a5.26,5.26,0,0,1-4.38-2.28c-2.33-3.26-5.11-4.91-8.27-4.91a10.63,10.63,0,0,0-1.66.14c2.44,4.4,6.53,12.22,7.08,13.58,2.23,4.07,4.78,7.82,8.25,7.82A7,7,0,0,0,57,43.23a5.68,5.68,0,0,1,2.85-.81,5.85,5.85,0,0,1,5.41,4.43A5.27,5.27,0,0,1,62.74,53a18,18,0,0,1-9.08,2.68c-5,0-9.91-2.61-14.08-7.55-2.93,1.44-8.65,4.38-11.3,6.65-.53.87-4.4,8.16-6.4,12.29A5,5,0,0,1,17.32,70Z"/></svg>';
-		}
-
-		elseif( $icon == 'early_capture' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38.87 70"><path d="M38.53,32.71,23,67.71A3.89,3.89,0,0,1,19.43,70a5.56,5.56,0,0,1-.81-.08,3.87,3.87,0,0,1-3.07-3.81V42.78H3.88A3.89,3.89,0,0,1,.34,37.3l15.55-35A3.88,3.88,0,0,1,23.32,3.9V27.23H35a3.9,3.9,0,0,1,3.54,5.48Zm0,0"/></svg>';
-		}
-
-		elseif( $icon == 'tab_notification' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.5 70"><path d="M55.38,41V28.11A19.19,19.19,0,0,0,55.21,25l0-.27C54.12,16.29,47.66,9.48,38.72,7.34l-1.29-.29V5.3a3.87,3.87,0,1,0-7.73,0V7.06A21.9,21.9,0,0,0,11.75,27.94c-.07,2.61-.07,8.9-.06,13a9.82,9.82,0,0,0-6.33,9.33c0,5.44,4.16,9.86,9.29,9.86H33.32v.48a9.38,9.38,0,0,0,18.75,0v-.48h.36c5.12,0,9.29-4.42,9.29-9.86A9.84,9.84,0,0,0,55.38,41ZM19.44,28.67a15.16,15.16,0,0,1,.29-3A14.06,14.06,0,0,1,33.54,14.44a14.53,14.53,0,0,1,4.77.81,14,14,0,0,1,9.34,12.46c0,.45,0,.53,0,.56a3.91,3.91,0,0,1,0,.51c0,1,0,7.44,0,11.66H19.42C19.42,36.37,19.42,30.92,19.44,28.67ZM42.7,62.92a2.47,2.47,0,0,1-2.47-2.46,3,3,0,0,1,0-.31h4.87a3,3,0,0,1,0,.31A2.46,2.46,0,0,1,42.7,62.92Zm9.62-10.16H14.75c-.92,0-1.67-1.11-1.67-2.47s.75-2.46,1.67-2.46H52.32c.92,0,1.67,1.1,1.67,2.46S53.24,52.76,52.32,52.76Z"/><path d="M11.31.8A34.14,34.14,0,0,0,.24,15.73a3.82,3.82,0,0,0,3.61,5.11h0A3.78,3.78,0,0,0,7.4,18.43,26.5,26.5,0,0,1,16,6.87a3.81,3.81,0,0,0,1.47-3v0A3.83,3.83,0,0,0,11.31.8Z"/><path d="M56.19.8A34.14,34.14,0,0,1,67.26,15.73a3.82,3.82,0,0,1-3.61,5.11h0a3.8,3.8,0,0,1-3.56-2.41A26.4,26.4,0,0,0,51.5,6.87a3.78,3.78,0,0,1-1.47-3v0A3.83,3.83,0,0,1,56.19.8Z"/></svg>';
-		}
-
-		elseif( $icon == 'activecampaign' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.24 20"><path d="M12.52,8.69C12.23,8.45.76,0.44,0.24,0.12L0.08,0V2A1.32,1.32,0,0,0,.8,3.14l0.08,0L10.7,10c-1.09.76-9.38,6.52-9.9,6.84a1.16,1.16,0,0,0-.68,1.25V20s12.19-8.49,12.43-8.69h0a1.52,1.52,0,0,0,.68-1.25V9.82A1.4,1.4,0,0,0,12.52,8.69Z"/><path d="M5.35,10.91a1.61,1.61,0,0,0,1-.36L7.08,10,7.2,9.94,7.08,9.86s-5.39-3.74-6-4.1A0.7,0.7,0,0,0,.36,5.63,0.71,0.71,0,0,0,0,6.28V7.53l0,0s3.7,2.58,4.43,3.06A1.63,1.63,0,0,0,5.35,10.91Z"/></svg>';
-		}
-
-		elseif( $icon == 'getresponse' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 44.54"><path d="M35,35a29,29,0,0,1-17.22-5.84A28.38,28.38,0,0,1,6.89,11.35c-.07-.47-.15-.94-.21-1.33A3.2,3.2,0,0,1,9.86,6.36h1.48a23.94,23.94,0,0,0,8.4,13.76A24.74,24.74,0,0,0,34.91,25.5C48.16,25.78,61.05,14,69.31,1.15A3,3,0,0,0,67,0H3A3,3,0,0,0,0,3V41.55a3,3,0,0,0,3,3H67a3,3,0,0,0,3-3V8.5C59.14,27.59,46.65,35,35,35Z"/></svg>';
-		}
-
-		elseif( $icon == 'mailchimp' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.96 70"><path d="M49.61,33.08a5.41,5.41,0,0,1,1.45,0,4.92,4.92,0,0,0,.07-2.75c-.34-1.66-.82-2.67-1.79-2.52s-1,1.37-.66,3a5.7,5.7,0,0,0,.93,2.24Z"/><path d="M41.26,34.4c.69.3,1.12.5,1.29.33s.07-.32-.09-.59a4,4,0,0,0-1.8-1.45,4.88,4.88,0,0,0-4.78.57c-.47.34-.91.81-.84,1.1,0,.09.09.16.25.19a27.75,27.75,0,0,1,3.27-.73,5.65,5.65,0,0,1,2.7.58Z"/><path d="M39.85,35.2a3.23,3.23,0,0,0-1.72.72,1.1,1.1,0,0,0-.45.69.19.19,0,0,0,.07.16.2.2,0,0,0,.15.06,2.81,2.81,0,0,0,.67-.18,5.74,5.74,0,0,1,2.92-.31c.45,0,.67.08.77-.07a.26.26,0,0,0,0-.29,2.62,2.62,0,0,0-2.38-.78Z"/><path d="M46.79,38.13a1.13,1.13,0,0,0,1.52-.26c.22-.45-.1-1.06-.72-1.37a1.13,1.13,0,0,0-1.52.27,1.11,1.11,0,0,0,.72,1.36Z"/><path d="M50.75,34.67c-.5,0-.92.54-.93,1.23s.39,1.25.89,1.26.91-.55.93-1.23-.39-1.25-.89-1.26Z"/><path d="M17.14,47c-.12-.15-.33-.1-.53-.06a2.11,2.11,0,0,1-.46.07,1,1,0,0,1-.86-.44,1.59,1.59,0,0,1,0-1.47,2,2,0,0,1,.12-.26c.4-.9,1.07-2.41.31-3.85a3.38,3.38,0,0,0-2.6-1.89,3.34,3.34,0,0,0-2.87,1,4.14,4.14,0,0,0-1.07,3.47c.08.22.2.28.29.29s.47-.11.64-.58a.86.86,0,0,0,0-.15,5,5,0,0,1,.46-1.08,2,2,0,0,1,1.26-.87,2,2,0,0,1,1.53.29,2,2,0,0,1,.74,2.36A5.58,5.58,0,0,0,13.8,46a2.11,2.11,0,0,0,1.87,2.16,1.59,1.59,0,0,0,1.5-.75.31.31,0,0,0,0-.37Z"/><path d="M24.76,19.66a31,31,0,0,1,8.71-7.12.11.11,0,0,1,.15.15,8.56,8.56,0,0,0-.81,2,.12.12,0,0,0,.18.12,17,17,0,0,1,7.65-2.7.13.13,0,0,1,.08.22,6.6,6.6,0,0,0-1.21,1.21.12.12,0,0,0,.1.18A15.09,15.09,0,0,1,46,15.38c.12.06,0,.3-.1.27a25.86,25.86,0,0,0-11.58,0,26.57,26.57,0,0,0-9.41,4.15.11.11,0,0,1-.15-.17Zm13,29.25Zm10.78,1.27a.21.21,0,0,0,.12-.2.2.2,0,0,0-.22-.18,24.86,24.86,0,0,1-10.84-1.1c.57-1.87,2.1-1.19,4.4-1a32.17,32.17,0,0,0,10.64-1.15,24.28,24.28,0,0,0,8-3.95,16,16,0,0,1,1.11,3.78,1.86,1.86,0,0,1,1.17.22c.5.31.87.95.62,2.61a14.39,14.39,0,0,1-4,7.93,16.67,16.67,0,0,1-4.86,3.63,20,20,0,0,1-3.17,1.34c-8.35,2.73-16.9-.27-19.65-6.71a9.46,9.46,0,0,1-.55-1.52,13.36,13.36,0,0,1,2.93-12.54h0a1.09,1.09,0,0,0,.39-.75,1.27,1.27,0,0,0-.3-.7c-1.09-1.59-4.86-4.28-4.11-9.49C30.68,26.64,34,24,37,24.16l.77,0c1.33.08,2.48.25,3.57.3a7.19,7.19,0,0,0,5.41-1.81,4.13,4.13,0,0,1,2.07-1.17,2.71,2.71,0,0,1,.79-.08,2.68,2.68,0,0,1,1.33.43c1.56,1,1.78,3.55,1.86,5.38,0,1.05.17,3.58.21,4.31.1,1.67.54,1.9,1.42,2.19.5.17,1,.29,1.65.48a9.31,9.31,0,0,1,4,1.92,2.56,2.56,0,0,1,.74,1.45c.24,1.77-1.38,4-5.67,5.95a28.69,28.69,0,0,1-14.3,2.29l-1.37-.15c-3.15-.43-4.94,3.63-3,6.42,1.21,1.79,4.52,3,7.84,3,7.59,0,13.43-3.24,15.6-6l.17-.24c.11-.16,0-.25-.11-.16-1.77,1.21-9.66,6-18.08,4.58a11.38,11.38,0,0,1-2-.53c-.75-.29-2.3-1-2.49-2.6,6.8,2.1,11.09.11,11.09.11ZM11.18,34a9.06,9.06,0,0,0-5.72,3.65A15.45,15.45,0,0,1,3,35.33C1,31.46,5.24,24,8.22,19.7c7.35-10.49,18.86-18.43,24.19-17,.86.25,3.73,3.58,3.73,3.58a74.88,74.88,0,0,0-10.26,7.07A46.63,46.63,0,0,0,11.18,34Zm4,17.73a5,5,0,0,1-1.09.08c-3.56-.09-7.41-3.3-7.79-7.1-.42-4.2,1.72-7.43,5.52-8.2a6.67,6.67,0,0,1,1.6-.11c2.13.11,5.27,1.75,6,6.39.64,4.11-.37,8.29-4.22,8.94Zm48.22-7.43c0-.11-.23-.84-.51-1.71a13.28,13.28,0,0,0-.55-1.49,5.47,5.47,0,0,0,1-3.94,5,5,0,0,0-1.45-2.81,11.64,11.64,0,0,0-5.11-2.53l-1.3-.36c0-.06-.07-3.07-.13-4.37a15,15,0,0,0-.57-3.84,10.35,10.35,0,0,0-2.66-4.74c3.24-3.36,5.27-7.06,5.26-10.24,0-6.11-7.51-8-16.76-4.13l-2,.83L35,1.47c-10.54-9.2-43.51,27.44-33,36.34l2.31,1.95A11.32,11.32,0,0,0,3.71,45,10.3,10.3,0,0,0,7.27,51.6a10.86,10.86,0,0,0,7,2.81C18.35,63.86,27.72,69.66,38.71,70c11.78.35,21.68-5.18,25.82-15.11A20.84,20.84,0,0,0,66,48.26c0-2.79-1.58-3.94-2.58-3.94Z"/></svg>';
-		}
-
-		elseif( $icon == 'wordpress' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><path d="M35,0A35,35,0,1,0,70,35,35,35,0,0,0,35,0M3.53,35A31.33,31.33,0,0,1,6.26,22.19l15,41.13A31.48,31.48,0,0,1,3.53,35M35,66.47a31.42,31.42,0,0,1-8.89-1.28l9.44-27.44,9.67,26.5a3.45,3.45,0,0,0,.23.43A31.21,31.21,0,0,1,35,66.47m4.34-46.22c1.89-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-3.09,0-8.29-.4-8.29-.4a1.3,1.3,0,0,0-.2,2.6s1.61.2,3.3.3l4.91,13.43L27.18,54.33,15.72,20.25c1.9-.1,3.6-.3,3.6-.3a1.3,1.3,0,0,0-.2-2.6s-5.1.4-8.39.4c-.59,0-1.28,0-2,0a31.46,31.46,0,0,1,47.54-5.92l-.41,0a5.44,5.44,0,0,0-5.28,5.58c0,2.6,1.49,4.79,3.09,7.38a16.66,16.66,0,0,1,2.59,8.68c0,2.69-1,5.82-2.39,10.17L50.71,54.07Zm23.27-.35A31.46,31.46,0,0,1,50.82,62.2l9.61-27.79a29.62,29.62,0,0,0,2.39-11.27,23.42,23.42,0,0,0-.21-3.24"/></svg>';
-		}
-
-		elseif( $icon == 'bulkgate' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 53.8"><g id="g3418"><path id="path3420" d="M35,12.83c11.44,7.83,19.44,17.88,22.73,41H70C68.8,30.78,55,11,35,0,15,11,1.29,30.78,0,53.8H12.29S34,54.61,48.41,32c0,0-14.44,7.68-22.94,4.49-8-3-4.15-10-3.71-10.72A48,48,0,0,1,35,12.83"/></g></svg>';
-		}
-
-		elseif( $icon == 'push_notification' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 67"><path d="M50.84,67a6.26,6.26,0,0,1-4.27-1.68L34,53.58H12.45A12.4,12.4,0,0,1,0,41.26V12.32A12.4,12.4,0,0,1,12.45,0h45.1A12.4,12.4,0,0,1,70,12.32V41.26A12.4,12.4,0,0,1,57.55,53.58h-.43l-.07,7.3A6.22,6.22,0,0,1,50.84,67ZM12.45,6.53a5.87,5.87,0,0,0-5.92,5.79V41.26a5.87,5.87,0,0,0,5.92,5.79H36.62l13.91,13,.12-13h6.9a5.87,5.87,0,0,0,5.92-5.79V12.32a5.87,5.87,0,0,0-5.92-5.79Z"/><rect x="14.47" y="16.99" width="41.06" height="6.53" rx="3.27"/><rect x="14.47" y="30.01" width="31.06" height="6.53" rx="3.27"/></svg>';
-		}
-
-		elseif( $icon == 'webhook' ){
-			$svg = '<svg style="fill: '. esc_attr( $color ) .';" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.88 68"><path d="M17.52,68a17.68,17.68,0,0,1-1.78-.09A17.49,17.49,0,0,1,.09,52.27a17.3,17.3,0,0,1,2.8-11.41,3.15,3.15,0,0,1,2.63-1.42,3.08,3.08,0,0,1,2.35,1.07,3.24,3.24,0,0,1,.2,3.82,11.28,11.28,0,0,0,9.45,17.44,12.63,12.63,0,0,0,4.56-.9,11,11,0,0,0,6.72-10,3.59,3.59,0,0,1,3.52-3.65H51l.3-.38a5.17,5.17,0,1,1,0,6.4l-.3-.38H37.47a3.24,3.24,0,0,0-3.1,2.37A17.58,17.58,0,0,1,17.52,68Z"/><path d="M55.39,67.57c-.36,0-.72,0-1.08,0a3.12,3.12,0,0,1-2.79-4.14,3.23,3.23,0,0,1,3-2.08h.18l.64,0A11.26,11.26,0,0,0,66.6,50.87a11.52,11.52,0,0,0-4.53-9.95,10.39,10.39,0,0,0-6.51-2.23,11.85,11.85,0,0,0-5.49,1.38l-.09,0a3.75,3.75,0,0,1-1.79.46,3.44,3.44,0,0,1-3-1.73L35.85,22.68l-.48-.07a5.17,5.17,0,0,1,.74-10.28,5.17,5.17,0,0,1,4.81,7.09l-.18.45,6.73,11.7a3.23,3.23,0,0,0,2.8,1.61,3.58,3.58,0,0,0,.8-.1,17.51,17.51,0,1,1,4.32,34.49Z"/><path d="M17.51,55.6a5.17,5.17,0,0,1-.73-10.29l.48-.07L24,33.57a3.25,3.25,0,0,0-.49-3.88A17.5,17.5,0,0,1,36.18,0a17.1,17.1,0,0,1,7.14,1.54,17.34,17.34,0,0,1,8.47,8.15,3.13,3.13,0,0,1,0,2.8,3.1,3.1,0,0,1-2.21,1.68,3.31,3.31,0,0,1-.55.05,3.24,3.24,0,0,1-2.84-1.8,11.32,11.32,0,0,0-21.34,3.83,11,11,0,0,0,5.26,10.82,3.58,3.58,0,0,1,1.39,4.86L22.14,48.07l.18.45A5.13,5.13,0,0,1,22,53a5.19,5.19,0,0,1-4.48,2.58Z"/></svg>';
-		}
-
-		return "<span class='cartbounty-icon-container cartbounty-icon-$icon'><img src='data:image/svg+xml;base64," . esc_attr( base64_encode($svg) ) . "' alt='" . esc_attr( $icon ) . "' /></span>";
-    }
 
     /**
 	 * Method reads GET parameter from the link to restore the cart
@@ -3180,14 +3300,16 @@ class CartBounty_Admin{
 
 		//Calculating time intervals
 		$datetime = current_time( 'mysql' );
+		$date_format = 'Y-m-d H:i:s';
 
 		return array(
-			'cart_abandoned' 	=> date( 'Y-m-d H:i:s', strtotime( '-' . $waiting_time . ' minutes', strtotime( $datetime ) ) ),
-			'cart_recovered' 	=> date( 'Y-m-d H:i:s', strtotime( '-30 seconds', strtotime( $datetime ) ) ),
-			'old_cart' 			=> date( 'Y-m-d H:i:s', strtotime( '-' . CARTBOUNTY_NEW_NOTICE . ' minutes', strtotime( $datetime ) ) ),
-			'day' 				=> date( 'Y-m-d H:i:s', strtotime( '-1 day', strtotime( $datetime ) ) ),
-			'wp_step_send_period' 		=> date( 'Y-m-d H:i:s', strtotime( '-' . $interval . ' minutes', strtotime( $datetime ) ) ),
-			'maximum_sync_period'		=> date( 'Y-m-d H:i:s', strtotime( '-' . CARTBOUNTY_MAX_SYNC_PERIOD . ' days', strtotime( $datetime ) ) )
+			'cart_abandoned' 			=> date( $date_format, strtotime( '-' . $waiting_time . ' minutes', strtotime( $datetime ) ) ),
+			'cart_recovered' 			=> date( $date_format, strtotime( '-30 seconds', strtotime( $datetime ) ) ),
+			'old_cart' 					=> date( $date_format, strtotime( '-' . CARTBOUNTY_NEW_NOTICE . ' minutes', strtotime( $datetime ) ) ),
+			'day' 						=> date( $date_format, strtotime( '-1 day', strtotime( $datetime ) ) ),
+			'week' 						=> date( $date_format, strtotime( '-7 days', strtotime( $datetime ) ) ),
+			'wp_step_send_period' 		=> date( $date_format, strtotime( '-' . $interval . ' minutes', strtotime( $datetime ) ) ),
+			'maximum_sync_period'		=> date( $date_format, strtotime( '-' . CARTBOUNTY_MAX_SYNC_PERIOD . ' days', strtotime( $datetime ) ) )
 		);
 	}
 
@@ -3295,25 +3417,104 @@ class CartBounty_Admin{
 	}
 
     /**
-     * Method for creating SQL query depending on different post types
+     * Method for creating SQL query depending on different post types 
+     * If cart object provided - validate its status e.g. if it is recovered, anonymous etc. (developed for use by reports)
      *
      * @since    5.0
-     * @return   string
+     * @return   string / boolean
+     * @param    integer    $cart_status    		 Currently filtered cart status
+     * @param    bollean    $starting_and    		 If the query should start with AND or not
+     * @param    object     $cart					 Abandoned cart object
      */
-    function get_where_sentence( $cart_status ){
+    function get_where_sentence( $cart_status, $starting_and = true, $cart = null ){
 		$where_sentence = '';
+		$cart_validation_result = false;
 
-		if($cart_status == 'recoverable'){
-			$where_sentence = "AND (email != '' OR phone != '') AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered') ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
+		if( $cart_status == 'recoverable' ){
+
+			if( $cart ){
+				//If all of these conditions are true - $cart_validation_result will be true
+				$cart_validation_result = ( !empty( $cart->email ) || !empty( $cart->phone ) )
+				&& $cart->type != $this->get_cart_type( 'recovered' )
+				&& $cart->type != $this->get_cart_type( 'ordered' )
+				&& $cart->type != $this->get_cart_type( 'ordered_deducted' );
+
+			}else{
+				$where_sentence = "AND (email != '' OR phone != '') AND type != ". $this->get_cart_type( 'recovered' ) ." AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
+			}
 
 		}elseif($cart_status == 'anonymous'){
-			$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != ". $this->get_cart_type('recovered') ." AND type != " . $this->get_cart_type('ordered') ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
+
+			if( $cart ){
+				//If all of these conditions are true - $cart_validation_result will be true
+				$cart_validation_result = empty( $cart->email )
+				&& empty( $cart->phone )
+				&& $cart->type != $this->get_cart_type( 'recovered' )
+				&& $cart->type != $this->get_cart_type( 'ordered' )
+				&& $cart->type != $this->get_cart_type( 'ordered_deducted' );
+
+			}else{
+				$where_sentence = "AND ((email IS NULL OR email = '') AND (phone IS NULL OR phone = '')) AND type != ". $this->get_cart_type( 'recovered' ) ." AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
+			}
 
 		}elseif($cart_status == 'recovered'){
-			$where_sentence = "AND type = ". $this->get_cart_type('recovered');
 
-		}elseif(get_option('cartbounty_exclude_anonymous_carts')){ //In case anonymous carts have been excluded
-			$where_sentence = "AND (email != '' OR phone != '')";
+			if( $cart ){
+				$cart_validation_result = $cart->type == $this->get_cart_type( 'recovered' );
+
+			}else{
+				$where_sentence = "AND type = ". $this->get_cart_type( 'recovered' );
+			}
+
+		}elseif( $cart_status == 'ordered' ){
+
+			if( $cart ){
+				$cart_validation_result = (
+					$cart->type == $this->get_cart_type( 'recovered' )
+					|| $cart->type == $this->get_cart_type( 'ordered' )
+					|| $cart->type == $this->get_cart_type( 'ordered_deducted' )
+				);
+
+			}else{
+				$where_sentence = "AND (type = ". $this->get_cart_type( 'recovered' ) ." OR type = ". $this->get_cart_type( 'ordered' ) ." OR type = ". $this->get_cart_type( 'ordered_deducted' ) .")";
+			}
+
+		}elseif( $cart_status == 'abandoned' ){
+
+			if( $cart ){
+				$cart_validation_result = $cart->type != $this->get_cart_type( 'recovered' )
+				&& $cart->type != $this->get_cart_type( 'ordered' )
+				&& $cart->type != $this->get_cart_type( 'ordered_deducted' );
+
+			}else{
+				$where_sentence = "AND ( type != ". $this->get_cart_type( 'recovered' ) ." AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
+			}
+
+		}elseif( get_option( 'cartbounty_exclude_anonymous_carts' ) ){ //In case anonymous carts have been excluded
+			
+			if( $cart ){
+				//If all of these conditions are true - $cart_validation_result will be true
+				$cart_validation_result = !empty( $cart->email )
+				|| !empty( $cart->phone );
+
+			}else{
+				$where_sentence = "AND (email != '' OR phone != '')";
+			}
+		}
+
+		if( !empty( $where_sentence ) ){ //Looking if "AND" needs to be removed from the query
+
+			if( $starting_and == false ){
+
+				if( substr( $where_sentence, 0, 4 ) === 'AND ' ){ //If "AND" is at the beginning of the query
+					$where_sentence = substr( $where_sentence, 4 ); //Removing "AND" from the start of the query
+				}
+			}
+		}
+
+		//In case we must validate returned carts in a PHP operation (e.g. in reports)
+		if( $cart ){
+			$where_sentence = $cart_validation_result;
 		}
 
 		return $where_sentence;
@@ -3394,10 +3595,10 @@ class CartBounty_Admin{
 	 * @since    7.0.8
 	 * @return   integer
 	 * @param    string    	$status		    Cart status. 
-	 * 										0 = default,
+	 * 										0 = abandoned (default),
 	 *										1 = recovered,
 	 *										2 = order created
-	 *										4 = order created and cart deducted from recoverable cart count stats (this type added just to make sure we keep longer ordered abandoned carts in our database to check if a user has used a coupon code in previous orders)
+	 *										4 = order created and cart deducted from recoverable cart count stats (this type added just to make sure we keep longer ordered abandoned carts in our database to check if a user has used a coupon code in previous orders). Cart has never really been abandoned (user has added an item to cart and placed an order without abandoneding the cart)
 	 */
 	function get_cart_type( $status ){
 		if( empty($status) ){
@@ -3472,33 +3673,180 @@ class CartBounty_Admin{
 	}
 
     /**
-	 * Handling abandoned carts in case of a new order is placed
+	 * Handling abandoned carts in case of a new order is placed.
+	 * Removing duplicate abandoned carts with the same email or phone and cart contents.
 	 *
 	 * @since    5.0.2
 	 * @param    integer    $order_id - ID of the order created by WooCommerce
 	 */
 	function handle_order( $order_id ){
 
-		if( !isset( $order_id ) ){ //Exit if Order ID is not present
+		if( !isset( $order_id ) ) return; //Exit if Order ID is not present
+		
+		if( !WC()->session ) return; //Exit if WooCommerce session does not exist
+
+		global $wpdb;
+		$public = new CartBounty_Public( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$recovered = $this->get_cart_type( 'recovered' );
+		$ordered = $this->get_cart_type( 'ordered' );
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$time_intervals = $this->get_time_intervals();
+		$from_link = false;
+		$public->update_logged_customer_id(); //In case user creates an account during checkout process, the session_id changes to a new one so we must update it
+			
+		$cart = $public->read_cart();
+		$session_id = $cart['session_id'];
+
+		if( WC()->session->get( 'cartbounty_from_link' ) ){ //If user has arrived from CartBounty recovery link
+			$from_link = true;
+		}
+
+		$cart = $wpdb->get_row( //Retrieve latest abandoned cart
+			$wpdb->prepare(
+				"SELECT *
+				FROM $cart_table
+				WHERE session_id = %s AND
+				cart_contents != '' AND
+				time > %s
+				ORDER BY time DESC",
+				$session_id,
+				$time_intervals['maximum_sync_period']
+			)
+		);
+
+		if( !$cart ) return;
+
+		if( $cart->type == $recovered || $cart->type == $ordered ){ //If cart has been marked recovered or ordered - exit and do not do anything since cart already has been processed and there is nothing else to be done
 			return;
 		}
 
-		$public = new CartBounty_Public(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		$public->update_logged_customer_id(); //In case a user chooses to create an account during checkout process, the session id changes to a new one so we must update it
-		
-		if( WC()->session ){ //If session exists
-			$cart = $public->read_cart();
-			$type = $this->get_cart_type( 'ordered' ); //Default type describing an order has been placed
+		if( $from_link ){ //If user has arrived from CartBounty recovery link
+			$type = $recovered;
 
-			if(isset($cart['session_id'])){
-				
-				if(WC()->session->get('cartbounty_from_link')){ //If the user has arrived from CartBounty link
-					$type = $this->get_cart_type( 'recovered' );
+		}else{
+			$type = $ordered;
+		}
+
+		$this->update_cart_type( $session_id, $type );
+		$this->handle_duplicate_carts( $cart->email, $cart->phone, $cart->cart_contents );
+		WC()->session->set( 'cartbounty_order_placed', true ); //Add marker to session since we do not want to clear the abandoned cart saved via CartBounty after it has been ordered. This happened when the order was placed quickly on the Checkout page and the cart update function fired after the order was already placed.
+	}
+
+	/**
+	 * Handling duplicate abandoned carts in case of a new order is placed.
+	 * If duplicates are found, do not delete them, but set type to "ordered" (2).
+	 *
+	 * @since    8.0
+	 * @param    string     $email                  Cart email
+	 * @param    string     $phone                  Cart phone
+	 * @param    array      $cart_contents          Cart contents
+	 */
+	function handle_duplicate_carts( $email, $phone, $cart_contents ){
+		global $wpdb;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+
+		$recent_unpaid_user_carts = $this->get_recent_unpaid_user_carts( $email, $phone );
+		$matching_carts = $this->get_matching_cart_contents( $recent_unpaid_user_carts, $cart_contents );
+
+		if( empty($matching_carts ) ){
+			return;
+		}
+
+		$ordered = $this->get_cart_type( 'ordered' );
+		$duplicate_cart_ids = array();
+
+		foreach ( $matching_carts as $key => $cart ) {
+			$duplicate_cart_ids[] = $key;
+		}
+
+		$ids = implode( ', ', $duplicate_cart_ids );
+
+		$result = $wpdb->query( //Update all duplicate carts to type = ordered (2)
+			$wpdb->prepare(
+				"UPDATE $cart_table
+				SET type = %s
+				WHERE id IN ($ids)",
+				$ordered
+			)
+		);
+	}
+
+	/**
+	 * Returning recoverable abandoned carts with the same email address or phone number which have not been paid for during the last 7 days
+	 *
+	 * @since    8.0
+	 * @return   array 
+	 * @param    string     $email                  Email we are searching for 
+	 * @param    string     $phone                  Phone we are searching for 
+	 */
+	function get_recent_unpaid_user_carts( $email, $phone ){
+		global $wpdb;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$where_sentence = $this->get_where_sentence( 'recoverable' );
+		$time_intervals = $this->get_time_intervals();
+		
+		$carts = $wpdb->get_results( //Get carts with the same email in the last 30 days
+			$wpdb->prepare(
+				"SELECT *
+				FROM $cart_table
+				WHERE (email = %s OR phone = %s)
+				$where_sentence AND
+				time > %s
+				ORDER BY time DESC",
+				$email,
+				$phone,
+				$time_intervals['week']
+			)
+		);
+
+		return $carts;
+	}
+
+	/**
+	 * Retrieve abandoned carts that have the same contents that are passed for comparing.
+	 * Not looking at product variations, quantities or prices - if the product ID values match, we consider it as a duplicate cart which should no longer be reminded about
+	 *
+	 * @since    8.0
+	 * @return   array 
+	 * @param    array      $carts                  Abandoned carts
+	 * @param    array      $cart_contents          Cart contents that must be compared
+	 */
+	function get_matching_cart_contents( $carts, $cart_contents ){
+		
+		if( empty( $carts ) ) return; //Exit if we have no carts
+
+		$cart_contents = @unserialize($cart_contents);
+		
+		if( !is_array( $cart_contents ) ){ //In case cart contents are not an array - exit
+			return;
+		}
+		
+		$ordered_products = array();
+		$duplicate_carts = array();
+
+		foreach( $cart_contents as $key => $product ){ //Build ordered product array
+			$ordered_products[] = $product['product_id'];
+		}
+
+		foreach( $carts as $key => $cart ){ //Build product comparison array for each cart look for duplicates
+			$cart_contents_to_compare = @unserialize( $cart->cart_contents );
+			
+			if( is_array( $cart_contents_to_compare ) ){
+				$products = array();
+				foreach( $cart_contents_to_compare as $key => $product ){ //Build product array we are comparing against
+					$products[] = $product['product_id'];
 				}
-				$this->update_cart_type($cart['session_id'], $type); //Update cart type to recovered
+
+				sort( $ordered_products );
+			    sort( $products );
+
+				if( $ordered_products == $products ){ //Comparing arrays
+					$duplicate_carts[$cart->id] = $cart; //Cart is a duplicate, must add to duplicates array
+				}
 			}
 		}
-		$this->clear_cart_data(); //Clearing abandoned cart after it has been synced
+
+		return $duplicate_carts;
 	}
 
 	/**
@@ -3817,6 +4165,37 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Return language code. Taking WordPress locale like 'es_ES' and turning it into 'es'
+	 *
+	 * @since    8.0
+	 * @return   String
+	 * @param    String   $locale     WordPress language
+	 */
+	function get_language_code( $locale ) {
+		if ( !empty( $locale ) ){
+			$language = explode( '_', $locale );
+			if ( ! empty( $language ) && is_array( $language ) ) {
+				$locale = strtolower( $language[0] );
+			}
+		}
+		return $locale;
+	}
+
+	/**
+	 * Return locale with hyphen instead of default underscore. Taking WordPress locale like 'es_ES' and turning it into 'es-ES'
+	 *
+	 * @since    8.0
+	 * @return   String
+	 * @param    String   $locale     WordPress language
+	 */
+	function get_locale_with_hyphen( $locale ) {
+		if ( !empty( $locale ) ){
+			$locale = str_replace('_', '-', $locale);
+		}
+		return $locale;
+	}
+
+	/**
 	 * Output emoji button
 	 *
 	 * @since    7.1
@@ -3846,54 +4225,10 @@ class CartBounty_Admin{
 	* @param    string    $feature			Feature that has to be displayed
 	*/
 	function display_preview_contents( $feature ){
-		$output = "<div class='cartbounty-preview-contents cartbounty-preview-". $feature ." cartbounty-bubble'>";
+		$output = "<div class='cartbounty-preview-contents cartbounty-preview-". $feature ."'>";
 		$tracking_label = 'preview_' . $feature;
-
-		switch ( $feature ) {
-			case 'emojis':
-
-				ob_start(); ?>
-				<div class="cartbounty-header-image">
-					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $tracking_label ) ); ?>" title="<?php esc_attr_e('Upgrade to allow easy emoji insertion', 'woo-save-abandoned-carts'); ?>" target="_blank">
-						<img src="<?php echo esc_url( plugins_url( 'assets/emoji-preview.gif', __FILE__ ) ); ?>"/>
-					</a>
-				</div>
-				<div class="cartbounty-preview-text">
-					<h2><?php esc_html_e('Upgrade to allow easy emoji insertion', 'woo-save-abandoned-carts' ); ?></h2>
-					<div class="cartbounty-button-row cartbounty-close-preview">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $tracking_label ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-						<button type="button" class='button cartbounty-close'><?php esc_html_e('Close', 'woo-save-abandoned-carts'); ?></button>
-					</div>
-				</div>
-				<?php
-				$output .= ob_get_contents();
-				ob_end_clean();
-
-				break;
-
-			case 'personalization':
-
-				ob_start(); ?>
-				<div class="cartbounty-header-image">
-					<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'personalization-tags', $tracking_label ) ); ?>" title="<?php esc_attr_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts'); ?>" target="_blank">
-						<img src="<?php echo esc_url( plugins_url( 'assets/personalization-preview.gif', __FILE__ ) ); ?>"/>
-					</a>
-				</div>
-				<div class="cartbounty-preview-text">
-					<h2><?php esc_html_e('Increase open-rate and sales using personalization', 'woo-save-abandoned-carts' ); ?></h2>
-					<div class="cartbounty-button-row cartbounty-close-preview">
-						<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $tracking_label ) ); ?>" class="button" target="_blank"><?php esc_html_e('Get Pro', 'woo-save-abandoned-carts'); ?></a>
-						<button type="button" class='button cartbounty-close'><?php esc_html_e('Close', 'woo-save-abandoned-carts'); ?></button>
-					</div>
-				</div>
-				<?php
-				$output .= ob_get_contents();
-				ob_end_clean();
-
-				break;
-		}
+		$output .= $this->prepare_notice( $feature, false, $tracking_label );
 		$output .= "</div>";
-
 		return $output;
 	}
 
@@ -4135,5 +4470,310 @@ class CartBounty_Admin{
 		$output .= ob_get_contents();
 		ob_end_clean();
 		return $output;
+	}
+
+	/**
+	 * Display active features
+	 *
+	 * @since    8.0
+	 * @return   HTML
+	 */
+	public function display_active_features(){
+		$content = '';
+		$features = array();
+		$features['recovery'] = $this->get_sections( 'recovery' );
+		$features['tools'] = $this->get_sections( 'tools' );
+		ob_start(); ?>
+		<?php foreach( $features as $section => $feature ): ?>
+			<?php foreach( $feature as $key => $item ): ?>
+				<?php if( $item['connected'] ): ?>
+					<?php $link = '?page='. CARTBOUNTY .'&tab='. $section .'&section='. $key; ?>
+					<div class="cartbounty-col-xs-6 cartbounty-section-item-container">
+						<a class="cartbounty-section-item cartbounty-connected" href="<?php echo esc_url( $link ); ?>" title="<?php echo esc_attr( $item['name'] ); ?>">
+							<span class="cartbounty-section-image"><?php echo $this->get_icon( $key, false, false, true ); ?></span>
+							<span class="cartbounty-section-content">
+								<em class="cartbounty-section-title"><?php echo esc_html( $item['name'] ); ?></em>
+								<?php echo $this->get_connection( $item['connected'], true, $section ); ?>
+							</span>
+						</a>
+					</div>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		<?php endforeach; ?>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
+
+	/**
+	 * Retrieve notice contents
+	 *
+	 * @since    8.0
+	 * @return   array
+	 * @param    string    $notice_type        		Notice type
+	 * @param    String    $medium     				Determines where the button was clicked from. Default none
+	 * @param    String    $tag        				Hashtag to a specific section in the document. Default none
+	 */
+	public function get_notice_contents( $notice_type, $medium = '', $tag = '' ){
+		$contents = array();
+		$expression = $this->get_expressions();
+		$saved_cart_count = $this->total_cartbounty_recoverable_cart_count();
+		$closest_lowest_cart_count_decimal = $this->get_closest_lowest_integer( $saved_cart_count );
+
+		switch( $notice_type ){
+
+			case 'upgrade':
+				$contents = array(
+					'title' 		=> esc_html__( 'Automate your abandoned cart recovery process and get back to those lovely cat videos 😸', 'woo-save-abandoned-carts' ),
+					'description' 	=> esc_html__( 'Use your time wisely by enabling Pro features and increase your sales.', 'woo-save-abandoned-carts' ),
+					'image'			=> plugins_url( 'assets/notification-email.gif', __FILE__ ),
+					'color_class'	=> ' cartbounty-purple',
+					'main_url'		=> $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $medium, $tag ),
+					'local_url'		=> false,
+					'using_buttons'	=> true,
+					'url_label'		=> esc_html__( 'Get Pro', 'woo-save-abandoned-carts' ),
+					'done_label'	=> '',
+					'close_label'	=> esc_html__( 'Not now', 'woo-save-abandoned-carts' )
+				);
+				break;
+
+			case 'steps':
+				$contents = array(
+					'title' 		=> esc_html__( 'Make the most of your automation with a 3-step email series', 'woo-save-abandoned-carts' ),
+					'description' 	=> esc_html__( 'A single recovery email can raise your sales but sending 2 or 3 follow-up emails is proved to get the most juice out of your recovery campaigns.', 'woo-save-abandoned-carts' ),
+					'image'			=> plugins_url( 'assets/3-step-email-series.gif', __FILE__ ),
+					'color_class'	=> ' cartbounty-teal',
+					'main_url'		=> $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $medium, $tag ),
+					'local_url'		=> false,
+					'using_buttons'	=> true,
+					'url_label'		=> esc_html__( 'Get Pro', 'woo-save-abandoned-carts' ),
+					'done_label'	=> '',
+					'close_label'	=> esc_html__( 'Not now', 'woo-save-abandoned-carts' )
+				);
+				break;
+
+			case 'review':
+				$contents = array(
+					'title' 		=> sprintf(
+										/* translators: %s - Gets replaced by an excitement word e.g. Awesome!, %d - Abandoned cart count */
+										esc_html( _n( '%s You have already captured %d abandoned cart!', '%s You have already captured %d abandoned carts!', $closest_lowest_cart_count_decimal , 'woo-save-abandoned-carts' ) ), esc_html( $expression['exclamation'] ), esc_html( $closest_lowest_cart_count_decimal ) ),
+					'description' 	=> esc_html__( 'If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further.', 'woo-save-abandoned-carts' ),
+					'image'			=> plugins_url( 'assets/review-notification.gif', __FILE__ ),
+					'color_class'	=> '',
+					'main_url'		=> CARTBOUNTY_REVIEW_LINK,
+					'local_url'		=> false,
+					'using_buttons'	=> true,
+					'url_label'		=> esc_html__( 'Leave a 5-star rating', 'woo-save-abandoned-carts' ),
+					'done_label'	=> esc_html__( 'Done', 'woo-save-abandoned-carts' ),
+					'close_label'	=> esc_html__( 'Close', 'woo-save-abandoned-carts' )
+				);
+				break;
+
+			case 'emojis':
+				$contents = array(
+					'title' 		=> esc_html__( 'Upgrade to allow easy emoji insertion', 'woo-save-abandoned-carts' ),
+					'description' 	=> '',
+					'image'			=> plugins_url( 'assets/emoji-preview.gif', __FILE__ ),
+					'color_class'	=> '',
+					'main_url'		=> $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, $medium, $tag ),
+					'local_url'		=> false,
+					'using_buttons'	=> true,
+					'url_label'		=> esc_html__( 'Get Pro', 'woo-save-abandoned-carts' ),
+					'done_label'	=> '',
+					'close_label'	=> esc_html__( 'Close', 'woo-save-abandoned-carts' )
+				);
+				break;
+
+			case 'personalization':
+				$contents = array(
+					'title' 		=> esc_html__( 'Increase open-rate and sales using personalization', 'woo-save-abandoned-carts' ),
+					'description' 	=> '',
+					'image'			=> plugins_url( 'assets/personalization-preview.gif', __FILE__ ),
+					'color_class'	=> ' cartbounty-teal',
+					'main_url'		=> $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL . 'personalization-tags', $medium, $tag ),
+					'local_url'		=> false,
+					'using_buttons'	=> true,
+					'url_label'		=> esc_html__( 'Get Pro', 'woo-save-abandoned-carts' ),
+					'done_label'	=> '',
+					'close_label'	=> esc_html__( 'Close', 'woo-save-abandoned-carts' )
+				);
+				break;
+		}
+
+		return $contents;
+	}
+
+	/**
+	 * Display dashboard notices
+	 * Priority in which notices will be displayed:
+	 *		1) Information notice
+	 *		2) Sales notices
+	 *		3) Review request
+	 *
+	 * @since    8.0
+	 * @return   HTML
+	 */
+	public function display_dashboard_notices(){
+		$content = '';
+		$dashboard = true;
+
+		if( $this->should_display_notice( 'upgrade' ) ){
+			$content = $this->prepare_notice( 'upgrade', $dashboard, 'dashboard_upgrade' );
+
+		}elseif( $this->should_display_notice( 'steps' ) ){
+			$content = $this->prepare_notice( 'steps', $dashboard, 'dashboard_steps' );
+
+		}elseif( $this->should_display_notice( 'review' ) ){ //Checking if we should display the Review notice
+			$content = $this->prepare_notice( 'review', $dashboard );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Check if notice should be displayed or not
+	 *
+	 * @since    8.0
+	 * @return   boolean
+	 * @param    string    	$notice_type        Notice type
+	 */
+	function should_display_notice( $notice_type ){
+		$display = false;
+		$recoverable_cart_count = $this->total_cartbounty_recoverable_cart_count();
+		$wordpress = new CartBounty_WordPress();
+
+		switch( $notice_type ){
+			
+			case 'upgrade':
+
+				if( $recoverable_cart_count > 5 && $this->days_have_passed( 'cartbounty_last_time_bubble_displayed', 18 ) ){ //Display welcome message in case license is inactive and no cart has been saved so far
+					$display = true; //Show the notice
+				}
+
+				break;
+
+			case 'steps':
+
+				if( $wordpress->get_stats() > 9 && $this->days_have_passed( 'cartbounty_last_time_bubble_steps_displayed', 18 ) ){
+					$display = true; //Show the notice
+				}
+
+				break;
+
+			case 'review':
+
+				if( !$this->is_notice_submitted( $notice_type ) ){
+					$level = $this->get_achieved_review_level();
+					
+					if( $level ){
+						$display = true;
+					}
+				}
+
+				break;
+		}
+
+		return $display;
+	}
+
+	/**
+	 * Prepare notice contents
+	 *
+	 * @since    8.0
+	 * @return   HTML
+	 * @param    string    	$notice_type        Notice type
+	 * @param    boolean    $dashboard        	If the notice should be displayed on dashboard or not
+	 * @param    String    $medium     			Determines where the button was clicked from. Default none
+	 * @param    String    $tag        			Hashtag to a specific section in the document. Default none
+	 */
+	public function prepare_notice( $notice_type, $dashboard = false, $medium = '', $tag = '' ){
+		$notice_contents = $this->get_notice_contents( $notice_type, $medium, $tag );
+		$title = $notice_contents['title'];
+		$description = $notice_contents['description'];
+		$image_url = $notice_contents['image'];
+		$color_class = $notice_contents['color_class'];
+		$main_url = $notice_contents['main_url'];
+		$local_url = $notice_contents['local_url'];
+		$using_buttons = $notice_contents['using_buttons'];
+		$url_label = $notice_contents['url_label'];
+		$done_label = $notice_contents['done_label'];
+		$close_label = $notice_contents['close_label'];
+		$nonce = wp_create_nonce( 'notice_nonce' );
+		$class = '';
+		$target = '_blank';
+
+		if( $dashboard ){ //If not displaying notice inside dashboard
+			$class = ' cartbounty-report-widget';
+		}else{
+			$class = ' cartbounty-bubble';
+		}
+
+		if( $local_url ){ //In case this is a local URL, open link in a the same tab
+			$target = '_self';
+		}
+
+		ob_start(); ?>
+		<div id="cartbounty-notice-<?php echo $notice_type; ?>" class="cartbounty-notice-block<?php echo $class; ?>">
+			<?php if( $image_url ): ?>
+			<a class="cartbounty-notice-image<?php echo $color_class; ?>" href="<?php echo esc_url( $main_url ); ?>" title="<?php echo esc_attr( $title); ?>" target="<?php echo $target; ?>">
+				<img src="<?php echo esc_url( $image_url ); ?>"/>
+			</a>
+			<?php endif; ?>
+			<div class="cartbounty-notice-content">
+				<h2><?php echo $title; ?></h2>
+				<p><?php echo $description; ?></p>
+				<?php if( $using_buttons ): ?>
+				<div class="cartbounty-button-row">
+					<?php if( $url_label ): ?>
+					<a href="<?php echo esc_url( $main_url ); ?>" class="button cartbounty-button" target="<?php echo $target; ?>"><?php echo $url_label; ?></a>
+					<?php endif; ?>
+					<?php if( $done_label ): ?>
+					<button type="button" class='button cartbounty-button cartbounty-notice-done cartbounty-close-notice' data-operation='submitted' data-type='<?php echo $notice_type; ?>' data-nonce='<?php echo esc_attr( $nonce ); ?>'><?php echo $done_label; ?></button>
+					<?php endif; ?>
+					<?php if( $close_label ): ?>
+					<button type="button" class='button cartbounty-button cartbounty-close cartbounty-close-notice' data-operation='declined' data-type='<?php echo $notice_type; ?>' data-nonce='<?php echo esc_attr( $nonce ); ?>'><?php echo $close_label; ?></button>
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+
+		return $content;
+	}
+
+	/**
+	 * Return currently achieved review level
+	 * Used to define various levels at which the review should be displayed
+	 *
+	 * @since    8.0
+	 * @return   integer
+	 */
+	public function get_achieved_review_level(){
+		$level = 0;
+		$levels = array(
+			'1' => 10,
+			'2' => 40,
+			'3' => 80,
+			'4' => 120,
+			'5' => 250,
+			'6' => 500,
+			'7' => 1000,
+		);
+		$times_review_declined = get_option( 'cartbounty_times_review_declined' );
+		$maximum_value = max( array_keys( $levels ) );
+		
+		if( $times_review_declined >= $maximum_value ) return; //Stop in case we have reached maximum level at which we ask reviews
+
+		$recoverable_cart_count = $this->total_cartbounty_recoverable_cart_count();
+
+		foreach( $levels as $key => $value ) {
+			if( $recoverable_cart_count >= $value && $times_review_declined < $key ){
+				$level = $key;
+			}
+		}
+
+		return $level;
 	}
 }

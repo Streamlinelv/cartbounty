@@ -87,6 +87,7 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_name( $item ){
+        $admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
         $cart_status = 'all';
         $actions = array();
         $name_array = array();
@@ -94,6 +95,7 @@ class CartBounty_Table extends WP_List_Table{
         $orderby = false;
         $order = false;
         $user = false;
+        $tab = $admin->get_open_tab();
         
         if ( isset( $_GET['cart-status'] ) ){
             $cart_status = $_GET['cart-status'];
@@ -111,7 +113,7 @@ class CartBounty_Table extends WP_List_Table{
             $order = '&order=' . $_GET['order'];
         }
 
-        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . esc_attr( $orderby ) . esc_attr( $order ) . esc_attr( $paged );
+        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&tab='. $tab .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . esc_attr( $orderby ) . esc_attr( $order ) . esc_attr( $paged );
         $actions['delete'] = sprintf( '<a href="%s">%s</a>', esc_url( $delete_url ), esc_html__( 'Delete', 'woo-save-abandoned-carts' ) );
 
         if( !empty( $item['name'] ) ){
@@ -307,20 +309,19 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
 	function column_time( $item ){
-		$time = new DateTime($item['time']);
-		$date_iso = $time->format('c');
-        $date_title = $time->format('M d, Y H:i:s');
-        $utc_time = $time->format('U');
+		$time = new DateTime( $item['time'] );
+        $date_iso = $time->format( 'c' );
+        $date_title = date_i18n( 'M d, Y H:i:s', $time->getTimestamp() );
+        $utc_time = $time->format( 'U' );
 
-        if($utc_time > strtotime( '-1 day', current_time( 'timestamp' ))){ //In case the abandoned cart is newly captued
-             $friendly_time = sprintf( 
+        if( $utc_time > strtotime( '-1 day', current_time( 'timestamp' ) ) ){ //In case the abandoned cart is newly captued
+             $friendly_time = sprintf(
                 /* translators: %1$s - Time, e.g. 1 minute, 5 hours */
                 esc_html__( '%1$s ago', 'woo-save-abandoned-carts' ),
-                human_time_diff( $utc_time,
-                current_time( 'timestamp' ))
+                human_time_diff( $utc_time, current_time( 'timestamp' ) )
             );
         }else{ //In case the abandoned cart is older tahn 24 hours
-            $friendly_time = $time->format('M d, Y');
+            $friendly_time = date_i18n( 'M d, Y', $time->getTimestamp() );
         }
 
 		return sprintf( '<svg class="cartbounty-time-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.18 31.18"><path d="M15.59,31.18A15.59,15.59,0,1,1,31.18,15.59,15.6,15.6,0,0,1,15.59,31.18Zm0-27.34A11.75,11.75,0,1,0,27.34,15.59,11.76,11.76,0,0,0,15.59,3.84Z"/><path d="M20.39,20.06c-1.16-.55-6-3-6.36-3.19s-.46-.76-.46-1.18V7.79a1.75,1.75,0,1,1,3.5,0v6.88s4,2.06,4.8,2.52a1.6,1.6,0,0,1,.69,2.16A1.63,1.63,0,0,1,20.39,20.06Z"/></svg><time datetime="%s" title="%s">%s</time>', esc_attr( $date_iso ), esc_attr( $date_title ), esc_html( $friendly_time ) );

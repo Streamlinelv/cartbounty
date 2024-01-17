@@ -65,6 +65,9 @@ class CartBounty_Activator{
 		$sql ="ALTER TABLE $cart_table AUTO_INCREMENT = 1";
 		dbDelta( $sql );
 
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$reports = new CartBounty_Reports();
+
 		/**
 		 * Handling cart transfer from the old captured_wc_fields table to new one
 		 * Temporary block since version 5.0.1. Will be removed in future versions
@@ -166,6 +169,12 @@ class CartBounty_Activator{
 		//Setting default Exit Intent type if it has not been previously set
 		add_option('cartbounty_exit_intent_type', 1);
 
+		//Setting default quick stats that are enabled by default
+		add_option( 'cartbounty_active_quick_stats', $reports->get_default_reports() );
+
+		//Setting default charts that are enabled by default
+		add_option( 'cartbounty_active_charts', $reports->get_default_reports( 'charts' ) );
+
 		//Since version 5.0 this option updated
 		if (get_option( 'cartbounty_captured_abandoned_cart_count' )){
 			update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_captured_abandoned_cart_count' ));
@@ -195,7 +204,6 @@ class CartBounty_Activator{
 
 			if( get_option( 'cartbounty_converted_minutes_to_miliseconds' ) ) return;
 
-			$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 			$wordpress_steps = get_option( 'cartbounty_automation_steps' );
 			$notification_frequency = get_option( 'cartbounty_notification_frequency' );
 
@@ -249,5 +257,15 @@ class CartBounty_Activator{
 			update_option('cartbounty_exclude_anonymous_carts', get_option('cartbounty_exclude_ghost_carts'));
 			delete_option('cartbounty_exclude_ghost_carts');
 		}
+
+		/**
+		 * Since version 8.0
+		 * This code will be removed in later versions
+		 */
+		if( get_option( 'cartbounty_review_submitted' ) ){
+			update_option( 'cartbounty_submitted_notices', array( 'review' => 1 ) );
+			delete_option( 'cartbounty_review_submitted' );
+		}
+		/* End of this temporary block */
 	}
 }
