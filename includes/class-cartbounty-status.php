@@ -66,6 +66,7 @@ class CartBounty_System_Status{
 		$wordpress = new CartBounty_WordPress();
 		$overrides = $admin->get_template_overrides();
 		$notification_frequency = $admin->get_interval_data( 'cartbounty_notification_frequency' );
+		$review_data = array();
 		
 		if(get_option('cartbounty_recoverable_cart_count')){
 			$carts[] = 'Recoverable: '. esc_html( get_option('cartbounty_recoverable_cart_count') );
@@ -76,6 +77,14 @@ class CartBounty_System_Status{
 		if(get_option('cartbounty_recovered_cart_count')){
 			$carts[] = 'Recovered: '. esc_html( get_option('cartbounty_recovered_cart_count') );
 		}
+
+		if(get_option('cartbounty_times_review_declined')){
+			$review_data[] = 'Times declined: '. esc_html( get_option('cartbounty_times_review_declined') );
+		}
+		if($admin->is_notice_submitted('review')){
+			$review_data[] = 'Submitted: True';
+		}
+
 
 		if($wordpress->automation_enabled()){
 			$active_recovery[] = 'WordPress';
@@ -148,29 +157,30 @@ class CartBounty_System_Status{
 		}
 
 		$environment = array(
-			'WordPress address (URL)' => home_url(),
-			'Site address (URL)' => site_url(),
-			'WordPress version' => get_bloginfo( 'version' ),
-			'WordPress multisite' => (is_multisite()) ? 'Yes' : '-',
-			'WooCommerce version' => class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',
-			'Server info' => isset( $_SERVER['SERVER_SOFTWARE'] ) ? esc_html( $_SERVER['SERVER_SOFTWARE'] ) : '',
-			'PHP version' => phpversion(),
-			'MySQL Version' => $wpdb->db_version(),
-			'WordPress debug mode' => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? 'On' : '-',
-			'Action scheduler' => ( $admin->action_scheduler_enabled() ) ? 'On' : '-',
-			'WordPress cron' => !( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ? 'On' : '-',
-			'Language' => get_locale(),
-			'Default server timezone' => date_default_timezone_get()
+			'WordPress address (URL)' 	=> home_url(),
+			'Site address (URL)' 		=> site_url(),
+			'WordPress version' 		=> get_bloginfo( 'version' ),
+			'WordPress multisite' 		=> (is_multisite()) ? 'Yes' : '-',
+			'WooCommerce version' 		=> class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',
+			'Server info' 				=> isset( $_SERVER['SERVER_SOFTWARE'] ) ? esc_html( $_SERVER['SERVER_SOFTWARE'] ) : '',
+			'PHP version' 				=> phpversion(),
+			'MySQL Version' 			=> $wpdb->db_version(),
+			'WordPress debug mode' 		=> ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? 'On' : '-',
+			'Action scheduler' 			=> ( $admin->action_scheduler_enabled() ) ? 'On' : '-',
+			'WordPress cron' 			=> !( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ? 'On' : '-',
+			'Language' 					=> get_locale(),
+			'Default server timezone' 	=> date_default_timezone_get()
 		);
 
 		$cartbounty_settings = array(
-			'CartBounty version' => esc_html( $this->version ),
-			'Saved carts' => ($carts) ? implode(", ", $carts) : '-',
-			'Recovery' => ($active_recovery) ? implode(", ", $active_recovery) : '-',
-			'Exit Intent' => ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
-			'Settings' => ($settings) ? implode(", ", $settings) : '-',
-			'Missing hooks' => ($missing_hooks) ? implode(", ", $missing_hooks) : '-',
-			'Template overrides' => ($overrides) ? implode(", ", $overrides) : '-'
+			'CartBounty version' 	=> esc_html( $this->version ),
+			'Saved carts' 			=> ($carts) ? implode(", ", $carts) : '-',
+			'Review' 				=> ($review_data) ? implode(", ", $review_data) : '-',
+			'Recovery' 				=> ($active_recovery) ? implode(", ", $active_recovery) : '-',
+			'Exit Intent' 			=> ($exit_intent_options) ? implode(", ", $exit_intent_options) : '-',
+			'Settings' 				=> ($settings) ? implode(", ", $settings) : '-',
+			'Missing hooks'			=> ($missing_hooks) ? implode(", ", $missing_hooks) : '-',
+			'Template overrides' 	=> ($overrides) ? implode(", ", $overrides) : '-'
 		);
 
 		$output = '<table id="cartbounty-system-report-table">';
