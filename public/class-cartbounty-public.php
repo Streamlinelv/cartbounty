@@ -495,7 +495,9 @@ class CartBounty_Public{
 	}
 
 	/**
-	 * Method checks if current shopping cart has been saved in the past 24 hours basing upon session ID
+	 * Method checks if current shopping cart has been saved in the past 2 hours (by default) basing upon session ID
+	 * Cooldown period introduced to prevent creating new abandoned carts during the same session after user has already placed a new order
+	 * New cart for the same user in the same session will be created once the cooldown period has ended
 	 *
 	 * @since    3.0
 	 * @return   boolean
@@ -509,6 +511,7 @@ class CartBounty_Public{
 			$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 			$time = $admin->get_time_intervals();
+			$cooldown_period = apply_filters( 'cartbounty_cart_cooldown_period', $time['two_hours'] );
 
 			//Checking if we have this abandoned cart in our database already
 			$result = $wpdb->get_var(
@@ -518,7 +521,7 @@ class CartBounty_Public{
 					WHERE session_id = %s AND
 					time > %s",
 					$session_id,
-					$time['day']
+					$cooldown_period
 				)
 			);
 

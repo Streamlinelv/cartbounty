@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 8.0.1 =
+* Added a new filter "cartbounty_cart_cooldown_period" to change the cooldown period preventing the creation of a new abandoned cart during the same session after a user has already placed an order
+* Fixed minor issue with updating from older CartBounty versions
+* Fixed PHP warning related with displaying Top abandoned products
+
 = 8.0 =
 * Added a Dashboard including Abandoned cart reports and Top abandoned products
 * Added duplicate abandoned cart removal after placing an order

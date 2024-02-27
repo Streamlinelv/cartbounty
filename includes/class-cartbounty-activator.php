@@ -204,6 +204,7 @@ class CartBounty_Activator{
 
 			if( get_option( 'cartbounty_converted_minutes_to_miliseconds' ) ) return;
 
+			$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 			$wordpress_steps = get_option( 'cartbounty_automation_steps' );
 			$notification_frequency = get_option( 'cartbounty_notification_frequency' );
 

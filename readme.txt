@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.4
 Requires PHP: 7.0
-Stable tag: 8.0
+Stable tag: 8.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,7 +30,7 @@ With thoughtful user experience, built-in efficiency tools and ability to integr
 
 CartBounty saves and displays all shopping cart activity from the moment a product is added to the cart.
 
-* Detailed abandoned cart reports
+* Detailed [abandoned cart reports](https://www.cartbounty.com/abandoned-cart-reports-and-analytics-for-woocommerce)
 * Discover the top most abandoned products
 * View anonymous carts
 * Get notified about newly abandoned carts
@@ -310,13 +310,9 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 8.0 =
-* Added a Dashboard including Abandoned cart reports and Top abandoned products
-* Added duplicate abandoned cart removal after placing an order
-* Added date time localization
-* Improved "Remember checkout fields" feature - input field restoration
-* Minor improvement for abandoned cart data saving on WooCommerce Checkout form
-* Compatibility improvements with PHP8
-* Code refactoring
+= 8.0.1 =
+* Added a new filter "cartbounty_cart_cooldown_period" to change the cooldown period preventing the creation of a new abandoned cart during the same session after a user has already placed an order
+* Fixed minor issue with updating from older CartBounty versions
+* Fixed PHP warning related with displaying Top abandoned products
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

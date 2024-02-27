@@ -23,7 +23,7 @@ With thoughtful user experience, built-in efficiency tools and ability to integr
 
 CartBounty saves and displays all shopping cart activity from the moment a product is added to the cart.
 
-* Detailed abandoned cart reports
+* Detailed [abandoned cart reports](https://www.cartbounty.com/abandoned-cart-reports-and-analytics-for-woocommerce)
 * Discover the top most abandoned products
 * View anonymous carts
 * Get notified about newly abandoned carts

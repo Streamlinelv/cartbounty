@@ -649,8 +649,11 @@ class CartBounty_Reports{
 					$products = @unserialize( $cart->cart_contents );
 
 					if( $cart_count > 1 ){ //If more than one cart found with the same products
-						foreach( $products as $key => $product ){ //Making sure we account for grouped carts with the same products and adjust product quantity
-							$products[$key]['quantity'] = $product['quantity'] * $cart_count;
+						
+						if( is_array( $products ) ){
+							foreach( $products as $key => $product ){ //Making sure we account for grouped carts with the same products and adjust product quantity
+								$products[$key]['quantity'] = $product['quantity'] * $cart_count;
+							}
 						}
 					}
 					$product_array[] = $products;
@@ -2063,33 +2066,34 @@ class CartBounty_Reports{
 		$counted_products = array();
 
 		if( is_array( $cart_products ) ){
-
 			foreach( $cart_products as $cart_product ){
 
-				foreach( $cart_product as $product ){
-					
-					if( !empty( $product['product_variation_id'] ) ){
-						$key = $product['product_variation_id'];
+				if( is_array( $cart_product ) ){
+					foreach( $cart_product as $product ){
+						
+						if( !empty( $product['product_variation_id'] ) ){
+							$key = $product['product_variation_id'];
 
-					}else{
-						$key = $product['product_id'];
-					}
+						}else{
+							$key = $product['product_id'];
+						}
 
-					$id = $product['product_id'];
-					$variation_id = $product['product_variation_id'];
-					$product_title = $product['product_title'];
-					$quantity = $product['quantity'];
-					
-					if( isset( $counted_products[$key] ) ){
-						$counted_products[$key]['quantity'] += $quantity;
+						$id = $product['product_id'];
+						$variation_id = $product['product_variation_id'];
+						$product_title = $product['product_title'];
+						$quantity = $product['quantity'];
+						
+						if( isset( $counted_products[$key] ) ){
+							$counted_products[$key]['quantity'] += $quantity;
 
-					}else{
-						$counted_products[$key] = array(
-							'product_id' 			=> $id,
-							'product_variation_id' 	=> $variation_id,
-							'product_title' 		=> $product_title,
-							'quantity' 				=> $quantity
-						);
+						}else{
+							$counted_products[$key] = array(
+								'product_id' 			=> $id,
+								'product_variation_id' 	=> $variation_id,
+								'product_title' 		=> $product_title,
+								'quantity' 				=> $quantity
+							);
+						}
 					}
 				}
 			}

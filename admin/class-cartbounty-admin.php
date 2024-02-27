@@ -3306,6 +3306,7 @@ class CartBounty_Admin{
 			'cart_abandoned' 			=> date( $date_format, strtotime( '-' . $waiting_time . ' minutes', strtotime( $datetime ) ) ),
 			'cart_recovered' 			=> date( $date_format, strtotime( '-30 seconds', strtotime( $datetime ) ) ),
 			'old_cart' 					=> date( $date_format, strtotime( '-' . CARTBOUNTY_NEW_NOTICE . ' minutes', strtotime( $datetime ) ) ),
+			'two_hours' 				=> date( $date_format, strtotime( '-2 hours', strtotime( $datetime ) ) ),
 			'day' 						=> date( $date_format, strtotime( '-1 day', strtotime( $datetime ) ) ),
 			'week' 						=> date( $date_format, strtotime( '-7 days', strtotime( $datetime ) ) ),
 			'wp_step_send_period' 		=> date( $date_format, strtotime( '-' . $interval . ' minutes', strtotime( $datetime ) ) ),
@@ -4390,13 +4391,16 @@ class CartBounty_Admin{
 	* @param    string   $value    		 	 Location value to return, e.g. "country", "city"
 	*/
 	function get_cart_location( $location_data, $value = false ) {
+		$location_array = '';
 		$location_value = array( //Setting defaults
 			'country' 	=> '',
 			'city' 		=> '',
 			'postcode' 	=> '',
 		);
 
-		$location_array = @unserialize( $location_data );
+		if( is_string( $location_data ) ){
+			$location_array = @unserialize( $location_data );
+		}
 
 		if( is_array( $location_array ) ){ //If unserialization succeeded and we have an array
 			
