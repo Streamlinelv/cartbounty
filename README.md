@@ -44,7 +44,7 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 * Track message open and click-through rates (**Pro**)
 * Recover unfinished orders (**Pro**)
 * Restore Custom product fields (Product addons) and WooCommerce Product Bundles (**Pro**)
-* Exclude carts from abandoned cart recovery containing specific products or product categories, countries, languages etc. (**Pro**)
+* Exclude carts from abandoned cart recovery based on specific products or product categories, countries, languages, IP addresses, and other criteria (**Pro**)
 * Pause / Resume individual abandoned cart recovery (**Pro**)
 * Translate emails and SMS text messages, [WPML](https://wpml.org/?aid=447227&affiliate_key=0a2ZxRioMm8S) plugin support (**Pro**)
 

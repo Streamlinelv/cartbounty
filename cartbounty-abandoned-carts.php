@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 8.0.1
+ * Version: 8.1
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -16,7 +16,7 @@
 if ( ! defined( 'WPINC' ) ) die;
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '8.0.1' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '8.1' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
@@ -43,24 +43,10 @@ if (!defined('CARTBOUNTY_MAKE_LINK')) define('CARTBOUNTY_MAKE_LINK', 'https://ww
 if (!defined('CARTBOUNTY_PABBLY_LINK')) define('CARTBOUNTY_PABBLY_LINK', 'https://payments.pabbly.com/api/affurl/RVYZ07kQyUZ0Z1HUKZ1m/xciq3ahCAzNG3CSo?target=9Z2AHyhSldo6KI1Fn' );
 
 //Registering custom options
-register_setting( 'cartbounty-settings', 'cartbounty_notification_email' );
-register_setting( 'cartbounty-settings', 'cartbounty_notification_frequency' );
-register_setting( 'cartbounty-settings', 'cartbounty_lift_email' );
-register_setting( 'cartbounty-settings', 'cartbounty_hide_images' );
-register_setting( 'cartbounty-settings', 'cartbounty_exclude_anonymous_carts' );
-register_setting( 'cartbounty-settings', 'cartbounty_exclude_recovered' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_status' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_test_mode' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_type' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_heading' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_content' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_main_color' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_inverse_color' );
-register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_image' );
+register_setting( 'cartbounty-settings', 'cartbounty_main_settings' );
+register_setting( 'cartbounty-settings-exit-intent', 'cartbounty_exit_intent_settings' );
+register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_settings' );
 register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_steps' );
-register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_from_name' );
-register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_from_email' );
-register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_reply_email' );
 
 /**
  * The code that runs during plugin activation.

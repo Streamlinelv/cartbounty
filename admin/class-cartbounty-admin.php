@@ -109,6 +109,87 @@ class CartBounty_Admin{
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-admin.js', array( 'wp-color-picker', 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'cartbounty_admin_data', $data ); //Sending data over to JS file
 	}
+
+	/**
+	* Retrieve CartBounty settings
+	*
+	* @since    8.1
+	* @return   array
+	* @param    string     $section              Name of the section which options should be retrieved
+	* @param    string     $value                Value to return
+	*/
+	public function get_settings( $section, $value = false ){
+
+		switch ( $section ) {
+
+			case 'settings':
+				$saved_options = get_option( 'cartbounty_main_settings' );
+				$defaults = array(
+					'exclude_anonymous_carts' 	=> false,
+					'notification_email' 		=> '',
+					'notification_frequency' 	=> 3600000,
+					'exclude_recovered' 		=> false,
+					'lift_email'				=> false,
+					'hide_images'				=> false,
+				);
+				break;
+
+			case 'exit_intent':
+				$saved_options = get_option( 'cartbounty_exit_intent_settings' );
+				$defaults = array(
+					'status' 			=> false,
+					'heading' 			=> '',
+					'content' 			=> '',
+					'style' 			=> 1,
+					'main_color' 		=> '',
+					'inverse_color' 	=> '',
+					'image' 			=> '',
+					'test_mode' 		=> false,
+				);
+				break;
+
+			case 'submitted_warnings':
+				$saved_options = get_option( 'cartbounty_submitted_warnings' );
+				$defaults = array(
+					'cron_warning' 		=> false,
+				);
+
+				break;
+
+			case 'misc_settings':
+				$saved_options = get_option( 'cartbounty_misc_settings' );
+				$defaults = array(
+					'version_number' 					=> '',
+					'recoverable_carts' 				=> 0,
+					'anonymous_carts' 					=> 0,
+					'recovered_carts' 					=> 0,
+					'time_bubble_displayed' 			=> '',
+					'time_bubble_steps_displayed' 		=> '',
+					'times_review_declined' 			=> 0,
+					'email_table_exists' 				=> false,
+					'table_transferred' 				=> false, //Temporary option since version 8.1.1
+					'converted_minutes_to_miliseconds' 	=> false,
+				);
+
+				break;
+		}
+
+		if( is_array( $saved_options ) ){
+			$settings = array_merge( $defaults, $saved_options ); //Merging default settings with saved options
+			
+		}else{
+			$settings = $defaults;
+		}
+
+		if( $value ){ //If a single value should be returned
+			
+			if( isset( $settings[$value] ) ){ //Checking if value exists
+				$settings = $settings[$value];
+			}
+		}
+
+		return $settings;
+	}
 	
 	/**
 	 * Register the menu under WooCommerce admin menu.
@@ -248,7 +329,7 @@ class CartBounty_Admin{
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'woo-save-abandoned-carts' ) );
 		}?>
 
-		<div id="cartbounty-page-wrapper" class="wrap<?php if(get_option('cartbounty_hide_images')) {echo " cartbounty-without-thumbnails";}?>">
+		<div id="cartbounty-page-wrapper" class="wrap<?php if( $this->get_settings( 'settings', 'hide_images' ) ) {echo " cartbounty-without-thumbnails";}?>">
 			<h1><?php esc_html_e( CARTBOUNTY_ABREVIATION ); ?></h1>
 			<?php do_action('cartbounty_after_page_title'); ?>
 
@@ -280,10 +361,6 @@ class CartBounty_Admin{
 							</div>
 						<?php endif;
 					}?>
-
-
-
-
 
 				<?php elseif( $tab == 'dashboard' ): //Dashboard tab ?>
 
@@ -401,7 +478,7 @@ class CartBounty_Admin{
 								<div class="cartbounty-col-sm-6">
 									<div id="cartbounty-cart-search">
 										<label class="screen-reader-text cartbounty-unavailable" for="post-search-input"><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?> :</label>
-										<input type="search" id="cartbounty-cart-search-input" class="cartbounty-text cartbounty-unavailable" readonly><button type="button" id="cartbounty-search-submit" class="cartbounty-button button button-secondary cartbounty-unavailable"><i class="cartbounty-icon cartbounty-visible-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70.06 70"><path d="M30,60a29.9,29.9,0,0,0,16.64-5.06L60.7,69a3.58,3.58,0,0,0,5,0L69,65.64a3.57,3.57,0,0,0,0-5l-14.13-14A30,30,0,1,0,30,60Zm0-48.21A18.23,18.23,0,1,1,11.76,30,18.24,18.24,0,0,1,30,11.76Zm0,0" transform="translate(0)"/></svg></i><i class='cartbounty-hidden-xs'><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?></i>
+										<input type="search" id="cartbounty-cart-search-input" class="cartbounty-text cartbounty-unavailable" disabled readonly><button type="button" id="cartbounty-search-submit" class="cartbounty-button button button-secondary cartbounty-unavailable"><i class="cartbounty-icon cartbounty-visible-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70.06 70"><path d="M30,60a29.9,29.9,0,0,0,16.64-5.06L60.7,69a3.58,3.58,0,0,0,5,0L69,65.64a3.57,3.57,0,0,0,0-5l-14.13-14A30,30,0,1,0,30,60Zm0-48.21A18.23,18.23,0,1,1,11.76,30,18.24,18.24,0,0,1,30,11.76Zm0,0" transform="translate(0)"/></svg></i><i class='cartbounty-hidden-xs'><?php esc_html_e('Search carts', 'woo-save-abandoned-carts'); ?></i>
 										</button>
 										<p class='cartbounty-additional-information'>
 											<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'enable_search' ); ?></i>
@@ -505,22 +582,24 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-container">
 							<form method="post" action="options.php">
 								<?php
-									$lift_email_on = esc_attr( get_option('cartbounty_lift_email') );
-									$hide_images_on = esc_attr( get_option('cartbounty_hide_images') );
-									$exclude_anonymous_carts = esc_attr( get_option('cartbounty_exclude_anonymous_carts') );
-									$exclude_recovered_cart_notifications = esc_attr( get_option('cartbounty_exclude_recovered') );
+									$settings = $this->get_settings( 'settings' );
+									$exclude_anonymous_carts = $settings['exclude_anonymous_carts'];
+									$notification_email = $settings['notification_email'];
+									$exclude_recovered = $settings['exclude_recovered'];
+									$lift_email = $settings['lift_email'];
+									$hide_images = $settings['hide_images'];
 								?>
 								<div class="cartbounty-row">
 									<div class="cartbounty-titles-column cartbounty-col-sm-4 cartbounty-col-lg-3">
-										<h4><?php esc_html_e('Anonymous carts', 'woo-save-abandoned-carts'); ?></h4>
+										<h4><?php esc_html_e( 'Abandoned carts', 'woo-save-abandoned-carts' ); ?></h4>
 										<p class="cartbounty-titles-column-description">
-											<?php esc_html_e('Carts that cannot be identified are classified as anonymous since the visitor has not provided any contact information.', 'woo-save-abandoned-carts'); ?>
+											<?php esc_html_e( 'Manage shopping cart exclusions. Specify emails or phone numbers to prevent them from being saved as abandoned carts by CartBounty.', 'woo-save-abandoned-carts' ); ?>
 										</p>
 									</div>
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9<?php if( $exclude_anonymous_carts ){ echo ' cartbounty-checked-parent'; }?>">
 										<div class="cartbounty-settings-group cartbounty-toggle <?php if( $exclude_anonymous_carts ){ echo ' cartbounty-checked'; }?>">
 											<label for="cartbounty-exclude-anonymous-carts" class="cartbounty-switch cartbounty-control-visibility">
-												<input id="cartbounty-exclude-anonymous-carts" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exclude_anonymous_carts" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_anonymous_carts, false ); ?> autocomplete="off" />
+												<input id="cartbounty-exclude-anonymous-carts" class="cartbounty-checkbox" type="checkbox" name="cartbounty_main_settings[exclude_anonymous_carts]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_anonymous_carts, false ); ?> autocomplete="off" />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty-exclude-anonymous-carts" class="cartbounty-control-visibility">
@@ -547,6 +626,13 @@ class CartBounty_Admin{
 												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'anonymous_cart_auto_delete' ); ?></i>
 											</p>
 										</div>
+										<div class="cartbounty-settings-group">
+											<label for="cartbounty-excluded-emails-phones" class="cartbounty-unavailable"><?php esc_html_e( 'Exclude carts containing any of these emails and phone numbers', 'woo-save-abandoned-carts' ); ?></label>
+											<input id="cartbounty-excluded-emails-phones" class="cartbounty-text cartbounty-unavailable" type="text" disabled autocomplete="off" />
+											<p class='cartbounty-additional-information'>
+												<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'settings_exclude_carts_by_email_phone' ); ?></i>
+											</p>
+										</div>
 									</div>
 								</div>
 								<div class="cartbounty-row">
@@ -559,18 +645,18 @@ class CartBounty_Admin{
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
 										<div class="cartbounty-settings-group">
 											<label for="cartbounty_notification_email"><?php esc_html_e('Admin email', 'woo-save-abandoned-carts'); ?></label>
-											<input id="cartbounty_notification_email" class="cartbounty-text cartbounty-display-emails" type="email" name="cartbounty_notification_email" value="<?php echo esc_attr( get_option('cartbounty_notification_email') ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) );?>" <?php echo $this->disable_field(); ?> multiple />
+											<input id="cartbounty_notification_email" class="cartbounty-text cartbounty-display-emails" type="email" name="cartbounty_main_settings[notification_email]" value="<?php echo esc_attr( $notification_email ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) );?>" <?php echo $this->disable_field(); ?> multiple />
 											<p class='cartbounty-additional-information'>
 												<?php esc_html_e('You can add multiple emails separated by a comma.', 'woo-save-abandoned-carts'); ?>
 											</p>
 										</div>
 										<div class="cartbounty-settings-group">
-											<label for="cartbounty_notification_frequency"><?php esc_html_e('Check for new abandoned carts', 'woo-save-abandoned-carts'); ?></label>
-											<?php $this->display_time_intervals( 'cartbounty_notification_frequency' ); ?>
+											<label for="cartbounty_main_settings[notification_frequency]"><?php esc_html_e('Check for new abandoned carts', 'woo-save-abandoned-carts'); ?></label>
+											<?php $this->display_time_intervals( 'cartbounty_main_settings[notification_frequency]' ); ?>
 										</div>
 										<div class="cartbounty-settings-group cartbounty-toggle">
 											<label for="cartbounty-exclude-recovered" class="cartbounty-switch">
-												<input id="cartbounty-exclude-recovered" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exclude_recovered" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_recovered_cart_notifications, false ); ?> autocomplete="off" />
+												<input id="cartbounty-exclude-recovered" class="cartbounty-checkbox" type="checkbox" name="cartbounty_main_settings[exclude_recovered]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exclude_recovered, false ); ?> autocomplete="off" />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty-exclude-recovered">
@@ -653,9 +739,9 @@ class CartBounty_Admin{
 										</p>
 									</div>
 									<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
-										<div class="cartbounty-settings-group cartbounty-toggle<?php if($lift_email_on){ echo ' cartbounty-checked'; }?>">
+										<div class="cartbounty-settings-group cartbounty-toggle<?php if($lift_email){ echo ' cartbounty-checked'; }?>">
 											<label for="cartbounty-lift-email" class="cartbounty-switch cartbounty-control-visibility">
-												<input id="cartbounty-lift-email" class="cartbounty-checkbox" type="checkbox" name="cartbounty_lift_email" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $lift_email_on, false ); ?> autocomplete="off" />
+												<input id="cartbounty-lift-email" class="cartbounty-checkbox" type="checkbox" name="cartbounty_main_settings[lift_email]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $lift_email, false ); ?> autocomplete="off" />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty-lift-email" class="cartbounty-control-visibility"><?php esc_html_e('Lift email field', 'woo-save-abandoned-carts'); ?></label>
@@ -679,7 +765,7 @@ class CartBounty_Admin{
 										</div>
 										<div class="cartbounty-settings-group cartbounty-toggle">
 											<label for="cartbounty-hide-images" class="cartbounty-switch">
-												<input id="cartbounty-hide-images" class="cartbounty-checkbox" type="checkbox" name="cartbounty_hide_images" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $hide_images_on, false ); ?> autocomplete="off" />
+												<input id="cartbounty-hide-images" class="cartbounty-checkbox" type="checkbox" name="cartbounty_main_settings[hide_images]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $hide_images, false ); ?> autocomplete="off" />
 												<span class="cartbounty-slider round"></span>
 											</label>
 											<label for="cartbounty-hide-images"><?php esc_html_e('Display abandoned cart contents in a list', 'woo-save-abandoned-carts'); ?></label>
@@ -904,6 +990,11 @@ class CartBounty_Admin{
 			$step_array = '[' . $automation . ']';
 		}
 
+		if( $option == 'cartbounty_main_settings[notification_frequency]' ){
+			$storage_array = '';
+		}
+
+
 		echo '<label for="' . $option . $step_nr . '">' . $data['name'] . '</label>';
 		echo '<select id="' . $option . $step_nr . '" class="cartbounty-select" name="' . $option . $step_array . $storage_array .'" autocomplete="off" ' . $this->disable_field() . '>';
 		foreach( $this->prepare_time_intervals( $data['interval'], $data['zero_name'], $option ) as $key => $miliseconds ) {
@@ -923,7 +1014,7 @@ class CartBounty_Admin{
      */
     function prepare_time_intervals( $miliseconds = array(), $zero_value = '', $option = '' ){
     	$intervals = array();
-    	$alternative_options = array( 'cartbounty_notification_frequency' );
+    	$alternative_options = array( 'cartbounty_main_settings[notification_frequency]' );
 
     	if( is_array( $miliseconds ) ){
 
@@ -1020,17 +1111,15 @@ class CartBounty_Admin{
 
 		switch( $option ) {
 
-			case 'cartbounty_notification_frequency':
+			case 'cartbounty_main_settings[notification_frequency]':
 				$name = esc_html__( 'Check for new abandoned carts', 'woo-save-abandoned-carts' );
 				$zero_name = esc_html__( 'Disable notifications', 'woo-save-abandoned-carts' );
 				$miliseconds = array( 0, 600000, 1200000, 1800000, 3600000, 7200000, 10800000, 14400000, 18000000, 21600000, 43200000, 86400000, 172800000, 604800000, 2419200000 );
 				$selected_interval = 3600000;
+				$notification_frequency = $this->get_settings( 'settings', 'notification_frequency' );
 
-				if( isset( $option_value['interval'] ) ){
-
-					if( !empty( $option_value['interval'] ) || $option_value['interval'] == 0 ){ //If interval has been set - use it
-						$selected_interval = $option_value['interval'];
-					}
+				if( isset( $notification_frequency ) ){ //If interval has been set - use it
+					$selected_interval = $notification_frequency;
 				}
 
 				break;
@@ -1144,7 +1233,7 @@ class CartBounty_Admin{
 			$sections = array(
 				'exit_intent'	=> array(
 					'name'				=> esc_html__('Exit Intent', 'woo-save-abandoned-carts'),
-					'connected'			=> esc_attr( get_option('cartbounty_exit_intent_status')) ? true : false,
+					'connected'			=> $this->get_settings( 'exit_intent', 'status' ) ? true : false,
 					'availability'		=> true,
 					'description'		=> '<p>' . esc_html__("Save more recoverable abandoned carts by showcasing a popup message right before your customer tries to leave and offer an option to save his shopping cart by entering his email.", 'woo-save-abandoned-carts') . '</p>'
 				),
@@ -1195,6 +1284,7 @@ class CartBounty_Admin{
 						settings_fields( 'cartbounty-wordpress-settings' );
 						do_settings_sections( 'cartbounty-wordpress-settings' );
 						$wordpress = new CartBounty_WordPress();
+						$settings = $wordpress->get_settings();
 						$automation_steps = get_option('cartbounty_automation_steps');
 					?>
 					<div class="cartbounty-row">
@@ -1621,15 +1711,15 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-col-sm-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-from-name"><?php esc_html_e('"From" name', 'woo-save-abandoned-carts'); ?></label>
-								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_from_name" value="<?php echo $this->sanitize_field(get_option('cartbounty_automation_from_name')); ?>" placeholder="<?php echo esc_attr( get_option( 'blogname' ) );?>" <?php echo $this->disable_field(); ?> />
+								<input id="cartbounty-automation-from-name" class="cartbounty-text" type="text" name="cartbounty_automation_settings[from_name]" value="<?php echo $this->sanitize_field( $settings['from_name'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'blogname' ) );?>" <?php echo $this->disable_field(); ?> />
 							</div>
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-from-email"><?php esc_html_e('"From" email', 'woo-save-abandoned-carts'); ?></label>
-								<input id="cartbounty-automation-from-email" class="cartbounty-text" type="email" name="cartbounty_automation_from_email" value="<?php echo sanitize_email( get_option('cartbounty_automation_from_email') ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) );?>" <?php echo $this->disable_field(); ?> />
+								<input id="cartbounty-automation-from-email" class="cartbounty-text" type="email" name="cartbounty_automation_settings[from_email]" value="<?php echo sanitize_email( $settings['from_email'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) );?>" <?php echo $this->disable_field(); ?> />
 							</div>
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-automation-reply-email"><?php esc_html_e('Reply-to address', 'woo-save-abandoned-carts'); ?></label>
-								<input id="cartbounty-automation-reply-email" class="cartbounty-text" type="email" name="cartbounty_automation_reply_email" value="<?php echo sanitize_email( get_option('cartbounty_automation_reply_email') ); ?>" <?php echo $this->disable_field(); ?> />
+								<input id="cartbounty-automation-reply-email" class="cartbounty-text" type="email" name="cartbounty_automation_settings[reply_email]" value="<?php echo sanitize_email( $settings['reply_email'] ); ?>" <?php echo $this->disable_field(); ?> />
 							</div>
 						</div>
 					</div>
@@ -1668,14 +1758,16 @@ class CartBounty_Admin{
 					<?php 
 						settings_fields( 'cartbounty-settings-exit-intent' );
 						do_settings_sections( 'cartbounty-settings-exit-intent' );
-						$exit_intent_on = esc_attr( get_option('cartbounty_exit_intent_status'));
-						$test_mode_on = esc_attr( get_option('cartbounty_exit_intent_test_mode'));
-						$exit_intent_type = esc_attr( get_option('cartbounty_exit_intent_type'));
-						$exit_intent_heading = esc_attr( get_option('cartbounty_exit_intent_heading'));
-						$exit_intent_content = esc_attr( get_option('cartbounty_exit_intent_content'));
-						$main_color = esc_attr( get_option('cartbounty_exit_intent_main_color'));
-						$inverse_color = esc_attr( get_option('cartbounty_exit_intent_inverse_color'));
-						$main_image = esc_attr( get_option('cartbounty_exit_intent_image'));
+
+						$ei_settings = $this->get_settings( 'exit_intent' );
+						$ei_status = $ei_settings['status'];
+						$ei_heading = $ei_settings['heading'];
+						$ei_content = $ei_settings['content'];
+						$ei_style = $ei_settings['style'];
+						$ei_main_color = $ei_settings['main_color'];
+						$ei_inverse_color = $ei_settings['inverse_color'];
+						$ei_image = $ei_settings['image'];
+						$ei_test_mode = $ei_settings['test_mode'];
 					?>
 
 					<div class="cartbounty-row">
@@ -1685,10 +1777,10 @@ class CartBounty_Admin{
 								<?php esc_html_e('Enable email or phone request before leaving your store.', 'woo-save-abandoned-carts'); ?>
 							</p>
 						</div>
-						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9<?php if($exit_intent_on){ echo ' cartbounty-checked-parent'; }?>">
+						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9<?php if($ei_status){ echo ' cartbounty-checked-parent'; }?>">
 							<div class="cartbounty-settings-group cartbounty-toggle">
 								<label for="cartbounty-exit-intent-status" class="cartbounty-switch cartbounty-control-visibility">
-									<input id="cartbounty-exit-intent-status" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_status" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exit_intent_on, false ); ?> autocomplete="off" />
+									<input id="cartbounty-exit-intent-status" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_settings[status]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $ei_status, false ); ?> autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
 								<label for="cartbounty-exit-intent-status" class="cartbounty-control-visibility"><?php esc_html_e('Enable Exit Intent', 'woo-save-abandoned-carts'); ?></label>
@@ -1723,13 +1815,13 @@ class CartBounty_Admin{
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-exit-intent-heading"><?php esc_html_e('Main title', 'woo-save-abandoned-carts'); ?></label>
 								<div class="cartbounty-content-creation cartbounty-flex">
-									<input id="cartbounty-exit-intent-heading" class="cartbounty-text" type="text" name="cartbounty_exit_intent_heading" value="<?php echo esc_attr( $this->sanitize_field($exit_intent_heading) ); ?>" placeholder="<?php echo esc_attr( $this->get_tools_defaults('heading', 'exit_intent') ); ?>" /><?php $this->add_emojis(); ?>
+									<input id="cartbounty-exit-intent-heading" class="cartbounty-text" type="text" name="cartbounty_exit_intent_settings[heading]" value="<?php echo esc_attr( $this->sanitize_field($ei_heading) ); ?>" placeholder="<?php echo esc_attr( $this->get_tools_defaults('heading', 'exit_intent') ); ?>" /><?php $this->add_emojis(); ?>
 								</div>
 							</div>
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-exit-intent-content"><?php esc_html_e('Content', 'woo-save-abandoned-carts'); ?></label>
 								<div class="cartbounty-content-creation cartbounty-flex">
-									<textarea id="cartbounty-exit-intent-content" class="cartbounty-text" name="cartbounty_exit_intent_content" placeholder="<?php echo esc_attr( $this->get_tools_defaults('content', 'exit_intent') ); ?>" rows="4"><?php echo $this->sanitize_field($exit_intent_content); ?></textarea><?php $this->add_emojis(); ?>
+									<textarea id="cartbounty-exit-intent-content" class="cartbounty-text" name="cartbounty_exit_intent_settings[content]" placeholder="<?php echo esc_attr( $this->get_tools_defaults('content', 'exit_intent') ); ?>" rows="4"><?php echo $this->sanitize_field( $ei_content ); ?></textarea><?php $this->add_emojis(); ?>
 								</div>
 							</div>
 						</div>
@@ -1745,14 +1837,14 @@ class CartBounty_Admin{
 							<div class="cartbounty-settings-group">
 								<h4><?php esc_html_e('Style', 'woo-save-abandoned-carts'); ?></h4>
 								<div class="cartbounty-flex-container">
-									<div id="cartbounty-exit-intent-center" class="cartbounty-type <?php if($exit_intent_type == 1){ echo "cartbounty-radio-active";} ?>">
+									<div id="cartbounty-exit-intent-center" class="cartbounty-type <?php if($ei_style == 1){ echo "cartbounty-radio-active";} ?>">
 										<label class="cartbounty-image" for="cartbounty-radiobutton-center">
 											<em>
 												<i>
 													<img src="<?php echo esc_url( plugins_url( 'assets/exit-intent-form.svg', __FILE__ ) ); ?>" title="<?php esc_attr_e('Appear in center', 'woo-save-abandoned-carts'); ?>" alt="<?php esc_attr_e('Appear in center', 'woo-save-abandoned-carts'); ?>"/>
 												</i>
 											</em>
-											<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_type" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $exit_intent_type, false ); ?> autocomplete="off" />
+											<input id="cartbounty-radiobutton-center" class="cartbounty-radiobutton" type="radio" name="cartbounty_exit_intent_settings[style]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $ei_style, false ); ?> autocomplete="off" />
 											<?php esc_html_e('Appear in center', 'woo-save-abandoned-carts'); ?>
 										</label>
 									</div>
@@ -1793,11 +1885,11 @@ class CartBounty_Admin{
 								</p>
 								<div class="cartbounty-colors">
 									<label for="cartbounty-exit-intent-main-color"><?php esc_html_e('Main:', 'woo-save-abandoned-carts'); ?></label>
-									<input id="cartbounty-exit-intent-main-color" type="text" name="cartbounty_exit_intent_main_color" class="cartbounty-color-picker cartbounty-text" value="<?php echo esc_attr( $main_color ); ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+									<input id="cartbounty-exit-intent-main-color" type="text" name="cartbounty_exit_intent_settings[main_color]" class="cartbounty-color-picker cartbounty-text" value="<?php echo esc_attr( $ei_main_color ); ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
 								</div>
 								<div class="cartbounty-colors">
 									<label for="cartbounty-exit-intent-inverse-color"><?php esc_html_e('Inverse:', 'woo-save-abandoned-carts'); ?></label>
-									<input id="cartbounty-exit-intent-inverse-color" type="text" name="cartbounty_exit_intent_inverse_color" class="cartbounty-color-picker cartbounty-text" value="<?php echo esc_attr( $inverse_color ); ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+									<input id="cartbounty-exit-intent-inverse-color" type="text" name="cartbounty_exit_intent_settings[inverse_color]" class="cartbounty-color-picker cartbounty-text" value="<?php echo esc_attr( $ei_inverse_color ); ?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
 								</div>
 							</div>
 							<div class="cartbounty-settings-group">
@@ -1805,7 +1897,7 @@ class CartBounty_Admin{
 									if(!did_action('wp_enqueue_media')){
 										wp_enqueue_media();
 									}
-									$image = wp_get_attachment_image_src( $main_image );
+									$image = wp_get_attachment_image_src( $ei_image );
 								?>
 								<h4><?php esc_html_e('Custom image', 'woo-save-abandoned-carts'); ?></h4>
 								<p class='cartbounty-additional-information'>
@@ -1821,7 +1913,7 @@ class CartBounty_Admin{
 									</p>
 									<a href="#" id="cartbounty-remove-custom-image" class="cartbounty-remove-image" <?php if(!$image){echo 'style="display:none"';}?>></a>
 								</div>
-								<input id="cartbounty-custom-image" type="hidden" name="cartbounty_exit_intent_image" value="<?php if($main_image){echo esc_attr( $main_image );}?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
+								<input id="cartbounty-custom-image" type="hidden" name="cartbounty_exit_intent_settings[image]" value="<?php if($ei_image){echo esc_attr( $ei_image );}?>" <?php echo $this->disable_field(); ?> autocomplete="off" />
 							</div>
 						</div>
 					</div>
@@ -1836,9 +1928,9 @@ class CartBounty_Admin{
 							</p>
 						</div>
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
-							<div class="cartbounty-settings-group cartbounty-toggle<?php if($test_mode_on){ echo ' cartbounty-checked'; }?>">
+							<div class="cartbounty-settings-group cartbounty-toggle<?php if($ei_test_mode){ echo ' cartbounty-checked'; }?>">
 								<label for="cartbounty-exit-intent-test-mode" class="cartbounty-switch cartbounty-control-visibility">
-									<input id="cartbounty-exit-intent-test-mode" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_test_mode" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $test_mode_on, false ); ?> autocomplete="off" />
+									<input id="cartbounty-exit-intent-test-mode" class="cartbounty-checkbox" type="checkbox" name="cartbounty_exit_intent_settings[test_mode]" value="1" <?php echo $this->disable_field(); ?> <?php echo checked( 1, $ei_test_mode, false ); ?> autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
 								<label for="cartbounty-exit-intent-test-mode" class="cartbounty-control-visibility"><?php esc_html_e('Enable test mode', 'woo-save-abandoned-carts'); ?></label>
@@ -2199,8 +2291,7 @@ class CartBounty_Admin{
 	 * @since    1.1
 	 */
 	function schedule_events(){
-
-		$notification_frequency = $this->get_interval_data( 'cartbounty_notification_frequency' );
+		$notification_frequency = $this->get_settings( 'settings', 'notification_frequency' );
 
 		$hooks = array(
 			'cartbounty_sync_hook' 						=> array( 
@@ -2214,9 +2305,9 @@ class CartBounty_Admin{
 				'enabled'			=> true
 			),
 			'cartbounty_notification_sendout_hook' 	=> array(
-				'interval'			=> $notification_frequency['selected'] / 1000,
+				'interval'			=> $notification_frequency / 1000,
 				'wp_cron_interval'	=> 'cartbounty_notification_sendout_interval',
-				'enabled'			=> ( $notification_frequency['selected'] == 0 ) ? false : true
+				'enabled'			=> ( $notification_frequency == 0 ) ? false : true
 			)
 		);
 
@@ -2270,8 +2361,8 @@ class CartBounty_Admin{
 	 * @param    array    $intervals    Existing interval array
 	 */
 	function add_custom_wp_cron_intervals( $intervals ){
-		$notification_frequency = $this->get_interval_data( 'cartbounty_notification_frequency' );
-		$interval_name = $this->prepare_time_intervals( $notification_frequency['interval'], $zero_value = '', 'cartbounty_notification_frequency' );
+		$notification_frequency = $this->get_interval_data( 'cartbounty_main_settings[notification_frequency]' );
+		$interval_name = $this->prepare_time_intervals( $notification_frequency['interval'], $zero_value = '', 'cartbounty_main_settings[notification_frequency]' );
 		$interval = $notification_frequency['selected'];
 
 		$intervals['cartbounty_notification_sendout_interval'] = array( //Defining cron Interval for sending out email notifications about abandoned carts
@@ -2315,9 +2406,9 @@ class CartBounty_Admin{
 
 		if( $wordpress->automation_enabled() ){ //Check if we have connected to WordPress automation
 			$missing_hooks = array();
-			$notification_frequency = $this->get_interval_data( 'cartbounty_notification_frequency' );
+			$notification_frequency = $this->get_settings( 'settings', 'notification_frequency' );
 
-			if( wp_next_scheduled( 'cartbounty_notification_sendout_hook' ) === false && $notification_frequency['selected'] != 0 ){ //If we havent scheduled email notifications and notifications have not been disabled
+			if( wp_next_scheduled( 'cartbounty_notification_sendout_hook' ) === false && $notification_frequency != 0 ){ //If we havent scheduled email notifications and notifications have not been disabled
 				$missing_hooks[] = 'cartbounty_notification_sendout_hook';
 			}
 
@@ -2352,7 +2443,7 @@ class CartBounty_Admin{
 		if( defined( 'DISABLE_WP_CRON' ) ){
 			
 			if( DISABLE_WP_CRON == true ){
-				$handle = 'cartbounty_cron_warning';
+				$handle = 'cron_warning';
 				$message = esc_html__( "WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this.", 'woo-save-abandoned-carts' );
 				echo $this->get_notice_output( $message, $handle, $class = 'warning', true, 'close' );
 			}
@@ -2442,11 +2533,17 @@ class CartBounty_Admin{
 
 		}else{
 
+			$notice_options = $this->get_settings( 'submitted_warnings' );
+
 			if( isset( $_GET[$handle] ) ){ //Check if we should update the option and close the notice
 				check_admin_referer( 'cartbounty-notice-nonce', $handle ); //Exit in case security check is not passed
-				update_option( $handle, 1 );
+				$notice_options[$handle] = true;
+				update_option( 'cartbounty_submitted_warnings', $notice_options );
 			}
-			$closed = get_option( $handle );
+
+			if( isset( $notice_options[$handle] ) ){
+				$closed = $notice_options[$handle];
+			}
 		}
 
 		if( $closed ){ //Exit if notice previously has been already closed
@@ -2477,9 +2574,10 @@ class CartBounty_Admin{
 	 * @since    7.0
 	 */
 	function send_email(){
-		$exclude_recovered_carts = get_option('cartbounty_exclude_recovered');
+		$exclude_recovered_carts = $this->get_settings( 'settings', 'exclude_recovered' );
 		$this->prepare_email( 'recoverable' );
-		if(!$exclude_recovered_carts){ //If we do not exclude recovered carts from emails
+
+		if( !$exclude_recovered_carts ){ //If we do not exclude recovered carts from emails
 			$this->prepare_email( 'recovered' );
 		}
 	}
@@ -2522,7 +2620,8 @@ class CartBounty_Admin{
 		}
 
 		$to = esc_html(get_option( 'admin_email' ));
-		$user_settings_email = get_option('cartbounty_notification_email'); //Retrieving email address if the user has entered one
+		$user_settings_email = $this->get_settings( 'settings', 'notification_email' ); //Retrieving email address if the user has entered one
+
 		if(!empty($user_settings_email)){
 			$to = esc_html($user_settings_email);
 			$to_without_spaces = str_replace(' ', '', $to);
@@ -2609,13 +2708,9 @@ class CartBounty_Admin{
 				WHERE mail_sent = %d
 				$where_sentence AND
 				cart_contents != '' AND
-				type != %d AND
-				type != %d AND
 				time < %s",
 				1,
 				0,
-				$this->get_cart_type('ordered'),
-				$this->get_cart_type( 'ordered_deducted' ),
 				$time
 			)
 		);
@@ -2712,18 +2807,18 @@ class CartBounty_Admin{
 	 * @param    $days      Number of days
 	 */
 	function days_have_passed( $option, $days ){
-		$last_time = esc_attr(get_option($option)); //Get time value from the database
-		$last_time = strtotime($last_time); //Convert time from text to Unix timestamp
+		$result = false;
+		$misc_settings = $this->get_settings( 'misc_settings', $option );
+		$last_time = strtotime( $misc_settings ); //Convert time from text to Unix timestamp
 		
-		$date = date_create(current_time( 'mysql', false ));
-		$current_time = strtotime(date_format($date, 'Y-m-d H:i:s'));
-		$days = $days; //Defines the time interval that should be checked against in days
+		$date = date_create( current_time( 'mysql', false ) );
+		$current_time = strtotime( date_format( $date, 'Y-m-d H:i:s' ) );
 		
-		if($last_time < $current_time - $days * 24 * 60 * 60 ){
-			return true;
-		}else{
-			return false;
+		if( $last_time < $current_time - $days * 24 * 60 * 60 ){
+			$result = true;
 		}
+
+		return $result;
 	}
 	
 	/**
@@ -2732,13 +2827,15 @@ class CartBounty_Admin{
 	 * @since    1.4.1
 	 */
 	function check_version(){
+		$misc_settings = $this->get_settings( 'misc_settings' );
 
-		if( CARTBOUNTY_VERSION_NUMBER == get_option( 'cartbounty_version_number' ) ){
+		if( CARTBOUNTY_VERSION_NUMBER == $misc_settings['version_number'] ){
 			return;
 
 		}else{
+			$misc_settings['version_number'] = CARTBOUNTY_VERSION_NUMBER;
+			update_option( 'cartbounty_misc_settings', $misc_settings );
 			activate_cartbounty();
-			update_option( 'cartbounty_version_number', CARTBOUNTY_VERSION_NUMBER );
 			return;
 		}
 	}
@@ -2863,6 +2960,7 @@ class CartBounty_Admin{
 		$notice_type = sanitize_text_field( $_POST['type'] );
 		$operation = sanitize_text_field( $_POST['operation'] );
 		$submitted_notices = get_option( 'cartbounty_submitted_notices' );
+		$misc_settings = $this->get_settings( 'misc_settings' );
 		
 		if( empty( $submitted_notices ) ){
 			$submitted_notices = array();
@@ -2872,7 +2970,8 @@ class CartBounty_Admin{
 			case 'upgrade':
 
 				if( $operation == 'declined' ){
-					update_option( 'cartbounty_last_time_bubble_displayed', current_time( 'mysql' ) ); //Update option that the upgrade bubble has been declined
+					$misc_settings['time_bubble_displayed'] = current_time( 'mysql' );
+					update_option( 'cartbounty_misc_settings', $misc_settings ); //Update declined count according to the current level
 					wp_send_json_success();
 
 				}
@@ -2881,7 +2980,8 @@ class CartBounty_Admin{
 			case 'steps':
 
 				if( $operation == 'declined' ){
-					update_option( 'cartbounty_last_time_bubble_steps_displayed', current_time( 'mysql' ) ); //Update option that the upgrade bubble has been declined
+					$misc_settings['time_bubble_steps_displayed'] = current_time( 'mysql' );
+					update_option( 'cartbounty_misc_settings', $misc_settings ); //Update declined count according to the current level
 					wp_send_json_success();
 
 				}
@@ -2898,7 +2998,8 @@ class CartBounty_Admin{
 					$level = $this->get_achieved_review_level();
 					
 					if( $level > 0 ){
-						update_option( 'cartbounty_times_review_declined', $level ); //Update declined count according to the current level
+						$misc_settings['times_review_declined'] = $level;
+						update_option( 'cartbounty_misc_settings', $misc_settings ); //Update declined count according to the current level
 						wp_send_json_success();
 					}
 				}
@@ -2913,7 +3014,7 @@ class CartBounty_Admin{
 	 * @return 	 number
 	 */
 	function total_cartbounty_recoverable_cart_count(){
-		$count = get_option( 'cartbounty_recoverable_cart_count' );
+		$count = $this->get_settings( 'misc_settings', 'recoverable_carts' );
 		return $count;
 	}
 
@@ -2929,7 +3030,7 @@ class CartBounty_Admin{
 	 */
 	function get_closest_lowest_integer( $number ){
 
-		if( $number == 0 ){
+		if( empty( $number ) ){
 			$number = 0;
 
 		}elseif( $number == 1 ){
@@ -2960,7 +3061,7 @@ class CartBounty_Admin{
 	/**
 	 * Method removes empty abandoned carts
 	 * First removing carts that are anonymous and do not have cart contents
-	 * Then deleiting recoverable carts without cart contents
+	 * Then deleting recoverable carts without cart contents
 	 * Next looking for ordered carts and updating them to ordered-deducted carts and decreasing recoverable cart count
 	 * Finally deleting ordered deducted carts from database since they have never really been abandoned (customer placed items, CartBounty saved them and user went through with purchase)
 	 *
@@ -3231,28 +3332,35 @@ class CartBounty_Admin{
 		
 		if( WC()->cart ){ //Checking if WooCommerce has loaded
 			WC()->cart->empty_cart();//Removing any products that might have be added in the cart
-			$products = @unserialize( $cart->cart_contents );
+			$saved_cart_contents = $this->get_saved_cart_contents( $cart->cart_contents );
+			$cart_contents = $saved_cart_contents['products'];
+			$cart_data = $saved_cart_contents['cart_data'];
 			
-			if( !$products ){ //If missing products
-				return;
-			}
+			if( !$cart_contents ) return; //If missing products
 
-			foreach( $products as $product ){ //Looping through cart products
+			foreach( $cart_contents as $product ){ //Looping through cart products
+				$custom_data = array();
 				$product_exists = wc_get_product( $product['product_id'] ); //Checking if the product exists
 				
 				if( $product_exists ){
-					
-					//Get product variation attributes if present
-					if( $product['product_variation_id'] ){
+					$variation_attributes = '';
+
+					if( isset( $product['product_variation_attributes'] ) ){
+						$variation_attributes = $product['product_variation_attributes'];
+
+					}elseif( $product['product_variation_id'] ){ //Deprecated since version 10.1.1. Will be removed in future
 						$single_variation = new WC_Product_Variation( $product['product_variation_id'] );
 						$single_variation_data = $single_variation->get_data();
-						$variation_attributes = $single_variation->get_variation_attributes(); //Handling variable product title output with attributes
-
-					}else{
-						$variation_attributes = '';
+						$variation_attributes = $single_variation->get_variation_attributes();
 					}
 					
-					$restore = WC()->cart->add_to_cart( $product['product_id'], $product['quantity'], $product['product_variation_id'], $variation_attributes ); //Adding previous products back to cart
+					foreach( $cart_data as $key => $data ){
+						if( $data['product_id'] == $product['product_id'] ){
+							$custom_data = $data;
+						}
+					}
+
+					WC()->cart->add_to_cart( $product['product_id'], $product['quantity'], $product['product_variation_id'], $variation_attributes, $custom_data ); //Adding previous products back to cart
 				}
 			}
 
@@ -3271,9 +3379,9 @@ class CartBounty_Admin{
 	 * @param 	 $fields    Checkout form fields
 	 */ 
 	public function lift_checkout_fields( $fields ) {
-		$lift_email_on = esc_attr( get_option('cartbounty_lift_email'));
+		$lift_email = $this->get_settings( 'settings', 'lift_email' );
 		
-		if( $lift_email_on ){ //Changing the priority and moving the email higher
+		if( $lift_email ){ //Changing the priority and moving the email higher
 			if( isset( $fields['billing_email'] ) ){
 				$fields['billing_email']['priority'] = 4;
 			}
@@ -3342,15 +3450,11 @@ class CartBounty_Admin{
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$total_items = 0;
 		$where_sentence = $this->get_where_sentence($cart_status);
-		$ordered = $this->get_cart_type('ordered');
-		$ordered_deducted = $this->get_cart_type( 'ordered_deducted' );
 
 		$total_items = $wpdb->get_var(
 			"SELECT COUNT(id)
 			FROM $cart_table
-			WHERE cart_contents != '' AND
-			type != $ordered AND
-		    type != $ordered_deducted
+			WHERE cart_contents != ''
 			$where_sentence"
 		);
 
@@ -3366,7 +3470,7 @@ class CartBounty_Admin{
 	function anonymous_carts_excluded(){
 		$exclude = false;
 
-		if( get_option( 'cartbounty_exclude_anonymous_carts' ) ){
+		if( $this->get_settings( 'settings', 'exclude_anonymous_carts' ) ){
 			$exclude = true;
 		}
 
@@ -3427,7 +3531,7 @@ class CartBounty_Admin{
      * @param    bollean    $starting_and    		 If the query should start with AND or not
      * @param    object     $cart					 Abandoned cart object
      */
-    function get_where_sentence( $cart_status, $starting_and = true, $cart = null ){
+	function get_where_sentence( $cart_status, $starting_and = true, $cart = null ){
 		$where_sentence = '';
 		$cart_validation_result = false;
 
@@ -3491,7 +3595,17 @@ class CartBounty_Admin{
 				$where_sentence = "AND ( type != ". $this->get_cart_type( 'recovered' ) ." AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
 			}
 
-		}elseif( get_option( 'cartbounty_exclude_anonymous_carts' ) ){ //In case anonymous carts have been excluded
+		}elseif( $cart_status == 'all' ){ //Used to count the total number of all abandoned carts in the abandoned cart table
+
+			if( $cart ){
+				$cart_validation_result = $cart->type != $this->get_cart_type( 'ordered' )
+				&& $cart->type != $this->get_cart_type( 'ordered_deducted' );
+
+			}else{
+				$where_sentence = "AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
+			}
+
+		}elseif( $this->get_settings( 'settings', 'exclude_anonymous_carts' ) ){ //In case anonymous carts have been excluded
 			
 			if( $cart ){
 				//If all of these conditions are true - $cart_validation_result will be true
@@ -3566,7 +3680,7 @@ class CartBounty_Admin{
 	 */
 	public function table_exists( $option ){
 		$exists = true;
-		$table_exists = get_option( $option );
+		$table_exists = $this->get_settings( 'misc_settings', $option );
 
 		if( empty( $table_exists ) ){
 			$exists = false;
@@ -3599,7 +3713,7 @@ class CartBounty_Admin{
 	 * 										0 = abandoned (default),
 	 *										1 = recovered,
 	 *										2 = order created
-	 *										4 = order created and cart deducted from recoverable cart count stats (this type added just to make sure we keep longer ordered abandoned carts in our database to check if a user has used a coupon code in previous orders). Cart has never really been abandoned (user has added an item to cart and placed an order without abandoneding the cart)
+	 *										4 = order created and cart deducted from recoverable cart count stats (this type added just to make sure we keep longer ordered abandoned carts in our database to check if a user has used a coupon code in previous orders). Cart has never really been abandoned (user has added an item to cart and placed an order without abandoning the cart)
 	 */
 	function get_cart_type( $status ){
 		if( empty($status) ){
@@ -3638,15 +3752,19 @@ class CartBounty_Admin{
 	 * In future might add additional statuses e.g. 2, 3, 4 etc.
 	 *
 	 * @since    7.0
+	 * @return   boolean / integer
 	 * @param    string    	$session_id		Session ID
 	 * @param    integer   	$type			Cart status type 0 = default, 1 = recovered, 2 = order created
 	 */
 	function update_cart_type( $session_id, $type ){
+		$updated_rows = 0;
+
 		if($session_id){
 			global $wpdb;
 			$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 			$field = 'session_id';
 			$where_value = $session_id;
+
 			$data = array(
 				'type = ' . sanitize_text_field($type)
 			);
@@ -3671,6 +3789,8 @@ class CartBounty_Admin{
 				)
 			);
 		}
+
+		return $updated_rows;
 	}
 
     /**
@@ -3816,7 +3936,7 @@ class CartBounty_Admin{
 		
 		if( empty( $carts ) ) return; //Exit if we have no carts
 
-		$cart_contents = @unserialize($cart_contents);
+		$cart_contents = $this->get_saved_cart_contents( $cart_contents, 'products' );
 		
 		if( !is_array( $cart_contents ) ){ //In case cart contents are not an array - exit
 			return;
@@ -3830,12 +3950,15 @@ class CartBounty_Admin{
 		}
 
 		foreach( $carts as $key => $cart ){ //Build product comparison array for each cart look for duplicates
-			$cart_contents_to_compare = @unserialize( $cart->cart_contents );
+			$cart_contents_to_compare = $this->get_saved_cart_contents( $cart->cart_contents, 'products' );
 			
 			if( is_array( $cart_contents_to_compare ) ){
 				$products = array();
 				foreach( $cart_contents_to_compare as $key => $product ){ //Build product array we are comparing against
-					$products[] = $product['product_id'];
+
+					if( isset( $product['product_id'] )){
+						$products[] = $product['product_id'];
+					}
 				}
 
 				sort( $ordered_products );
@@ -4350,8 +4473,6 @@ class CartBounty_Admin{
 			'subject',
 			'heading',
 			'content',
-			'cartbounty_exit_intent_heading',
-			'cartbounty_exit_intent_content',
 		);
 
 		if( in_array( $key, $content_fields ) ){ //Encoding only content input fields
@@ -4399,7 +4520,7 @@ class CartBounty_Admin{
 		);
 
 		if( is_string( $location_data ) ){
-			$location_array = @unserialize( $location_data );
+			$location_array = maybe_unserialize( $location_data );
 		}
 
 		if( is_array( $location_array ) ){ //If unserialization succeeded and we have an array
@@ -4650,7 +4771,7 @@ class CartBounty_Admin{
 			
 			case 'upgrade':
 
-				if( $recoverable_cart_count > 5 && $this->days_have_passed( 'cartbounty_last_time_bubble_displayed', 18 ) ){ //Display welcome message in case license is inactive and no cart has been saved so far
+				if( $recoverable_cart_count > 5 && $this->days_have_passed( 'time_bubble_displayed', 18 ) ){ //Display welcome message in case license is inactive and no cart has been saved so far
 					$display = true; //Show the notice
 				}
 
@@ -4658,7 +4779,7 @@ class CartBounty_Admin{
 
 			case 'steps':
 
-				if( $wordpress->get_stats() > 9 && $this->days_have_passed( 'cartbounty_last_time_bubble_steps_displayed', 18 ) ){
+				if( $wordpress->get_stats() > 9 && $this->days_have_passed( 'time_bubble_steps_displayed', 18 ) ){
 					$display = true; //Show the notice
 				}
 
@@ -4757,7 +4878,7 @@ class CartBounty_Admin{
 	public function get_achieved_review_level(){
 		$level = 0;
 		$levels = array(
-			'1' => 10,
+			'1' => 20,
 			'2' => 40,
 			'3' => 80,
 			'4' => 120,
@@ -4765,7 +4886,7 @@ class CartBounty_Admin{
 			'6' => 500,
 			'7' => 1000,
 		);
-		$times_review_declined = get_option( 'cartbounty_times_review_declined' );
+		$times_review_declined = $this->get_settings( 'misc_settings', 'times_review_declined' );
 		$maximum_value = max( array_keys( $levels ) );
 		
 		if( $times_review_declined >= $maximum_value ) return; //Stop in case we have reached maximum level at which we ask reviews
@@ -4779,5 +4900,42 @@ class CartBounty_Admin{
 		}
 
 		return $level;
+	}
+
+	/**
+	* Return saved abandoned cart contents
+	*
+	* @since    8.1
+	* @return   array
+	* @param    array     $cart_contents     Cart contents
+	* @param    string    $data_type    	 Cart content data type to return e.g. products, cart_data
+	*/
+	public function get_saved_cart_contents( $cart_contents, $data_type = false ){
+		$saved_cart_contents = array();
+		$cart_contents = maybe_unserialize( $cart_contents );
+		$products = $cart_contents;
+		$cart_data = array();
+
+		if( isset( $cart_contents['cart_data'] ) ){
+			$cart_data = $cart_contents['cart_data'];
+		}
+
+		if( isset( $cart_contents['products'] ) ){
+			$products = $cart_contents['products'];
+		}
+
+		$saved_cart_contents = array(
+			'products'		=> $products,
+			'cart_data'		=> $cart_data,
+		);
+
+		if( $data_type ){ //If a single value should be returned
+
+			if( isset( $saved_cart_contents[$data_type] ) ){ //Checking if value exists
+				$saved_cart_contents = $saved_cart_contents[$data_type];
+			}
+		}
+
+		return $saved_cart_contents;
 	}
 }

@@ -20,6 +20,12 @@ class CartBounty_Reports{
      * @param    string     $value    		  	  Value to return
      */
 	public function get_defaults( $value = false ){
+		$currency = '';
+
+		if( class_exists( 'WooCommerce' ) ){
+			$currency = get_woocommerce_currency();
+		}
+
 		$defaults = array(
 			'start_format'				=> 'Y-m-d 00:00:00',
 			'end_format'				=> 'Y-m-d 23:59:59',
@@ -27,7 +33,7 @@ class CartBounty_Reports{
 			'default_comparison'		=> 'previous-period',
 			'min_start_date'			=> '2018-01-01',
 			'max_end_date'				=> date( 'Y-m-d', strtotime( 'Last day of December' ) ),
-			'currency'					=> get_woocommerce_currency(),
+			'currency'					=> $currency,
 			'reverse_delta_state'		=> array(
 				'abandonment-rate'
 			),
@@ -128,6 +134,40 @@ class CartBounty_Reports{
 	}
 
 	/**
+	* Retrieve report settings
+	*
+	* @since    8.1
+	* @return   array
+	* @param    string     $value                Value to return
+	*/
+	public function get_settings( $value = false ){
+		$saved_options = get_option( 'cartbounty_report_settings' );
+		$default_values = $this->get_defaults();
+		$defaults = array(
+			'quick_stats' 		=> $this->get_default_reports(),
+			'charts' 			=> $this->get_default_reports( 'charts' ),
+			'chart_type' 		=> $default_values['default_chart_type'],
+			'top_product_count' => $default_values['default_top_product_count'],
+		);
+
+		if( is_array( $saved_options ) ){
+			$settings = array_merge( $defaults, $saved_options ); //Merging default settings with saved options
+			
+		}else{
+			$settings = $defaults;
+		}
+
+		if( $value ){ //If a single value should be returned
+			
+			if( isset( $settings[$value] ) ){ //Checking if value exists
+				$settings = $settings[$value];
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Retrieve active reports
 	 *
 	 * @since    8.0
@@ -135,9 +175,10 @@ class CartBounty_Reports{
 	 * @param    string     $item    		  	  Item to return
 	 */
 	function get_active_reports( $item = false ){
+		$settings = $this->get_settings();
 		$active_reports = array(
-			'quick_stats' 	=> get_option( 'cartbounty_active_quick_stats' ),
-			'charts' 		=> get_option( 'cartbounty_active_charts' ),
+			'quick_stats' 	=> $settings['quick_stats'],
+			'charts' 		=> $settings['charts']
 		);
 
 		if( $item ){ //If a single value should be returned
@@ -160,14 +201,8 @@ class CartBounty_Reports{
 	 * @param    string     $type    		  	  Type of data to return
 	 */
 	private function update_active_reports( $item, $status, $type = 'quick_stats' ){
-		
-		$option_name = 'cartbounty_active_quick_stats';
-
-		if( $type == 'charts' ){
-			$option_name = 'cartbounty_active_charts';
-		}
-
-		$active_reports = get_option( $option_name );
+		$settings = $this->get_settings();
+		$active_reports = $settings[$type];
 
 		if( !is_array( $active_reports ) ){
 			$active_reports = array();
@@ -191,7 +226,9 @@ class CartBounty_Reports{
 			$active_reports = $ordered_active_reports;
 		}
 
-		return update_option( $option_name, $active_reports );
+		$settings[$type] = $active_reports;
+		return update_option( 'cartbounty_report_settings', $settings );
+
 	}
 
 	/**
@@ -201,12 +238,7 @@ class CartBounty_Reports{
 	 * @return   string
 	 */
 	private function get_selected_top_product_count(){
-		$count = get_option( 'cartbounty_top_product_count' );
-
-		if( !$count ){
-			$count = $this->get_defaults( 'default_top_product_count' );
-		}
-
+		$count = $this->get_settings( 'top_product_count' );
 		return $count;
 	}
 
@@ -217,12 +249,7 @@ class CartBounty_Reports{
 	 * @return   string
 	 */
 	public function get_selected_chart_type(){
-		$type = get_option( 'cartbounty_chart_type' );
-
-		if( !$type ){
-			$type = $this->get_defaults( 'default_chart_type' );
-		}
-
+		$type = $this->get_settings( 'chart_type' );
 		return $type;
 	}
 
@@ -252,8 +279,12 @@ class CartBounty_Reports{
 		}
 
 		if( !empty( $currency ) ){
-			$html_entity = get_woocommerce_currency_symbol( $currency );
-			$symbol = html_entity_decode( $html_entity );
+
+			if( class_exists( 'WooCommerce' ) ){
+
+				$html_entity = get_woocommerce_currency_symbol( $currency );
+				$symbol = html_entity_decode( $html_entity );
+			}
 		}
 
 		return $symbol;
@@ -484,7 +515,10 @@ class CartBounty_Reports{
 
 			if( !empty( $_POST['value'] ) ){
 				$value = sanitize_text_field( $_POST['value'] );
-				$update = update_option( 'cartbounty_chart_type', $value );
+				$settings = $this->get_settings();
+				$settings['chart_type'] = $value;
+				$update = update_option( 'cartbounty_report_settings', $settings );
+
 
 				if( $update ){ //If option has been updated
 					$response = array(
@@ -646,17 +680,17 @@ class CartBounty_Reports{
 
 				if( $cart_date_timestamp >= $start_date_timestamp && $cart_date_timestamp <= $end_date_timestamp ){ //Looking for dates in currently selected start - end date period (necessary since the results returned include both current and previous period data)
 					$cart_count = $cart->cart_count;
-					$products = @unserialize( $cart->cart_contents );
+					$cart_contents = $admin->get_saved_cart_contents( $cart->cart_contents, 'products' );
 
 					if( $cart_count > 1 ){ //If more than one cart found with the same products
-						
-						if( is_array( $products ) ){
-							foreach( $products as $key => $product ){ //Making sure we account for grouped carts with the same products and adjust product quantity
-								$products[$key]['quantity'] = $product['quantity'] * $cart_count;
+
+						if( is_array( $cart_contents ) ){
+							foreach( $cart_contents as $key => $product ){ //Making sure we account for grouped carts with the same products and adjust product quantity
+								$cart_contents[$key]['quantity'] = $product['quantity'] * $cart_count;
 							}
 						}
 					}
-					$product_array[] = $products;
+					$product_array[] = $cart_contents;
 				}
 			}
 		}
@@ -2072,7 +2106,23 @@ class CartBounty_Reports{
 					foreach( $cart_product as $product ){
 						
 						if( !empty( $product['product_variation_id'] ) ){
-							$key = $product['product_variation_id'];
+							$key_attributes = '';
+
+							//Building attribute array so we could add them to key values.
+							//Necessary to display the same product with different selected variations separately
+							if( isset( $product['product_variation_attributes'] ) ){
+								$attributes = array();
+
+								foreach( $product['product_variation_attributes'] as $key => $attribute ){
+									$attributes[] = $attribute;
+								}
+
+								if( !empty( $attributes ) ){
+									$key_attributes = '_' . implode( '_', $attributes );
+								}
+							}
+
+							$key = $product['product_variation_id'] . $key_attributes;
 
 						}else{
 							$key = $product['product_id'];

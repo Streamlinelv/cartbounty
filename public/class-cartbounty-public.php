@@ -65,11 +65,14 @@ class CartBounty_Public{
 
 		if( !class_exists( 'WooCommerce' ) ) return; //If WooCommerce does not exist
 
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$admin_ajax = admin_url( 'admin-ajax.php' );
 
 		if( $this->tool_enabled( 'exit_intent' ) ){ //If Exit Intent Enabled
+			$ei_settings = $admin->get_settings( 'exit_intent' );
 			$hours = 1;
-			if(get_option('cartbounty_exit_intent_test_mode')){ //If test mode is enabled
+
+			if( $ei_settings['test_mode'] ){ //If test mode is enabled
 				$hours = 0;
 			}
 
@@ -106,21 +109,24 @@ class CartBounty_Public{
 
 		if( !WC()->cart ) return;
 
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+
 		if( $this->cart_recoverable() ){ //If cart is recoverable
 			$anonymous = false;
 			$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
 		}
 
-		if( get_option( 'cartbounty_exclude_anonymous_carts' ) && $anonymous ) return;
+		if( $admin->get_settings( 'settings', 'exclude_anonymous_carts' ) && $anonymous ) return;
 
 		$cart = $this->read_cart();
 		$cart_saved = $this->cart_saved( $cart['session_id'] );
+		$user_data = $this->get_user_data();
 
 		if( $cart_saved ){ //If cart has already been saved
-			$result = $this->update_cart( $cart, $anonymous );
+			$result = $this->update_cart( $cart, $user_data, $anonymous );
 
 		}else{
-			$result = $this->create_new_cart( $cart, $anonymous );
+			$result = $this->create_new_cart( $cart, $user_data, $anonymous );
 		}
 
 		if( isset( $_POST["action"] ) ){ //In case we are saving cart data via Ajax coming from CartBounty tools - try and return the result
@@ -141,21 +147,21 @@ class CartBounty_Public{
 	 * @since    5.0
 	 * @return   boolean
 	 * @param    array      $cart     		Cart contents
+	 * @param    array      $user_data      User's data
 	 * @param    boolean    $anonymous    	If the cart is anonymous or not
 	 */
-	function create_new_cart( $cart = array(), $anonymous = false ){
+	function create_new_cart( $cart = array(), $user_data = array(), $anonymous = false ){
 		global $wpdb;
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$user_data = $this->get_user_data();
 
 		//In case if the cart has no items in it, we must delete the cart
-		if(empty( $cart['product_array'] )){
+		if( empty( $cart['cart_contents']['products'] ) ){
 			$admin->clear_cart_data();
 			return;
 		}
 
-		if($anonymous){ //If dealing with anonymous cart
+		if( $anonymous ){ //If dealing with anonymous cart
 			//Inserting row into database
 			$wpdb->query(
 				$wpdb->prepare(
@@ -164,7 +170,7 @@ class CartBounty_Public{
 					VALUES ( %s, %s, %0.2f, %s, %s, %s )",
 					array(
 						'location'		=> sanitize_text_field( serialize( $user_data['location'] ) ),
-						'products'		=> serialize( $cart['product_array'] ),
+						'cart_contents'	=> serialize( $cart['cart_contents'] ),
 						'total'			=> sanitize_text_field( $cart['cart_total'] ),
 						'currency'		=> sanitize_text_field( $cart['cart_currency'] ),
 						'time'			=> sanitize_text_field( $cart['current_time'] ),
@@ -179,11 +185,11 @@ class CartBounty_Public{
 			$cart_source = $this->get_cart_source();
 			$source = $cart_source['source'];
 
-			if(empty($source)){ //If source not coming from Tools
+			if( empty( $source ) ){ //If source not coming from Tools
 				$source = 'NULL';
 			}
 
-			if(!empty($user_data['other_fields'])){
+			if( !empty( $user_data['other_fields'] ) ){
 				$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 			}
 			//Inserting row into Database
@@ -198,7 +204,7 @@ class CartBounty_Public{
 						'email'			=> sanitize_email( $user_data['email'] ),
 						'phone'			=> filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
 						'location'		=> serialize( $user_data['location'] ),
-						'products'		=> serialize( $cart['product_array'] ),
+						'cart_contents'	=> serialize( $cart['cart_contents'] ),
 						'total'			=> sanitize_text_field( $cart['cart_total'] ),
 						'currency'		=> sanitize_text_field( $cart['cart_currency'] ),
 						'time'			=> sanitize_text_field( $cart['current_time'] ),
@@ -210,7 +216,7 @@ class CartBounty_Public{
 			);
 			$this->increase_recoverable_cart_count();
 		}
-		$this->set_cartbounty_session($cart['session_id']);
+		$this->set_cartbounty_session( $cart['session_id'] );
 
 		return true;
 	}
@@ -221,34 +227,37 @@ class CartBounty_Public{
 	 * @since    5.0
 	 * @return   boolean
 	 * @param    array      $cart     		Cart contents
+	 * @param    array      $user_data      User's data
 	 * @param    boolean    $anonymous   	If the cart is anonymous or not
 	 */
-	function update_cart( $cart = array(), $anonymous = false ){
-		$user_data = $this->get_user_data();
-
+	function update_cart( $cart = array(), $user_data = array(), $anonymous = false ){
 		//In case if the cart has no items in it, we must delete the cart
-		if(empty( $cart['product_array'] )){
-			$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		if( empty( $cart['cart_contents']['products'] ) ){
+			$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 			$admin->clear_cart_data();
 			return;
 		}
 
-		if($anonymous){ //In case of anonymous cart
+		if( $anonymous ){ //In case of anonymous cart
 			$this->update_cart_data($cart);
 
 		}else{
-			if(isset($_POST["action"])){
-				if($_POST["action"] == 'cartbounty_save'){
-					$this->update_cart_and_user_data($cart, $user_data);
+
+			if( isset( $_POST["action"] ) ){
+
+				if( $_POST["action"] == 'cartbounty_save' ){
+					$this->update_cart_and_user_data( $cart, $user_data );
+
 				}else{
-					$this->update_cart_data($cart);
+					$this->update_cart_data( $cart );
 				}
+
 			}else{
-				$this->update_cart_data($cart);
+				$this->update_cart_data( $cart );
 			}
 		}
 
-		$this->set_cartbounty_session($cart['session_id']);
+		$this->set_cartbounty_session( $cart['session_id'] );
 		return true;
 	}
 
@@ -258,9 +267,9 @@ class CartBounty_Public{
 	 * @since    5.0
 	 * @param    Array    $cart    Cart contents inclding cart session ID
 	 */
-	function update_cart_data($cart){
+	function update_cart_data( $cart ){
 		global $wpdb;
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		
 		$updated_rows = $wpdb->query(
@@ -272,16 +281,16 @@ class CartBounty_Public{
 				time = %s
 				WHERE session_id = %s AND
 				type = %d",
-				serialize( $cart['product_array'] ),
+				serialize( $cart['cart_contents'] ),
 				sanitize_text_field( $cart['cart_total'] ),
 				sanitize_text_field( $cart['cart_currency'] ),
 				sanitize_text_field( $cart['current_time'] ),
 				$cart['session_id'],
-				$admin->get_cart_type('abandoned')
+				$admin->get_cart_type( 'abandoned' )
 			)
 		);
 
-		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
+		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows );
 	}
 
 	/**
@@ -291,19 +300,19 @@ class CartBounty_Public{
 	 * @param    Array    $cart    		Cart contents inclding cart session ID
 	 * @param    Array    $user_data    User's data
 	 */
-	function update_cart_and_user_data($cart, $user_data){
+	function update_cart_and_user_data( $cart, $user_data ){
 		global $wpdb;
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$other_fields = NULL;
 		$cart_source = $this->get_cart_source();
 		$source = $cart_source['source'];
 
-		if(empty($source)){ //If source not coming from Tools
+		if( empty( $source ) ){ //If source not coming from Tools
 			$source = 'NULL';
 		}
 
-		if(!empty($user_data['other_fields'])){
+		if( !empty( $user_data['other_fields'] ) ){
 			$other_fields = sanitize_text_field( serialize( $user_data['other_fields'] ) );
 		}
 
@@ -328,17 +337,17 @@ class CartBounty_Public{
 				sanitize_email( $user_data['email'] ),
 				filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
 				sanitize_text_field( serialize( $user_data['location'] ) ),
-				serialize( $cart['product_array'] ),
+				serialize( $cart['cart_contents'] ),
 				sanitize_text_field( $cart['cart_total'] ),
 				sanitize_text_field( $cart['cart_currency'] ),
 				sanitize_text_field( $cart['current_time'] ),
 				$other_fields,
 				$cart['session_id'],
-				$admin->get_cart_type('abandoned')
+				$admin->get_cart_type( 'abandoned' )
 			)
 		);
 
-		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows);
+		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows );
 		$this->increase_recoverable_cart_count();
 	}
 
@@ -572,7 +581,7 @@ class CartBounty_Public{
 				WC()->session->set('cartbounty_session_id', $customer_id);
 				$cart = $this->read_cart();
 				$user_data = $this->get_user_data();
-				$this->update_cart_and_user_data($cart, $user_data); //Updating logged in user cart data so we do not have anything that was entered in the checkout form prior the user signed in
+				$this->update_cart_and_user_data( $cart, $user_data ); //Updating logged in user cart data so we do not have anything that was entered in the checkout form prior the user signed in
 
 			}else{
 				return;
@@ -637,9 +646,7 @@ class CartBounty_Public{
 	 */
 	function read_cart(){
 
-		if( !WC()->cart ){ //Exit if Woocommerce cart has not been initialized
-			return;
-		}
+		if( !WC()->cart ) return; //Exit if Woocommerce cart has not been initialized
 
 		//Retrieving cart total value and currency
 		$cart_total = WC()->cart->total;
@@ -665,6 +672,9 @@ class CartBounty_Public{
 			$product_quantity = $product['quantity'];
 			$product_variation_price = '';
 			$product_tax = '';
+			$variation_attributes = array();
+			$product_variation_id = '';
+			$product_attributes = '';
 
 			if( isset( $product['line_total'] ) ){
 				$product_variation_price = $product['line_total'];
@@ -673,98 +683,84 @@ class CartBounty_Public{
 			if( isset( $product['line_tax'] ) ){ //If we have taxes, add them to the price
 				$product_tax = $product['line_tax'];
 			}
-			
-			// Handling product variations
-			if( $product['variation_id'] ){ //If user has chosen a variation
-				$single_variation = new WC_Product_Variation( $product['variation_id'] );
-		
-				//Handling variable product title output with attributes
-				$product_attributes = $this->attribute_slug_to_title( $single_variation->get_variation_attributes() );
-				$product_variation_id = $product['variation_id'];
 
-			}else{
-				$product_attributes = false;
-				$product_variation_id = '';
+			//Handling product variations
+			if( isset( $product['variation'] ) ){
+				
+				if( is_array( $product['variation'] ) ){
+					foreach( $product['variation'] as $key => $variation ){
+						$variation_attributes[$key] = $variation;
+					}
+				}
+			}
+
+			if( isset( $product['variation_id'] ) ){ //If user has chosen a variation
+				$product_variation_id = $product['variation_id'];
+				$product_attributes = $this->get_attribute_names( $variation_attributes, $product['product_id'] );
 			}
 
 			$product_data = array(
-				'product_title' => $product_title . $product_attributes,
-				'quantity' => $product_quantity,
-				'product_id' => $product['product_id'],
-				'product_variation_id' => $product_variation_id,
-				'product_variation_price' => $product_variation_price,
-				'product_tax' => $product_tax
+				'product_title' 				=> $product_title . $product_attributes,
+				'quantity' 						=> $product_quantity,
+				'product_id'					=> $product['product_id'],
+				'product_variation_id' 			=> $product_variation_id,
+				'product_variation_price' 		=> $product_variation_price,
+				'product_variation_attributes' 	=> $variation_attributes,
+				'product_tax' 					=> $product_tax
 			);
 
 			$product_array[] = $product_data;
 		}
+
+		$cart_contents = array(
+			'products' => $product_array,
+			'cart_data' => WC()->cart->get_cart_contents()
+		);
 
 		return $results_array = array(
 			'cart_total' 	=> $cart_total,
 			'cart_currency' => $cart_currency,
 			'current_time' 	=> $current_time,
 			'session_id' 	=> $session_id,
-			'product_array' => $product_array
+			'cart_contents' => $cart_contents
 		);
 	}
 
 	/**
-	 * Method returns product attributes
+	 * Retrieve product attribute names as comma sepparated string
 	 *
-	 * @since    1.4.1
-	 * @return   String
-	 * @param    $product_variations    Product variations - array
+	 * @since    8.1
+	 * @return   string
+	 * @param    array    	$variation_attributes   Product variation attributes
+	 * @param    integer    $product_id   			Product number
 	 */
-	public function attribute_slug_to_title( $product_variations ) {
-		$attribute_array = array();
+	public function get_attribute_names( $variation_attributes, $product_id = '' ){
+		$attribute_names = '';
+		$labels = array();
+		
+		if( is_array( $variation_attributes ) ){
+			foreach( $variation_attributes as $attribute_name => $attribute_value ){
 
-		if($product_variations){
-			foreach($product_variations as $product_variation_key => $product_variation_name){
-				$value = '';
-				if ( taxonomy_exists( esc_attr( str_replace( 'attribute_', '', $product_variation_key )))){
-					$term = get_term_by( 'slug', $product_variation_name, esc_attr( str_replace( 'attribute_', '', $product_variation_key )));
-					if (!is_wp_error($term) && !empty($term->name)){
-						$value = $term->name;
-						if(!empty($value)){
-							$attribute_array[] = $value;
+				$attribute_name = str_replace( 'attribute_', '', $attribute_name );
+				$product_terms = wc_get_product_terms( $product_id, $attribute_name );
+
+				if( is_array( $product_terms ) ){
+					foreach( $product_terms as $key => $term ){
+
+						if( $term->slug == $attribute_value ){
+							$labels[] = $term->name;
+							break;
 						}
 					}
-				}else{
-					$value = apply_filters( 'woocommerce_variation_option_name', $product_variation_name );
-					if(!empty($value)){
-						$attribute_array[] = $value;
-					}
 				}
 			}
-			
-			//Generating attribute output			
-			$total_variations = count($attribute_array);
-			$increment = 0;
-			$product_attribute = '';
-			foreach($attribute_array as $attribute){
-				if($increment === 0 && $increment != $total_variations - 1){ //If this is first variation and we have multiple variations
-					$colon = ': ';
-					$comma = ', ';
-				}
-				elseif($increment === 0 && $increment === $total_variations - 1){ //If we have only one variation
-					$colon = ': ';
-					$comma = false;
-				}
-				elseif($increment === $total_variations - 1) { //If this is the last variation
-					$comma = '';
-					$colon = false;
-				}else{
-					$comma = ', ';
-					$colon = false;
-				}
-				$product_attribute .= $colon . $attribute . $comma;
-				$increment++;
-			}
-			return $product_attribute;
 		}
-		else{
-			return;
+
+		if( !empty( $labels) ){
+			$attribute_names = ': ' . implode( ', ', $labels );
 		}
+
+		return $attribute_names;
 	}
 	
 	/**
@@ -776,47 +772,24 @@ class CartBounty_Public{
 	 */
 	public function restore_input_data( $fields = array() ) {
 		
-		if( is_account_page() || is_order_received_page() ){ //In case this is user's account page, do not restore data. Added since some plugins change the My account form and may trigger this function unnecessarily
-			return $fields;
-		}
+		if( !is_checkout() ) return;//In case this is no WooCommerce checkout page - do not restore data. Added since some plugins change the My account form and may trigger this function unnecessarily
 
-		global $wpdb;
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
-		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-		$cart = $this->read_cart();
-		
-		$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
+		$saved_cart = $this->get_saved_cart();
 
-		//Retrieve a single, latest edited abandoned cart with current customer ID
-		$row = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT *
-				FROM $cart_table
-				WHERE session_id = %s
-				ORDER BY time DESC",
-				$cart['session_id']
-			)
-		);
-
-		if( $row ){ //If we have a user with such session ID in the database
-
-			$other_fields = '';
-
-			if( !empty( $row->other_fields ) ){
-				$other_fields = unserialize( $row->other_fields );
-			}
-			
-			$location_data = $admin->get_cart_location( $row->location );
+		if( $saved_cart ){
+			$other_fields = maybe_unserialize( $saved_cart->other_fields );
+			$location_data = $admin->get_cart_location( $saved_cart->location );
             $country = $location_data['country'];
             $city = $location_data['city'];
             $postcode = $location_data['postcode'];
 
-            ( empty( $_POST['billing_first_name'] ) ) ? $_POST['billing_first_name'] = sprintf( '%s', esc_html( $row->name ) ) : '';
-			( empty( $_POST['billing_last_name'] ) ) ? $_POST['billing_last_name'] = sprintf( '%s', esc_html( $row->surname ) ) : '';
+            ( empty( $_POST['billing_first_name'] ) ) ? $_POST['billing_first_name'] = sprintf( '%s', esc_html( $saved_cart->name ) ) : '';
+			( empty( $_POST['billing_last_name'] ) ) ? $_POST['billing_last_name'] = sprintf( '%s', esc_html( $saved_cart->surname ) ) : '';
 			( empty( $_POST['billing_country'] ) ) ? $_POST['billing_country'] = sprintf( '%s', esc_html( $country ) ) : '';
 			( empty( $_POST['billing_city'] ) ) ? $_POST['billing_city'] = sprintf( '%s', esc_html( $city ) ) : '';
-			( empty( $_POST['billing_phone'] ) ) ? $_POST['billing_phone'] = sprintf( '%s', esc_html( $row->phone ) ) : '';
-			( empty( $_POST['billing_email'] ) ) ? $_POST['billing_email'] = sprintf( '%s', esc_html( $row->email ) ) : '';
+			( empty( $_POST['billing_phone'] ) ) ? $_POST['billing_phone'] = sprintf( '%s', esc_html( $saved_cart->phone ) ) : '';
+			( empty( $_POST['billing_email'] ) ) ? $_POST['billing_email'] = sprintf( '%s', esc_html( $saved_cart->email ) ) : '';
 			( empty( $_POST['billing_postcode'] ) ) ? $_POST['billing_postcode'] = sprintf( '%s', esc_html( $postcode ) ) : '';
 
 			if( $other_fields ){
@@ -857,6 +830,35 @@ class CartBounty_Public{
 	}
 
 	/**
+	 * Retrieving current user's saved abandoned cart
+	 *
+	 * @since    8.1
+	 * @return   array
+	 */
+	function get_saved_cart(){
+		global $wpdb;
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+		$cart = $this->read_cart();
+		
+		$this->update_logged_customer_id(); //If current user had an abandoned cart before - restore session ID (in case of user switching)
+
+		//Retrieve a single, latest edited abandoned cart with current customer ID
+		$saved_cart = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT *
+				FROM $cart_table
+				WHERE session_id = %s
+				ORDER BY time DESC",
+				$cart['session_id']
+			)
+		);
+
+		return $saved_cart;
+	}
+
+
+	/**
 	 * Method saves and updates total count of captured recoverable abandoned carts
 	 *
 	 * @since    5.0
@@ -871,7 +873,10 @@ class CartBounty_Public{
 
 		if( WC()->session->get( 'cartbounty_from_link' ) ) return; //Exit if user returned from link - it means we have increased this before
 
-		update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_recoverable_cart_count' ) + 1 ); //Increasing count by one abandoned cart
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$misc_settings = $admin->get_settings( 'misc_settings' );
+		$misc_settings['recoverable_carts'] = $misc_settings['recoverable_carts'] + 1;
+		update_option( 'cartbounty_misc_settings', $misc_settings );
 
 		if( WC()->session->get( 'cartbounty_anonymous_count_increased' ) ){ //In case we previously increased anonymous cart count, we must now reduce it as it has been turned to recoverable
 			$this->decrease_anonymous_cart_count( 1 );
@@ -889,7 +894,11 @@ class CartBounty_Public{
 
 		if( WC()->session->get( 'cartbounty_anonymous_count_increased' ) ) return; //Exit in case we already have run this once
 
-		update_option( 'cartbounty_anonymous_cart_count', get_option( 'cartbounty_anonymous_cart_count' ) + 1 );
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$misc_settings = $admin->get_settings( 'misc_settings' );
+		$misc_settings['anonymous_carts'] = $misc_settings['anonymous_carts'] + 1;
+		update_option( 'cartbounty_misc_settings', $misc_settings );
+
 		WC()->session->set( 'cartbounty_anonymous_count_increased', 1 );
 	}
 
@@ -906,19 +915,25 @@ class CartBounty_Public{
 
 		WC()->session->set( 'cartbounty_recovered_count_increased', 1 );
 
-		update_option( 'cartbounty_recovered_cart_count', get_option( 'cartbounty_recovered_cart_count' ) + 1 );
-		
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$misc_settings = $admin->get_settings( 'misc_settings' );
+		$misc_settings['recovered_carts'] = $misc_settings['recovered_carts'] + 1;
+		update_option( 'cartbounty_misc_settings', $misc_settings );
 	}
 
 	/**
 	 * Method decreases the total count of captured abandoned carts
 	 *
 	 * @since    5.0
-	 * @param    $count    Abandoned cart number - integer 
+	 * @param    integer 	$count    			Cart count
 	 */
 	function decrease_recoverable_cart_count( $count ){
-		update_option( 'cartbounty_recoverable_cart_count', get_option( 'cartbounty_recoverable_cart_count' ) - $count ); //Decreasing the count by one abandoned cart
-		delete_transient( 'cartbounty_recoverable_cart_count' );
+		if( !class_exists( 'WooCommerce' ) ) return; //If WooCommerce does not exist
+
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$misc_settings = $admin->get_settings( 'misc_settings' );
+		$misc_settings['recoverable_carts'] = $misc_settings['recoverable_carts'] - $count;
+		update_option( 'cartbounty_misc_settings', $misc_settings ); //Decreasing the count by one abandoned cart
 
 		if( WC()->session ) {
 			WC()->session->__unset( 'cartbounty_recoverable_count_increased' );
@@ -933,7 +948,13 @@ class CartBounty_Public{
 	 * @param    $count    Cart number - integer 
 	 */
 	function decrease_anonymous_cart_count( $count ){
-		update_option( 'cartbounty_anonymous_cart_count', get_option('cartbounty_anonymous_cart_count' ) - $count );
+		if( !class_exists( 'WooCommerce' ) ) return; //If WooCommerce does not exist
+
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$misc_settings = $admin->get_settings( 'misc_settings' );
+		$misc_settings['anonymous_carts'] = $misc_settings['anonymous_carts'] - $count;
+
+		update_option( 'cartbounty_misc_settings', $misc_settings );
 
 		if( WC()->session ){
 			WC()->session->__unset( 'cartbounty_anonymous_count_increased' );
@@ -946,13 +967,9 @@ class CartBounty_Public{
 	 * @since    3.0
 	 */
 	function display_exit_intent_form(){
-		if (!class_exists('WooCommerce')) { //If WooCommerce does not exist
-			return;
-		}
+		if( !class_exists( 'WooCommerce' ) ) return; //If WooCommerce does not exist
 		
-		if(!$this->tool_enabled( 'exit_intent' ) || !WC()->cart){ //If Exit Intent disabled or WooCommerce cart does not exist
-			return;
-		}
+		if( !$this->tool_enabled( 'exit_intent' ) || !WC()->cart ) return; //If Exit Intent disabled or WooCommerce cart does not exist
 		
 		$current_user_is_admin = current_user_can( 'manage_options' );
 		$output = $this->build_exit_intent_output($current_user_is_admin); //Creating the Exit Intent output
@@ -974,16 +991,17 @@ class CartBounty_Public{
 		$cart = $this->read_cart();
 		$heading = $admin->get_tools_defaults('heading', 'exit_intent');
 		$content = $admin->get_tools_defaults('content', 'exit_intent');
-		$main_color = get_option('cartbounty_exit_intent_main_color');
-		$inverse_color = get_option('cartbounty_exit_intent_inverse_color');
+		$ei_settings = $admin->get_settings( 'exit_intent' );
+		$main_color = $ei_settings['main_color'];
+		$inverse_color = $ei_settings['inverse_color'];
 		$where_sentence = $admin->get_where_sentence('recoverable');
 
-		if( trim( get_option( 'cartbounty_exit_intent_heading' ) ) != '' ){ //If the value is not empty and does not contain only whitespaces
-			$heading = $admin->sanitize_field(get_option('cartbounty_exit_intent_heading'));
+		if( trim( $ei_settings['heading'] ) != '' ){ //If the value is not empty and does not contain only whitespaces
+			$heading = $admin->sanitize_field( $ei_settings['heading'] );
 		}
 
-		if( trim( get_option( 'cartbounty_exit_intent_content' ) ) != '' ){ //If the value is not empty and does not contain only whitespaces
-			$content = $admin->sanitize_field(get_option('cartbounty_exit_intent_content'));
+		if( trim( $ei_settings['content'] ) != '' ){ //If the value is not empty and does not contain only whitespaces
+			$content = $admin->sanitize_field( $ei_settings['content'] );
 		}
 
 		if(!$main_color){
@@ -1007,7 +1025,7 @@ class CartBounty_Public{
 		}
 		
 		//Prepare Exit Intent image
-		$image_id = get_option('cartbounty_exit_intent_image');
+		$image_id = $ei_settings['image'];
 		$image_url = $this->get_plugin_url() . '/public/assets/abandoned-shopping-cart.gif';
 		if($image_id){
 			$image = wp_get_attachment_image_src( $image_id, 'full' );
@@ -1035,10 +1053,13 @@ class CartBounty_Public{
 	 * @param    string    $tool    Tool that is being checked
 	 */
 	function tool_enabled( $tool ){
+		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+
 		switch ( $tool ) {
 			case 'exit_intent':
-				$tool_enabled = get_option('cartbounty_exit_intent_status');
-				$test_mode_on = get_option('cartbounty_exit_intent_test_mode');
+				$ei_settings = $admin->get_settings( 'exit_intent' );
+				$tool_enabled = $ei_settings['status'];
+				$test_mode_on = $ei_settings['test_mode'];
 				break;
 		}
 

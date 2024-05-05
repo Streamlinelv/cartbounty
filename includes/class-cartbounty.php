@@ -131,7 +131,7 @@ class CartBounty{
 		$this->loader->add_filter( 'set-screen-option', $admin, 'save_page_options', 12, 3 ); //Saving Screen options
 		$this->loader->add_action( 'admin_init', $admin, 'schedule_events' );
 		$this->loader->add_filter( 'cron_schedules', $admin, 'add_custom_wp_cron_intervals' );
-		$this->loader->add_action( 'update_option_cartbounty_notification_frequency', $admin, 'unschedule_notification_sendout_hook' );
+		$this->loader->add_action( 'update_option_cartbounty_main_settings', $admin, 'unschedule_notification_sendout_hook' );
 		$this->loader->add_action( 'plugins_loaded', $admin, 'check_version' );
 		$this->loader->add_filter( 'plugin_action_links_' . CARTBOUNTY_BASENAME, $admin, 'add_plugin_action_links', 10, 2 );
 		$this->loader->add_action( 'cartbounty_after_page_title', $admin, 'output_bubble_content' );
@@ -169,7 +169,7 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 );
 		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 );
 		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 );
-		$this->loader->add_filter( 'woocommerce_checkout_fields', $public, 'restore_input_data', 1 );
+		$this->loader->add_action( 'wp', $public, 'restore_input_data', 10 ); //Restoring previous user input in Checkout form
 		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' );
 	}
 
@@ -183,7 +183,7 @@ class CartBounty{
 		$wordpress = new CartBounty_WordPress();
 		$this->loader->add_action( 'cartbounty_sync_hook', $wordpress, 'auto_send' );
 		$this->loader->add_action( 'update_option_cartbounty_automation_steps', $wordpress, 'validate_automation_steps', 50);
-		$this->loader->add_action( 'update_option_cartbounty_automation_from_name', $wordpress, 'sanitize_from_field', 50);
+		$this->loader->add_action( 'update_option_cartbounty_automation_settings', $wordpress, 'sanitize_from_field', 50);
 		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
 		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
 	}

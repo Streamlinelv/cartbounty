@@ -14,6 +14,38 @@
 class CartBounty_WordPress{
 	
 	/**
+	* Retrieve WordPress recovery settings
+	*
+	* @since    8.1
+	* @return   array
+	* @param    string     $value                Value to return
+	*/
+	public function get_settings( $value = false ){
+		$saved_options = get_option( 'cartbounty_automation_settings' );
+		$defaults = array(
+			'from_name' 		=> '',
+			'from_email' 		=> '',
+			'reply_email' 		=> false,
+		);
+
+		if( is_array( $saved_options ) ){
+			$settings = array_merge( $defaults, $saved_options ); //Merging default settings with saved options
+			
+		}else{
+			$settings = $defaults;
+		}
+
+		if( $value ){ //If a single value should be returned
+			
+			if( isset( $settings[$value] ) ){ //Checking if value exists
+				$settings = $settings[$value];
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Starting WordPress email automation process
 	 *
 	 * @since    7.0
@@ -133,6 +165,7 @@ class CartBounty_WordPress{
 	 */
 	public function send_reminder( $cart, $test = false, $email = false, $preview_data = array() ){
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
+		$settings = $this->get_settings();
 
 		if($test){
 			$to = $email;
@@ -157,9 +190,9 @@ class CartBounty_WordPress{
 		}
 
 		$message = $this->get_reminder_contents( $cart, $test, $preview_data );
-		$from_name = ( !empty(get_option('cartbounty_automation_from_name')) ) ? get_option('cartbounty_automation_from_name') : get_option( 'blogname' );
-		$from_email = ( !empty(get_option('cartbounty_automation_from_email')) ) ? get_option('cartbounty_automation_from_email') : get_option( 'admin_email' );
-		$reply_to = ( !empty(get_option('cartbounty_automation_reply_email')) ) ? get_option('cartbounty_automation_reply_email') : false;
+		$from_name = ( !empty( $settings['from_name'] ) ) ? $settings['from_name'] : get_option( 'blogname' );
+		$from_email = ( !empty( $settings['from_email'] ) ) ? $settings['from_email'] : get_option( 'admin_email' );
+		$reply_to = $settings['reply_email'];
 
 		$header = array(
 			'from' 			=> 'From: ' . sanitize_text_field( stripslashes( $from_name ) ) . ' <' . sanitize_email( $from_email ) . '>',
@@ -480,7 +513,7 @@ class CartBounty_WordPress{
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 
 		//Making sure that the email table exists or is created
-		if( !$admin->table_exists( 'cartbounty_email_table_exists' ) ){
+		if( !$admin->table_exists( 'email_table_exists' ) ){
 			$this->create_email_table();
 		}
 
@@ -524,7 +557,7 @@ class CartBounty_WordPress{
 		global $wpdb;
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 
-		if( !$admin->table_exists( 'cartbounty_email_table_exists' ) ){
+		if( !$admin->table_exists( 'email_table_exists' ) ){
 			$this->create_email_table();
 		}
 
@@ -756,8 +789,10 @@ class CartBounty_WordPress{
 	 */
 	public static function create_email_table(){
 		global $wpdb;
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$email_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME_EMAILS;
 		$charset_collate = $wpdb->get_charset_collate();
+		$misc_settings = $admin->get_settings( 'misc_settings' );
 
 		$sql = "CREATE TABLE $email_table (
 			id BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -773,7 +808,8 @@ class CartBounty_WordPress{
 		$sql = "ALTER TABLE $email_table AUTO_INCREMENT = 1";
 		dbDelta( $sql );
 		
-		update_option('cartbounty_email_table_exists', 1); //Updating status and telling that table has been created
+		$misc_settings['email_table_exists'] = true;
+		update_option( 'cartbounty_misc_settings', $misc_settings ); //Updating status and telling that table has been created
 		return;
 	}
 
@@ -783,11 +819,11 @@ class CartBounty_WordPress{
 	* @since    7.0.2
 	*/
 	public function sanitize_from_field(){
-		if(!isset($_POST['cartbounty_automation_from_name'])){ //Exit in case the field is not present in the request
-			return;
-		}
-		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
-		update_option('cartbounty_automation_from_name', $admin->sanitize_field($_POST['cartbounty_automation_from_name']));
+		if( !isset( $_POST['cartbounty_automation_settings']['from_name'] ) ) return; //Exit in case the field is not present in the request
+
+		$settings = $this->get_settings();
+		$settings['from_name'] = sanitize_text_field( $_POST['cartbounty_automation_settings']['from_name'] );
+		update_option( 'cartbounty_automation_settings', $settings );
 	}
 
 	/**

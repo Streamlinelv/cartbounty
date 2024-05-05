@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 8.1 =
+* Improved abandoned cart content storage
+* Code refactoring
+
 = 8.0.1 =
 * Added a new filter "cartbounty_cart_cooldown_period" to change the cooldown period preventing the creation of a new abandoned cart during the same session after a user has already placed an order
 * Fixed minor issue with updating from older CartBounty versions

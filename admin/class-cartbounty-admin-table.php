@@ -213,20 +213,16 @@ class CartBounty_Table extends WP_List_Table{
      * @param    $item - row (key, value array)
      */
     function column_cart_contents( $item ){
-        if( !is_serialized( $item['cart_contents'] ) ){
-            return;
-        }
-
         $admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
-        $product_array = @unserialize( $item['cart_contents'] ); //Retrieving array from database column cart_contents
+        $cart_contents = $admin->get_saved_cart_contents( $item['cart_contents'], 'products' );
         $output = '';
         
-        if( $product_array ){
+        if( $cart_contents ){
 
-            if( get_option( 'cartbounty_hide_images' ) ){ //Outputing Cart contents as a list
+            if( $admin->get_settings( 'settings', 'hide_images' ) ){ //Outputing Cart contents as a list
                 $output = '<ol class="cartbounty-product-list">';
 
-                foreach( $product_array as $product ){
+                foreach( $cart_contents as $product ){
                     
                     if( is_array( $product ) ){
 
@@ -254,7 +250,7 @@ class CartBounty_Table extends WP_List_Table{
 
             }else{ //Displaying cart contents with thumbnails
 
-                foreach( $product_array as $product ){
+                foreach( $cart_contents as $product ){
 
                     if( is_array( $product ) ){
 
@@ -498,15 +494,11 @@ class CartBounty_Table extends WP_List_Table{
             'total_pages' => ceil($total_items / $per_page) // calculate pages count
         ));
 
-        $ordered = $admin->get_cart_type('ordered');
-        $ordered_deducted = $admin->get_cart_type( 'ordered_deducted' );
         $where_sentence = $admin->get_where_sentence($cart_status);
         $this->items = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM $cart_table
-                WHERE cart_contents != '' AND
-                type != $ordered AND
-                type != $ordered_deducted
+                WHERE cart_contents != '' 
                 $where_sentence
                 ORDER BY $orderby $order
                 LIMIT %d OFFSET %d",

@@ -32,7 +32,5 @@ class CartBounty_Deactivator{
 				wp_clear_scheduled_hook( $hook ); //Deactivating scheduled WP Cron actions
 			}
 		}
-		
-		delete_transient( 'cartbounty_recoverable_cart_count' );
 	}
 }

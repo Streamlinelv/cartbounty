@@ -186,6 +186,7 @@
 
 	#cartbounty-exit-intent-submit{
 		width: auto;
+		display: block;
 	}
 }
 

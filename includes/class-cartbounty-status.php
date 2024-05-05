@@ -65,22 +65,27 @@ class CartBounty_System_Status{
 		$admin = new CartBounty_Admin(CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER);
 		$wordpress = new CartBounty_WordPress();
 		$overrides = $admin->get_template_overrides();
-		$notification_frequency = $admin->get_interval_data( 'cartbounty_notification_frequency' );
 		$review_data = array();
+		$main_settings = $admin->get_settings( 'settings' );
+		$ei_settings = $admin->get_settings( 'exit_intent' );
+		$misc_settings = $admin->get_settings( 'misc_settings' );
 		
-		if(get_option('cartbounty_recoverable_cart_count')){
-			$carts[] = 'Recoverable: '. esc_html( get_option('cartbounty_recoverable_cart_count') );
-		}
-		if(get_option('cartbounty_anonymous_cart_count')){
-			$carts[] = 'Anonymous: '. esc_html( get_option('cartbounty_anonymous_cart_count') );
-		}
-		if(get_option('cartbounty_recovered_cart_count')){
-			$carts[] = 'Recovered: '. esc_html( get_option('cartbounty_recovered_cart_count') );
+		if( $misc_settings['recoverable_carts'] ){
+			$carts[] = 'Recoverable: '. esc_html( $misc_settings['recoverable_carts'] );
 		}
 
-		if(get_option('cartbounty_times_review_declined')){
-			$review_data[] = 'Times declined: '. esc_html( get_option('cartbounty_times_review_declined') );
+		if( $misc_settings['anonymous_carts'] ){
+			$carts[] = 'Anonymous: '. esc_html( $misc_settings['anonymous_carts'] );
 		}
+
+		if( $misc_settings['recovered_carts'] ){
+			$carts[] = 'Recovered: '. esc_html( $misc_settings['recovered_carts'] );
+		}
+
+		if( $misc_settings['times_review_declined'] ){
+			$review_data[] = 'Times declined: '. esc_html( $misc_settings['times_review_declined'] );
+		}
+
 		if($admin->is_notice_submitted('review')){
 			$review_data[] = 'Submitted: True';
 		}
@@ -91,28 +96,24 @@ class CartBounty_System_Status{
 			$active_recovery[] = 'Total emails sent: '. esc_html( $wordpress->get_stats() );
 		}
 
-		if(get_option('cartbounty_exit_intent_status')){
+		if( $ei_settings['status'] ){
 			$exit_intent_options[] = 'Enabled';
 		}
-		if(get_option('cartbounty_exit_intent_test_mode')){
+		if( $ei_settings['test_mode'] ){
 			$exit_intent_options[] = 'Test mode';
 		}
 
-		if(get_option('cartbounty_exclude_anonymous_carts')){
+		if( $main_settings['exclude_anonymous_carts'] ){
 			$settings[] = 'Exclude anonymous carts';
 		}
-		if( isset( $notification_frequency['selected'] ) ){
-
-			if( $notification_frequency['selected'] != 0 ){
-				$interval_output = $admin->get_interval_data( 'cartbounty_notification_frequency', false, $just_selected_value = true ) . ' ('. esc_html( $admin->convert_miliseconds_to_minutes( $notification_frequency['selected'] ) ) . ')';
-			}
-
+		if( isset( $main_settings['notification_frequency'] ) ){
+			$interval_output = $main_settings['notification_frequency'] . ' ('. esc_html( $admin->convert_miliseconds_to_minutes( $main_settings['notification_frequency'] ) ) . ')';
 			$settings[] = 'Notification frequency: ' . $interval_output;
 		}
-		if(get_option('cartbounty_notification_email')){
-			$settings[] = 'Notification emails: '. esc_html( get_option('cartbounty_notification_email') );
+		if( $main_settings['notification_email'] ){
+			$settings[] = 'Notification emails: '. esc_html( $main_settings['notification_email'] );
 		}
-		if(get_option('cartbounty_lift_email')){
+		if( $main_settings['lift_email'] ){
 			$settings[] = 'Lift email field';
 		}
 
