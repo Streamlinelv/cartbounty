@@ -28,6 +28,7 @@ delete_option( 'cartbounty_automation_steps' );
 delete_option( 'cartbounty_automation_sends' );
 delete_option( 'cartbounty_submitted_notices' );
 delete_option( 'cartbounty_submitted_warnings' );
+delete_option( 'cartbounty_report_settings' );
 
 delete_metadata( 'user', 0, 'cartbounty_carts_per_page', '', true );
 delete_metadata( 'user', 0, 'cartbounty_unsupported_plugin_notice', '', true );
