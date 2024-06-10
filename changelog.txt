@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 8.1.1 =
+* Added IP address information to system report
+* Translation update
+* Code refactoring and optimization
+
 = 8.1 =
 * Improved abandoned cart content storage
 * Code refactoring

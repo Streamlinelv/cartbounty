@@ -1985,13 +1985,13 @@ class CartBounty_Admin{
 								</p>
 							</div>
 							<div class="cartbounty-settings-group cartbounty-toggle">
-								<label for="cartbounty-early-capture-mandatory" class="cartbounty-switch">
+								<label for="cartbounty-early-capture-mandatory" class="cartbounty-switch cartbounty-unavailable">
 									<input id="cartbounty-early-capture-mandatory" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
-								<label for="cartbounty-early-capture-mandatory"><?php esc_html_e('Enable mandatory input', 'woo-save-abandoned-carts'); ?></label>
+								<label for="cartbounty-early-capture-mandatory" class="cartbounty-unavailable"><?php esc_html_e('Enable mandatory input', 'woo-save-abandoned-carts'); ?></label>
 								<p class='cartbounty-additional-information'>
-									<i class='cartbounty-hidden'>
+									<i style="display: none;">
 										<?php esc_html_e('Your guest visitors will not be able to add anything to their carts until a valid email or phone is provided.', 'woo-save-abandoned-carts'); ?>
 									</i>
 								</p>
@@ -2001,11 +2001,11 @@ class CartBounty_Admin{
 								<p class='cartbounty-additional-information'>
 									<?php esc_html_e('Choose which input field should be collected in the request.', 'woo-save-abandoned-carts'); ?>
 								</p>
-								<label for="cartbounty-early-capture-field-type-email" class="cartbounty-radiobutton-label">
+								<label for="cartbounty-early-capture-field-type-email" class="cartbounty-radiobutton-label cartbounty-unavailable">
 									<input id="cartbounty-early-capture-field-type-email" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
 										<?php esc_html_e('Email', 'woo-save-abandoned-carts'); ?>
 								</label>
-								<label for="cartbounty-early-capture-field-type-phone" class="cartbounty-radiobutton-label">
+								<label for="cartbounty-early-capture-field-type-phone" class="cartbounty-radiobutton-label cartbounty-unavailable">
 									<input id="cartbounty-early-capture-field-type-phone" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
 										<?php esc_html_e('Phone', 'woo-save-abandoned-carts'); ?>
 								</label>
@@ -2094,13 +2094,13 @@ class CartBounty_Admin{
 						</div>
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group cartbounty-toggle">
-								<label for="cartbounty-early-capture-test-mode" class="cartbounty-switch">
+								<label for="cartbounty-early-capture-test-mode" class="cartbounty-switch cartbounty-unavailable">
 									<input id="cartbounty-early-capture-test-mode" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
-								<label for="cartbounty-early-capture-test-mode" class="cartbounty-control-visibility"><?php esc_html_e('Enable test mode', 'woo-save-abandoned-carts'); ?></label>
+								<label for="cartbounty-early-capture-test-mode" class="cartbounty-control-visibility cartbounty-unavailable"><?php esc_html_e('Enable test mode', 'woo-save-abandoned-carts'); ?></label>
 								<p class='cartbounty-additional-information'>
-									<i class='cartbounty-hidden'>
+									<i style="display: none;">
 										<?php esc_html_e('Now open your store and try adding a product to your cart. Please note that while this is enabled, only users with Admin rights will be able to see the Early capture request and appearance limitations have been removed which means that you will see the request each time you try to add an item to your cart. Do not forget to disable this after you have done testing.', 'woo-save-abandoned-carts'); ?>
 									</i>
 								</p>
@@ -2147,11 +2147,11 @@ class CartBounty_Admin{
 								</p>
 							</div>
 							<div class="cartbounty-settings-group cartbounty-toggle">
-								<label for="cartbounty-tab-notification-check-cart" class="cartbounty-switch">
+								<label for="cartbounty-tab-notification-check-cart" class="cartbounty-switch cartbounty-unavailable">
 									<input id="cartbounty-tab-notification-check-cart" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
-								<label for="cartbounty-tab-notification-check-cart"><?php esc_html_e('Check for empty cart', 'woo-save-abandoned-carts'); ?></label>
+								<label for="cartbounty-tab-notification-check-cart" class="cartbounty-unavailable"><?php esc_html_e('Check for empty cart', 'woo-save-abandoned-carts'); ?></label>
 								<p class='cartbounty-additional-information'>
 									<?php esc_html_e('If enabled, will show Tab notification only when shopping cart is not empty.', 'woo-save-abandoned-carts'); ?>
 								</p>
@@ -2175,7 +2175,7 @@ class CartBounty_Admin{
 							<div class="cartbounty-settings-group">
 								<label for="cartbounty-tab-notification-message"><?php esc_html_e('Message', 'woo-save-abandoned-carts'); ?></label>
 								<div class="cartbounty-content-creation cartbounty-flex">
-									<input id="cartbounty-tab-notification-message" class="cartbounty-text" type="text" placeholder="<?php echo esc_attr( 'I miss you 💔', 'woo-save-abandoned-carts' ); ?>" disabled /><?php $this->add_emojis(); ?>
+									<input id="cartbounty-tab-notification-message" class="cartbounty-text" type="text" placeholder="<?php echo esc_attr__( 'I miss you 💔', 'woo-save-abandoned-carts' ); ?>" disabled /><?php $this->add_emojis(); ?>
 								</div>
 							</div>
 							<div class="cartbounty-settings-group cartbounty-toggle">
@@ -2199,13 +2199,13 @@ class CartBounty_Admin{
 						</div>
 						<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-md-8 cartbounty-col-lg-9">
 							<div class="cartbounty-settings-group cartbounty-toggle">
-								<label for="cartbounty-tab-notification-test-mode" class="cartbounty-switch">
+								<label for="cartbounty-tab-notification-test-mode" class="cartbounty-switch cartbounty-unavailable">
 									<input id="cartbounty-tab-notification-test-mode" class="cartbounty-checkbox" type="checkbox" disabled autocomplete="off" />
 									<span class="cartbounty-slider round"></span>
 								</label>
-								<label for="cartbounty-tab-notification-test-mode"><?php esc_html_e( 'Enable test mode', 'woo-save-abandoned-carts' ); ?></label>
+								<label for="cartbounty-tab-notification-test-mode" class="cartbounty-unavailable"><?php esc_html_e( 'Enable test mode', 'woo-save-abandoned-carts' ); ?></label>
 								<p class='cartbounty-additional-information'>
-									<i class='cartbounty-hidden'>
+									<i style="display: none;">
 										<?php esc_html_e( 'Now open your store, add a product to the cart and switch to a new browser tab. Please note that while this is enabled, only users with Admin rights will be able to see the Tab notification. Do not forget to disable this after you have done testing.', 'woo-save-abandoned-carts' ); ?>
 									</i>
 								</p>
@@ -2292,6 +2292,10 @@ class CartBounty_Admin{
 	 */
 	function schedule_events(){
 		$notification_frequency = $this->get_settings( 'settings', 'notification_frequency' );
+
+		if ( empty( $notification_frequency ) ){ //Making sure that if the value is an empty string, we do not get a fatal error
+			$notification_frequency = 0;
+		}
 
 		$hooks = array(
 			'cartbounty_sync_hook' 						=> array( 
@@ -3266,9 +3270,8 @@ class CartBounty_Admin{
 	 * @since    7.0
 	 */
 	function restore_cart(){
-		if(!class_exists('WooCommerce')){ //Exit if WooCommerce not active
-			return;
-		}
+
+		if( !class_exists( 'WooCommerce' ) ) return;
 
 		global $wpdb;
 
@@ -3287,7 +3290,7 @@ class CartBounty_Admin{
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT id, email, cart_contents, session_id
+				"SELECT id, email, session_id, cart_contents
 				FROM $cart_table
 				WHERE id = %d AND
 				type != %d",
@@ -3296,15 +3299,12 @@ class CartBounty_Admin{
 			)
 		);
 
-		if(empty($row)){ //Exit function if no row found
-			return;
-		}
+		if( empty( $row ) ) return; //Exit function if no row found
 
 		//Checking if hashes match
 		$row_hash = hash_hmac('sha256', $row->email . $row->session_id, CARTBOUNTY_ENCRYPTION_KEY); //Building encrypted hash from the row
-		if(!hash_equals($hash, $row_hash)){ //If hashes do not match, exit function
-			return;
-		}
+
+		if( !hash_equals( $hash, $row_hash ) ) return; //If hashes do not match, exit function
 
 		//If we have received an Unsubscribe request - stop restoring cart and unsubscribe user instead
 		if (isset( $_GET['cartbounty-unsubscribe'])){
@@ -4295,13 +4295,16 @@ class CartBounty_Admin{
 	 * @return   String
 	 * @param    String   $locale     WordPress language
 	 */
-	function get_language_code( $locale ) {
+	function get_language_code( $locale ){
+
 		if ( !empty( $locale ) ){
 			$language = explode( '_', $locale );
+			
 			if ( ! empty( $language ) && is_array( $language ) ) {
 				$locale = strtolower( $language[0] );
 			}
 		}
+
 		return $locale;
 	}
 
@@ -4313,9 +4316,11 @@ class CartBounty_Admin{
 	 * @param    String   $locale     WordPress language
 	 */
 	function get_locale_with_hyphen( $locale ) {
+		
 		if ( !empty( $locale ) ){
 			$locale = str_replace('_', '-', $locale);
 		}
+
 		return $locale;
 	}
 

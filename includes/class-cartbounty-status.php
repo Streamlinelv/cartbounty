@@ -66,6 +66,11 @@ class CartBounty_System_Status{
 		$wordpress = new CartBounty_WordPress();
 		$overrides = $admin->get_template_overrides();
 		$review_data = array();
+		$ip_address = '';
+		$active_theme = '-';
+		$active_theme_data = wp_get_theme();
+		$active_plugins = (array) get_option( 'active_plugins', array() ); //Check for active plugins
+		$site_wide_plugins = '-';
 		$main_settings = $admin->get_settings( 'settings' );
 		$ei_settings = $admin->get_settings( 'exit_intent' );
 		$misc_settings = $admin->get_settings( 'misc_settings' );
@@ -90,7 +95,6 @@ class CartBounty_System_Status{
 			$review_data[] = 'Submitted: True';
 		}
 
-
 		if($wordpress->automation_enabled()){
 			$active_recovery[] = 'WordPress';
 			$active_recovery[] = 'Total emails sent: '. esc_html( $wordpress->get_stats() );
@@ -99,6 +103,7 @@ class CartBounty_System_Status{
 		if( $ei_settings['status'] ){
 			$exit_intent_options[] = 'Enabled';
 		}
+
 		if( $ei_settings['test_mode'] ){
 			$exit_intent_options[] = 'Test mode';
 		}
@@ -106,13 +111,16 @@ class CartBounty_System_Status{
 		if( $main_settings['exclude_anonymous_carts'] ){
 			$settings[] = 'Exclude anonymous carts';
 		}
+
 		if( isset( $main_settings['notification_frequency'] ) ){
 			$interval_output = $main_settings['notification_frequency'] . ' ('. esc_html( $admin->convert_miliseconds_to_minutes( $main_settings['notification_frequency'] ) ) . ')';
 			$settings[] = 'Notification frequency: ' . $interval_output;
 		}
+
 		if( $main_settings['notification_email'] ){
 			$settings[] = 'Notification emails: '. esc_html( $main_settings['notification_email'] );
 		}
+
 		if( $main_settings['lift_email'] ){
 			$settings[] = 'Lift email field';
 		}
@@ -129,14 +137,10 @@ class CartBounty_System_Status{
 			}
 		}
 
-		$active_theme = '-';
-		$active_theme_data = wp_get_theme();
-
 		if( $active_theme_data ){
 			$active_theme = $active_theme_data->get( 'Name' ) . ' by ' . $active_theme_data->get( 'Author' ) . ' version ' . $active_theme_data->get( 'Version' ) . ' (' . $active_theme_data->get( 'ThemeURI' ) . ')';
 		}
-
-		$active_plugins = (array) get_option( 'active_plugins', array() ); //Check for active plugins
+		
 		if ( is_multisite() ) {
 			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
 		}
@@ -152,14 +156,21 @@ class CartBounty_System_Status{
 			}
 		}
 
-		$site_wide_plugins = '-';
 		if ( sizeof( $all_plugins ) != 0 ) {
 			$site_wide_plugins = implode( ', <br/>', $all_plugins );
+		}
+
+		if( isset( $_SERVER['SERVER_ADDR'] ) ){
+			$ip_address = $_SERVER['SERVER_ADDR'];
+
+		}elseif( isset( $_SERVER['LOCAL_ADDR'] ) ){
+			$ip_address = $_SERVER['LOCAL_ADDR'];
 		}
 
 		$environment = array(
 			'WordPress address (URL)' 	=> home_url(),
 			'Site address (URL)' 		=> site_url(),
+			'Site IP address' 				=> $ip_address,
 			'WordPress version' 		=> get_bloginfo( 'version' ),
 			'WordPress multisite' 		=> (is_multisite()) ? 'Yes' : '-',
 			'WooCommerce version' 		=> class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',

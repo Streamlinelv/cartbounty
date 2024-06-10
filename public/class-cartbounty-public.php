@@ -756,7 +756,7 @@ class CartBounty_Public{
 			}
 		}
 
-		if( !empty( $labels) ){
+		if( !empty( $labels ) ){
 			$attribute_names = ': ' . implode( ', ', $labels );
 		}
 
