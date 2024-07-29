@@ -792,7 +792,28 @@ class CartBounty_Public{
 			( empty( $_POST['billing_email'] ) ) ? $_POST['billing_email'] = sprintf( '%s', esc_html( $saved_cart->email ) ) : '';
 			( empty( $_POST['billing_postcode'] ) ) ? $_POST['billing_postcode'] = sprintf( '%s', esc_html( $postcode ) ) : '';
 
-			if( $other_fields ){
+			$otherFieldDefaults = array(
+				'cartbounty_billing_company' => '',
+				'cartbounty_billing_address_1' => '',
+				'cartbounty_billing_address_2' => '',
+				'cartbounty_billing_state' => '',
+				'cartbounty_shipping_first_name' => '',
+				'cartbounty_shipping_last_name' => '',
+				'cartbounty_shipping_company' => '',
+				'cartbounty_shipping_country' => '',
+				'cartbounty_shipping_address_1' => '',
+				'cartbounty_shipping_address_2' => '',
+				'cartbounty_shipping_city' => '',
+				'cartbounty_shipping_state' => '',
+				'cartbounty_shipping_postcode' => '',
+				'cartbounty_order_comments' => '',
+				'cartbounty_create_account' => '',
+				'cartbounty_ship_elsewhere' => ''
+			);
+
+			$other_fields = array_merge( $otherFieldDefaults, ( array )$other_fields ); //Making sure that other fields do not throw warnings even if unable to unserialize and restore them
+
+			if( is_array( $other_fields ) ){
 				( empty( $_POST['billing_company'] ) ) ? $_POST['billing_company'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_company'] ) ) : '';
 				( empty( $_POST['billing_address_1'] ) ) ? $_POST['billing_address_1'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_address_1'] ) ) : '';
 				( empty( $_POST['billing_address_2'] ) ) ? $_POST['billing_address_2'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_address_2'] ) ) : '';

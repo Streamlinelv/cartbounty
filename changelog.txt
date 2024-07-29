@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 8.1.2 =
+* Fixed PHP warnings on checkout page if address fields were not saved
+
 = 8.1.1 =
 * Added IP address information to system report
 * Translation update
