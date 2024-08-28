@@ -32,6 +32,7 @@ CartBounty saves and displays all shopping cart activity from the moment a produ
 
 * Detailed [abandoned cart reports](https://www.cartbounty.com/abandoned-cart-reports-and-analytics-for-woocommerce)
 * Discover the top most abandoned products
+* View shopping cart abandonment data by country
 * View anonymous carts
 * Get notified about newly abandoned carts
 * Export abandoned carts (**Pro**)
