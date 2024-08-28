@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 8.2 =
+* Added a new report to Dashboard - Abandoned cart reports by country
+
 = 8.1.2 =
 * Fixed PHP warnings on checkout page if address fields were not saved
 
