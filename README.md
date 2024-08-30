@@ -293,7 +293,7 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 ## Screenshots
 
-![CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats and top abandoned products](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "CartBounty dashboard and abandoned cart reports including cart abandonment rate stats and top abandoned products")
+![CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats, abandoned cart data by country and top abandoned products](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-1.jpg "CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats, abandoned cart data by country and top abandoned products")
 ![Abandoned cart list](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-2.jpg "Location of CartBounty after activation")
 ![Automated abandoned cart recovery using WordPress email reminders](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-3.jpg "Abandoned cart list")
 ![WordPress recovery email settings](https://ps.w.org/woo-save-abandoned-carts/assets/screenshot-4.jpg "WordPress recovery email settings")

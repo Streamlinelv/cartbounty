@@ -300,7 +300,7 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Screenshots ==
 
-1. CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats and top abandoned products
+1. CartBounty Dashboard and abandoned cart reports including cart abandonment rate stats, abandoned cart data by country and top abandoned products
 2. Abandoned cart list
 3. Automated abandoned cart recovery using WordPress email reminders
 4. WordPress recovery email settings
