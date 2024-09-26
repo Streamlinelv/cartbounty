@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 8.2.1 =
+* Improved abandoned cart deletion and bulk action security
+
 = 8.2 =
 * Added a new report to Dashboard - Abandoned cart reports by country
 

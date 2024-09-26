@@ -113,7 +113,8 @@ class CartBounty_Table extends WP_List_Table{
             $order = '&order=' . $_GET['order'];
         }
 
-        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&tab='. $tab .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . esc_attr( $orderby ) . esc_attr( $order ) . esc_attr( $paged );
+        $nonce = wp_create_nonce( 'delete_cart_nonce' );
+        $delete_url = '?page='. esc_attr( $_REQUEST['page'] ) .'&tab='. $tab .'&action=delete&id='. esc_attr( $item['id'] ) .'&cart-status='. esc_attr( $cart_status ) . esc_attr( $orderby ) . esc_attr( $order ) . esc_attr( $paged ) .'&nonce='. $nonce;
         $actions['delete'] = sprintf( '<a href="%s">%s</a>', esc_url( $delete_url ), esc_html__( 'Delete', 'woo-save-abandoned-carts' ) );
 
         if( !empty( $item['name'] ) ){
@@ -479,7 +480,7 @@ class CartBounty_Table extends WP_List_Table{
         $hidden = array();
         $sortable = $this->get_sortable_columns();
         $this->_column_headers = array($columns, $hidden, $sortable); // here we configure table headers, defined in our methods
-        $this->process_bulk_action(); // process bulk action if any
+        $this->process_bulk_action(); //Process bulk action if any
         $total_items = $admin->get_cart_count($cart_status);
 
         // prepare query params, as usual current page, order by and order direction

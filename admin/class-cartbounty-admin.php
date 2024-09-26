@@ -460,7 +460,8 @@ class CartBounty_Admin{
 						
 						//Output table contents
 						$message = '';
-						if ('delete' === $table->current_action() || $footer_bulk_delete) {
+						if( 'delete' === $table->current_action() || $footer_bulk_delete ){
+
 							if(!empty($_REQUEST['id'])){ //In case we have a row selected for deletion, process the message otput
 								if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
 									$deleted_row_count = esc_html(count($_REQUEST['id']));
@@ -506,6 +507,7 @@ class CartBounty_Admin{
 							<input type="hidden" name="cart-status" value="<?php echo esc_attr( $cart_status ); ?>">
 							<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>"/>
 							<input type="hidden" name="tab" value="<?php echo esc_attr( $tab ); ?>"/>
+							<input type="hidden" name="nonce" value="<?php echo wp_create_nonce( 'bulk_action_nonce' ); ?>"/>
 							<?php $table->display(); ?>
 						</form>
 					<?php endif; ?>
@@ -4303,6 +4305,7 @@ class CartBounty_Admin{
 	 */
 	function trigger_on_load(){
 		$this->restore_cart(); //Restoring abandoned cart if a user returns back from an abandoned cart email link
+		$this->validate_cart_deletion(); //Make sure abandoned cart deletion passes nonce security
 	}
 
 	/**
@@ -4959,6 +4962,27 @@ class CartBounty_Admin{
 		}
 
 		return $saved_cart_contents;
+	}
+
+	/**
+	* Validate abandoned cart deletion security nonce
+	*
+	* @since    8.2.1
+	*/
+	public function validate_cart_deletion(){
+		
+		if( isset( $_GET['action'] ) && $_GET['action'] == 'delete' || isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if any delete action fired including bottom Bulk delete action
+
+			$nonce = false;
+
+			if( isset( $_GET['nonce'] ) ){
+				$nonce = $_GET['nonce'];
+			}
+
+			if( !wp_verify_nonce( $nonce, 'delete_cart_nonce' ) && !wp_verify_nonce( $nonce, 'bulk_action_nonce' ) ){
+				wp_die( esc_html__( 'Security check failed. The link is not valid.', 'woo-save-abandoned-carts' ) ); 
+			}
+		}
 	}
 
 	/**
