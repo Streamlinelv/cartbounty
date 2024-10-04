@@ -4971,16 +4971,19 @@ class CartBounty_Admin{
 	*/
 	public function validate_cart_deletion(){
 		
-		if( isset( $_GET['action'] ) && $_GET['action'] == 'delete' || isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if any delete action fired including bottom Bulk delete action
+		if( isset( $_GET['page'] ) && $_GET['page'] == CARTBOUNTY_PLUGIN_NAME_SLUG ){ //If delete action coming from CartBounty
 
-			$nonce = false;
+			if( isset( $_GET['action'] ) && $_GET['action'] == 'delete' || isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if any delete action fired including bottom Bulk delete action
 
-			if( isset( $_GET['nonce'] ) ){
-				$nonce = $_GET['nonce'];
-			}
+				$nonce = false;
 
-			if( !wp_verify_nonce( $nonce, 'delete_cart_nonce' ) && !wp_verify_nonce( $nonce, 'bulk_action_nonce' ) ){
-				wp_die( esc_html__( 'Security check failed. The link is not valid.', 'woo-save-abandoned-carts' ) ); 
+				if( isset( $_GET['nonce'] ) ){
+					$nonce = $_GET['nonce'];
+				}
+
+				if( !wp_verify_nonce( $nonce, 'delete_cart_nonce' ) && !wp_verify_nonce( $nonce, 'bulk_action_nonce' ) ){
+					wp_die( esc_html__( 'Security check failed. The link is not valid.', 'woo-save-abandoned-carts' ) ); 
+				}
 			}
 		}
 	}

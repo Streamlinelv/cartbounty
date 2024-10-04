@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 8.2.1.1 =
+* Fixed issue with abandoned cart deletion and bulk action due to recent security update
+
 = 8.2.1 =
 * Improved abandoned cart deletion and bulk action security
 

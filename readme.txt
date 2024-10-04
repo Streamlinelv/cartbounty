@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.6
 Requires PHP: 7.0
-Stable tag: 8.2.1
+Stable tag: 8.2.1.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -311,7 +311,7 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 8.2.1 =
-* Improved abandoned cart deletion and bulk action security
+= 8.2.1.1 =
+* Fixed issue with abandoned cart deletion and bulk action due to recent security update
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
