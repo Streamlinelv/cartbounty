@@ -14,7 +14,7 @@
  * 
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce/Templates
  * @author     Streamline.lv
- * @version    7.1
+ * @version    8.3
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access
@@ -29,7 +29,7 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 		<div id="cartbounty-exit-intent-form-content">
 			<?php do_action('cartbounty_exit_intent_start'); ?>
 			<div id="cartbounty-exit-intent-form-content-l">
-				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_image_html', sprintf('<img src="%s" />', esc_url( $args['image_url'] ) ) ) ); ?>
+				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_image_html', sprintf('<img src="%s" title="%s" alt="%s"/>', esc_url( $args['image_url'] ), esc_attr( $args['title'] ), esc_attr( $args['alt'] ) ) ) ); ?>
 			</div>
 			<div id="cartbounty-exit-intent-form-content-r">
 				<?php echo wp_kses_post( apply_filters( 'cartbounty_exit_intent_title_html', sprintf(

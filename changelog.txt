@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 8.3 =
+* Added support for saving abandoned carts through custom phone fields
+* Updated WordPress recovery email templates
+* Fixed the display of anonymous carts when they are excluded
+
 = 8.2.1.1 =
 * Fixed issue with abandoned cart deletion and bulk action due to recent security update
 

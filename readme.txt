@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.6
 Requires PHP: 7.0
-Stable tag: 8.2.1.1
+Stable tag: 8.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -62,7 +62,7 @@ Use CartBounty efficiency tools to increase your chances of getting more recover
 
 * Reduce checkout abandonment with built-in "Remember checkout fields" feature which allows store customers to refresh the checkout page after entering their information and walk around the page without losing previously entered data
 * Use [Exit Intent popup](https://www.cartbounty.com/exit-intent-popup-technology "Exit Intent popup technology") to minimize cart abandonment and increase sales
-* Save contact details from 3rd party plugins and [custom email fields](https://www.cartbounty.com/actions-and-filters/#save-abandoned-cart-email-from-a-custom-input-field)
+* Save contact details from 3rd party plugins and [custom email and phone fields](https://www.cartbounty.com/actions-and-filters/#save-abandoned-cart-email-from-a-custom-input-field)
 * Gather user's contact details right after "Add to cart" button is clicked using [Early capture](https://www.cartbounty.com/early-capture-add-to-cart-popup "Early capture popup") (**Pro**)
 * Provide [Instant coupon codes](https://www.cartbounty.com/exit-intent-popup-technology/#enable-instant-coupons) to motivate customers to complete their purchase using Exit Intent and Early capture tools (**Pro**)
 * Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab using dynamic [Tab notification](https://www.cartbounty.com/dynamic-browser-tab-notification "Dynamic browser Tab notification") (**Pro**)
@@ -156,6 +156,11 @@ Filters:
 * cartbounty_include_tax
 * cartbounty_price_format
 * cartbounty_display_currency_code
+* cartbounty_save_custom_fields
+* cartbounty_custom_email_selectors
+* cartbounty_custom_phone_selectors
+* cartbounty_custom_field_selector_timeout
+* cartbounty_phone_validation
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
 
@@ -264,10 +269,21 @@ An example how to use a filter to alter the main title:
 
 Example how to replace existing button name from "Complete checkout" to "Return to cart":
 
-	function cartbounty_alter_automation_button( $button ){
-	    return str_replace( 'Complete checkout', __('Return to cart', 'woo-save-abandoned-carts') , $button);
+	function cartbounty_alter_automation_button( $button_html, $args ) {
+		$new_text = __( 'Return to cart', 'woo-save-abandoned-carts' ); // Modify the button text
+		$button_html = sprintf(
+			'<a href="%1$s" title="%4$s" style="margin: 0; outline: none; padding: 0; box-shadow: none;">
+			<span style="padding: 18px 35px; background-color: %3$s; border-radius: 4px; color: %2$s; font-family: \'Open Sans\', Roboto, \'San Francisco\', Arial, Helvetica, sans-serif; display:inline-block; border: 0px none; font-size: 17px; font-weight: bold; line-height: 1; letter-spacing: normal; text-align: center; text-decoration: none; outline: none;">%4$s</span>
+			</a>',
+			esc_url( $args['recovery_link'] ), 
+			esc_attr( $args['main_color'] ), 
+			esc_attr( $args['button_color'] ), 
+			esc_html( $new_text )
+		);
+		return $button_html;
 	}
-	add_filter( 'cartbounty_automation_button_html', 'cartbounty_alter_automation_button' );
+
+	add_filter( 'cartbounty_automation_button_html', 'cartbounty_alter_automation_button', 10, 2 );
 
 How to change the default footer address. By default, it is taken from WooCommerce store address you have entered, but you can change it using a filter:
 
@@ -311,7 +327,9 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 8.2.1.1 =
-* Fixed issue with abandoned cart deletion and bulk action due to recent security update
+= 8.3 =
+* Added support for saving abandoned carts through custom phone fields
+* Updated WordPress recovery email templates
+* Fixed the display of anonymous carts when they are excluded
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

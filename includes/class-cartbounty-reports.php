@@ -2291,10 +2291,13 @@ class CartBounty_Reports{
 		$result = array();
 
 		foreach( $data as $key => $value ){
-			$country_name = '';
+			$country_name = $key;
 
 			if( isset( WC()->countries ) ){
-				$country_name = WC()->countries->countries[ $key ];
+
+				if( array_key_exists( $key, WC()->countries->countries ) ){
+					$country_name = WC()->countries->countries[ $key ];
+				}
 			}
 
 			$result[] = array(

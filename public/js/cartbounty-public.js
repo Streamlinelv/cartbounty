@@ -4,8 +4,9 @@
 	 jQuery(document).ready(function(){
 
 		var timer;
-		var save_custom_email = cartbounty_co.save_custom_email;
+		var save_custom_fields = cartbounty_co.save_custom_fields;
 		var custom_email_selectors = cartbounty_co.custom_email_selectors;
+		var custom_phone_selectors = cartbounty_co.custom_phone_selectors;
 		var selector_timeout = cartbounty_co.selector_timeout;
 		var contact_saved = localStorage.getItem('cartbounty_contact_saved');
 
@@ -27,7 +28,8 @@
 				
 				clearTimeout(timer);
 
-				if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length) || cartbounty_phone.length > 4){ //Checking if the email field is valid or phone number is longer than 4 digits
+				var phoneValidation = cartbounty_co.phone_validation; //Regex validation
+				if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length) || cartbounty_phone.match(phoneValidation)){ //Checking if the email field is valid or phone number is longer than 4 digits
 					//If Email or Phone valid
 					var cartbounty_name = jQuery("#billing_first_name").val();
 					var cartbounty_surname = jQuery("#billing_last_name").val();
@@ -111,58 +113,67 @@
 			}
 		}
 
-		function saveCustomEmail(){ //Function for saving custom email field
-			var custom_email_selector = jQuery(this);
+		function saveCustomField(){ //Function for saving custom email field
+			var custom_field_selector = jQuery(this);
 			var cartbounty_contact_saved = localStorage.getItem('cartbounty_contact_saved');
 
 			if(cartbounty_contact_saved){ //Exit in case any of CartBounty tools have already saved data
 				return;
 			}
 
-			if(jQuery(custom_email_selector).length > 0 && !contact_saved){ //If email field is present and contact information is not saved
-				var cartbounty_custom_email = jQuery( custom_email_selector ).val();
+			if(jQuery(custom_field_selector).length > 0 && !contact_saved){ //If email or phone field is present and contact information is not saved
+				var cartbounty_custom_field = jQuery( custom_field_selector ).val();
 				
-				if (typeof cartbounty_custom_email === 'undefined' || cartbounty_custom_email === null) { //If email field does not exist in the form
-				   cartbounty_custom_email = '';
+				if (typeof cartbounty_custom_field === 'undefined' || cartbounty_custom_field === null) { //If email or phone field does not exist in the form
+				   cartbounty_custom_field = '';
 				}
 
-				var atposition = cartbounty_custom_email.indexOf("@");
-				var dotposition = cartbounty_custom_email.lastIndexOf(".");
+				var atposition = cartbounty_custom_field.indexOf("@");
+				var dotposition = cartbounty_custom_field.lastIndexOf(".");
+				var phoneValidation = cartbounty_co.phone_validation; //Regex validation
 
-				if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_custom_email.length)){ //Checking if the email field is valid
-					if(cartbounty_custom_email != ''){ //If Email is not empty
-						localStorage.setItem('cartbounty_custom_email', cartbounty_custom_email); //Saving user's input in browser memory
+				if(cartbounty_custom_field != ''){ //If email or phone is not empty
+
+					if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_custom_field.length)){ //Checking if the email field is valid
+						localStorage.setItem('cartbounty_custom_email', cartbounty_custom_field); //Saving user's input in browser memory
+
+					}else if(cartbounty_custom_field.match(phoneValidation)){ //In case if phone number entered
+						localStorage.setItem('cartbounty_custom_phone', cartbounty_custom_field); //Saving user's input in browser memory
 					}
 				}
 			}
 		}
 
-		function passCustomEmailToCartBounty(){ //Function passes custom email field to backend
+		function passCustomFieldToCartBounty(){ //Function passes custom email or phone field to backend
 			var cartbounty_custom_email_stored = localStorage.getItem('cartbounty_custom_email');
+			var cartbounty_custom_phone_stored = localStorage.getItem('cartbounty_custom_phone');
 			var cartbounty_contact_saved = localStorage.getItem('cartbounty_contact_saved');
 
-			if( cartbounty_custom_email_stored == null || cartbounty_contact_saved ){ //If data is missing or any of the CartBounty tools have already saved data - exit
+			if( ( cartbounty_custom_email_stored == null && cartbounty_custom_phone_stored == null) || cartbounty_contact_saved ){ //If data is missing or any of the CartBounty tools have already saved data - exit
 				return;
 			}
 
 			var data = {
 				action:									"cartbounty_save",
-				source:									"cartbounty_custom_email",
-				cartbounty_email:						cartbounty_custom_email_stored
+				source:									"cartbounty_custom_field",
+				cartbounty_email:						cartbounty_custom_email_stored,
+				cartbounty_phone:						cartbounty_custom_phone_stored
 			}
 
 			jQuery.post(cartbounty_co.ajaxurl, data, //Send data over to backend for saving
 			function(response) {
 				if(response.success){ //If data successfuly saved
 					localStorage.setItem('cartbounty_contact_saved', true);
-					removeCustomEmailFields();
+					removeCustomFields();
 					removeExitIntentForm();
+					jQuery(document).off( 'added_to_cart', passCustomFieldToCartBounty );
 				}
 			});
 		}
 
-		function removeCustomEmailFields(){ //Removing from local storage custom email field
+		function removeCustomFields(){ //Removing from local storage custom fields
 			localStorage.removeItem('cartbounty_custom_email');
+			localStorage.removeItem('cartbounty_custom_phone');
 		}
 
 		function removeExitIntentForm(){//Removing Exit Intent form
@@ -175,14 +186,14 @@
 		jQuery( '#billing_email, #billing_phone, input.input-text, input.input-checkbox, textarea.input-text' ).on( 'keyup keypress change', getCheckoutData ); //All action happens on or after changing Email or Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
 		jQuery(window).on( 'load', getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 		
-		if( ( save_custom_email && !contact_saved ) ){ //If custom email saving enabled and contact is not saved - try to save email
-			passCustomEmailToCartBounty();
+		if( ( save_custom_fields && !contact_saved ) ){ //If custom field saving enabled and contact is not saved - try to save email
+			passCustomFieldToCartBounty();
 
 			setTimeout(function() { //Using timeout since some of the plugins add their input forms later instead of immediatelly
-				jQuery( custom_email_selectors ).on( 'keyup keypress change', saveCustomEmail );
+				jQuery( custom_email_selectors + ', ' + custom_phone_selectors ).on( 'keyup keypress change', saveCustomField );
 			}, selector_timeout );
 
-			jQuery(document).on( 'added_to_cart', passCustomEmailToCartBounty ); //Sending data over for saving in case WooCommerce "added_to_cart" event fires after product added to cart
+			jQuery(document).on( 'added_to_cart', passCustomFieldToCartBounty ); //Sending data over for saving in case WooCommerce "added_to_cart" event fires after product added to cart
 		}
 	});
 

@@ -87,9 +87,11 @@ class CartBounty_Public{
 		}
 
 		$data_co = array(
-			'save_custom_email' 		=> apply_filters( 'cartbounty_save_custom_email', true ),
+			'save_custom_fields' 		=> apply_filters( 'cartbounty_save_custom_fields', true ),
 			'custom_email_selectors' 	=> $this->get_custom_email_selectors(),
-			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_email_selector_timeout', 2000 ), //Default timout 2 seconds - required for plugins that load the HTML form later
+			'custom_phone_selectors' 	=> $this->get_custom_phone_selectors(),
+			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_field_selector_timeout', 2000 ), //Default timout 2 seconds - required for plugins that load the HTML form later
+			'phone_validation' 			=> apply_filters( 'cartbounty_phone_validation', '^[+0-9\s]\s?\d[0-9\s-.]{6,30}$'),
 		    'ajaxurl' => $admin_ajax
 		);
 
@@ -1060,7 +1062,9 @@ class CartBounty_Public{
 			'heading' => $heading,
 			'content' => $content,
 			'main_color' => $main_color,
-			'inverse_color' => $inverse_color
+			'inverse_color' => $inverse_color,
+			'title' => esc_html__( 'You were not leaving your cart just like that, right?', 'woo-save-abandoned-carts' ),
+			'alt' => esc_html__( 'You were not leaving your cart just like that, right?', 'woo-save-abandoned-carts' ),
 		);
 
 		return $this->get_template( 'cartbounty-exit-intent.php', $args );
@@ -1198,7 +1202,7 @@ class CartBounty_Public{
 
 	/**
 	 * Check what is the source of the saved abandoned cart and return it
-	 * Source types NULL = checkout, 1 = Exit Intent, 3 = Custom email field
+	 * Source types NULL = checkout, 1 = Exit Intent, 3 = Custom email or phone field
 	 *
 	 * @since    7.3
 	 * @return 	 Array
@@ -1214,7 +1218,7 @@ class CartBounty_Public{
 							$source = 1;
 							break;
 
-						case 'cartbounty_custom_email':
+						case 'cartbounty_custom_field':
 							$source = 3;
 							break;
 					}
@@ -1251,7 +1255,7 @@ class CartBounty_Public{
 
 	/**
 	 * Get custom email field selectors (required for adding email to abandoned cart data input field data from 3rd party plugins)
-	 * Aility to use a filter to edit this list
+	 * Ability to use a filter to edit this list
 	 *
 	 * Supporting these plugins by default:
 	 * - CartBounty custom email field option									[cartbounty]
@@ -1304,10 +1308,59 @@ class CartBounty_Public{
 				'popdivi'		=> '.et_pb_section input[type="email"]',
 				'brave'			=> '.brave_form_form input[type="email"]',
 				'ppspopup'		=> '.ppsPopupShell input[type="email"]',
-				'xoologin'		=> '.xoo-el-container input[name="xoo-el-username"]',
+				'xoologin'		=> '.xoo-el-container input[type="email"], .xoo-el-container input[name="xoo-el-username"]',
 			)
 		);
 
 		return implode( ', ', $selectors );
 	}
+
+	/**
+	 * Get custom phone field selectors (required for adding phone to abandoned cart data input field data from 3rd party plugins)
+	 * Ability to use a filter to edit this list
+	 *
+	 * Supporting these plugins by default:
+	 * - CartBounty custom email field option									[cartbounty]
+	 * - WPForms Lite by by WPForms												[wpforms]
+	 * - Popup Builder by Looking Forward Software Incorporated					[sgpb]
+	 * - Ninja Forms by Saturday Drive											[ninja]
+	 * - Contact Form 7 by Takayuki Miyoshi										[wpcf7]
+	 * - Fluent Forms by Contact Form - WPManageNinja LLC						[fluentform]
+	 * - OptinMonster by OptinMonster Popup Builder Team						[optinmonster]
+	 * - OptiMonk: Popups, Personalization & A/B Testing by OptiMonk			[optimonk]
+	 * - Poptin by Poptin														[poptin]
+	 * - Gravity Forms by Gravity Forms											[gform]
+	 * - Popup Anything by WP OnlineSupport, Essential Plugin					[paoc]
+	 * - Popup Box by Popup Box Team											[ays]
+	 * - Hustle by WPMU DEV														[hustle]
+	 * - Popups for Divi by divimode.com										[popdivi]
+	 * - Login/Signup Popup by XootiX											[xoologin]
+	 *
+	 * @since    8.3
+	 * @return   string
+	 */
+	function get_custom_phone_selectors(){
+		$selectors = apply_filters( 'cartbounty_custom_phone_selectors',
+			array(
+				'cartbounty' 	=> '.cartbounty-custom-phone-field',
+				'wpforms' 		=> '.wpforms-container input[type="tel"]',
+				'sgpb' 			=> '.sgpb-form input[type="tel"]',
+				'ninja'			=> '.nf-form-cont input[type="tel"]',
+				'wpcf7'			=> '.wpcf7 input[type="tel"]',
+				'fluentform'	=> '.fluentform input[type="tel"]',
+				'optinmonster'	=> '.om-element input[type="tel"]',
+				'optimonk'		=> '.om-holder input[type="tel"]',
+				'poptin'		=> '.poptin-popup input[type="tel"]',
+				'gform'			=> '.gform_wrapper input[type="tel"]',
+				'paoc'			=> '.paoc-popup input[type="tel"]',
+				'ays'			=> '.ays-pb-form input[type="tel"]',
+				'hustle'		=> '.hustle-form input[name="phone"]',
+				'popdivi'		=> '.et_pb_section input[type="tel"]',
+				'xoologin'		=> '.xoo-el-container input[type="tel"]',
+			)
+		);
+
+		return implode( ', ', $selectors );
+	}
+
 }

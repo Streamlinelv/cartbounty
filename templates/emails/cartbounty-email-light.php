@@ -12,7 +12,7 @@
 
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce/Templates
  * @author     Streamline.lv
- * @version    7.1.2.3
+ * @version    8.3
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access
@@ -78,7 +78,16 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 													<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td width="650" valign="middle" style="mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding: 0 50px; text-align: center;">
-																<?php echo apply_filters( 'cartbounty_automation_button_html', sprintf('<a href="%1$s" title="%4$s" style="margin: 0; outline: none; padding: 0; box-shadow: none;"><span style="padding: 18px 35px; background-color: %3$s; border-radius: 4px; color: %2$s; font-family: \'Open Sans\', Roboto, \'San Francisco\', Arial, Helvetica, sans-serif; display:inline-block; border: 0px none; font-size: 17px; font-weight: bold; line-height: 1; letter-spacing: normal; text-align: center; text-decoration: none; outline: none;">%4$s</span></a>', esc_url( $args['recovery_link'] ), esc_attr( $args['main_color'] ), esc_attr( $args['button_color'] ), esc_html__( 'Complete checkout', 'woo-save-abandoned-carts' ) ) );?>
+																<?php $button_html = sprintf(
+																	'<a href="%1$s" title="%4$s" style="margin: 0; outline: none; padding: 0; box-shadow: none;"><span style="padding: 18px 35px; background-color: %3$s; border-radius: 4px; color: %2$s; font-family: \'Open Sans\', Roboto, \'San Francisco\', Arial, Helvetica, sans-serif; display:inline-block; border: 0px none; font-size: 17px; font-weight: bold; line-height: 1; letter-spacing: normal; text-align: center; text-decoration: none; outline: none;">%4$s</span></a>',
+																	esc_url( $args['recovery_link'] ),
+																	esc_attr( $args['main_color'] ),
+																	esc_attr( $args['button_color'] ),
+																	esc_html__( 'Complete checkout', 'woo-save-abandoned-carts' ) );
+
+																	$button_html = apply_filters( 'cartbounty_automation_button_html', $button_html, $args );
+																	echo $button_html;
+																?>
 																<?php do_action('cartbounty_automation_after_button'); ?>
 															</td>
 														</tr>

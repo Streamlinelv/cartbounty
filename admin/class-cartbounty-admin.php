@@ -1827,8 +1827,12 @@ class CartBounty_Admin{
 									<input id="cartbounty-exit-intent-field-type-phone" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
 										<?php esc_html_e('Phone', 'woo-save-abandoned-carts'); ?>
 								</label>
+								<label for="cartbounty-exit-intent-field-type-phone-and-email" class="cartbounty-radiobutton-label cartbounty-unavailable">
+									<input id="cartbounty-exit-intent-field-type-phone-and-email" class="cartbounty-radiobutton" type="radio" disabled autocomplete="off" />
+										<?php esc_html_e('Both', 'woo-save-abandoned-carts'); ?>
+								</label>
 								<p class='cartbounty-additional-information'>
-									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'exit_intent_phone' ); ?></i>
+									<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $this->display_unavailable_notice( 'exit_intent_phone_or_email' ); ?></i>
 								</p>
 							</div>
 							<div class="cartbounty-settings-group">
@@ -3615,24 +3619,26 @@ class CartBounty_Admin{
 			}
 
 		}elseif( $cart_status == 'all' ){ //Used to count the total number of all abandoned carts in the abandoned cart table
+			$additional_anonymous_cart_validation = false;
 
 			if( $cart ){
+
+				if( $this->anonymous_carts_excluded() ){ //In case anonymous shopping carts are excluded - do not include them
+					$additional_anonymous_cart_validation = ( !empty( $cart->email )
+					|| !empty( $cart->phone ) );
+				}
+
 				$cart_validation_result = $cart->type != $this->get_cart_type( 'ordered' )
-				&& $cart->type != $this->get_cart_type( 'ordered_deducted' );
+				&& $cart->type != $this->get_cart_type( 'ordered_deducted' )
+				&& $additional_anonymous_cart_validation;
 
 			}else{
-				$where_sentence = "AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' );
-			}
 
-		}elseif( $this->get_settings( 'settings', 'exclude_anonymous_carts' ) ){ //In case anonymous carts have been excluded
-			
-			if( $cart ){
-				//If all of these conditions are true - $cart_validation_result will be true
-				$cart_validation_result = !empty( $cart->email )
-				|| !empty( $cart->phone );
+				if( $this->anonymous_carts_excluded() ){ //In case anonymous shopping carts are excluded - do not include them
+					$additional_anonymous_cart_validation = " AND (email != '' OR phone != '')";
+				}
 
-			}else{
-				$where_sentence = "AND (email != '' OR phone != '')";
+				$where_sentence = "AND type != " . $this->get_cart_type( 'ordered' ) ." AND type != " . $this->get_cart_type( 'ordered_deducted' ) . $additional_anonymous_cart_validation;
 			}
 		}
 
