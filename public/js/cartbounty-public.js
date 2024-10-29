@@ -171,7 +171,7 @@
 			});
 		}
 
-		function removeCustomFields(){ //Removing from local storage custom fields
+		function removeCustomFields(){ //Removing from local storage custom email and phone fields
 			localStorage.removeItem('cartbounty_custom_email');
 			localStorage.removeItem('cartbounty_custom_phone');
 		}
@@ -186,7 +186,7 @@
 		jQuery( '#billing_email, #billing_phone, input.input-text, input.input-checkbox, textarea.input-text' ).on( 'keyup keypress change', getCheckoutData ); //All action happens on or after changing Email or Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
 		jQuery(window).on( 'load', getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 		
-		if( ( save_custom_fields && !contact_saved ) ){ //If custom field saving enabled and contact is not saved - try to save email
+		if( ( save_custom_fields && !contact_saved ) ){ //If custom field saving enabled and contact is not saved - try to save email or phone
 			passCustomFieldToCartBounty();
 
 			setTimeout(function() { //Using timeout since some of the plugins add their input forms later instead of immediatelly
