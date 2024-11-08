@@ -10,6 +10,8 @@
  * Author URI: http://www.majas-lapu-izstrade.lv/en
  * Requires at least: 4.6
  * Requires PHP: 7.0
+ * License: GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 // If this file is called directly, abort.
