@@ -3308,6 +3308,12 @@ class CartBounty_Admin{
 		$parts = explode('-', $hash_id); //Splitting GET value into hash and ID
 		$hash = $parts[0];
 		$id = $parts[1];
+		$step_nr = false;
+
+		//Determine recovery step
+		if( isset( $_GET['step'] ) ){
+			$step_nr = $_GET['step'];
+		}
 
 		//Retrieve row from the abandoned cart table in order to check if hashes match
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
@@ -3332,7 +3338,7 @@ class CartBounty_Admin{
 		//If we have received an Unsubscribe request - stop restoring cart and unsubscribe user instead
 		if (isset( $_GET['cartbounty-unsubscribe'])){
 			$wordpress = new CartBounty_WordPress();
-			$wordpress->unsubscribe_user( $id );
+			$wordpress->unsubscribe_user( $id, $step_nr );
 			wp_die( esc_html__('You have successfully unsubscribed from further emails about your shopping cart.', 'woo-save-abandoned-carts'), esc_html__( 'Successfully unsubscribed', 'woo-save-abandoned-carts'), $args = array( 'link_url' => get_site_url(), 'link_text' => esc_html__( 'Return to store', 'woo-save-abandoned-carts') ) );
 		}
 

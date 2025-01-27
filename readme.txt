@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 8.3
+Stable tag: 8.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -327,9 +327,7 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 8.3 =
-* Added support for saving abandoned carts through custom phone fields
-* Updated WordPress recovery email templates
-* Fixed the display of anonymous carts when they are excluded
+= 8.4 =
+* Added tracking for user unsubscriptions at specific automation steps in WordPress recovery
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

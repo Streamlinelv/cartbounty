@@ -186,6 +186,7 @@ class CartBounty{
 		$this->loader->add_action( 'update_option_cartbounty_automation_settings', $wordpress, 'sanitize_from_field', 50);
 		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
 		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
+		$this->loader->add_filter( 'cartbounty_automation_unsubscribe_url', $wordpress, 'add_click_through_tracking', 10, 2 );
 	}
 
 	/**

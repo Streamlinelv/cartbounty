@@ -4,7 +4,7 @@
  * Plugin Name: CartBounty - Save and recover abandoned carts for WooCommerce
  * Plugin URI: https://www.cartbounty.com
  * Description: Save abandoned carts by instantly capturing WooCommerce checkout form before submission.
- * Version: 8.3
+ * Version: 8.4
  * Text Domain: woo-save-abandoned-carts
  * Author: Streamline.lv
  * Author URI: http://www.majas-lapu-izstrade.lv/en
@@ -18,7 +18,7 @@
 if ( ! defined( 'WPINC' ) ) die;
 
 //Defining constants
-if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '8.3' );
+if (!defined('CARTBOUNTY_VERSION_NUMBER')) define( 'CARTBOUNTY_VERSION_NUMBER', '8.4' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME')) define( 'CARTBOUNTY_PLUGIN_NAME', 'CartBounty - Save and recover abandoned carts for WooCommerce' );
 if (!defined('CARTBOUNTY')) define( 'CARTBOUNTY', 'cartbounty' );
 if (!defined('CARTBOUNTY_PLUGIN_NAME_SLUG')) define( 'CARTBOUNTY_PLUGIN_NAME_SLUG', 'cartbounty' );
@@ -58,6 +58,13 @@ register_setting( 'cartbounty-wordpress-settings', 'cartbounty_automation_steps'
 function activate_cartbounty(){
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-cartbounty-activator.php';
 	CartBounty_Activator::activate();
+	$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+	$misc_settings = $admin->get_settings( 'misc_settings' );
+
+	if( $misc_settings['email_table_exists'] ){
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-cartbounty-wordpress.php';
+		CartBounty_WordPress::create_email_table();
+	}
 }
 
 /**
