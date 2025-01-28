@@ -121,6 +121,10 @@ class CartBounty_System_Status{
 			$settings[] = 'Notification emails: '. esc_html( $main_settings['notification_email'] );
 		}
 
+		if( $main_settings['email_consent'] ){
+			$settings[] = 'Enable email consent';
+		}
+
 		if( $main_settings['lift_email'] ){
 			$settings[] = 'Lift email field';
 		}

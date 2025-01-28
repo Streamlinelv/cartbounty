@@ -286,6 +286,30 @@
 			}
 		}
 
+		//Handling multiple select checkboxes where a single block must be displayed
+		jQuery('.cartbounty-select-multiple').each(function(){
+			var parentElement = jQuery(this);
+			var checkboxes = parentElement.find('.cartbounty-checkbox');
+
+			function toggleParentClassByInputs(){
+				var anyChecked = checkboxes.is(':checked'); //Check if any checkbox within this block is checked
+
+				// Toggle classes on the parent element
+				if (anyChecked){
+					parentElement.addClass('cartbounty-checked-parent');
+				}else{
+					parentElement.removeClass('cartbounty-checked-parent');
+				}
+			}
+
+			// Add event listener to all checkboxes within this block
+			checkboxes.on('change', toggleParentClassByInputs);
+
+			// Initialize the parent element's state
+			toggleParentClassByInputs();
+		});
+
+
 		jQuery(".cartbounty-type").on("click", addActiveClass );
 		jQuery(".cartbounty-progress").on("click", addLoadingIndicator );
 		jQuery(".cartbounty-upload-image").on("click", addCustomImage );

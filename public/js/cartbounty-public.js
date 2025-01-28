@@ -8,6 +8,7 @@
 		var custom_email_selectors = cartbounty_co.custom_email_selectors;
 		var custom_phone_selectors = cartbounty_co.custom_phone_selectors;
 		var selector_timeout = cartbounty_co.selector_timeout;
+		var consent_field = cartbounty_co.consent_field;
 		var contact_saved = localStorage.getItem('cartbounty_contact_saved');
 
 		function getCheckoutData() { //Reading WooCommerce field values
@@ -55,6 +56,7 @@
 					var cartbounty_order_comments = jQuery("#order_comments").val();
 					var cartbounty_create_account = jQuery("#createaccount");
 					var cartbounty_ship_elsewhere = jQuery("#ship-to-different-address-checkbox");
+					var cartbounty_consent = jQuery("#"+consent_field);
 
 					if(cartbounty_create_account.is(':checked')){
 						cartbounty_create_account = 1;
@@ -66,6 +68,12 @@
 						cartbounty_ship_elsewhere = 1;
 					}else{
 						cartbounty_ship_elsewhere = 0;
+					}
+
+					if(cartbounty_consent.is(':checked')){
+						cartbounty_consent = 1;
+					}else{
+						cartbounty_consent = 0;
 					}
 					
 					var data = {
@@ -92,7 +100,8 @@
 						cartbounty_shipping_postcode: 		cartbounty_shipping_postcode,
 						cartbounty_order_comments: 			cartbounty_order_comments,
 						cartbounty_create_account: 			cartbounty_create_account,
-						cartbounty_ship_elsewhere: 			cartbounty_ship_elsewhere
+						cartbounty_ship_elsewhere: 			cartbounty_ship_elsewhere,
+						cartbounty_consent: 				cartbounty_consent
 					}
 
 					timer = setTimeout(function(){

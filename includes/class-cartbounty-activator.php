@@ -40,6 +40,7 @@ class CartBounty_Activator{
 			surname VARCHAR(60),
 			email VARCHAR(100),
 			phone VARCHAR(20),
+			email_consent TINYINT DEFAULT 0,
 			location VARCHAR(100),
 			cart_contents LONGTEXT,
 			cart_total DECIMAL(10,2),

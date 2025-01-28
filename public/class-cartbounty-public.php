@@ -90,6 +90,7 @@ class CartBounty_Public{
 			'save_custom_fields' 		=> apply_filters( 'cartbounty_save_custom_fields', true ),
 			'custom_email_selectors' 	=> $this->get_custom_email_selectors(),
 			'custom_phone_selectors' 	=> $this->get_custom_phone_selectors(),
+			'consent_field' 			=> $admin->get_consent_field_data( 'field_name' ),
 			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_field_selector_timeout', 2000 ), //Default timout 2 seconds - required for plugins that load the HTML form later
 			'phone_validation' 			=> apply_filters( 'cartbounty_phone_validation', '^[+0-9\s]\s?\d[0-9\s-.]{6,30}$'),
 		    'ajaxurl' => $admin_ajax
@@ -186,6 +187,7 @@ class CartBounty_Public{
 			$other_fields = NULL;
 			$cart_source = $this->get_cart_source();
 			$source = $cart_source['source'];
+			$email_consent = false;
 
 			if( empty( $source ) ){ //If source not coming from Tools
 				$source = 'NULL';
@@ -198,13 +200,14 @@ class CartBounty_Public{
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $cart_table
-					( name, surname, email, phone, location, cart_contents, cart_total, currency, time, session_id, other_fields, saved_via )
-					VALUES ( %s, %s, %s, %s, %s, %s, %0.2f, %s, %s, %s, %s, %s )",
+					( name, surname, email, phone, email_consent, location, cart_contents, cart_total, currency, time, session_id, other_fields, saved_via )
+					VALUES ( %s, %s, %s, %s, %d, %s, %s, %0.2f, %s, %s, %s, %s, %s )",
 					array(
 						'name'			=> sanitize_text_field( $user_data['name'] ),
 						'surname'		=> sanitize_text_field( $user_data['surname'] ),
 						'email'			=> sanitize_email( $user_data['email'] ),
 						'phone'			=> filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
+						'email_consent'	=> sanitize_text_field( $email_consent ),
 						'location'		=> serialize( $user_data['location'] ),
 						'cart_contents'	=> serialize( $cart['cart_contents'] ),
 						'total'			=> sanitize_text_field( $cart['cart_total'] ),
@@ -309,6 +312,7 @@ class CartBounty_Public{
 		$other_fields = NULL;
 		$cart_source = $this->get_cart_source();
 		$source = $cart_source['source'];
+		$email_consent = $user_data['email_consent'];
 
 		if( empty( $source ) ){ //If source not coming from Tools
 			$source = 'NULL';
@@ -325,6 +329,7 @@ class CartBounty_Public{
 				surname = %s,
 				email = %s,
 				phone = %s,
+				email_consent = %d,
 				location = %s,
 				cart_contents = %s,
 				cart_total = %0.2f,
@@ -338,6 +343,7 @@ class CartBounty_Public{
 				sanitize_text_field( $user_data['surname'] ),
 				sanitize_email( $user_data['email'] ),
 				filter_var( $user_data['phone'], FILTER_SANITIZE_NUMBER_INT),
+				sanitize_text_field( $email_consent ),
 				sanitize_text_field( serialize( $user_data['location'] ) ),
 				serialize( $cart['cart_contents'] ),
 				sanitize_text_field( $cart['cart_total'] ),
@@ -404,7 +410,9 @@ class CartBounty_Public{
 	 * @return   Array
 	 */
 	function get_user_data(){
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$user_data = array();
+		$email_consent = 0;
 
 		if ( is_user_logged_in() && !isset( $_POST["action"] )){ //If user has signed in and the request is not triggered by checkout fields or Exit Intent
 			$current_user = wp_get_current_user(); //Retrieving users data
@@ -416,6 +424,13 @@ class CartBounty_Public{
 			(isset($current_user->billing_country)) ? $country = $current_user->billing_country : $country = '';
 			(isset($current_user->billing_city)) ? $city = $current_user->billing_city : $city = '';
 			(isset($current_user->billing_postcode)) ? $postcode = $current_user->billing_postcode : $postcode = '';
+
+			//Try to check if registered user has phone consent data saved and retrieve it
+			$customer = new WC_Customer( get_current_user_id() );
+
+			if( $customer->get_meta( 'billing_email_consent' ) ){
+				$email_consent = 1;
+			}
 
 			if($country == ''){ //Trying to Geolocate user's country in case it was not found
 				$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
@@ -433,6 +448,7 @@ class CartBounty_Public{
 				'surname'		=> $surname,
 				'email'			=> $email,
 				'phone'			=> $phone,
+				'email_consent'	=> $email_consent,
 				'location'		=> $location,
 				'other_fields'	=> ''
 			);
@@ -461,6 +477,18 @@ class CartBounty_Public{
 			(isset($_POST['cartbounty_order_comments'])) ? $comments = $_POST['cartbounty_order_comments'] : $comments = '';
 			(isset($_POST['cartbounty_create_account'])) ? $create_account = $_POST['cartbounty_create_account'] : $create_account = '';
 			(isset($_POST['cartbounty_ship_elsewhere'])) ? $ship_elsewhere = $_POST['cartbounty_ship_elsewhere'] : $ship_elsewhere = '';
+
+			$get_consent_field_data = $admin->get_consent_field_data( 'field_name' );
+
+			if( isset( $_POST['cartbounty_consent'] ) ){
+
+				if( $get_consent_field_data == 'billing_email_consent' ){
+					$email_consent = $_POST['cartbounty_consent'];
+				}
+
+			}else{
+				$email_consent = $this->get_saved_cart_data( 'email_consent' );
+			}
 			
 			$other_fields = array(
 				'cartbounty_billing_company' 		=> $company,
@@ -497,6 +525,7 @@ class CartBounty_Public{
 				'surname'		=> $surname,
 				'email'			=> $email,
 				'phone'			=> $phone,
+				'email_consent'	=> $email_consent,
 				'location'		=> $location,
 				'other_fields'	=> $other_fields
 			);
@@ -778,6 +807,7 @@ class CartBounty_Public{
 
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$saved_cart = $this->get_saved_cart();
+		$get_consent_field_data = $admin->get_consent_field_data( 'field_name' );
 
 		if( $saved_cart ){
 			$other_fields = maybe_unserialize( $saved_cart->other_fields );
@@ -793,6 +823,17 @@ class CartBounty_Public{
 			( empty( $_POST['billing_phone'] ) ) ? $_POST['billing_phone'] = sprintf( '%s', esc_html( $saved_cart->phone ) ) : '';
 			( empty( $_POST['billing_email'] ) ) ? $_POST['billing_email'] = sprintf( '%s', esc_html( $saved_cart->email ) ) : '';
 			( empty( $_POST['billing_postcode'] ) ) ? $_POST['billing_postcode'] = sprintf( '%s', esc_html( $postcode ) ) : '';
+
+			if( empty( $_POST[$get_consent_field_data] ) ){
+
+				if( $get_consent_field_data == 'billing_email_consent' ){
+					$_POST[$get_consent_field_data] = sprintf( '%s', esc_html( $saved_cart->email_consent ) );
+
+				}
+
+			}else{
+				$_POST[$get_consent_field_data] = '';
+			}
 
 			$otherFieldDefaults = array(
 				'cartbounty_billing_company' => '',
@@ -1019,6 +1060,11 @@ class CartBounty_Public{
 		$inverse_color = $ei_settings['inverse_color'];
 		$where_sentence = $admin->get_where_sentence('recoverable');
 
+		$tools_consent = $admin->get_tools_consent();
+		$consent_settings = $admin->get_consent_settings();
+		$email_consent_enabled = $consent_settings['email'];
+		$consent_enabled = false;
+
 		if( trim( $ei_settings['heading'] ) != '' ){ //If the value is not empty and does not contain only whitespaces
 			$heading = $admin->sanitize_field( $ei_settings['heading'] );
 		}
@@ -1057,12 +1103,18 @@ class CartBounty_Public{
 			}
 		}
 
+		if( ( $email_consent_enabled ) ){
+			$consent_enabled = true;
+		}
+
 		$args = array(
 			'image_url' => $image_url,
 			'heading' => $heading,
 			'content' => $content,
 			'main_color' => $main_color,
 			'inverse_color' => $inverse_color,
+			'consent_enabled' => $consent_enabled,
+			'tools_consent' => $tools_consent,
 			'title' => esc_html__( 'You were not leaving your cart just like that, right?', 'woo-save-abandoned-carts' ),
 			'alt' => esc_html__( 'You were not leaving your cart just like that, right?', 'woo-save-abandoned-carts' ),
 		);
@@ -1235,6 +1287,34 @@ class CartBounty_Public{
 		return array(
 			'source' 	=> $source
 		);
+	}
+
+	/**
+	 * Retrieve abandoned cart data value from database of a given key (e.g. name, surname, phone, email..)
+	 *
+	 * @since    8.4
+	 * @return   string
+	 * @param    string 	$value    		Key value that must be returned 
+	 */
+	function get_saved_cart_data( $value ){
+		global $wpdb;
+		$cart = $this->read_cart();
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+
+		$result = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT $value
+				FROM $cart_table
+				WHERE session_id = %s",
+				$cart['session_id']
+			)
+		);
+
+		if( !$result ){
+			$result = false;
+		}
+
+		return $result;
 	}
 
 	/**

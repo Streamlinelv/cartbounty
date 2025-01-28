@@ -139,9 +139,8 @@ class CartBounty{
 		$this->loader->add_action( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
 		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' );
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' );
-		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_fields', 10, 1 );
+		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'edit_checkout_fields', 10, 1 );
 		$this->loader->add_action( 'woocommerce_new_order', $admin, 'handle_order', 30 );
-		$this->loader->add_action( 'woocommerce_update_order', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' );
 		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' );

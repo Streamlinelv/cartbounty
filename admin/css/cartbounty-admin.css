@@ -316,6 +316,7 @@ input.cartbounty-radiobutton:checked:before{
 }
 
 .cartbounty-hidden,
+.cartbounty-toggle-content,
 .cartbounty-checked-parent i.cartbounty-hidden,
 .cartbounty .cartbounty-sidebar .cartbounty-select{
 	display: none;
@@ -1525,7 +1526,8 @@ a.cartbounty-tab{
 	margin-top: 0;
 }
 
-.cartbounty-checked-parent .cartbounty-hidden{
+.cartbounty-checked-parent .cartbounty-hidden,
+.cartbounty-checked-parent .cartbounty-toggle-content{
 	display: block;
 }
 

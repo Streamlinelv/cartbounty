@@ -137,6 +137,12 @@
 	padding: 0 0 20px;
 }
 
+#cartbounty-exit-intent-form #cartbounty-exit-intent-consent{
+	margin-top: 20px;
+	font-size: 13px;
+	line-height: 18px;
+}
+
 /* Exit Intent Template
  * Appear In Center
  */

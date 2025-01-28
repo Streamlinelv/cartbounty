@@ -2,6 +2,7 @@
 
 = 8.4 =
 * Added tracking for user unsubscriptions at specific automation steps in WordPress recovery
+* Added an option to enable email consent collection
 
 = 8.3 =
 * Added support for saving abandoned carts through custom phone fields

@@ -107,6 +107,11 @@ class CartBounty_WordPress{
 
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $admin->get_time_intervals();
+		$email_consent_query = '';
+
+		if( $admin->get_consent_settings() ){
+			$email_consent_query = 'AND email_consent = 1';
+		}
 
 		//Retrieving all abandoned carts that are eligible for email recovery
 		//Excluding finished automations, unsubscried carts
@@ -120,7 +125,8 @@ class CartBounty_WordPress{
 				wp_unsubscribed != 1 AND
 				wp_complete != 1 AND
 				time < %s AND
-				time > %s",
+				time > %s
+				$email_consent_query",
 				$admin->get_cart_type('abandoned'),
 				$time['cart_abandoned'],
 				$time['maximum_sync_period']
@@ -662,6 +668,11 @@ class CartBounty_WordPress{
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $admin->get_time_intervals();
 		$count = 0;
+		$consent_query = '';
+
+		if( $admin->get_consent_settings() ){
+			$consent_query = 'AND email_consent = 1';
+		}
 		
 		$carts = $wpdb->get_results(
 			$wpdb->prepare(
@@ -674,7 +685,8 @@ class CartBounty_WordPress{
 				wp_complete != 1 AND
 				wp_steps_completed = %d AND
 				time < %s AND
-				time > %s",
+				time > %s
+				$consent_query",
 				$admin->get_cart_type('abandoned'),
 				0,
 				$time['cart_abandoned'],
