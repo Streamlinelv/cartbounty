@@ -112,6 +112,8 @@ class CartBounty_Public{
 
 		if( !WC()->cart ) return;
 
+		if( $this->is_bot() ) return;
+
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 
 		if( $this->cart_recoverable() ){ //If cart is recoverable
@@ -532,6 +534,22 @@ class CartBounty_Public{
 		}
 
 		return $user_data;
+	}
+
+	/**
+	 * Check if visitor is a bot
+	 *
+	 * @since    8.4
+	 * @return   boolean
+	 */
+	function is_bot(){
+		$bot = false;
+
+		if( ( !isset( $_POST['cartbounty_bot_test'] ) || sanitize_text_field( $_POST['cartbounty_bot_test'] ) != '1' ) && ( !isset( $_POST['action'] ) || sanitize_text_field( $_POST['action'] ) != 'cartbounty_save' ) ){ 
+			$bot = true;
+		}
+
+		return $bot;
 	}
 
 	/**

@@ -330,5 +330,6 @@ In addition, the Pro version allows you to select if guests from specific countr
 = 8.4 =
 * Added tracking for user unsubscriptions at specific automation steps in WordPress recovery
 * Added an option to enable email consent collection
+* Added bot detection layer to exclude anonymous abandoned carts created by bots
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

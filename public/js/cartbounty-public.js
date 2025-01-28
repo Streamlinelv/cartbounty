@@ -192,8 +192,35 @@
 			}
 		}
 
+		//Adding a hidden input field to all "Add to cart" buttons on click to protect against bots leaving anonymous carts since they may not use Javascript
+		function appendHiddenInputField(e){
+			var $button = jQuery(this);
+			var customInputField = jQuery('<input>',{
+				type: 'hidden',
+				name: 'cartbounty_bot_test',
+				value: '1'
+			});
+
+			var $form = $button.closest('form');
+
+			if($form.length){ //Adding hidden input field to the form if it exists 
+				$form.append(customInputField);
+			}else{ //Otherwise, modify the data WooCommerce sends
+				$button.data('cartbounty_bot_test', '1');
+			}
+		};
+
+		//Adding additional CartBounty data whenever Ajax "Add to cart" button is clicked in order to detect anonymous carts left by bots
+		function addCartBountyInputDataToAjax(e, xhr, settings){
+			if(settings.url.indexOf('wc-ajax=add_to_cart') > -1){
+				settings.data += '&cartbounty_bot_test=1'; //Append hidden value to the request payload
+			}
+		};
+
 		jQuery( '#billing_email, #billing_phone, input.input-text, input.input-checkbox, textarea.input-text' ).on( 'keyup keypress change', getCheckoutData ); //All action happens on or after changing Email or Phone fields or any other fields in the Checkout form. All Checkout form input fields are now triggering plugin action. Data saved to Database only after Email or Phone fields have been entered.
 		jQuery(window).on( 'load', getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
+		jQuery(document).ajaxSend(addCartBountyInputDataToAjax);
+		jQuery(document).on('click', '.add_to_cart_button, .ajax_add_to_cart, .single_add_to_cart_button', appendHiddenInputField);
 		
 		if( ( save_custom_fields && !contact_saved ) ){ //If custom field saving enabled and contact is not saved - try to save email or phone
 			passCustomFieldToCartBounty();
