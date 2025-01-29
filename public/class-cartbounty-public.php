@@ -67,6 +67,7 @@ class CartBounty_Public{
 
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
 		$admin_ajax = admin_url( 'admin-ajax.php' );
+		$email_validation = apply_filters( 'cartbounty_email_validation', '^[^\s@]+@[^\s@]+\.[^\s@]{2,}$');
 
 		if( $this->tool_enabled( 'exit_intent' ) ){ //If Exit Intent Enabled
 			$ei_settings = $admin->get_settings( 'exit_intent' );
@@ -77,9 +78,8 @@ class CartBounty_Public{
 			}
 
 			$data_ei = array(
-			    'hours' 		=> $hours,
-			    'product_count' => $this->get_cart_product_count(),
-			    'ajaxurl' 		=> $admin_ajax
+				'hours' 		=> $hours,
+				'product_count' => $this->get_cart_product_count(),
 			);
 
 			wp_enqueue_script( $this->plugin_name . '-exit-intent', plugin_dir_url( __FILE__ ) . 'js/cartbounty-public-exit-intent.js', array( 'jquery' ), $this->version, false );
@@ -88,12 +88,15 @@ class CartBounty_Public{
 
 		$data_co = array(
 			'save_custom_fields' 		=> apply_filters( 'cartbounty_save_custom_fields', true ),
+			'checkout_fields' 			=> $this->get_checkout_fields(),
 			'custom_email_selectors' 	=> $this->get_custom_email_selectors(),
 			'custom_phone_selectors' 	=> $this->get_custom_phone_selectors(),
 			'consent_field' 			=> $admin->get_consent_field_data( 'field_name' ),
-			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_field_selector_timeout', 2000 ), //Default timout 2 seconds - required for plugins that load the HTML form later
+			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_field_selector_timeout', 2000 ),
+			'email_validation' 			=> $email_validation,
 			'phone_validation' 			=> apply_filters( 'cartbounty_phone_validation', '^[+0-9\s]\s?\d[0-9\s-.]{6,30}$'),
-		    'ajaxurl' => $admin_ajax
+			'nonce' 					=> wp_create_nonce( 'user_data' ),
+			'ajaxurl' => $admin_ajax
 		);
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-public.js', array( 'jquery' ), $this->version, false );
@@ -249,15 +252,17 @@ class CartBounty_Public{
 			$this->update_cart_data($cart);
 
 		}else{
+			$save_user_data = false;
 
 			if( isset( $_POST["action"] ) ){
 
 				if( $_POST["action"] == 'cartbounty_save' ){
-					$this->update_cart_and_user_data( $cart, $user_data );
-
-				}else{
-					$this->update_cart_data( $cart );
+					$save_user_data = true;
 				}
+			}
+
+			if( is_user_logged_in() || $save_user_data ){
+				$this->update_cart_and_user_data( $cart, $user_data );
 
 			}else{
 				$this->update_cart_data( $cart );
@@ -359,6 +364,7 @@ class CartBounty_Public{
 
 		$this->delete_duplicate_carts( $cart['session_id'], $updated_rows );
 		$this->increase_recoverable_cart_count();
+		$this->update_woocommerce_database_session( (object)$user_data );
 	}
 
 	/**
@@ -413,126 +419,124 @@ class CartBounty_Public{
 	 */
 	function get_user_data(){
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
-		$user_data = array();
-		$email_consent = 0;
+		$user_data = array(
+			'name'			=> '',
+			'surname'		=> '',
+			'email'			=> '',
+			'phone'			=> '',
+			'email_consent'	=> '',
+			'location'		=> '',
+			'other_fields'	=> '',
+		);
+		$location = array(
+			'country' 	=> '',
+			'city' 		=> '',
+			'postcode' 	=> ''
+		);
+		$other_fields = array();
+		$email_consent_field_name = $admin->get_consent_field_name();
 
-		if ( is_user_logged_in() && !isset( $_POST["action"] )){ //If user has signed in and the request is not triggered by checkout fields or Exit Intent
-			$current_user = wp_get_current_user(); //Retrieving users data
-			//Looking if a user has previously made an order. If not, using default WordPress assigned data
-			(isset($current_user->billing_first_name)) ? $name = $current_user->billing_first_name : $name = $current_user->user_firstname; //If/Else shorthand (condition) ? True : False
-			(isset($current_user->billing_last_name)) ? $surname = $current_user->billing_last_name : $surname = $current_user->user_lastname;
-			(isset($current_user->billing_email)) ? $email = $current_user->billing_email : $email = $current_user->user_email;
-			(isset($current_user->billing_phone)) ? $phone = $current_user->billing_phone : $phone = '';
-			(isset($current_user->billing_country)) ? $country = $current_user->billing_country : $country = '';
-			(isset($current_user->billing_city)) ? $city = $current_user->billing_city : $city = '';
-			(isset($current_user->billing_postcode)) ? $postcode = $current_user->billing_postcode : $postcode = '';
+		if( is_user_logged_in() && !isset( $_POST["action"] ) ){ //If user has signed in and the request is not triggered by checkout fields or Exit Intent
+			$current_user = wp_get_current_user();
 
-			//Try to check if registered user has phone consent data saved and retrieve it
+			if( $current_user->billing_first_name ){
+				$user_data['name'] = sanitize_text_field( $current_user->billing_first_name );
+			}
+
+			if( $current_user->billing_last_name ){
+				$user_data['surname'] = sanitize_text_field( $current_user->billing_last_name );
+			}
+
+			if( $current_user->billing_email ){
+				$user_data['email'] = sanitize_email( $current_user->billing_email );
+			}
+
+			if( $current_user->billing_phone ){
+				$user_data['phone'] = sanitize_text_field( $current_user->billing_phone );
+			}
+
+			if( $current_user->billing_country ){
+				$location['country'] = sanitize_text_field( $current_user->country );
+			}
+
+			if( $current_user->billing_city ){
+				$location['city'] = sanitize_text_field( $current_user->billing_city );
+			}
+
+			if( $current_user->billing_postcode ){
+				$location['postcode'] = sanitize_text_field( $current_user->billing_postcode );
+			}
+
+			//Try to check if registered user has consent data saved
 			$customer = new WC_Customer( get_current_user_id() );
 
-			if( $customer->get_meta( 'billing_email_consent' ) ){
-				$email_consent = 1;
+			if( $customer->get_meta( $email_consent_field_name ) ){
+				$user_data['email_consent'] = 1;
 			}
 
-			if($country == ''){ //Trying to Geolocate user's country in case it was not found
-				$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
-				$country = $country['country'];
-			}
+		}else{
 
-			$location = array(
-				'country' 	=> $country,
-				'city' 		=> $city,
-				'postcode' 	=> $postcode
-			);
+			if( check_ajax_referer( 'user_data', 'nonce', false ) ){ //If security check passed or user has logged in
 
-			$user_data = array(
-				'name'			=> $name,
-				'surname'		=> $surname,
-				'email'			=> $email,
-				'phone'			=> $phone,
-				'email_consent'	=> $email_consent,
-				'location'		=> $location,
-				'other_fields'	=> ''
-			);
+				if( isset( $_POST['customer'] ) ){
+					$customer = $_POST['customer'];
 
-		}else{ //Checking if we have values coming from the input fields
-			(isset($_POST['cartbounty_name'])) ? $name = $_POST['cartbounty_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
-			(isset($_POST['cartbounty_surname'])) ? $surname = $_POST['cartbounty_surname'] : $surname = '';
-			(isset($_POST['cartbounty_email'])) ? $email = $_POST['cartbounty_email'] : $email = '';
-			(isset($_POST['cartbounty_phone'])) ? $phone = $_POST['cartbounty_phone'] : $phone = '';
-			(isset($_POST['cartbounty_country'])) ? $country = $_POST['cartbounty_country'] : $country = '';
-			(isset($_POST['cartbounty_city']) && $_POST['cartbounty_city'] != '') ? $city = $_POST['cartbounty_city'] : $city = '';
-			(isset($_POST['cartbounty_billing_company'])) ? $company = $_POST['cartbounty_billing_company'] : $company = '';
-			(isset($_POST['cartbounty_billing_address_1'])) ? $address_1 = $_POST['cartbounty_billing_address_1'] : $address_1 = '';
-			(isset($_POST['cartbounty_billing_address_2'])) ? $address_2 = $_POST['cartbounty_billing_address_2'] : $address_2 = '';
-			(isset($_POST['cartbounty_billing_state'])) ? $state = $_POST['cartbounty_billing_state'] : $state = '';
-			(isset($_POST['cartbounty_billing_postcode'])) ? $postcode = $_POST['cartbounty_billing_postcode'] : $postcode = '';
-			(isset($_POST['cartbounty_shipping_first_name'])) ? $shipping_name = $_POST['cartbounty_shipping_first_name'] : $shipping_name = '';
-			(isset($_POST['cartbounty_shipping_last_name'])) ? $shipping_surname = $_POST['cartbounty_shipping_last_name'] : $shipping_surname = '';
-			(isset($_POST['cartbounty_shipping_company'])) ? $shipping_company = $_POST['cartbounty_shipping_company'] : $shipping_company = '';
-			(isset($_POST['cartbounty_shipping_country'])) ? $shipping_country = $_POST['cartbounty_shipping_country'] : $shipping_country = '';
-			(isset($_POST['cartbounty_shipping_address_1'])) ? $shipping_address_1 = $_POST['cartbounty_shipping_address_1'] : $shipping_address_1 = '';
-			(isset($_POST['cartbounty_shipping_address_2'])) ? $shipping_address_2 = $_POST['cartbounty_shipping_address_2'] : $shipping_address_2 = '';
-			(isset($_POST['cartbounty_shipping_city'])) ? $shipping_city = $_POST['cartbounty_shipping_city'] : $shipping_city = '';
-			(isset($_POST['cartbounty_shipping_state'])) ? $shipping_state = $_POST['cartbounty_shipping_state'] : $shipping_state = '';
-			(isset($_POST['cartbounty_shipping_postcode'])) ? $shipping_postcode = $_POST['cartbounty_shipping_postcode'] : $shipping_postcode = '';
-			(isset($_POST['cartbounty_order_comments'])) ? $comments = $_POST['cartbounty_order_comments'] : $comments = '';
-			(isset($_POST['cartbounty_create_account'])) ? $create_account = $_POST['cartbounty_create_account'] : $create_account = '';
-			(isset($_POST['cartbounty_ship_elsewhere'])) ? $ship_elsewhere = $_POST['cartbounty_ship_elsewhere'] : $ship_elsewhere = '';
+					//In case of data coming from block checkout and user has only provided Shipping details - change shipping fields to billing fields
+					if( !preg_grep( '/^billing-/', array_keys( $customer ) ) && preg_grep( '/^shipping-/', array_keys( $customer ) ) ){
+						
+						foreach( $customer as $key => $value ){
+							
+							if( strpos( $key, 'shipping-' ) === 0 ){
+								$new_key = str_replace( 'shipping-', 'billing-', $key );
+								$customer[$new_key] = $value;
+								unset( $customer[$key] );
+							}
+						}
 
-			$get_consent_field_data = $admin->get_consent_field_data( 'field_name' );
+						$other_fields['converted-shipping-to-billing'] = true;
+					}
 
-			if( isset( $_POST['cartbounty_consent'] ) ){
+					foreach( $customer as $key => $value ){
 
-				if( $get_consent_field_data == 'billing_email_consent' ){
-					$email_consent = $_POST['cartbounty_consent'];
+						if( $key == 'billing-first_name' || $key == 'billing_first_name' ){
+							$user_data['name'] = sanitize_text_field( $value );
+
+						}elseif( $key == 'billing-last_name' || $key == 'billing_last_name' ){
+							$user_data['surname'] = sanitize_text_field( $value );
+						
+						}elseif( $key == 'email' || $key == 'billing_email' ){
+							$user_data['email'] = sanitize_email( $value );
+
+						}elseif( $key == 'billing-phone' || $key == 'billing_phone' || $key == 'phone' ){
+							$user_data['phone'] = sanitize_text_field( $value );
+
+						}elseif( $key == $email_consent_field_name ){
+							$user_data['email_consent'] = sanitize_text_field( $value );
+
+						}elseif( $key == 'billing-country' || $key == 'billing_country' ){
+							$location['country'] = sanitize_text_field( $value );
+
+						}elseif( $key == 'billing-city' || $key == 'billing_city' ){
+							$location['city'] = sanitize_text_field( $value );
+
+						}elseif( $key == 'billing-postcode' || $key == 'billing_postcode' ){
+							$location['postcode'] = sanitize_text_field( $value );
+
+						}else{
+							$other_fields[$key] = sanitize_text_field( $value );
+						}
+					}
 				}
-
-			}else{
-				$email_consent = $this->get_saved_cart_data( 'email_consent' );
 			}
-			
-			$other_fields = array(
-				'cartbounty_billing_company' 		=> $company,
-				'cartbounty_billing_address_1' 		=> $address_1,
-				'cartbounty_billing_address_2' 		=> $address_2,
-				'cartbounty_billing_state' 			=> $state,
-				'cartbounty_shipping_first_name' 	=> $shipping_name,
-				'cartbounty_shipping_last_name' 	=> $shipping_surname,
-				'cartbounty_shipping_company' 		=> $shipping_company,
-				'cartbounty_shipping_country' 		=> $shipping_country,
-				'cartbounty_shipping_address_1' 	=> $shipping_address_1,
-				'cartbounty_shipping_address_2' 	=> $shipping_address_2,
-				'cartbounty_shipping_city' 			=> $shipping_city,
-				'cartbounty_shipping_state' 		=> $shipping_state,
-				'cartbounty_shipping_postcode' 		=> $shipping_postcode,
-				'cartbounty_order_comments' 		=> $comments,
-				'cartbounty_create_account' 		=> $create_account,
-				'cartbounty_ship_elsewhere' 		=> $ship_elsewhere
-			);
-
-			if($country == ''){ //Trying to Geolocate user's country in case it was not found
-				$country = WC_Geolocation::geolocate_ip(); //Getting users country from his IP address
-				$country = $country['country'];
-			}
-			
-			$location = array(
-				'country' 	=> $country,
-				'city' 		=> $city,
-				'postcode' 	=> $postcode
-			);
-
-			$user_data = array(
-				'name'			=> $name,
-				'surname'		=> $surname,
-				'email'			=> $email,
-				'phone'			=> $phone,
-				'email_consent'	=> $email_consent,
-				'location'		=> $location,
-				'other_fields'	=> $other_fields
-			);
 		}
 
+		if( empty( $location['country'] ) ){ //Try to locate country in case unknown
+			$country = WC_Geolocation::geolocate_ip();
+			$location['country'] = $country['country'];
+		}
+
+		$user_data['location'] = $location;
+		$user_data['other_fields'] = $other_fields;
 		return $user_data;
 	}
 
@@ -813,102 +817,262 @@ class CartBounty_Public{
 	}
 	
 	/**
-	 * Method restores previous Checkout form data
+	 * Method restores previous Checkout form data for users who are not registered
 	 *
 	 * @since    2.0
 	 * @return   Input field values
-	 * @param    $fields    Checkout fields - array
 	 */
-	public function restore_input_data( $fields = array() ) {
-		
-		if( !is_checkout() ) return;//In case this is no WooCommerce checkout page - do not restore data. Added since some plugins change the My account form and may trigger this function unnecessarily
+	public function restore_classic_checkout_fields(){
+
+		if( !is_checkout() ) return; //Exit if not on checkout page
+
+		if( has_block( 'woocommerce/checkout' ) ) return; //Stop block checkout detected
+
+		$saved_cart = $this->get_saved_cart();
+
+		if( !$saved_cart ) return;
 
 		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
-		$saved_cart = $this->get_saved_cart();
 		$get_consent_field_data = $admin->get_consent_field_data( 'field_name' );
+		$other_fields = maybe_unserialize( $saved_cart->other_fields );
+		$location_data = $admin->get_cart_location( $saved_cart->location );
 
-		if( $saved_cart ){
-			$other_fields = maybe_unserialize( $saved_cart->other_fields );
-			$location_data = $admin->get_cart_location( $saved_cart->location );
-            $country = $location_data['country'];
-            $city = $location_data['city'];
-            $postcode = $location_data['postcode'];
+		if( empty( $_POST['billing_first_name'] ) ){
+			$_POST['billing_first_name'] = esc_html( $saved_cart->name );
+		}
 
-            ( empty( $_POST['billing_first_name'] ) ) ? $_POST['billing_first_name'] = sprintf( '%s', esc_html( $saved_cart->name ) ) : '';
-			( empty( $_POST['billing_last_name'] ) ) ? $_POST['billing_last_name'] = sprintf( '%s', esc_html( $saved_cart->surname ) ) : '';
-			( empty( $_POST['billing_country'] ) ) ? $_POST['billing_country'] = sprintf( '%s', esc_html( $country ) ) : '';
-			( empty( $_POST['billing_city'] ) ) ? $_POST['billing_city'] = sprintf( '%s', esc_html( $city ) ) : '';
-			( empty( $_POST['billing_phone'] ) ) ? $_POST['billing_phone'] = sprintf( '%s', esc_html( $saved_cart->phone ) ) : '';
-			( empty( $_POST['billing_email'] ) ) ? $_POST['billing_email'] = sprintf( '%s', esc_html( $saved_cart->email ) ) : '';
-			( empty( $_POST['billing_postcode'] ) ) ? $_POST['billing_postcode'] = sprintf( '%s', esc_html( $postcode ) ) : '';
+		if( empty( $_POST['billing_last_name'] ) ){
+			$_POST['billing_last_name'] = esc_html( $saved_cart->surname );
+		}
 
-			if( empty( $_POST[$get_consent_field_data] ) ){
+		if( empty( $_POST['billing_email'] ) ){
+			$_POST['billing_email'] = esc_html( $saved_cart->email );
+		}
 
-				if( $get_consent_field_data == 'billing_email_consent' ){
-					$_POST[$get_consent_field_data] = sprintf( '%s', esc_html( $saved_cart->email_consent ) );
+		if( empty( $_POST['billing_phone'] ) ){
+			$_POST['billing_phone'] = esc_html( $saved_cart->phone );
+		}
 
-				}
+		if( empty( $_POST[$get_consent_field_data] ) ){
+			$_POST[$get_consent_field_data] = $admin->get_customers_consent( $saved_cart );
+		}
 
-			}else{
-				$_POST[$get_consent_field_data] = '';
-			}
+		if( empty( $_POST['billing_country'] ) ){
+			$_POST['billing_country'] = esc_html( $location_data['country'] );
+		}
 
-			$otherFieldDefaults = array(
-				'cartbounty_billing_company' => '',
-				'cartbounty_billing_address_1' => '',
-				'cartbounty_billing_address_2' => '',
-				'cartbounty_billing_state' => '',
-				'cartbounty_shipping_first_name' => '',
-				'cartbounty_shipping_last_name' => '',
-				'cartbounty_shipping_company' => '',
-				'cartbounty_shipping_country' => '',
-				'cartbounty_shipping_address_1' => '',
-				'cartbounty_shipping_address_2' => '',
-				'cartbounty_shipping_city' => '',
-				'cartbounty_shipping_state' => '',
-				'cartbounty_shipping_postcode' => '',
-				'cartbounty_order_comments' => '',
-				'cartbounty_create_account' => '',
-				'cartbounty_ship_elsewhere' => ''
-			);
+		if( empty( $_POST['billing_city'] ) ){
+			$_POST['billing_city'] = esc_html( $location_data['city'] );
+		}
 
-			$other_fields = array_merge( $otherFieldDefaults, ( array )$other_fields ); //Making sure that other fields do not throw warnings even if unable to unserialize and restore them
+		if( empty( $_POST['billing_postcode'] ) ){
+			$_POST['billing_postcode'] = esc_html( $location_data['postcode'] );
+		}
 
-			if( is_array( $other_fields ) ){
-				( empty( $_POST['billing_company'] ) ) ? $_POST['billing_company'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_company'] ) ) : '';
-				( empty( $_POST['billing_address_1'] ) ) ? $_POST['billing_address_1'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_address_1'] ) ) : '';
-				( empty( $_POST['billing_address_2'] ) ) ? $_POST['billing_address_2'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_address_2'] ) ) : '';
-				( empty( $_POST['billing_state'] ) ) ? $_POST['billing_state'] = sprintf( '%s', esc_html( $other_fields['cartbounty_billing_state'] ) ) : '';
-				( empty( $_POST['shipping_first_name'] ) ) ? $_POST['shipping_first_name'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_first_name'] ) ) : '';
-				( empty( $_POST['shipping_last_name'] ) ) ? $_POST['shipping_last_name'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_last_name'] ) ) : '';
-				( empty( $_POST['shipping_company'] ) ) ? $_POST['shipping_company'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_company'] ) ) : '';
-				( empty( $_POST['shipping_country'] ) ) ? $_POST['shipping_country'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_country'] ) ) : '';
-				( empty( $_POST['shipping_address_1'] ) ) ? $_POST['shipping_address_1'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_address_1'] ) ) : '';
-				( empty( $_POST['shipping_address_2'] ) ) ? $_POST['shipping_address_2'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_address_2'] ) ) : '';
-				( empty( $_POST['shipping_city'] ) ) ? $_POST['shipping_city'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_city'] ) ) : '';
-				( empty( $_POST['shipping_state'] ) ) ? $_POST['shipping_state'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_state'] ) ) : '';
-				( empty( $_POST['shipping_postcode'] ) ) ? $_POST['shipping_postcode'] = sprintf( '%s', esc_html( $other_fields['cartbounty_shipping_postcode'] ) ) : '';
-				( empty( $_POST['order_comments'] ) ) ? $_POST['order_comments'] = sprintf( '%s', esc_html( $other_fields['cartbounty_order_comments'] ) ) : '';
-			}
+		if( is_array( $other_fields ) ){
 			
-			//Checking if Create account should be checked or not
-			if( isset( $other_fields['cartbounty_create_account'] ) ){
+			foreach( $other_fields as $key => $value ){
 				
-				if( $other_fields['cartbounty_create_account'] ){
-					add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
-				}
-			}
+				if( empty( $_POST[$key] ) ){
 
-			//Checking if Ship to a different location must be checked or not
-			if( isset( $other_fields['cartbounty_ship_elsewhere'] ) ){
-				
-				if( $other_fields['cartbounty_ship_elsewhere'] ){
-					add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
+					if( $key == 'ship-to-different-address-checkbox' ){
+					
+						if( $value ){
+							add_filter( 'woocommerce_ship_to_different_address_checked', '__return_true' );
+						}
+
+					}elseif( $key == 'createaccount' ){
+
+						if( $value ){
+							add_filter( 'woocommerce_create_account_default_checked', '__return_true' );
+						}
+					}
+
+					$_POST[$key] = esc_html( $value );
 				}
 			}
 		}
+	}
 
-		return $fields;
+	/**
+	 * Method restores WooCommerce block checkout input fields
+	 *
+	 * @since    8.4
+	 */
+	public function restore_block_checkout_fields() {
+
+		if( !apply_filters( 'cartbounty_restore_block_checkout', true ) ) return;
+
+		if( is_admin() || is_user_logged_in() ) return;
+
+		if( WC()->session ){
+			$session_id = WC()->session->get_customer_id();
+			$counter = get_transient( 'cartbounty_session' . $session_id );
+
+			if ( false === $counter ){
+				$counter = 0;
+			}
+
+			$counter++;
+
+			set_transient( 'cartbounty_session' . $session_id , $counter, 30 ); //30 second expiration
+
+			if( $counter < 5 ){
+				$this->update_woocommerce_database_session();
+			}
+		}
+	}
+
+	/**
+	 * Method adds customer data to WooCommerce sessions database table
+	 *
+	 * @since    8.4
+	 */
+	public function update_woocommerce_database_session( $saved_cart = false ){
+		global $wpdb;
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$session_table_name = $wpdb->prefix . 'woocommerce_sessions';
+		$is_block_checkout = false;
+		$use_same_address_for_billing = false;
+		$new_session_data = array();
+
+	    if( WC()->session ){
+
+	    	if( !$saved_cart ){
+				$public = new CartBounty_Public( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+				$saved_cart = $public->get_saved_cart();
+			}
+
+			if( !$saved_cart ) return; //Stop if abandoned cart missing
+
+			if( empty( $saved_cart->email ) && empty( $saved_cart->phone ) ) return; //Stop if contact details are missing
+
+			$necessary_fields = array(
+				'name' 			=> '',
+				'surname' 		=> '',
+				'email' 		=> '',
+				'phone' 		=> '',
+				'location' 		=> '',
+				'other_fields' 	=> '',
+			);
+			$saved_cart = array_intersect_key( (array)$saved_cart, $necessary_fields ); //Leaving just keys that are needed for session
+			$session_id = WC()->session->get_customer_id();
+			$session_customer = WC()->session->get('customer');
+			$other_fields = maybe_unserialize( $saved_cart['other_fields'] );
+
+			if( !is_array( $other_fields ) ){
+				$other_fields = array();
+			}
+
+			$saved_cart['location'] = $admin->get_cart_location( $saved_cart['location'] );
+			$saved_cart['other_fields'] = $other_fields;
+			
+			if( empty( $other_fields ) ){
+				$is_block_checkout = true;
+
+			}elseif( is_array( $other_fields ) ){
+				$is_block_checkout = preg_grep( '/^(shipping|billing)-/', array_keys( $other_fields ) );
+			}
+
+			if( empty( $is_block_checkout ) ) return; //Stop if block checkout is not detected
+
+			$session_data = $wpdb->get_var( $wpdb->prepare( "SELECT session_value FROM $session_table_name WHERE session_key = %s", $session_id ) );
+
+			if( !$session_data ) return; //Stop if session data missing
+
+			$session_data = maybe_unserialize( $session_data );
+
+			if( isset( $session_data['customer'] ) ){
+				$customer = maybe_unserialize( $session_data['customer'] );
+
+				if( ( isset( $customer['email'] ) && !empty( $customer['email'] ) ) || ( isset( $customer['phone'] ) && !empty( $customer['phone'] ) ) ) return; //Stop in case session already has email or phone number stored				
+
+				//In case of data coming from block checkout - replace billing details with shipping unless both shipping and billing fields are present
+				if( isset( $other_fields['converted-shipping-to-billing'] ) ){ //If during abandoned cart saving process we converted shipping fields to billing - must use shipping fields as billing fields
+					$use_same_address_for_billing = true;
+				}
+
+				//Mapping data
+				foreach( $saved_cart as $key => $value ){
+					
+					if( $key == 'name' ){
+
+						if( $use_same_address_for_billing ){
+							$new_session_data['shipping_first_' . $key] = $value;
+
+						}else{
+							$new_session_data['first_' . $key] = $value;
+						}
+					
+					}elseif( $key == 'surname' ){
+
+						if( $use_same_address_for_billing ){
+							$new_session_data['shipping_last_name'] = $value;
+
+						}else{
+							$new_session_data['last_name'] = $value;
+						}
+
+					}elseif( $key == 'phone' && $use_same_address_for_billing ){
+						$new_session_data['shipping_' . $key] = $value;
+
+					}elseif( $key == 'location' ){
+						$location_data = $value;
+						
+						foreach( $location_data as $key => $value){
+
+							if( $use_same_address_for_billing && in_array( $key, ['country', 'city', 'postcode'] ) ){
+								$new_session_data['shipping_' . $key] = $value;
+
+							}else{
+								$new_session_data[$key] = $value;
+							}
+						}
+
+					}elseif( $key == 'other_fields' ){
+						$other_fields_data = $value;
+						
+						foreach( $other_fields_data as $key => $value ){
+
+							if( strpos( $key, 'billing-' ) === 0 && $use_same_address_for_billing ){
+								$new_key = str_replace( 'billing-', 'shipping_', $key );
+								$new_session_data[$new_key] = $value;
+
+							}elseif( strpos( $key, 'billing-' ) === 0 ){
+
+								if( $key == 'billing-company' || $key == 'billing-phone' || $key == 'billing-address_1' || $key == 'billing-address_2' || 'billing-state' ){
+									$new_key = str_replace( 'billing-', '', $key );
+
+								}else{
+									$new_key = str_replace( 'billing-', 'billing_', $key );
+								}
+								
+								$new_session_data[$new_key] = $value;
+							
+							}elseif( strpos( $key, 'shipping-' ) === 0 ){
+								$new_key = str_replace( 'shipping-', 'shipping_', $key );
+								$new_session_data[$new_key] = $value;
+							}
+						}
+
+					}else{
+						$new_session_data[$key] = $value;
+					}
+				}
+
+				$customer = array_merge( $customer, $new_session_data );
+				$session_data['customer'] = maybe_serialize( $customer );
+				$new_session_data = maybe_serialize( $session_data );
+
+				$result = $wpdb->update(
+					$session_table_name,
+					[ 'session_value' => $new_session_data ],
+					[ 'session_key' => $session_id ],
+					[ '%s' ],
+					[ '%s' ]
+				);
+			}
+		}
 	}
 
 	/**
@@ -1281,7 +1445,9 @@ class CartBounty_Public{
 		$source = '';
 
 		if(WC()->session){ //If session exists
+
 			if(!WC()->session->get('cartbounty_saved_via')){ //If we do not know how the cart was initially saved
+				
 				if(isset($_POST['source'])){ //Check if data coming from a source or not
 					switch ( $_POST['source'] ) {
 						case 'cartbounty_exit_intent':
@@ -1349,6 +1515,73 @@ class CartBounty_Public{
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Get a list of WooCommerce checkout fields that should be saved
+	 *
+	 * @since    8.4
+	 * @return   string
+	 */
+	function get_checkout_fields(){
+		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$consent_field = $admin->get_consent_field_data( 'field_name' );
+		$selectors = array(
+			"email",
+			"billing_email",
+			"billing-country",
+			"billing_country",
+			"billing-first_name",
+			"billing_first_name",
+			"billing-last_name",
+			"billing_last_name",
+			"billing-company",
+			"billing_company",
+			"billing-address_1",
+			"billing_address_1",
+			"billing-address_2",
+			"billing_address_2",
+			"billing-city",
+			"billing_city",
+			"billing-state",
+			"billing_state",
+			"billing-postcode",
+			"billing_postcode",
+			"billing-phone",
+			"billing_phone",
+			"shipping-country",
+			"shipping_country",
+			"shipping-first_name",
+			"shipping_first_name",
+			"shipping-last_name",
+			"shipping_last_name",
+			"shipping-company",
+			"shipping_company",
+			"shipping-address_1",
+			"shipping_address_1",
+			"shipping-address_2",
+			"shipping_address_2",
+			"shipping-city",
+			"shipping_city",
+			"shipping-state",
+			"shipping_state",
+			"shipping-postcode",
+			"shipping_postcode",
+			"shipping-phone",
+			"checkbox-control-1",
+			"ship-to-different-address-checkbox",
+			"checkbox-control-0",
+			"createaccount",
+			"checkbox-control-2",
+			"order-notes textarea",
+			"order_comments",
+		);
+
+		if( $consent_field ){
+			$selectors[] = $consent_field;
+		}
+
+		return '#' . implode(', #', apply_filters( 'cartbounty_checkout_fields', $selectors ) );
 	}
 
 	/**

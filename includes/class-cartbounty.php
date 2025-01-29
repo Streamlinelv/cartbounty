@@ -168,7 +168,8 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 );
 		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 );
 		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 );
-		$this->loader->add_action( 'wp', $public, 'restore_input_data', 10 ); //Restoring previous user input in Checkout form
+		$this->loader->add_action( 'wp', $public, 'restore_classic_checkout_fields', 10 );
+		$this->loader->add_action( 'shutdown', $public, 'restore_block_checkout_fields', 200 );
 		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' );
 	}
 

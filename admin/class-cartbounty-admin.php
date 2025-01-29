@@ -3510,6 +3510,17 @@ class CartBounty_Admin{
 	}
 
 	/**
+	 * Retrieve consent field name
+	 *
+	 * @since    8.4
+	 * @return 	 array
+	 */
+	public function get_consent_field_name() {
+		$name = apply_filters( 'cartbounty_consent_email_name', 'billing_email_consent' );
+		return $name;
+	}
+
+	/**
 	 * Retrieve consent field data
 	 *
 	 * @since    8.4
@@ -3525,7 +3536,7 @@ class CartBounty_Admin{
 		$consent_position = '';
 
 		if( $email_consent_enabled ){
-			$field_name = 'billing_email_consent';
+			$field_name = $this->get_consent_field_name();
 			$consent_enabled = true;
 
 			if( isset( $fields['billing_email'] ) ){
@@ -3547,6 +3558,31 @@ class CartBounty_Admin{
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Retrieve customer's saved consent field value
+	 *
+	 * @since    8.4
+	 * @return 	 boolean
+	 * @param    boolean     $saved_cart    		  Customer's abandoned cart data
+	 */
+	public function get_customers_consent( $saved_cart = false ){
+		$consent = false;
+
+		if( !$saved_cart ){
+			$public = new CartBounty_Public( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+			$saved_cart = $public->get_saved_cart();
+		}
+		
+		$get_consent_field_data = $this->get_consent_field_data( 'field_name' );
+		$email_consent_field_name = $this->get_consent_field_name();
+
+		if( $get_consent_field_data == $email_consent_field_name && $saved_cart->email_consent ){
+			$consent = true;
+		}
+
+		return $consent;
 	}
 
 	/**
@@ -5227,8 +5263,8 @@ class CartBounty_Admin{
 	 * Converts the WooCommerce country codes to 3-letter ISO codes
 	 *
 	 * @since    8.2
-	 * @param    string    WooCommerce's 2 letter country code
 	 * @return   string    ISO 3-letter country code
+	 * @param    string    WooCommerce's 2 letter country code
 	 */
 	public function convert_country_code( $country ) {
 		$countries = array(

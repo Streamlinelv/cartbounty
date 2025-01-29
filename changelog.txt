@@ -4,6 +4,7 @@
 * Added tracking for user unsubscriptions at specific automation steps in WordPress recovery
 * Added an option to enable email consent collection
 * Added bot detection layer to exclude anonymous abandoned carts created by bots
+* Added compatibility with the new WooCommerce checkout
 
 = 8.3 =
 * Added support for saving abandoned carts through custom phone fields

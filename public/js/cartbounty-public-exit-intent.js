@@ -34,30 +34,38 @@
 	 	}
 
 		function getExitIntentEmail() { //Reading email entered in exit intent
-			var cartbounty_email = jQuery("#cartbounty-exit-intent-email").val();
-			var atposition = cartbounty_email.indexOf("@");
-			var dotposition = cartbounty_email.lastIndexOf(".");
+			let email = jQuery('#cartbounty-exit-intent-email').val() || '';
 			
-			clearTimeout(timer);
+			if(email.length > 0){				
+				clearTimeout(timer);
+				var emailValidation = cartbounty_co.email_validation; //Regex validation
+				var consent = cartbounty_co.consent_field;
+				
+				if( email.match(emailValidation) ){
+					var fields = {
+						email: 			email,
+					};
 
-			if (!(atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= cartbounty_email.length)){ //Checking if the email field is valid
-				var data = {
-					action:						"cartbounty_save",
-					source:						"cartbounty_exit_intent",
-					cartbounty_email:			cartbounty_email
+					if( consent ){
+						fields[consent] = 1;
+					}
+
+					var data = {
+						action:			"cartbounty_save",
+						nonce:			cartbounty_co.nonce,
+						source:			"cartbounty_exit_intent",
+						customer:		fields,
+					}
+
+					timer = setTimeout(function(){
+						jQuery.post(cartbounty_co.ajaxurl, data,
+						function(response) {
+							if(response.success){ //If successfuly saved data
+								localStorage.setItem('cartbounty_contact_saved', true);
+							}
+						});
+					}, 600);
 				}
-
-				timer = setTimeout(function(){
-					jQuery.post(cartbounty_ei.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
-					function(response) {
-						if(response.success){ //If successfuly saved data
-							localStorage.setItem('cartbounty_contact_saved', true);
-						}
-					});
-					
-				}, 800);
-			}else{
-				//console.log("Not a valid email or phone address");
 			}
 		}
 
