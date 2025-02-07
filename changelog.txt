@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 8.4.1 =
+* Fixed email reminder sending if consent disabled
+
 = 8.4 =
 * Added tracking for user unsubscriptions at specific automation steps in WordPress recovery
 * Added an option to enable email consent collection

@@ -109,7 +109,7 @@ class CartBounty_WordPress{
 		$time = $admin->get_time_intervals();
 		$email_consent_query = '';
 
-		if( $admin->get_consent_settings() ){
+		if( $admin->get_consent_settings( 'email' ) ){
 			$email_consent_query = 'AND email_consent = 1';
 		}
 
@@ -670,7 +670,7 @@ class CartBounty_WordPress{
 		$count = 0;
 		$consent_query = '';
 
-		if( $admin->get_consent_settings() ){
+		if( $admin->get_consent_settings( 'email' ) ){
 			$consent_query = 'AND email_consent = 1';
 		}
 		
