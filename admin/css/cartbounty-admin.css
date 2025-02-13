@@ -47,7 +47,8 @@
 .cartbounty-daypicker-options button,
 #cartbounty-period-dropdown-selected-period-label,
 .cartbounty-notice-content a,
-.cartbounty-report-chart svg{
+.cartbounty-report-chart svg,
+.cartbounty-section-item.cartbounty-item-faded{
 	-webkit-transition: 	all 0.2s ease-in-out;
 	-moz-transition: 		all 0.2s ease-in-out;
 	-o-transition: 			all 0.2s ease-in-out;
@@ -1006,6 +1007,14 @@ a.cartbounty-tab{
 
 .cartbounty-connected.cartbounty-section-item:hover .cartbounty-icon-container{
 	background: #ffe400;
+}
+
+.cartbounty-section-item.cartbounty-item-faded{
+	opacity: .5;
+}
+
+.cartbounty-section-item.cartbounty-item-faded:hover{
+	opacity: 1;
 }
 
 .cartbounty-tab-name,

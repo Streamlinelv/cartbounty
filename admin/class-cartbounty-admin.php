@@ -558,7 +558,7 @@ class CartBounty_Admin{
 											}
 										?>
 										<div class="cartbounty-section-item-container cartbounty-col-sm-6 cartbounty-col-lg-4">
-											<div class="cartbounty-section-item<?php if($item['connected']){echo ' cartbounty-connected'; }?><?php if(!$item['availability']){echo ' cartbounty-unavailable'; }?>">
+											<div class="cartbounty-section-item<?php if($item['connected']){echo ' cartbounty-connected'; }?><?php if(!$item['availability']){echo ' cartbounty-unavailable'; }?><?php if($item['faded']){echo ' cartbounty-item-faded'; }?>">
 												<?php if($item['availability']){
 													$link = '?page='. CARTBOUNTY .'&tab='. $tab .'&section='. $key;
 													$item['info_link'] = $link;
@@ -600,7 +600,7 @@ class CartBounty_Admin{
 											}
 										?>
 										<div class="cartbounty-section-item-container cartbounty-col-sm-6 cartbounty-col-lg-4">
-											<div class="cartbounty-section-item<?php if($item['connected']){echo ' cartbounty-connected'; }?>">
+											<div class="cartbounty-section-item<?php if($item['connected']){echo ' cartbounty-connected'; }?><?php if($item['faded']){echo ' cartbounty-item-faded'; }?>">
 												<?php $link = '?page='. CARTBOUNTY .'&tab='. $tab .'&section='. $key; ?>
 												<div class="cartbounty-section-image">
 													<?php echo $this->get_connection( $item['connected'], true, $tab ); ?>
@@ -1252,10 +1252,19 @@ class CartBounty_Admin{
 			$wordpress = new CartBounty_WordPress();
 
 			$sections = array(
+				'wordpress'	=> array(
+					'name'				=> 'WordPress',
+					'connected'			=> $wordpress->automation_enabled() ? true : false,
+					'availability'		=> true,
+					'faded'				=> false,
+					'info_link'			=> '',
+					'description'		=> '<p>' . esc_html__("A simple solution for sending abandoned cart reminder emails using WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("If you are looking for something more advanced and powerful, please consider connecting with ActiveCampaign, GetResponse or MailChimp.", 'woo-save-abandoned-carts') . '</p>'
+				),
 				'activecampaign'	=> array(
 					'name'				=> 'ActiveCampaign',
 					'connected'			=> false,
 					'availability'		=> false,
+					'faded'				=> true,
 					'info_link'			=> CARTBOUNTY_ACTIVECAMPAIGN_TRIAL_LINK,
 					'description'		=> '<p>' . esc_html__("ActiveCampaign is an awesome platform that enable you to set up advanced rules for sending abandoned cart recovery emails tailored to customer behavior.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("In contrast to MailChimp, it allows sending reminder email series without the requirement to subscribe.", 'woo-save-abandoned-carts') . '</p>'
 				),
@@ -1263,6 +1272,7 @@ class CartBounty_Admin{
 					'name'				=> 'GetResponse',
 					'connected'			=> false,
 					'availability'		=> false,
+					'faded'				=> true,
 					'info_link'			=> CARTBOUNTY_GETRESPONSE_TRIAL_LINK,
 					'description'		=> '<p>' . esc_html__("GetResponse offers efficient and beautifully designed email marketing platform to recover abandoned carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates.", 'woo-save-abandoned-carts') . '</p>'
 				),
@@ -1270,20 +1280,15 @@ class CartBounty_Admin{
 					'name'				=> 'MailChimp',
 					'connected'			=> false,
 					'availability'		=> false,
+					'faded'				=> true,
 					'info_link'			=> CARTBOUNTY_MAILCHIMP_LINK,
 					'description'		=> '<p>' . esc_html__("MailChimp offers a free plan and allows to send personalized reminder emails to your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("MailChimp will only send the 1st email in the series unless a user becomes a subscriber.", 'woo-save-abandoned-carts') . '</p>'
-				),
-				'wordpress'	=> array(
-					'name'				=> 'WordPress',
-					'connected'			=> $wordpress->automation_enabled() ? true : false,
-					'availability'		=> true,
-					'info_link'			=> '',
-					'description'		=> '<p>' . esc_html__("A simple solution for sending abandoned cart reminder emails using WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("If you are looking for something more advanced and powerful, please consider connecting with ActiveCampaign, GetResponse or MailChimp.", 'woo-save-abandoned-carts') . '</p>'
 				),
 				'bulkgate'	=> array(
 					'name'				=> 'BulkGate',
 					'connected'			=> false,
 					'availability'		=> false,
+					'faded'				=> true,
 					'info_link'			=> CARTBOUNTY_BULKGATE_TRIAL_LINK,
 					'description'		=> '<p>' . esc_html__("A perfect channel for sending personalized SMS text messages like abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Recover more sales by sending a personal SMS message along with other abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p>'
 				),
@@ -1291,6 +1296,7 @@ class CartBounty_Admin{
 					'name'				=> esc_html__( 'Push notifications', 'woo-save-abandoned-carts' ),
 					'connected'			=> false,
 					'availability'		=> false,
+					'faded'				=> true,
 					'info_link'			=> CARTBOUNTY_PUSH_NOTIFICATION_LINK,
 					'description'		=> '<p>' . esc_html__("With no requirement for an email or phone number, web push notifications provide a low-friction, real-time, personal and efficient channel for sending abandoned cart reminders.", 'woo-save-abandoned-carts') . '</p><p>' . esc_html__("Additionally, notifications can be sent even after the user has closed the website, providing a higher chance of engaging them to complete their purchase.", 'woo-save-abandoned-carts') . '</p>'
 				),
@@ -1298,6 +1304,7 @@ class CartBounty_Admin{
 					'name'				=> 'Webhook',
 					'connected'			=> false,
 					'availability'		=> false,
+					'faded'				=> true,
 					'info_link'			=> CARTBOUNTY_WEBHOOK_LINK,
 					'description'		=> '<p>' . sprintf(
 						/* translators: %1$s - Link start, %2$s - Link start, %3$s - Link end */
@@ -1312,18 +1319,21 @@ class CartBounty_Admin{
 					'name'				=> esc_html__('Exit Intent', 'woo-save-abandoned-carts'),
 					'connected'			=> $this->get_settings( 'exit_intent', 'status' ) ? true : false,
 					'availability'		=> true,
+					'faded'				=> false,
 					'description'		=> '<p>' . esc_html__("Save more recoverable abandoned carts by showcasing a popup message right before your customer tries to leave and offer an option to save his shopping cart by entering his email.", 'woo-save-abandoned-carts') . '</p>'
 				),
 				'early_capture'	=> array(
 					'name'				=> esc_html__('Early capture', 'woo-save-abandoned-carts'),
 					'connected'			=> false,
 					'availability'		=> true,
+					'faded'				=> true,
 					'description'		=> '<p>' . esc_html__('Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the "Add to cart" button is clicked.', 'woo-save-abandoned-carts') . '</p>'
 				),
 				'tab_notification'	=> array(
 					'name'				=> esc_html__('Tab notification', 'woo-save-abandoned-carts'),
 					'connected'			=> false,
 					'availability'		=> true,
+					'faded'				=> true,
 					'description'		=> '<p>' . esc_html__('Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab with Tab notification.', 'woo-save-abandoned-carts') . '</p>'
 				)
 			);

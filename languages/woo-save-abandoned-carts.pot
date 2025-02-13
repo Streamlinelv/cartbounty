@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CartBounty\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-save-abandoned-carts\n"
-"POT-Creation-Date: 2025-02-13 19:53+0200\n"
+"POT-Creation-Date: 2025-02-13 20:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: www.cartbounty.com\n"
@@ -68,7 +68,7 @@ msgid "%1$s ago"
 msgstr ""
 
 #: admin/class-cartbounty-admin-table.php:342
-#: admin/class-cartbounty-admin.php:3682
+#: admin/class-cartbounty-admin.php:3692
 msgid "Recovered"
 msgstr ""
 
@@ -226,7 +226,7 @@ msgstr ""
 msgid "Here you will find some special tools that will enable you to discover even more bounty. Increase your chances of getting more recoverable abandoned carts. You can enable one or all of them, just make sure not to overwhelm your visitors with information :)"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:597 admin/class-cartbounty-admin.php:4697
+#: admin/class-cartbounty-admin.php:597 admin/class-cartbounty-admin.php:4707
 msgid "Enable"
 msgstr ""
 
@@ -358,8 +358,8 @@ msgstr ""
 msgid "Tools consent notice"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:813 admin/class-cartbounty-admin.php:2006
-#: admin/class-cartbounty-admin.php:2171 admin/class-cartbounty-admin.php:2276
+#: admin/class-cartbounty-admin.php:813 admin/class-cartbounty-admin.php:2016
+#: admin/class-cartbounty-admin.php:2181 admin/class-cartbounty-admin.php:2286
 msgid "Miscellaneous"
 msgstr ""
 
@@ -391,12 +391,12 @@ msgstr ""
 msgid "Enable easy international phone input"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:860 admin/class-cartbounty-admin.php:1809
-#: admin/class-cartbounty-admin.php:2029
+#: admin/class-cartbounty-admin.php:860 admin/class-cartbounty-admin.php:1819
+#: admin/class-cartbounty-admin.php:2039
 msgid "Save settings"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:880 admin/class-cartbounty-admin.php:2847
+#: admin/class-cartbounty-admin.php:880 admin/class-cartbounty-admin.php:2857
 msgid "Dashboard"
 msgstr ""
 
@@ -412,7 +412,7 @@ msgstr ""
 msgid "All tools"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1106 admin/class-cartbounty-admin.php:2243
+#: admin/class-cartbounty-admin.php:1106 admin/class-cartbounty-admin.php:2253
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
@@ -492,810 +492,810 @@ msgstr ""
 msgid "Disable notifications"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1206 admin/class-cartbounty-admin.php:1467
+#: admin/class-cartbounty-admin.php:1206 admin/class-cartbounty-admin.php:1477
 msgid "Send email after"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1260
-msgid "ActiveCampaign is an awesome platform that enable you to set up advanced rules for sending abandoned cart recovery emails tailored to customer behavior."
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1260
-msgid "In contrast to MailChimp, it allows sending reminder email series without the requirement to subscribe."
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1267
-msgid "GetResponse offers efficient and beautifully designed email marketing platform to recover abandoned carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates."
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1274
-msgid "MailChimp offers a free plan and allows to send personalized reminder emails to your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1274
-msgid "MailChimp will only send the 1st email in the series unless a user becomes a subscriber."
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1281 admin/class-cartbounty-admin.php:1355
+#: admin/class-cartbounty-admin.php:1261 admin/class-cartbounty-admin.php:1365
 msgid "A simple solution for sending abandoned cart reminder emails using WordPress mail server. This recovery option works best if you have a small to medium number of abandoned carts."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1281
+#: admin/class-cartbounty-admin.php:1261
 msgid "If you are looking for something more advanced and powerful, please consider connecting with ActiveCampaign, GetResponse or MailChimp."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1288
+#: admin/class-cartbounty-admin.php:1269
+msgid "ActiveCampaign is an awesome platform that enable you to set up advanced rules for sending abandoned cart recovery emails tailored to customer behavior."
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1269
+msgid "In contrast to MailChimp, it allows sending reminder email series without the requirement to subscribe."
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1277
+msgid "GetResponse offers efficient and beautifully designed email marketing platform to recover abandoned carts. It is a professional email marketing system with awesome email design options and beautifully pre-designed email templates."
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1285
+msgid "MailChimp offers a free plan and allows to send personalized reminder emails to your customers, either as one-time messages or a series of follow-up emails, such as sending the first email within an hour of cart abandonment, the second one after 24 hours, and so on."
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1285
+msgid "MailChimp will only send the 1st email in the series unless a user becomes a subscriber."
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1293
 msgid "A perfect channel for sending personalized SMS text messages like abandoned cart reminders."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1288
+#: admin/class-cartbounty-admin.php:1293
 msgid "Recover more sales by sending a personal SMS message along with other abandoned cart reminders."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1291
+#: admin/class-cartbounty-admin.php:1296
 msgid "Push notifications"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1295
+#: admin/class-cartbounty-admin.php:1301
 msgid "With no requirement for an email or phone number, web push notifications provide a low-friction, real-time, personal and efficient channel for sending abandoned cart reminders."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1295
+#: admin/class-cartbounty-admin.php:1301
 msgid "Additionally, notifications can be sent even after the user has closed the website, providing a higher chance of engaging them to complete their purchase."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1304
+#: admin/class-cartbounty-admin.php:1311
 #, php-format
 msgid "Webhook offers an easy way of sending event-based data about abandoned carts to applications like %1$sMake (former Integromat)%3$s, %2$sPabbly%3$s, Zapier or other. A great way for building powerful automations and advanced marketing processes."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1312
+#: admin/class-cartbounty-admin.php:1319
 msgid "Exit Intent"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1315
+#: admin/class-cartbounty-admin.php:1323
 msgid "Save more recoverable abandoned carts by showcasing a popup message right before your customer tries to leave and offer an option to save his shopping cart by entering his email."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1318
+#: admin/class-cartbounty-admin.php:1326
 msgid "Early capture"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1321
+#: admin/class-cartbounty-admin.php:1330
 msgid "Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the \"Add to cart\" button is clicked."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1324 admin/class-cartbounty-admin.php:2208
+#: admin/class-cartbounty-admin.php:1333 admin/class-cartbounty-admin.php:2218
 msgid "Tab notification"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1327 admin/class-cartbounty-admin.php:2206
+#: admin/class-cartbounty-admin.php:1337 admin/class-cartbounty-admin.php:2216
 msgid "Decrease shopping cart abandonment by grabbing customer attention and returning them to your store after they have switched to a new browser tab with Tab notification."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1355
+#: admin/class-cartbounty-admin.php:1365
 #, php-format
 msgid "If you are looking for something more advanced and powerful, please consider upgrading to %s%s Pro%s."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1369
+#: admin/class-cartbounty-admin.php:1379
 msgid "Automation process"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1371
+#: admin/class-cartbounty-admin.php:1381
 msgid "Configure your abandoned cart reminder emails, how they look, when to send them, include coupons, etc. You can choose to enable just one or all of them creating a 3-step automation process. The countdown of the next step starts right after the previous one is finished."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1401 admin/class-cartbounty-admin.php:1646
-#: admin/class-cartbounty-admin.php:1715
+#: admin/class-cartbounty-admin.php:1411 admin/class-cartbounty-admin.php:1656
+#: admin/class-cartbounty-admin.php:1725
 #, php-format
 msgid "Sends after %s"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1409 admin/class-cartbounty-admin.php:1654
-#: admin/class-cartbounty-admin.php:1723
+#: admin/class-cartbounty-admin.php:1419 admin/class-cartbounty-admin.php:1664
+#: admin/class-cartbounty-admin.php:1733
 msgid "Queue"
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1413 admin/class-cartbounty-admin.php:1658
-#: admin/class-cartbounty-admin.php:1727
-msgid "Sends"
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1418 admin/class-cartbounty-admin.php:1663
-#: admin/class-cartbounty-admin.php:1732
-msgid "Open rate"
-msgstr ""
-
-#: admin/class-cartbounty-admin.php:1422 admin/class-cartbounty-admin.php:1667
-#: admin/class-cartbounty-admin.php:1736
-msgid "Upgrade to see stats"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1423 admin/class-cartbounty-admin.php:1668
 #: admin/class-cartbounty-admin.php:1737
-msgid "Opens"
+msgid "Sends"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1429 admin/class-cartbounty-admin.php:1674
-#: admin/class-cartbounty-admin.php:1743
-msgid "Click rate"
+#: admin/class-cartbounty-admin.php:1428 admin/class-cartbounty-admin.php:1673
+#: admin/class-cartbounty-admin.php:1742
+msgid "Open rate"
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1432 admin/class-cartbounty-admin.php:1677
+#: admin/class-cartbounty-admin.php:1746
+msgid "Upgrade to see stats"
 msgstr ""
 
 #: admin/class-cartbounty-admin.php:1433 admin/class-cartbounty-admin.php:1678
 #: admin/class-cartbounty-admin.php:1747
+msgid "Opens"
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1439 admin/class-cartbounty-admin.php:1684
+#: admin/class-cartbounty-admin.php:1753
+msgid "Click rate"
+msgstr ""
+
+#: admin/class-cartbounty-admin.php:1443 admin/class-cartbounty-admin.php:1688
+#: admin/class-cartbounty-admin.php:1757
 msgid "Clicks"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1450 admin/class-cartbounty-admin.php:1852
-#: admin/class-cartbounty-admin.php:2052 admin/class-cartbounty-admin.php:2214
+#: admin/class-cartbounty-admin.php:1460 admin/class-cartbounty-admin.php:1862
+#: admin/class-cartbounty-admin.php:2062 admin/class-cartbounty-admin.php:2224
 msgid "General"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1452
+#: admin/class-cartbounty-admin.php:1462
 msgid "Enable email sending to start this automated abandoned cart recovery step."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1455
+#: admin/class-cartbounty-admin.php:1465
 #, php-format
 msgid "Learn how to use %spersonalization tags%s."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1464
+#: admin/class-cartbounty-admin.php:1474
 msgid "Enable email"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1472
+#: admin/class-cartbounty-admin.php:1482
 #, php-format
 msgid "Please %ssee this%s to learn how reminder sending works and when it will be delivered."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1476
+#: admin/class-cartbounty-admin.php:1486
 msgid "Email subject"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1481
+#: admin/class-cartbounty-admin.php:1491
 msgid "Subject line has a huge impact on email open rate."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1485 admin/class-cartbounty-admin.php:1897
-#: admin/class-cartbounty-admin.php:2095
+#: admin/class-cartbounty-admin.php:1495 admin/class-cartbounty-admin.php:1907
+#: admin/class-cartbounty-admin.php:2105
 msgid "Main title"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1491 admin/class-cartbounty-admin.php:1903
+#: admin/class-cartbounty-admin.php:1501 admin/class-cartbounty-admin.php:1913
 msgid "Content"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1500 admin/class-cartbounty-admin.php:1912
-#: admin/class-cartbounty-admin.php:2104
+#: admin/class-cartbounty-admin.php:1510 admin/class-cartbounty-admin.php:1922
+#: admin/class-cartbounty-admin.php:2114
 msgid "Appearance"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1502
+#: admin/class-cartbounty-admin.php:1512
 msgid "Choose a template that will be used to display the abandoned cart reminder email."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1504
+#: admin/class-cartbounty-admin.php:1514
 #, php-format
 msgid "Look here to see advanced %stemplate customization%s options."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1509
+#: admin/class-cartbounty-admin.php:1519
 msgid "Template"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1516 admin/class-cartbounty-admin.php:1520
+#: admin/class-cartbounty-admin.php:1526 admin/class-cartbounty-admin.php:1530
 msgid "Light"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1528 admin/class-cartbounty-admin.php:1535
+#: admin/class-cartbounty-admin.php:1538 admin/class-cartbounty-admin.php:1545
 msgid "With cart contents"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1530 admin/class-cartbounty-admin.php:1545
-#: admin/class-cartbounty-admin.php:1938 admin/class-cartbounty-admin.php:1952
-#: admin/class-cartbounty-admin.php:2126 admin/class-cartbounty-admin.php:2140
+#: admin/class-cartbounty-admin.php:1540 admin/class-cartbounty-admin.php:1555
+#: admin/class-cartbounty-admin.php:1948 admin/class-cartbounty-admin.php:1962
+#: admin/class-cartbounty-admin.php:2136 admin/class-cartbounty-admin.php:2150
 msgid "Upgrade to enable this style"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1531 admin/class-cartbounty-admin.php:1546
-#: admin/class-cartbounty-admin.php:1701 admin/class-cartbounty-admin.php:1770
-#: admin/class-cartbounty-admin.php:1939 admin/class-cartbounty-admin.php:1953
-#: admin/class-cartbounty-admin.php:2127 admin/class-cartbounty-admin.php:2141
-#: admin/class-cartbounty-admin.php:2851 admin/class-cartbounty-admin.php:4947
-#: admin/class-cartbounty-admin.php:4962 admin/class-cartbounty-admin.php:4994
-#: admin/class-cartbounty-admin.php:5009
+#: admin/class-cartbounty-admin.php:1541 admin/class-cartbounty-admin.php:1556
+#: admin/class-cartbounty-admin.php:1711 admin/class-cartbounty-admin.php:1780
+#: admin/class-cartbounty-admin.php:1949 admin/class-cartbounty-admin.php:1963
+#: admin/class-cartbounty-admin.php:2137 admin/class-cartbounty-admin.php:2151
+#: admin/class-cartbounty-admin.php:2861 admin/class-cartbounty-admin.php:4957
+#: admin/class-cartbounty-admin.php:4972 admin/class-cartbounty-admin.php:5004
+#: admin/class-cartbounty-admin.php:5019
 msgid "Get Pro"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1543 admin/class-cartbounty-admin.php:1550
+#: admin/class-cartbounty-admin.php:1553 admin/class-cartbounty-admin.php:1560
 msgid "With cart contents in columns"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1556 admin/class-cartbounty-admin.php:1963
-#: admin/class-cartbounty-admin.php:2151
+#: admin/class-cartbounty-admin.php:1566 admin/class-cartbounty-admin.php:1973
+#: admin/class-cartbounty-admin.php:2161
 msgid "Colors"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1558
+#: admin/class-cartbounty-admin.php:1568
 msgid "Look at the default email colors and adjust them to fit your design requirements."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1561 admin/class-cartbounty-admin.php:1968
-#: admin/class-cartbounty-admin.php:2156
+#: admin/class-cartbounty-admin.php:1571 admin/class-cartbounty-admin.php:1978
+#: admin/class-cartbounty-admin.php:2166
 msgid "Main:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1565
+#: admin/class-cartbounty-admin.php:1575
 msgid "Button:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1569
+#: admin/class-cartbounty-admin.php:1579
 msgid "Text:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1573
+#: admin/class-cartbounty-admin.php:1583
 msgid "Backdrop:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1582
+#: admin/class-cartbounty-admin.php:1592
 msgid "Include image"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1591
+#: admin/class-cartbounty-admin.php:1601
 msgid "Coupon"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1593
+#: admin/class-cartbounty-admin.php:1603
 msgid "Consider adding a coupon code to your reminder to encourage customers to complete their purchase."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1602 admin/class-cartbounty-admin.php:4871
+#: admin/class-cartbounty-admin.php:1612 admin/class-cartbounty-admin.php:4881
 msgid "Generate coupon"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1608 admin/class-cartbounty-admin.php:4877
+#: admin/class-cartbounty-admin.php:1618 admin/class-cartbounty-admin.php:4887
 msgid "Include an existing coupon"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1609 admin/class-cartbounty-admin.php:4878
+#: admin/class-cartbounty-admin.php:1619 admin/class-cartbounty-admin.php:4888
 msgid "Search coupon..."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1616
+#: admin/class-cartbounty-admin.php:1626
 msgid "Test email"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1618
+#: admin/class-cartbounty-admin.php:1628
 msgid "Before activating this automation, you might want to test your email."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1623
+#: admin/class-cartbounty-admin.php:1633
 msgid "Preview"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1624
+#: admin/class-cartbounty-admin.php:1634
 msgid "Preview email"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1628
+#: admin/class-cartbounty-admin.php:1638
 msgid "Send a test email to"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1631
+#: admin/class-cartbounty-admin.php:1641
 msgid "Send"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1685 admin/class-cartbounty-admin.php:1754
+#: admin/class-cartbounty-admin.php:1695 admin/class-cartbounty-admin.php:1764
 #: includes/class-cartbounty-wordpress.php:90
 msgid "Disabled"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1696 admin/class-cartbounty-admin.php:1765
+#: admin/class-cartbounty-admin.php:1706 admin/class-cartbounty-admin.php:1775
 msgid "Upgrade to enable this reminder"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1783
+#: admin/class-cartbounty-admin.php:1793
 msgid "General email settings"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1785
+#: admin/class-cartbounty-admin.php:1795
 msgid "\"From\" name tells your recipients who sent them the message. It is just as important as your subject line and can impact whether your email is opened, or not."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1790
+#: admin/class-cartbounty-admin.php:1800
 msgid "\"From\" name"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1794
+#: admin/class-cartbounty-admin.php:1804
 msgid "\"From\" email"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1798
+#: admin/class-cartbounty-admin.php:1808
 msgid "Reply-to address"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1831
+#: admin/class-cartbounty-admin.php:1841
 #, php-format
 msgid "With the help of Exit Intent, you can capture even more abandoned carts by displaying a message including an email or phone field that the customer can fill to save his shopping cart. You can even offer to send a discount code. Please note that the Exit Intent will only be showed to unregistered users once every 60 minutes after they have added an item to their cart and try to leave your store. Learn how to %scustomize contents%s of Exit Intent popup."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1831
+#: admin/class-cartbounty-admin.php:1841
 msgid "How to customize contents of Exit Intent"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1854
+#: admin/class-cartbounty-admin.php:1864
 msgid "Enable email or phone request before leaving your store."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1863
+#: admin/class-cartbounty-admin.php:1873
 msgid "Enable Exit Intent"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1870
+#: admin/class-cartbounty-admin.php:1880
 msgid "Enable mobile Exit Intent"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1876 admin/class-cartbounty-admin.php:2081
+#: admin/class-cartbounty-admin.php:1886 admin/class-cartbounty-admin.php:2091
 msgid "Field type"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1878
+#: admin/class-cartbounty-admin.php:1888
 msgid "Choose which input field should be collected in the popup."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1882 admin/class-cartbounty-admin.php:2087
+#: admin/class-cartbounty-admin.php:1892 admin/class-cartbounty-admin.php:2097
 msgid "Email"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1886 admin/class-cartbounty-admin.php:2091
+#: admin/class-cartbounty-admin.php:1896 admin/class-cartbounty-admin.php:2101
 msgid "Phone"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1890
+#: admin/class-cartbounty-admin.php:1900
 msgid "Both"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1914
+#: admin/class-cartbounty-admin.php:1924
 msgid "Adjust the visual appearance of your Exit Intent popup."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1919 admin/class-cartbounty-admin.php:2111
+#: admin/class-cartbounty-admin.php:1929 admin/class-cartbounty-admin.php:2121
 msgid "Style"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1925 admin/class-cartbounty-admin.php:1929
+#: admin/class-cartbounty-admin.php:1935 admin/class-cartbounty-admin.php:1939
 msgid "Appear in center"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1936 admin/class-cartbounty-admin.php:1943
+#: admin/class-cartbounty-admin.php:1946 admin/class-cartbounty-admin.php:1953
 msgid "Slide in from left"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1950 admin/class-cartbounty-admin.php:1957
+#: admin/class-cartbounty-admin.php:1960 admin/class-cartbounty-admin.php:1967
 msgid "Fullscreen"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1965 admin/class-cartbounty-admin.php:2153
+#: admin/class-cartbounty-admin.php:1975 admin/class-cartbounty-admin.php:2163
 msgid "If you leave the Inverse color empty, it will automatically use the inverse color of the main color you have picked. Clear both colors to use the default colors."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1972 admin/class-cartbounty-admin.php:2160
+#: admin/class-cartbounty-admin.php:1982 admin/class-cartbounty-admin.php:2170
 msgid "Inverse:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1983
+#: admin/class-cartbounty-admin.php:1993
 msgid "Custom image"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1985
+#: admin/class-cartbounty-admin.php:1995
 msgid "Recommended dimensions:"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:1992
+#: admin/class-cartbounty-admin.php:2002
 msgid "Add a custom image"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2008
+#: admin/class-cartbounty-admin.php:2018
 msgid "Enable test mode to see how the Exit Intent popup looks like."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2017 admin/class-cartbounty-admin.php:2182
-#: admin/class-cartbounty-admin.php:2287
+#: admin/class-cartbounty-admin.php:2027 admin/class-cartbounty-admin.php:2192
+#: admin/class-cartbounty-admin.php:2297
 msgid "Enable test mode"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2020
+#: admin/class-cartbounty-admin.php:2030
 msgid "Now open your store, add a product to the cart and try leaving it. Please note that while this is enabled, only users with Admin rights will be able to see the Exit Intent and appearance limitations have been removed which means that you will see the popup each time you try to leave your store. Do not forget to disable this after you have done testing."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2046
+#: admin/class-cartbounty-admin.php:2056
 #, php-format
 msgid "Try saving more recoverable abandoned carts by enabling Early capture to collect customer’s email or phone right after the \"Add to cart\" button is clicked. You can also enable mandatory input to make sure guest visitors are not able to add anything to their carts until a valid email or phone is provided. Please note that Early capture will only be presented to unregistered visitors once every 60 minutes. Learn how to %scustomize contents%s of Early capture request."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2046
+#: admin/class-cartbounty-admin.php:2056
 msgid "How to customize contents of Early capture"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2054
+#: admin/class-cartbounty-admin.php:2064
 msgid "Enable email or phone request before adding an item to the cart."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2063
+#: admin/class-cartbounty-admin.php:2073
 msgid "Enable Early capture"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2073
+#: admin/class-cartbounty-admin.php:2083
 msgid "Enable mandatory input"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2076
+#: admin/class-cartbounty-admin.php:2086
 msgid "Your guest visitors will not be able to add anything to their carts until a valid email or phone is provided."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2083
+#: admin/class-cartbounty-admin.php:2093
 msgid "Choose which input field should be collected in the request."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2106
+#: admin/class-cartbounty-admin.php:2116
 msgid "Adjust the visual appearance of your Early capture request."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2131
+#: admin/class-cartbounty-admin.php:2141
 msgid "Next to button"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2138 admin/class-cartbounty-admin.php:2145
+#: admin/class-cartbounty-admin.php:2148 admin/class-cartbounty-admin.php:2155
 msgid "Popup overlay"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2173
+#: admin/class-cartbounty-admin.php:2183
 msgid "Enable test mode to see how the Early capture looks like."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2185
+#: admin/class-cartbounty-admin.php:2195
 msgid "Now open your store and try adding a product to your cart. Please note that while this is enabled, only users with Admin rights will be able to see the Early capture request and appearance limitations have been removed which means that you will see the request each time you try to add an item to your cart. Do not forget to disable this after you have done testing."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2192 admin/class-cartbounty-admin.php:2297
+#: admin/class-cartbounty-admin.php:2202 admin/class-cartbounty-admin.php:2307
 msgid "Get Pro to enable"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2208
+#: admin/class-cartbounty-admin.php:2218
 #, php-format
 msgid "Remind your customers that their shopping cart is craving for some love and attention :). Learn more about %sTab notification%s."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2216
+#: admin/class-cartbounty-admin.php:2226
 msgid "Enable Tab notification and set the speed at which tab Title and Favicon will change."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2225
+#: admin/class-cartbounty-admin.php:2235
 msgid "Enable Tab notification"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2235
+#: admin/class-cartbounty-admin.php:2245
 msgid "Check for empty cart"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2237
+#: admin/class-cartbounty-admin.php:2247
 msgid "If enabled, will show Tab notification only when shopping cart is not empty."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2241
+#: admin/class-cartbounty-admin.php:2251
 msgid "Notification interval"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2250
+#: admin/class-cartbounty-admin.php:2260
 msgid "Notification content"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2252
+#: admin/class-cartbounty-admin.php:2262
 msgid "Customize the message that will appear in the Tab title and enable Favicon."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2257
+#: admin/class-cartbounty-admin.php:2267
 msgid "Message"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2259
+#: admin/class-cartbounty-admin.php:2269
 msgid "I miss you 💔"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2267
+#: admin/class-cartbounty-admin.php:2277
 msgid "Enable Favicon change"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2269
+#: admin/class-cartbounty-admin.php:2279
 msgid "A Favicon is a small image displayed next to the page title in the browser tab."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2278
+#: admin/class-cartbounty-admin.php:2288
 msgid "Enable test mode to see how Tab notification works."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2290
+#: admin/class-cartbounty-admin.php:2300
 msgid "Now open your store, add a product to the cart and switch to a new browser tab. Please note that while this is enabled, only users with Admin rights will be able to see the Tab notification. Do not forget to disable this after you have done testing."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2321
+#: admin/class-cartbounty-admin.php:2331
 #, php-format
 msgid "Not so fast, sailor! You must enable WooCommerce before we can set sail or this %s boat gets us nowhere."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2337
+#: admin/class-cartbounty-admin.php:2347
 msgid "Enabled"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2340
+#: admin/class-cartbounty-admin.php:2350
 msgid "Connected"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2519
+#: admin/class-cartbounty-admin.php:2529
 #, php-format
 msgid "It seems that WP Cron event <strong>%s</strong> required for automation is not scheduled."
 msgid_plural "It seems that WP Cron events <strong>%s</strong> required for automation are not scheduled."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2522
+#: admin/class-cartbounty-admin.php:2532
 #, php-format
 msgid "Please try disabling and enabling %1$s plugin. If this notice does not go away after that, please %2$sget in touch with us%3$s."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2532
+#: admin/class-cartbounty-admin.php:2542
 msgid "WP Cron has been disabled. Several WordPress core features, such as checking for updates or sending notifications utilize this function. Please enable it or contact your system administrator to help you with this."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2588
+#: admin/class-cartbounty-admin.php:2598
 msgid "and"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2591
+#: admin/class-cartbounty-admin.php:2601
 #, php-format
 msgid "You are using %s. The Free version of %s does not support saving all options this plugin adds."
 msgid_plural "You are using %s. The Free version of %s does not support saving all options these plugins add."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2639 admin/class-cartbounty-admin.php:4980
+#: admin/class-cartbounty-admin.php:2649 admin/class-cartbounty-admin.php:4990
 msgid "Done"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2642 admin/class-cartbounty-admin.php:4981
-#: admin/class-cartbounty-admin.php:4996 admin/class-cartbounty-admin.php:5011
-#: admin/class-cartbounty-admin.php:5266
+#: admin/class-cartbounty-admin.php:2652 admin/class-cartbounty-admin.php:4991
+#: admin/class-cartbounty-admin.php:5006 admin/class-cartbounty-admin.php:5021
+#: admin/class-cartbounty-admin.php:5276
 #: includes/class-cartbounty-reports.php:1445
 msgid "Close"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2722
+#: admin/class-cartbounty-admin.php:2732
 msgid "Bounty! Cart recovered! 🤟"
 msgid_plural "Bounty! Carts recovered! 🤑"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2723
+#: admin/class-cartbounty-admin.php:2733
 msgid "Cart recovered! 🤟"
 msgid_plural "Carts recovered! 🤑"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2726
+#: admin/class-cartbounty-admin.php:2736
 #, php-format
 msgid "Excellent, you have recovered an abandoned cart using %2$s."
 msgid_plural "Amazing, you have recovered %1$d abandoned carts using %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2729 admin/class-cartbounty-admin.php:2740
+#: admin/class-cartbounty-admin.php:2739 admin/class-cartbounty-admin.php:2750
 #, php-format
 msgid "Please use %sthis link%s to see full information about your carts."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2733
+#: admin/class-cartbounty-admin.php:2743
 msgid "New abandoned cart saved! 🛒"
 msgid_plural "New abandoned carts saved! 🛒"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2734
+#: admin/class-cartbounty-admin.php:2744
 msgid "New abandoned cart!"
 msgid_plural "New abandoned carts!"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2737
+#: admin/class-cartbounty-admin.php:2747
 #, php-format
 msgid "Great, you have saved a new recoverable abandoned cart using %2$s."
 msgid_plural "Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:2751
+#: admin/class-cartbounty-admin.php:2761
 #, php-format
 msgid "Get %sCartBounty Pro%s to enable cart data preview above."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:2843
+#: admin/class-cartbounty-admin.php:2853
 msgid "Carts"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3038
+#: admin/class-cartbounty-admin.php:3048
 #: includes/class-cartbounty-status.php:54
 #: includes/class-cartbounty-wordpress.php:233
 #: includes/class-cartbounty-wordpress.php:270
 msgid "Looks like you are not allowed to do this."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3042
+#: admin/class-cartbounty-admin.php:3052
 msgid "Something is wrong."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3316
+#: admin/class-cartbounty-admin.php:3326
 msgid "Congrats!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3320
+#: admin/class-cartbounty-admin.php:3330
 msgid "Awesome!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3324
+#: admin/class-cartbounty-admin.php:3334
 msgid "Amazing!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3328
+#: admin/class-cartbounty-admin.php:3338
 msgid "Incredible!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3332
+#: admin/class-cartbounty-admin.php:3342
 msgid "Wow!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3336
+#: admin/class-cartbounty-admin.php:3346
 msgid "Fantastic!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3340
+#: admin/class-cartbounty-admin.php:3350
 msgid "Insane!"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3400
+#: admin/class-cartbounty-admin.php:3410
 msgid "You have successfully unsubscribed from further emails about your shopping cart."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3400
+#: admin/class-cartbounty-admin.php:3410
 msgid "Successfully unsubscribed"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3400
+#: admin/class-cartbounty-admin.php:3410
 msgid "Return to store"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3679
+#: admin/class-cartbounty-admin.php:3689
 msgid "All"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3680
+#: admin/class-cartbounty-admin.php:3690
 msgid "Recoverable"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3681
+#: admin/class-cartbounty-admin.php:3691
 msgid "Anonymous"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3837
+#: admin/class-cartbounty-admin.php:3847
 msgid "Sync failed. Looks like you are not allowed to do this."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3844
+#: admin/class-cartbounty-admin.php:3854
 msgid "Sync finished"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:3858
+#: admin/class-cartbounty-admin.php:3868
 msgid "Force send"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4205
+#: admin/class-cartbounty-admin.php:4215
 #, php-format
 msgid "Please consider upgrading to %sCartBounty Pro%s to enable this feature."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4297
+#: admin/class-cartbounty-admin.php:4307
 #: public/class-cartbounty-public.php:1323
 #: public/class-cartbounty-public.php:1324
 msgid "You were not leaving your cart just like that, right?"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4298
+#: admin/class-cartbounty-admin.php:4308
 msgid "Enter your details below to save your shopping cart for later. And, who knows, maybe we will even send you a sweet discount code :)"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4306
+#: admin/class-cartbounty-admin.php:4316
 msgid "Please enter your details to add this item to your cart"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4576
+#: admin/class-cartbounty-admin.php:4586
 msgid "Get news and offers via email"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4577
+#: admin/class-cartbounty-admin.php:4587
 msgid "By entering your email, you agree to get news and offers via email. You can unsubscribe using a link inside the message."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4586
+#: admin/class-cartbounty-admin.php:4596
 #, php-format
 msgid "View %sPrivacy policy%s."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4684
+#: admin/class-cartbounty-admin.php:4694
 msgid "Exclusions"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4686
+#: admin/class-cartbounty-admin.php:4696
 msgid "Exclude from abandoned cart recovery carts containing specific products or categories."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4688
+#: admin/class-cartbounty-admin.php:4698
 #, php-format
 msgid "Use %1$svarious filters%2$s to exclude carts by language, country etc."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4858
+#: admin/class-cartbounty-admin.php:4868
 msgid "Instant coupon"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4862
+#: admin/class-cartbounty-admin.php:4872
 #, php-format
 msgid "Provide %sInstant coupon codes%s to motivate customers to complete their purchase. Be sure to mention this in your message title."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4940
+#: admin/class-cartbounty-admin.php:4950
 msgid "Automate your abandoned cart recovery process and get back to those lovely cat videos 😸"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4941
+#: admin/class-cartbounty-admin.php:4951
 msgid "Use your time wisely by enabling Pro features and increase your sales."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4949 admin/class-cartbounty-admin.php:4964
+#: admin/class-cartbounty-admin.php:4959 admin/class-cartbounty-admin.php:4974
 msgid "Not now"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4955
+#: admin/class-cartbounty-admin.php:4965
 msgid "Make the most of your automation with a 3-step email series"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4956
+#: admin/class-cartbounty-admin.php:4966
 msgid "A single recovery email can raise your sales but sending 2 or 3 follow-up emails is proved to get the most juice out of your recovery campaigns."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4972
+#: admin/class-cartbounty-admin.php:4982
 #, php-format
 msgid "%s You have already captured %d abandoned cart!"
 msgid_plural "%s You have already captured %d abandoned carts!"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-cartbounty-admin.php:4973
+#: admin/class-cartbounty-admin.php:4983
 msgid "If you like our plugin, please leave us a 5-star rating. It is the easiest way to help us grow and keep evolving further."
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4979
+#: admin/class-cartbounty-admin.php:4989
 msgid "Leave a 5-star rating"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:4987
+#: admin/class-cartbounty-admin.php:4997
 msgid "Upgrade to allow easy emoji insertion"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:5002
+#: admin/class-cartbounty-admin.php:5012
 msgid "Increase open-rate and sales using personalization"
 msgstr ""
 
-#: admin/class-cartbounty-admin.php:5248
+#: admin/class-cartbounty-admin.php:5258
 msgid "Security check failed. The link is not valid."
 msgstr ""
 
