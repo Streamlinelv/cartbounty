@@ -92,7 +92,6 @@ class CartBounty_Public{
 			'custom_email_selectors' 	=> $this->get_custom_email_selectors(),
 			'custom_phone_selectors' 	=> $this->get_custom_phone_selectors(),
 			'consent_field' 			=> $admin->get_consent_field_data( 'field_name' ),
-			'selector_timeout' 			=> apply_filters( 'cartbounty_custom_field_selector_timeout', 2000 ),
 			'email_validation' 			=> $email_validation,
 			'phone_validation' 			=> apply_filters( 'cartbounty_phone_validation', '^[+0-9\s]\s?\d[0-9\s-.]{6,30}$'),
 			'nonce' 					=> wp_create_nonce( 'user_data' ),
@@ -375,9 +374,18 @@ class CartBounty_Public{
 	 */
 	function cart_recoverable(){
 		$recoverable = false;
-		if( is_user_logged_in() || isset( $_POST["action"]) || $this->cart_identifiable() ){
+
+		if( is_user_logged_in() || isset( $_POST["action"] ) || $this->cart_identifiable() ){
 			$recoverable = true;
 		}
+
+		if( isset( $_POST["source"] ) ){
+
+			if( $_POST["source"] == 'cartbounty_anonymous_bot_test' ){
+				$recoverable = false;
+			}
+		}
+
 		return $recoverable;
 	}
 
@@ -441,14 +449,23 @@ class CartBounty_Public{
 
 			if( $current_user->billing_first_name ){
 				$user_data['name'] = sanitize_text_field( $current_user->billing_first_name );
+			
+			}else{
+				$user_data['name'] = sanitize_text_field( $current_user->user_firstname );
 			}
 
 			if( $current_user->billing_last_name ){
 				$user_data['surname'] = sanitize_text_field( $current_user->billing_last_name );
+			
+			}else{
+				$user_data['surname'] = sanitize_text_field( $current_user->user_lastname );
 			}
 
 			if( $current_user->billing_email ){
 				$user_data['email'] = sanitize_email( $current_user->billing_email );
+			
+			}else{
+				$user_data['email'] = sanitize_email( $current_user->user_email );
 			}
 
 			if( $current_user->billing_phone ){
@@ -542,14 +559,20 @@ class CartBounty_Public{
 
 	/**
 	 * Check if visitor is a bot
+	 * Checking only "Add to cart" actions in case of guest users
 	 *
 	 * @since    8.4
 	 * @return   boolean
 	 */
 	function is_bot(){
+
+		if( is_user_logged_in() ) return;
+
+		if( current_filter() != 'woocommerce_add_to_cart' ) return;
+
 		$bot = false;
 
-		if( ( !isset( $_POST['cartbounty_bot_test'] ) || sanitize_text_field( $_POST['cartbounty_bot_test'] ) != '1' ) && ( !isset( $_POST['action'] ) || sanitize_text_field( $_POST['action'] ) != 'cartbounty_save' ) ){ 
+		if( ( !isset( $_POST['cartbounty_bot_test'] ) || sanitize_text_field( $_POST['cartbounty_bot_test'] ) != '1' ) ){ 
 			$bot = true;
 		}
 

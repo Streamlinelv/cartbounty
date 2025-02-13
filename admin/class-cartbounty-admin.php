@@ -78,13 +78,6 @@ class CartBounty_Admin{
 		    'ajaxurl' => admin_url( 'admin-ajax.php' )
 		);
 
-		if( isset( $_GET['section'] ) ){ //Adding additional script on WordPress recovery page
-			
-			if( $_GET['section'] == 'wordpress' ){
-				wp_enqueue_script( $this->plugin_name . '-micromodal', plugin_dir_url( __FILE__ ) . 'js/micromodal.min.js', array( 'jquery' ), $this->version, false );
-			}
-		}
-
 		if( $screen->id == $cartbounty_admin_menu_page ){ //Load report scripts only on Dashboard
 
 			if( !isset( $_GET['tab'] ) || $_GET['tab'] == 'dashboard' ){
@@ -107,6 +100,7 @@ class CartBounty_Admin{
 			}
 		}
 
+		wp_enqueue_script( $this->plugin_name . '-micromodal', plugin_dir_url( __FILE__ ) . 'js/micromodal.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . '-selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cartbounty-admin.js', array( 'wp-color-picker', 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'cartbounty_admin_data', $data ); //Sending data over to JS file
@@ -484,26 +478,24 @@ class CartBounty_Admin{
 						require_once plugin_dir_path( __FILE__ ) . 'class-cartbounty-admin-table.php';
 						$table = new CartBounty_Table();
 						$table->prepare_items();
-						$footer_bulk_delete = false;
+						$current_action = $table->current_action();
 
-						if( isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if bottom Bulk delete action fired
-							$footer_bulk_delete = true;
-						}
-						
 						//Output table contents
 						$message = '';
-						if( 'delete' === $table->current_action() || $footer_bulk_delete ){
 
-							if(!empty($_REQUEST['id'])){ //In case we have a row selected for deletion, process the message otput
-								if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
-									$deleted_row_count = esc_html(count($_REQUEST['id']));
+						if( $current_action ){
+
+							if( !empty( $_REQUEST['id'] ) ){ //In case we have a row selected, process the message otput
+								$selectd_rows = 1;
+								$action_message = esc_html__( 'Carts deleted: %d', 'woo-save-abandoned-carts' );
+
+								if( is_array( $_REQUEST['id'] ) ){ //If handling multiple lines
+									$selectd_rows = esc_html( count( $_REQUEST['id'] ) );
 								}
-								else{ //If a single row is deleted
-									$deleted_row_count = 1;
-								}
+
 								$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
 									/* translators: %d - Item count */
-									esc_html__('Items deleted: %d', 'woo-save-abandoned-carts' ), esc_html( $deleted_row_count )
+									$action_message, esc_html( $selectd_rows )
 								) . '</p></div>';
 							}
 						}
@@ -1630,7 +1622,7 @@ class CartBounty_Admin{
 														<div class="cartbounty-settings-group">
 															<h4><?php esc_html_e('Preview', 'woo-save-abandoned-carts'); ?></h4>
 															<button type="button" class='cartbounty-button button-secondary cartbounty-progress cartbounty-preview-email' data-nonce='<?php echo esc_attr( $preview_email_nonce ); ?>' <?php echo $this->disable_field(); ?>><?php esc_html_e('Preview email', 'woo-save-abandoned-carts'); ?></button>
-															<?php echo $wordpress->output_modal_container(); ?>
+															<?php echo $this->output_modal_container( 'email-preview' ); ?>
 														</div>
 														<div class="cartbounty-settings-group">
 															<label for="cartbounty-send-test"><?php esc_html_e('Send a test email to', 'woo-save-abandoned-carts'); ?></label>
@@ -5244,7 +5236,7 @@ class CartBounty_Admin{
 		
 		if( isset( $_GET['page'] ) && $_GET['page'] == CARTBOUNTY_PLUGIN_NAME_SLUG ){ //If delete action coming from CartBounty
 
-			if( isset( $_GET['action'] ) && $_GET['action'] == 'delete' || isset( $_GET['action2'] ) && $_GET['action2'] == 'delete' ){ //Check if any delete action fired including bottom Bulk delete action
+			if( isset( $_GET['action'] ) && $_GET['action'] == 'delete' ){ //Check if any delete action fired including bottom Bulk delete action
 
 				$nonce = false;
 
@@ -5257,6 +5249,26 @@ class CartBounty_Admin{
 				}
 			}
 		}
+	}
+
+	/**
+	* Return email preview modal container
+	*
+	* @since    7.0
+	* @return   HTML
+	* @param    string    $modal_id              Identifier to distinguish modal windows from one another
+	*/
+	public function output_modal_container( $modal_id = false ){
+		$output = '';
+		$output .= '<div class="cartbounty-modal" id="cartbounty-modal-'. esc_attr( $modal_id ) .'" aria-hidden="true">';
+			$output .= '<div class="cartbounty-modal-overlay" tabindex="-1" data-micromodal-close>';
+				$output .= '<div class="cartbounty-modal-content-container" role="dialog" aria-modal="true">';
+					$output .= '<button type="button" class="cartbounty-close-modal" aria-label="'. esc_html__("Close", 'woo-save-abandoned-carts') .'" data-micromodal-close></button>';
+					$output .= '<div class="cartbounty-modal-content" id="cartbounty-modal-content-'. esc_attr( $modal_id ) .'"></div>';
+				$output .= '</div>';
+			$output .= '</div>';
+		$output .= '</div>';
+		return $output;
 	}
 
 	/**

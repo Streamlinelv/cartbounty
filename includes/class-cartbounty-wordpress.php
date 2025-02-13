@@ -638,25 +638,6 @@ class CartBounty_WordPress{
 	}
 
 	/**
-	* Return email preview modal container
-	*
-	* @since    7.0
-	* @return   HTML
-	*/
-	public function output_modal_container(){
-		$output = '';
-		$output .= '<div class="cartbounty-modal" id="cartbounty-modal" aria-hidden="true">';
-			$output .= '<div class="cartbounty-modal-overlay" tabindex="-1" data-micromodal-close>';
-				$output .= '<div class="cartbounty-modal-content-container" role="dialog" aria-modal="true">';
-					$output .= '<button type="button" class="cartbounty-close-modal" aria-label="'. esc_html__("Close", 'woo-save-abandoned-carts') .'" data-micromodal-close></button>';
-					$output .= '<div class="cartbounty-modal-content" id="cartbounty-modal-content"></div>';
-				$output .= '</div>';
-			$output .= '</div>';
-		$output .= '</div>';
-		return $output;
-	}
-
-	/**
 	 * Return abandoned carts waiting in the given automation step queue.
 	 *
 	 * @since    7.0

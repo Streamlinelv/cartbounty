@@ -101,11 +101,11 @@
 
 			jQuery.post(cartbounty_admin_data.ajaxurl, data,
 			function(response){
-				var content = jQuery('#cartbounty-modal-content');
-				var modal = jQuery('#cartbounty-modal');
+				var content = jQuery('#cartbounty-modal-content-email-preview');
+				var modal = jQuery('#cartbounty-modal-email-preview');
 				modal.addClass('content-loaded');
 				content.html(response.data);
-				MicroModal.show('cartbounty-modal', {
+				MicroModal.show('cartbounty-modal-email-preview', {
 					onClose(){ 
 						content.empty(); //Removing email preview once preview closed
 					}
@@ -188,26 +188,28 @@
 		};
 
 		function copySystemReport(){
-            var button = jQuery(this);
-            var container = button.parent();
-            container.removeClass('cartbounty-container-active');
+			var button = jQuery(this);
+			var container = button.parent();
+			container.removeClass('cartbounty-container-active');
 
 			var data = {
-				nonce		: button.data('nonce'),
-				action		: "get_system_status"
+				nonce: button.data('nonce'),
+				action: "get_system_status"
 			};
 
-			jQuery.post(cartbounty_admin_data.ajaxurl, data,
-			function(response){
-				if ( response.success == true ){
-			        var system_report = '';
-			        //Transforming HTML table into readable text that we can copy later
-					jQuery(response.data).each(function(){
+			jQuery.post(cartbounty_admin_data.ajaxurl, data, function(response){
+				if(response.success == true){
+					var system_report = '';
+					var modal_container = response.data.container;
+					var report_data = response.data.report;
+
+					//Transforming HTML table into readable text
+					jQuery(report_data).each(function(){
 						jQuery('tr', jQuery( this )).each(function(){
 							var the_name    = rewriteTable( jQuery.trim( jQuery( this ).find('td:eq(0)').text() ), 30, ' ' );
 							var the_value   = jQuery.trim( jQuery( this ).find('td:eq(1)').text() );
 							var value_array = the_value.split( ', ' );
-							if ( value_array.length > 1 ){
+							if(value_array.length > 1){
 								var output = '';
 								var temp_line = '';
 								jQuery.each( value_array, function(key, line){
@@ -220,25 +222,61 @@
 						});
 					});
 
-					try { //Try adding a temporary textarea input field that will hold the system report so it can be copied
-						var textarea = jQuery("<textarea>");
-						jQuery("body").append(textarea);
-						textarea.val( system_report ).select();
-						document.execCommand("copy");
-						textarea.remove();
-						container.addClass('cartbounty-container-active');
-					}catch(e) {
-						console.log(e);
+					//Copy to clipboard information
+					function copyToClipboard(text, modal_container){
+						if(navigator.clipboard){
+							navigator.clipboard.writeText(text).then(function(){
+								container.addClass('cartbounty-container-active');
+							}).catch(function(err){
+								fallbackCopyTextToClipboard(text, modal_container);
+							});
+						}else{
+							fallbackCopyTextToClipboard(text, modal_container);
+						}
 					}
 
-					setTimeout(function(){
+					//Fallback method for copying text in case of browsers that do not allow auto copy
+					function fallbackCopyTextToClipboard(text, modal_container){
+						var $textarea = jQuery('<textarea>').val(text).appendTo('body').select();
+
+						try{
+							var successful = document.execCommand("copy");
+							if(successful){
+								container.addClass('cartbounty-container-active');
+							}else{
+								buildModalOutput(text, modal_container);
+							}
+						}catch (err){
+							buildModalOutput(text, modal_container);
+						}finally{
+							$textarea.remove();
+						}
+					}
+
+					//Building modal output
+					function buildModalOutput(text, modal_container){
+						jQuery('body').append(modal_container);
+						var content = jQuery('#cartbounty-modal-content-report');
+						content.html('<pre>' + text + '</pre>');
+
+						MicroModal.show('cartbounty-modal-report', {
+							onClose(){ 
+								content.empty();
+								jQuery('#cartbounty-modal-report').remove();
+							}
+						});
+					}
+
+					copyToClipboard(system_report, modal_container);
+
+					setTimeout(function() {
 						container.removeClass('cartbounty-container-active');
 					}, 3000);
 
 					button.removeClass('cartbounty-loading');
-					return false;
-				}else{ //In case an error occurs
-					console.log( response.data );
+					return;
+				}else{
+					console.log(response.data);
 				}
 			});
 		}
@@ -267,7 +305,7 @@
 					notice.removeClass('cartbounty-show-bubble'); //Hide the bubble from screen
 				}
 
-				if ( response.success != true ){
+				if(response.success != true){
 					console.log(response.data);
 				}
 			});
@@ -309,6 +347,33 @@
 			toggleParentClassByInputs();
 		});
 
+		//Making sure Abandoned cart table bottom Bulk actions are synced or else the bottom button does not work
+		function syncSelectizeBulkActions(){
+			let $topSelect = $('#bulk-action-selector-top');
+			let $bottomSelect = $('#bulk-action-selector-bottom');
+
+			if($topSelect[0].selectize && $bottomSelect[0].selectize){
+				let topSelectize = $topSelect[0].selectize;
+				let bottomSelectize = $bottomSelect[0].selectize;
+
+				function syncSelects(from, to){
+					to.setValue(from.getValue(), true);
+				}
+
+				topSelectize.on('change', function(){
+					syncSelects(topSelectize, bottomSelectize);
+				});
+
+				bottomSelectize.on('change', function(){
+					syncSelects(bottomSelectize, topSelectize);
+				});
+
+				syncSelects(topSelectize, bottomSelectize);
+			}
+		}
+
+		//Run sync function after Selectize is initialized
+		setTimeout(syncSelectizeBulkActions, 500);
 
 		jQuery(".cartbounty-type").on("click", addActiveClass );
 		jQuery(".cartbounty-progress").on("click", addLoadingIndicator );

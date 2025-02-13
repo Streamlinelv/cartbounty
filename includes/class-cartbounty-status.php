@@ -46,7 +46,7 @@ class CartBounty_System_Status{
 	 * Output system status information
 	 *
 	 * @since    6.1.2
-	 * @return   HTML
+	 * @return   Array
 	 */
 	public function get_system_status(){
 
@@ -253,6 +253,11 @@ class CartBounty_System_Status{
 					</tbody>';
 		$output .= '</table>';
 
-		wp_send_json_success( $output );
+		$response = array(
+			'container' => $admin->output_modal_container( 'report' ),
+			'report' 	=> $output
+		);
+
+		wp_send_json_success( $response );
 	}
 }

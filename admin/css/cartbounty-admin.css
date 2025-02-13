@@ -2547,6 +2547,11 @@ h3.cartbounty-loading-skeleton-screen span{
 	overflow: auto;
 }
 
+#cartbounty-modal-content-report{
+	line-height: 20px;
+	padding: 30px 40px;
+}
+
 @media screen and (min-width: 1900px) {
 	.cartbounty .cartbounty-sidebar,
 	.cartbounty .cartbounty-titles-column{
@@ -3272,7 +3277,7 @@ h3.cartbounty-loading-skeleton-screen span{
 }
 
 /* Modal popup start */
-.cartbounty-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:159910}.cartbounty-modal-content-container{background-color:#fff;padding:0;border-radius:4px;overflow-y:auto;box-sizing:border-box;width:90%;max-height:90%;max-width:1200px;position:relative}.cartbounty-close-modal{top:20px;right:20px;border:4px solid #fff;outline:0;opacity:0;visibility:hidden}.content-loaded .cartbounty-close-modal{opacity:1;visibility:visible}.cartbounty-modal-content{margin:0;padding:0;line-height:0}.fadeOutSlow{animation:fadeOutSlow .6s 4s;animation-fill-mode:forwards}@media screen and (max-width:600px){.cartbounty-close-modal{top:5px;right:5px}}.cartbounty-modal{display:none}.cartbounty-modal.is-open{display:block}.cartbounty-modal[aria-hidden=false] .cartbounty-modal-content-container,.cartbounty-modal[aria-hidden=false] .cartbounty-modal-overlay{animation:fadeIn .3s ease-in-out}.cartbounty-modal .cartbounty-modal-content-container,.cartbounty-modal .cartbounty-modal-overlay{will-change:transform}
+.cartbounty-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:159910}.cartbounty-modal-content-container{background-color:#fff;padding:0;border-radius:4px;overflow-y:auto;box-sizing:border-box;width:90%;max-height:90%;max-width:1200px;position:relative}.cartbounty-close-modal{top:20px;right:20px;border:4px solid #fff;outline:0;opacity:0;visibility:hidden}.is-open .cartbounty-close-modal{opacity:1;visibility:visible}.cartbounty-modal-content{margin:0;padding:0;line-height:0}.fadeOutSlow{animation:fadeOutSlow .6s 4s;animation-fill-mode:forwards}@media screen and (max-width:600px){.cartbounty-close-modal{top:5px;right:5px}}.cartbounty-modal{display:none}.cartbounty-modal.is-open{display:block}.cartbounty-modal[aria-hidden=false] .cartbounty-modal-content-container,.cartbounty-modal[aria-hidden=false] .cartbounty-modal-overlay{animation:fadeIn .3s ease-in-out}.cartbounty-modal .cartbounty-modal-content-container,.cartbounty-modal .cartbounty-modal-overlay{will-change:transform}
 /* Modal popup end */
 
 /* Responsive grid layout start */

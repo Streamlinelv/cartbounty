@@ -415,19 +415,11 @@ class CartBounty_Table extends WP_List_Table{
 
         global $wpdb;
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
-        $footer_bulk_action = false;
 
-        if( isset( $_GET['action2'] ) ){ //Check if bottom Bulk delete action fired
-             $footer_bulk_action = $_GET['action2'];
-        }
-
-        if( 'delete' === $this->current_action() || $footer_bulk_action == 'delete' ) {
-            
-            if( empty( $_REQUEST['id'] ) ){ //Exit in case no row selected
-                return;
-            }
+        if( 'delete' === $this->current_action() ){
 
             if( is_array( $cart_id ) ){ //Bulk abandoned cart deletion
+
                 foreach ( $cart_id as $key => $id ){
                     $wpdb->query(
                         $wpdb->prepare(

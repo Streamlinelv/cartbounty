@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 8.5 =
+* Improved bot detection layer
+* Improved system report
+* Improved abandoned cart saving for newly registered customers
+* Fixed abandoned cart table bottom Bulk actions
+* Code refactoring and optimization
+
 = 8.4.1 =
 * Fixed email reminder sending if consent disabled
 

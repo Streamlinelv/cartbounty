@@ -152,7 +152,6 @@ Filters:
 * cartbounty_save_custom_fields
 * cartbounty_custom_email_selectors
 * cartbounty_custom_phone_selectors
-* cartbounty_custom_field_selector_timeout
 * cartbounty_phone_validation
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:

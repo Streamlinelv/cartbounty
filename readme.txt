@@ -5,7 +5,7 @@ Tags: woocommerce, abandoned carts, cart abandonment, exit popup, activecampaign
 Requires at least: 4.6
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 8.4.1
+Stable tag: 8.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -159,7 +159,6 @@ Filters:
 * cartbounty_save_custom_fields
 * cartbounty_custom_email_selectors
 * cartbounty_custom_phone_selectors
-* cartbounty_custom_field_selector_timeout
 * cartbounty_phone_validation
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
@@ -327,7 +326,11 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 == Changelog ==
 
-= 8.4.1 =
-* Fixed email reminder sending if consent disabled
+= 8.5 =
+* Improved bot detection layer
+* Improved system report
+* Improved abandoned cart saving for newly registered customers
+* Fixed abandoned cart table bottom Bulk actions
+* Code refactoring and optimization
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).
