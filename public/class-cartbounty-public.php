@@ -566,6 +566,8 @@ class CartBounty_Public{
 	 */
 	function is_bot(){
 
+		if( !apply_filters( 'cartbounty_disable_bot_test', false ) ) return;
+
 		if( is_user_logged_in() ) return;
 
 		if( current_filter() != 'woocommerce_add_to_cart' ) return;

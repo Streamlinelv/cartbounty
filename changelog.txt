@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 8.5.1 =
+* Improved bot detection layer for better compatibility with various themes
+
 = 8.5 =
 * Improved bot detection layer
 * Improved system report

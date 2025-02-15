@@ -10,7 +10,7 @@
 		var custom_phone_selectors = cartbounty_co.custom_phone_selectors;
 		var contact_saved = localStorage.getItem('cartbounty_contact_saved');
 
-		function getCheckoutData() { //Reading WooCommerce field values
+		function getCheckoutData(){ //Reading WooCommerce field values
 			let email = jQuery('#email').val() || jQuery('#billing_email').val() || '';
 			let phone = jQuery('#billing-phone').val() || jQuery('#shipping-phone').val() || jQuery('#billing_phone').val() || '';
 			
@@ -128,17 +128,22 @@
 		}
 
 		//Adding a hidden input field to all "Add to cart" forms on click to protect against bots leaving anonymous carts since they may not use Javascript
-		function appendHiddenInputField(e){
-			var $form = jQuery(this);
+		function appendHiddenInputField(){
+			var $target = jQuery(this);
 			var customInputField = jQuery('<input>',{
 				type: 'hidden',
 				name: 'cartbounty_bot_test',
 				value: '1'
 			});
 
-			//Append the hidden input field to the form
-			$form.append(customInputField);
-		};
+			var $form = $target.closest('form.cart');
+
+			if($form.length){
+				$form.append(customInputField);
+			}else{
+				$target.data('cartbounty_bot_test', '1');
+			}
+		}
 
 		//Adding additional CartBounty data whenever Ajax "Add to cart" button is clicked in order to detect anonymous carts left by bots
 		function addCartBountyInputDataToAjax(e, xhr, settings){
@@ -162,9 +167,9 @@
 					source:			"cartbounty_anonymous_bot_test",
 					nonce:			cartbounty_co.nonce
 				}
-				setTimeout(function() {
+				setTimeout(function(){
 					jQuery.post(cartbounty_co.ajaxurl, data, //Send data over to backend for saving
-					function(response) {
+					function(response){
 						if(response.success){ //If data successfuly saved
 							localStorage.removeItem('cartbounty_bot_test_passed');
 						}
@@ -176,7 +181,7 @@
 		jQuery('.wc-block-checkout, .woocommerce-checkout').on( 'keyup keypress change', 'input, textarea, select', getCheckoutData );
 		jQuery(window).on( 'load', getCheckoutData ); //Automatically collect and save input field data if input fields already filled on page load
 		jQuery(document).ajaxSend(addCartBountyInputDataToAjax);
-		jQuery(document).on('submit', 'form.cart', appendHiddenInputField);
+		jQuery(document).on('click', '.add_to_cart_button, .ajax_add_to_cart, .single_add_to_cart_button', appendHiddenInputField);
 		jQuery(document).on('click', '.add_to_cart_button', saveBotTestResult);
 
 		if( ( save_custom_fields && !contact_saved ) ){ //If custom field saving enabled and contact is not saved - try to save email or phone
