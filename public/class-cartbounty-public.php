@@ -566,16 +566,17 @@ class CartBounty_Public{
 	 */
 	function is_bot(){
 
-		if( !apply_filters( 'cartbounty_disable_bot_test', false ) ) return;
-
 		if( is_user_logged_in() ) return;
 
 		if( current_filter() != 'woocommerce_add_to_cart' ) return;
 
 		$bot = false;
 
-		if( ( !isset( $_POST['cartbounty_bot_test'] ) || sanitize_text_field( $_POST['cartbounty_bot_test'] ) != '1' ) ){ 
-			$bot = true;
+		if( !apply_filters( 'cartbounty_disable_input_bot_test', false ) ){
+			
+			if( ( !isset( $_POST['cartbounty_bot_test'] ) || sanitize_text_field( $_POST['cartbounty_bot_test'] ) != '1' ) ){ 
+				$bot = true;
+			}
 		}
 
 		return $bot;
