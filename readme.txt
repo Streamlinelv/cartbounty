@@ -329,5 +329,6 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 = 8.6 =
 * Improved abandoned cart bulk action messages
+* Fixed a JavaScript issue affecting report updates
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

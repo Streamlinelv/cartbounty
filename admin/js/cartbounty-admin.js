@@ -352,6 +352,10 @@
 			let $topSelect = $('#bulk-action-selector-top');
 			let $bottomSelect = $('#bulk-action-selector-bottom');
 
+			if($topSelect.length === 0 || $bottomSelect.length === 0){
+				return;
+			}
+
 			if($topSelect[0].selectize && $bottomSelect[0].selectize){
 				let topSelectize = $topSelect[0].selectize;
 				let bottomSelectize = $bottomSelect[0].selectize;

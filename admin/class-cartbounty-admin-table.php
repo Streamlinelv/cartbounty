@@ -346,6 +346,7 @@ class CartBounty_Table extends WP_List_Table{
             $status .= sprintf('<span class="status shopping">%s</span>', esc_html__('Shopping', 'woo-save-abandoned-carts'));
 
         }else{
+
             if($cart_time > ($current_time - CARTBOUNTY_NEW_NOTICE * 60 )){ //Checking time if user has not gone through with the checkout after the specified time we add new label
                 $status_description = esc_html__('Recently abandoned', 'woo-save-abandoned-carts');
                 if($item['type'] == $admin->get_cart_type('recovered')){
@@ -354,12 +355,10 @@ class CartBounty_Table extends WP_List_Table{
                 $status .= sprintf('<div class="status-item-container"><span class="cartbounty-tooltip">%s</span><span class="status new">%s</span></div>', $status_description, esc_html__('New', 'woo-save-abandoned-carts'));
             }
 
-            if($item['type'] != $admin->get_cart_type('recovered')){ //In case if the cart has not been recovered - output synced information
-                if($item['wp_steps_completed']){
-                    $wordpress = new CartBounty_WordPress();
-                    $email_history = $wordpress->display_email_history( $item['id'] ); //Getting email history of current cart
-                    $status .= sprintf('<div class="status-item-container email-history"><span class="cartbounty-tooltip">%s%s</span><span class="status synced wordpress">WP</span></div>', esc_html__('Sent via WordPress', 'woo-save-abandoned-carts'), $email_history );
-                }
+            if($item['wp_steps_completed']){
+                $wordpress = new CartBounty_WordPress();
+                $email_history = $wordpress->display_email_history( $item['id'] ); //Getting email history of current cart
+                $status .= sprintf('<div class="status-item-container email-history"><span class="cartbounty-tooltip">%s%s</span><span class="status synced wordpress">WP</span></div>', esc_html__('Sent via WordPress', 'woo-save-abandoned-carts'), $email_history );
             }
         }
 

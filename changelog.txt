@@ -2,6 +2,7 @@
 
 = 8.6 =
 * Improved abandoned cart bulk action messages
+* Fixed a JavaScript issue affecting report updates
 
 = 8.5 =
 * Improved bot detection layer

@@ -188,6 +188,7 @@ h2.cartbounty-section-title{
 	margin: 0 3px 1px 0;
 	cursor: default;
 	display: inline-block;
+	position: relative;
 }
 
 .status.active{

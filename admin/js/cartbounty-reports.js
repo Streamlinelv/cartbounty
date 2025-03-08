@@ -648,7 +648,7 @@
 		initializeCharts();
 		initializeMap();
 
-		jQuery("#cartbounty-abandoned-cart-stats-options input").on("change", updateReportsOptions );
+		jQuery(document).on('change', '#cartbounty-abandoned-cart-stats-options input', updateReportsOptions);
 		jQuery(".cartbounty-report-options-trigger").on("click", toggleReportOptions );
 		jQuery("#cartbounty-period-dropdown-container").on("click", toggleCalendar );
 		jQuery(".cartbounty-chart-type-trigger").on("click", switchActiveChart );
