@@ -395,13 +395,16 @@ class CartBounty_Table extends WP_List_Table{
      */
 	 function get_bulk_actions(){
         $actions = array(
-            'delete'    => esc_html__( 'Delete', 'woo-save-abandoned-carts' )
+            'delete'        => esc_html__( 'Delete', 'woo-save-abandoned-carts' ),
+            'pause'         => esc_html__( 'Pause recovery', 'woo-save-abandoned-carts' ) . ' (' . esc_html__( 'Pro', 'woo-save-abandoned-carts' ) . ')',
+            'resume'        => esc_html__( 'Resume recovery', 'woo-save-abandoned-carts' ) . ' (' . esc_html__( 'Pro', 'woo-save-abandoned-carts' ) . ')',
+            'restart'       => esc_html__( 'Restart recovery', 'woo-save-abandoned-carts' ) . ' (' . esc_html__( 'Pro', 'woo-save-abandoned-carts' ) . ')',
         );
         return $actions;
     }
 
     /**
-     * This method processes bulk actions
+     * Processing Bulk actions and single actions
      *
      * @since    1.0
      */
@@ -414,33 +417,25 @@ class CartBounty_Table extends WP_List_Table{
         if( empty( $cart_id ) ) return;
 
         global $wpdb;
+        $admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
         $cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+        $processed_rows = 0;
 
         if( 'delete' === $this->current_action() ){
 
             if( is_array( $cart_id ) ){ //Bulk abandoned cart deletion
 
                 foreach ( $cart_id as $key => $id ){
-                    $wpdb->query(
-                        $wpdb->prepare(
-                            "DELETE FROM $cart_table
-                            WHERE id = %d",
-                            intval( $id )
-                        )
-                    );
+                    $processed_rows += $admin->delete_cart( $id );
                 }
 
             }else{ //Single abandoned cart deletion
                 $id = $cart_id;
-                $wpdb->query(
-                    $wpdb->prepare(
-                        "DELETE FROM $cart_table
-                        WHERE id = %d",
-                        intval( $id )
-                    )
-                );
+                $processed_rows += $admin->delete_cart( $id );
             }
         }
+
+        $_REQUEST['processed_rows'] = $processed_rows;
     }
 
 	/**
@@ -475,12 +470,11 @@ class CartBounty_Table extends WP_List_Table{
         $this->process_bulk_action(); //Process bulk action if any
         $total_items = $admin->get_cart_count($cart_status);
 
-        // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;
         $orderby = (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array_keys($this->get_sortable_columns()))) ? $_REQUEST['orderby'] : 'time';
         $order = (isset($_REQUEST['order']) && in_array($_REQUEST['order'], array('asc', 'desc'))) ? $_REQUEST['order'] : 'desc';
 
-        // configure pagination
+        //Configure pagination
         $this->set_pagination_args(array(
             'total_items' => $total_items, // total items defined above
             'per_page' => $per_page, // per page constant defined at top of method

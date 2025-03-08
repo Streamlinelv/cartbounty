@@ -486,17 +486,23 @@ class CartBounty_Admin{
 						if( $current_action ){
 
 							if( !empty( $_REQUEST['id'] ) ){ //In case we have a row selected, process the message otput
-								$selectd_rows = 1;
+								$processed_rows = 0;
 								$action_message = esc_html__( 'Carts deleted: %d', 'woo-save-abandoned-carts' );
 
-								if( is_array( $_REQUEST['id'] ) ){ //If handling multiple lines
-									$selectd_rows = esc_html( count( $_REQUEST['id'] ) );
+								if( isset( $_REQUEST['processed_rows'] ) ){
+									$processed_rows = esc_html( $_REQUEST['processed_rows'] );
 								}
 
-								$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
-									/* translators: %d - Item count */
-									$action_message, esc_html( $selectd_rows )
-								) . '</p></div>';
+								if( $current_action === 'delete' ){
+									$action_message = sprintf( $action_message, esc_html( $processed_rows ) );
+									$notification_class = 'updated';
+
+								}else{
+									$action_message = $this->display_unavailable_notice( 'bulk_actions' );
+									$notification_class = 'error';
+								}
+
+								$message = '<div class="'. $notification_class .' below-h2" id="message"><p>' . $action_message . '</p></div>';
 							}
 						}
 
@@ -4680,7 +4686,34 @@ class CartBounty_Admin{
 		}
 
 		return $image;
+	}
 
+	/**
+     * Delete cart
+     *
+     * @since    8.6
+     * @return   integer
+     * @param    integer     $cart_id   		    Abandoned cart ID
+     */
+	public function delete_cart( $cart_id ){
+		global $wpdb;
+		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
+
+		if( empty( $cart_id ) ) return;
+
+		$rows = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM $cart_table
+				WHERE id = %d",
+				intval( $cart_id )
+			)
+		);
+
+		if( !$rows ){
+			$rows = 0;
+		}
+
+		return $rows;
 	}
 
 	/**
