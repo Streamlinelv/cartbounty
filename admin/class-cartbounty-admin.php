@@ -1390,7 +1390,7 @@ class CartBounty_Admin{
 						<div class="cartbounty-settings-column cartbounty-full-width cartbounty-col-sm-12 cartbounty-col-md-12 cartbounty-col-lg-12">
 							<div class="cartbounty-settings-group">
 								<div class="cartbounty-stairway">
-									<?php if(!empty($automation_steps)){
+									<?php if( !empty( $automation_steps ) ){
 										$step = $automation_steps[0];
 										$step = (object)$step;
 										$enabled = ( isset($step->enabled) ) ? $step->enabled : false;
@@ -1421,32 +1421,44 @@ class CartBounty_Admin{
 													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
 														<div class="cartbounty-row">
 															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-8">
-																<div class="cartbounty-stats">
-																	<i><?php esc_html_e('Queue', 'woo-save-abandoned-carts'); ?></i>
-																	<p><?php echo esc_html( $wordpress->get_queue() ); ?></p>
-																</div>
-																<div class="cartbounty-stats">
-																	<i><?php esc_html_e('Sends', 'woo-save-abandoned-carts'); ?></i>
-																	<p><?php echo esc_html( $wordpress->get_stats() ); ?></p>
-																</div>
 																<div class="cartbounty-stats cartbounty-percentage-switcher">
 																	<div class="cartbounty-stats-percentage">
-																		<i><?php esc_html_e('Open rate', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Queue', 'woo-save-abandoned-carts' ); ?></i>
+																		<p><?php echo esc_html( $wordpress->get_queue() ); ?></p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Sends', 'woo-save-abandoned-carts' ); ?></i>
+																		<p><?php echo esc_html( $wordpress->get_stats() ); ?></p>
+																	</div>
+																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Open rate', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																	<div class="cartbounty-stats-count">
 																		<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_enable_email_stats' ) ); ?>" class="button cartbounty-button" target="_blank"><?php esc_html_e('Upgrade to see stats', 'woo-save-abandoned-carts'); ?></a>
-																		<i><?php esc_html_e('Opens', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Opens', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																</div>
-																<div class="cartbounty-stats cartbounty-percentage-switcher">
+																<div class="cartbounty-stats">
 																	<div class="cartbounty-stats-percentage">
-																		<i><?php esc_html_e('Click rate', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Click rate', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																	<div class="cartbounty-stats-count">
-																		<i><?php esc_html_e('Clicks', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Clicks', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Recovery rate', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Recovered', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																</div>
@@ -1666,32 +1678,44 @@ class CartBounty_Admin{
 													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
 														<div class="cartbounty-row">
 															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-8">
-																<div class="cartbounty-stats">
-																	<i><?php esc_html_e('Queue', 'woo-save-abandoned-carts'); ?></i>
-																	<p>0</p>
-																</div>
-																<div class="cartbounty-stats">
-																	<i><?php esc_html_e('Sends', 'woo-save-abandoned-carts'); ?></i>
-																	<p>0</p>
-																</div>
 																<div class="cartbounty-stats cartbounty-percentage-switcher">
 																	<div class="cartbounty-stats-percentage">
-																		<i><?php esc_html_e('Open rate', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Queue', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>0</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Sends', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>0</p>
+																	</div>
+																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Open rate', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																	<div class="cartbounty-stats-count">
 																		<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_enable_email_stats' ) ); ?>" class="button cartbounty-button" target="_blank"><?php esc_html_e('Upgrade to see stats', 'woo-save-abandoned-carts'); ?></a>
-																		<i><?php esc_html_e('Opens', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Opens', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																</div>
-																<div class="cartbounty-stats cartbounty-percentage-switcher">
+																<div class="cartbounty-stats">
 																	<div class="cartbounty-stats-percentage">
-																		<i><?php esc_html_e('Click rate', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Click rate', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																	<div class="cartbounty-stats-count">
-																		<i><?php esc_html_e('Clicks', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Clicks', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Recovery rate', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Recovered', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																</div>
@@ -1735,32 +1759,44 @@ class CartBounty_Admin{
 													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
 														<div class="cartbounty-row">
 															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-8">
-																<div class="cartbounty-stats">
-																	<i><?php esc_html_e('Queue', 'woo-save-abandoned-carts'); ?></i>
-																	<p>0</p>
-																</div>
-																<div class="cartbounty-stats">
-																	<i><?php esc_html_e('Sends', 'woo-save-abandoned-carts'); ?></i>
-																	<p>0</p>
-																</div>
 																<div class="cartbounty-stats cartbounty-percentage-switcher">
 																	<div class="cartbounty-stats-percentage">
-																		<i><?php esc_html_e('Open rate', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Queue', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>0</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Sends', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>0</p>
+																	</div>
+																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Open rate', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																	<div class="cartbounty-stats-count">
 																		<a href="<?php echo esc_url( $this->get_trackable_link( CARTBOUNTY_LICENSE_SERVER_URL, 'wp_enable_email_stats' ) ); ?>" class="button cartbounty-button" target="_blank"><?php esc_html_e('Upgrade to see stats', 'woo-save-abandoned-carts'); ?></a>
-																		<i><?php esc_html_e('Opens', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Opens', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																</div>
-																<div class="cartbounty-stats cartbounty-percentage-switcher">
+																<div class="cartbounty-stats">
 																	<div class="cartbounty-stats-percentage">
-																		<i><?php esc_html_e('Click rate', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Click rate', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																	<div class="cartbounty-stats-count">
-																		<i><?php esc_html_e('Clicks', 'woo-save-abandoned-carts'); ?></i>
+																		<i><?php esc_html_e( 'Clicks', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Recovery rate', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Recovered', 'woo-save-abandoned-carts' ); ?></i>
 																		<p>-</p>
 																	</div>
 																</div>

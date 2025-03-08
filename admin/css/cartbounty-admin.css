@@ -1887,6 +1887,11 @@ label.cartbounty-unavailable{
 	display: none;
 }
 
+.cartbounty-percentage-switcher .cartbounty-stats-count i,
+.cartbounty-percentage-switcher .cartbounty-stats-count p{
+	display: block;
+}
+
 .cartbounty-stats-count .button{
 	margin-top: 5px;
 }
