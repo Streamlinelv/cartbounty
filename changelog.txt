@@ -2,7 +2,9 @@
 
 = 8.6 =
 * Improved abandoned cart bulk action messages
+* Added a new filter that allows to disable "Remember checkout fields" function
 * Fixed a JavaScript issue affecting report updates
+* Code refactoring
 
 = 8.5 =
 * Improved bot detection layer

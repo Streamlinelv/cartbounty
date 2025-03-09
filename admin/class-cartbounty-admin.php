@@ -713,7 +713,6 @@ class CartBounty_Admin{
 											</p>
 										</div>
 										<div class="cartbounty-settings-group">
-											<label for="cartbounty_main_settings[notification_frequency]"><?php esc_html_e('Check for new abandoned carts', 'woo-save-abandoned-carts'); ?></label>
 											<?php $this->display_time_intervals( 'cartbounty_main_settings[notification_frequency]' ); ?>
 										</div>
 										<div class="cartbounty-settings-group cartbounty-toggle">
@@ -1403,24 +1402,28 @@ class CartBounty_Admin{
 										$background_color = ( isset($step->background_color) ) ? $step->background_color : false;
 										$time_interval_name = $this->get_interval_data( 'cartbounty_automation_steps', 0, $just_selected_value = true );
 										$preview_email_nonce = wp_create_nonce( 'preview_email' );
-										$test_email_nonce = wp_create_nonce( 'test_email' ); ?>
+										$test_email_nonce = wp_create_nonce( 'test_email' );
+										$automation_status = $wordpress->display_automation_status( $enabled ); ?>
 
 										<div class="cartbounty-step">
 											<div class="cartbounty-step-opener">
 												<div class="cartbounty-row">
-													<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-lg-3">
+													<div class="cartbounty-titles-column cartbounty-col-xs-12 cartbounty-col-sm-4 cartbounty-col-lg-3">
 														<div class="cartbounty-automation-number">1</div>
 														<div class="cartbounty-automation-name">
 															<h3><?php echo esc_html( $wordpress->get_defaults( 'name', 0 ) ); ?></h3>
 															<p><?php echo sprintf(
 																/* translators: %s - Time, e.g. 10 minutes */
 																 esc_html__('Sends after %s', 'woo-save-abandoned-carts'), esc_html( $time_interval_name ) );?></p>
-															<div class="cartbounty-step-trigger"></div>
+															<div class="cartbounty-automation-status">
+																<?php echo $automation_status; ?>
+															</div>
 														</div>
+														<div class="cartbounty-step-trigger"></div>
 													</div>
-													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
+													<div class="cartbounty-settings-column cartbounty-col-xs-12 cartbounty-col-sm-8 cartbounty-col-lg-9">
 														<div class="cartbounty-row">
-															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-8">
+															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-9">
 																<div class="cartbounty-stats cartbounty-percentage-switcher">
 																	<div class="cartbounty-stats-percentage">
 																		<i><?php esc_html_e( 'Queue', 'woo-save-abandoned-carts' ); ?></i>
@@ -1462,11 +1465,22 @@ class CartBounty_Admin{
 																		<p>-</p>
 																	</div>
 																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Unsubscribe rate', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Unsubscribes', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																</div>
 															</div>
-															<div class="cartbounty-trigger-container cartbounty-col-sm-12 cartbounty-col-lg-4">
+															<div class="cartbounty-trigger-container cartbounty-col-sm-12 cartbounty-col-lg-3">
 																<div class="cartbounty-automation-status">
-																	<?php $wordpress->display_automation_status( $enabled );?>
-																</div><div class="cartbounty-step-trigger"></div>
+																	<?php echo $automation_status; ?>
+																</div>
+																<div class="cartbounty-step-trigger"></div>
 															</div>
 														</div>
 													</div>
@@ -1666,18 +1680,21 @@ class CartBounty_Admin{
 										<div class="cartbounty-step cartbounty-step-unavailable">
 											<div class="cartbounty-step-opener">
 												<div class="cartbounty-row">
-													<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-lg-3">
+													<div class="cartbounty-titles-column cartbounty-col-xs-12 cartbounty-col-sm-4 cartbounty-col-lg-3">
 														<div class="cartbounty-automation-number">2</div>
 														<div class="cartbounty-automation-name">
 															<h3><?php echo esc_html( $wordpress->get_defaults( 'name', 1 ) ); ?></h3>
 															<p><?php $time_interval_name = $this->get_interval_data( 'cartbounty_automation_steps', 1, $just_selected_value = true );
 																echo sprintf( esc_html__('Sends after %s', 'woo-save-abandoned-carts'), esc_html( $time_interval_name ) );?></p>
-															<div class="cartbounty-step-trigger"></div>
+															<div class="cartbounty-automation-status">
+																<span class="status inactive"><?php esc_html_e( 'Disabled', 'woo-save-abandoned-carts' ); ?></span>
+															</div>
 														</div>
+														<div class="cartbounty-step-trigger"></div>
 													</div>
-													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
+													<div class="cartbounty-settings-column cartbounty-col-xs-12 cartbounty-col-sm-8 cartbounty-col-lg-9">
 														<div class="cartbounty-row">
-															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-8">
+															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-9">
 																<div class="cartbounty-stats cartbounty-percentage-switcher">
 																	<div class="cartbounty-stats-percentage">
 																		<i><?php esc_html_e( 'Queue', 'woo-save-abandoned-carts' ); ?></i>
@@ -1719,11 +1736,22 @@ class CartBounty_Admin{
 																		<p>-</p>
 																	</div>
 																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Unsubscribe rate', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Unsubscribes', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																</div>
 															</div>
-															<div class="cartbounty-trigger-container cartbounty-col-sm-12 cartbounty-col-lg-4">
+															<div class="cartbounty-trigger-container cartbounty-col-sm-12 cartbounty-col-lg-3">
 																<div class="cartbounty-automation-status">
-																	<span class="status inactive"><?php esc_html_e('Disabled', 'woo-save-abandoned-carts'); ?></span>
-																</div><div class="cartbounty-step-trigger"></div>
+																	<span class="status inactive"><?php esc_html_e( 'Disabled', 'woo-save-abandoned-carts' ); ?></span>
+																</div>
+																<div class="cartbounty-step-trigger"></div>
 															</div>
 														</div>
 													</div>
@@ -1747,18 +1775,21 @@ class CartBounty_Admin{
 										<div class="cartbounty-step cartbounty-step-unavailable">
 											<div class="cartbounty-step-opener">
 												<div class="cartbounty-row">
-													<div class="cartbounty-titles-column cartbounty-col-sm-12 cartbounty-col-lg-3">
+													<div class="cartbounty-titles-column cartbounty-col-xs-12 cartbounty-col-sm-4 cartbounty-col-lg-3">
 														<div class="cartbounty-automation-number">3</div>
 														<div class="cartbounty-automation-name">
 															<h3><?php echo esc_html( $wordpress->get_defaults( 'name', 2 ) ); ?></h3>
 															<p><?php $time_interval_name = $this->get_interval_data( 'cartbounty_automation_steps', 2, $just_selected_value = true );
 																echo sprintf( esc_html__('Sends after %s', 'woo-save-abandoned-carts'), esc_html( $time_interval_name ) );?></p>
-															<div class="cartbounty-step-trigger"></div>
+															<div class="cartbounty-automation-status">
+																<span class="status inactive"><?php esc_html_e( 'Disabled', 'woo-save-abandoned-carts' ); ?></span>
+															</div>
 														</div>
+														<div class="cartbounty-step-trigger"></div>
 													</div>
-													<div class="cartbounty-settings-column cartbounty-col-sm-12 cartbounty-col-lg-9">
+													<div class="cartbounty-settings-column cartbounty-col-xs-12 cartbounty-col-sm-8 cartbounty-col-lg-9">
 														<div class="cartbounty-row">
-															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-8">
+															<div class="cartbounty-stats-container cartbounty-col-sm-12 cartbounty-col-lg-9">
 																<div class="cartbounty-stats cartbounty-percentage-switcher">
 																	<div class="cartbounty-stats-percentage">
 																		<i><?php esc_html_e( 'Queue', 'woo-save-abandoned-carts' ); ?></i>
@@ -1800,11 +1831,22 @@ class CartBounty_Admin{
 																		<p>-</p>
 																	</div>
 																</div>
+																<div class="cartbounty-stats">
+																	<div class="cartbounty-stats-percentage">
+																		<i><?php esc_html_e( 'Unsubscribe rate', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																	<div class="cartbounty-stats-count">
+																		<i><?php esc_html_e( 'Unsubscribes', 'woo-save-abandoned-carts' ); ?></i>
+																		<p>-</p>
+																	</div>
+																</div>
 															</div>
-															<div class="cartbounty-trigger-container cartbounty-col-sm-12 cartbounty-col-lg-4">
+															<div class="cartbounty-trigger-container cartbounty-col-sm-12 cartbounty-col-lg-3">
 																<div class="cartbounty-automation-status">
-																	<span class="status inactive"><?php esc_html_e('Disabled', 'woo-save-abandoned-carts'); ?></span>
-																</div><div class="cartbounty-step-trigger"></div>
+																	<span class="status inactive"><?php esc_html_e( 'Disabled', 'woo-save-abandoned-carts' ); ?></span>
+																</div>
+																<div class="cartbounty-step-trigger"></div>
 															</div>
 														</div>
 													</div>
@@ -3446,7 +3488,7 @@ class CartBounty_Admin{
 		if( !hash_equals( $hash, $row_hash ) ) return; //If hashes do not match, exit function
 
 		//If we have received an Unsubscribe request - stop restoring cart and unsubscribe user instead
-		if (isset( $_GET['cartbounty-unsubscribe'])){
+		if( isset( $_GET['cartbounty-unsubscribe'] ) ){
 			$wordpress = new CartBounty_WordPress();
 			$wordpress->unsubscribe_user( $id, $step_nr );
 			wp_die( esc_html__('You have successfully unsubscribed from further emails about your shopping cart.', 'woo-save-abandoned-carts'), esc_html__( 'Successfully unsubscribed', 'woo-save-abandoned-carts'), $args = array( 'link_url' => get_site_url(), 'link_text' => esc_html__( 'Return to store', 'woo-save-abandoned-carts') ) );

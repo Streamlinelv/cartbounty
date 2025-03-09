@@ -49,7 +49,7 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 * Send SMS text message reminders using [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
 * [Personalize messages](https://www.cartbounty.com/personalization-tags/) with dynamic content (**Pro**)
 * Generate and send unique coupon codes (**Pro**)
-* Track message open and click-through rates (**Pro**)
+* Track message open, click-through, recovery and unsubscribe rates (**Pro**)
 * Recover unfinished orders (**Pro**)
 * Restore Custom product fields (Product addons) and WooCommerce Product Bundles (**Pro**)
 * Exclude carts from abandoned cart recovery based on specific products or product categories, countries, languages, IP addresses, and other criteria (**Pro**)
@@ -161,6 +161,8 @@ Filters:
 * cartbounty_custom_phone_selectors
 * cartbounty_phone_validation
 * cartbounty_disable_input_bot_test
+* cartbounty_restore_classic_checkout
+* cartbounty_restore_block_checkout
 
 Here is an example how to change the From email that sends out notification emails using "cartbounty_from_email" filter. Please add it to your theme's functions.php file:
 
@@ -329,6 +331,8 @@ In addition, the Pro version allows you to select if guests from specific countr
 
 = 8.6 =
 * Improved abandoned cart bulk action messages
+* Added a new filter that allows to disable "Remember checkout fields" function
 * Fixed a JavaScript issue affecting report updates
+* Code refactoring
 
 [See changelog for all versions](https://raw.githubusercontent.com/Streamlinelv/woo-save-abandoned-carts/master/changelog.txt).

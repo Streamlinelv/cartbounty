@@ -854,6 +854,8 @@ class CartBounty_Public{
 
 		if( has_block( 'woocommerce/checkout' ) ) return; //Stop block checkout detected
 
+		if( !apply_filters( 'cartbounty_restore_classic_checkout', true ) ) return;
+
 		$saved_cart = $this->get_saved_cart();
 
 		if( !$saved_cart ) return;

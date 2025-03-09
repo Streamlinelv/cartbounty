@@ -42,7 +42,7 @@ Save your time with automated abandoned cart recovery and focus your energy on t
 * Send SMS text message reminders using [BulkGate](https://portal.bulkgate.com/join/55713) (**Pro**)
 * [Personalize messages](https://www.cartbounty.com/personalization-tags/) with dynamic content (**Pro**)
 * Generate and send unique coupon codes (**Pro**)
-* Track message open and click-through rates (**Pro**)
+* Track message open, click-through, recovery and unsubscribe rates (**Pro**)
 * Recover unfinished orders (**Pro**)
 * Restore Custom product fields (Product addons) and WooCommerce Product Bundles (**Pro**)
 * Exclude carts from abandoned cart recovery based on specific products or product categories, countries, languages, IP addresses, and other criteria (**Pro**)

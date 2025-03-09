@@ -93,7 +93,7 @@ class CartBounty_WordPress{
 			$status = sprintf( '<span class="status active">%s</span>', esc_html__( 'Active', 'woo-save-abandoned-carts' ) );
 		}
 
-		echo $status;
+		return $status;
 	}
 
 	/**
